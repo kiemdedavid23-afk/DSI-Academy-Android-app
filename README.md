@@ -1,18 +1,22 @@
 # DSI Academy App
 
-Application mobile Android React Native.
+Application mobile Android React Native de DSI Academy.
 
 ## Structure
 
 - `src/app` : application, providers et navigation.
-- `src/core` : configuration, réseau, session et design system.
-- `src/services` : clients et types des services API.
-- `src/features` : fonctionnalités organisées par domaine.
-- `src/shared` : éléments transversaux.
-- `docs` : architecture, plan, contrats et fiches de livraison.
-- `contracts` : fixtures JSON des réponses API.
+- `src/core` : configuration, API, réseau, session, stockage, plateforme. Aucun design.
+- `src/shared` : design system, i18n, outils de store et stores transverses.
+- `src/features` : fonctionnalités par domaine, chacune organisée en `screens`, `components`, `store`.
+- `src/assets` : polices et images.
+- `docs` : architecture, plan, design tokens, contrats et fiches de livraison.
+- `contracts` : fixtures JSON des réponses des Workers.
+- `scripts` : génération de la configuration de compilation.
+
+## Règle principale
+
+Les écrans ne parlent jamais aux API : ils passent par les stores. Voir `docs/ARCHITECTURE.md`.
 
 ## État initial
 
-Cette première génération crée l’arborescence et les fichiers de configuration.
-Le projet Android natif et ses dépendances React Native restent à initialiser.
+Arborescence et fichiers de configuration. Le projet Android natif et les dépendances React Native sont initialisés à l'étape 0 du plan.
