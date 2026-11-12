@@ -19,6 +19,36 @@ S. Site (parallèle)
 Mode ?embed=app, message de fin d'inscription, vrai suivi du paiement
 Dépôt du site
 Parcours d'inscription propre dans une WebView
+
+## Étape 0 : détail des lots
+
+- **L0a, projet et réseau :** initialisation React Native CLI (nom `DSI Academy`, identifiant `app.dsiacademy`) ; dépendances de base figées avec justification ; `jest.config.js` (motif `*.tests.ts`), `tsconfig.json`, ESLint avec les règles R-LAY-1 à R-LAY-6, R-NET-1 et R-DS-1 ; script de génération de `buildConfig.generated.ts` (avec mode fixture sans secret) ; `ci.yml` manuel (typecheck, lint, jest) ; script de copie des polices (R-PLAT-3) ; client HTTP, erreurs typées, `rateLimitGate` ; tests.
+- **L0b, design system :** `shared/designsystem/theme` (tokens clair et sombre, « réduire les animations ») ; polices ; composants de base (texte, bouton, carte, champ, squelette) et composants d'états (chargement, vide, erreur) ; première série d'icônes.
+- **L0c, outils transverses :** `shared/i18n` (fr/en du site) ; `shared/store` (outil de cache commun : durée de validité, rechargement en arrière-plan, pas d'appel en double, invalidation, purge) ; squelette de navigation (`RootNavigator`, `AuthStack`, `MemberTabs`, écrans vides) ; écran de test du thème.
+- **Sortie de l'étape 0 :** CI verte, thème visible dans les deux modes, outil de cache testé, règles d'architecture actives.
+
+## Anatomie d'un lot (à partir de l'étape 1)
+
+Chaque lot livre, pour son périmètre :
+
+1. Les endpoints dans `core/api/endpoints/<service>/` : `.api.ts`, `.types.ts`, `.mapper.ts`.
+2. Les fixtures de réponses réelles dans `contracts/<service>/`.
+3. Le store dans `features/<feature>/<sous-partie>/store/`.
+4. Les écrans et composants (`screens/`, `components/`), qui ne parlent qu'au store.
+5. Les clés i18n utilisées.
+6. Les tests `*.tests.ts` : endpoints, mapper, store.
+7. La fiche du lot dans `docs/fiches/`.
+
+## Définition de « terminé » pour un lot
+
+- Le typecheck, le lint et jest passent.
+- Aucune violation des règles R-LAY, R-NET, R-DS.
+- Aucun écran n'importe `core/api` (R-LAY-5).
+- Les quatre états existent et se déduisent du `status` du store.
+- Le store a ses tests (états, cache, invalidation, purge).
+- La fiche cite le `.jsx` et le `.css` du site et la section du contrat.
+- Aucune valeur inventée : les questions restées sans réponse sont listées dans la fiche.
+
 1. Accès
 L1a session sécurisée + connexion (dont pending_payment) · L1b navigateur d'inscription · L1c garde d'accès, 401, déconnexion
 Worker Paiement
