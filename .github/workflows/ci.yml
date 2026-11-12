@@ -4,8 +4,37 @@ on:
   workflow_dispatch:
 
 jobs:
-  placeholder:
+  check:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
-      - name: Placeholder
-        run: echo "Workflow à remplacer à l'étape 0 (L0a)"
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 24
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Generate build config (secret or fixture)
+        env:
+          DSI_REGISTRY_JSON: ${{ secrets.DSI_REGISTRY_JSON }}
+        run: |
+          if [ -n "$DSI_REGISTRY_JSON" ]; then
+            node scripts/generate-build-config.js
+          else
+            node scripts/generate-build-config.js --fixture
+          fi
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Test
+        run: npm test -- --ci --coverage=false
