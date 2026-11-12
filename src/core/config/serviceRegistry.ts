@@ -1,83 +1,157 @@
-// src/core/config/serviceRegistry.ts
-// SEUL fichier de l'app qui décide quelle adresse est appelée.
-// Migration VPS = changer le secret de configuration (mode 'gateway') puis recompiler.
-import { BUILD_CONFIG } from './buildConfig.generated';
+/**
+ * Tests de src/core/config/serviceRegistry.ts
+ *
+ * Ces tests s'appuient sur le fichier généré buildConfig.generated.ts
+ * (mode fixture). Ils doivent être exécutés après `npm run generate:config`.
+ */
 
-export type ServiceId =
-  | 'payment'
-  | 'content'
-  | 'shop'
-  | 'marketplace'
-  | 'community'
-  | 'admin';
+// On mocke le module généré pour contrôler le registre sans fichier physique.
+jest.mock('./buildConfig.generated', () => ({
+  BUILD_CONFIG: {
+    registry: {
+      mode: 'perService',
+      urls: {
+        payment: 'https://payment.example.invalid',
+        content: 'https://content.example.invalid/',
+        shop: 'https://shop.example.invalid',
+        marketplace: 'https://marketplace.example.invalid',
+        community: 'https://community.example.invalid',
+        admin: 'https://admin.example.invalid',
+      },
+      web: 'https://web.example.invalid/',
+    },
+  },
+}));
 
-const SERVICE_IDS: ServiceId[] = [
-  'payment',
-  'content',
-  'shop',
-  'marketplace',
-  'community',
-  'admin',
-];
+import {
+  resolveServiceUrl,
+  resolveRealtimeUrl,
+  resolveWebUrl,
+  assertRegistry,
+} from './serviceRegistry';
 
-type PerServiceConfig = {
-  mode: 'perService';
-  urls: Record<ServiceId, string>; // une adresse par Worker (situation actuelle)
-  web: string; // site web (navigateur d'inscription)
-};
+describe('serviceRegistry (mode perService)', () => {
+  it('résout une URL de service sans barre oblique en trop', () => {
+    expect(resolveServiceUrl('payment', '/login')).toBe(
+      'https://payment.example.invalid/login',
+    );
+  });
 
-type GatewayConfig = {
-  mode: 'gateway';
-  baseUrl: string; // un seul hôte (VPS)
-  prefixes: Record<ServiceId, string>; // ex. { payment: '/payment', ... }
-  web: string;
-};
+  it('ajoute la barre oblique manquante au chemin', () => {
+    expect(resolveServiceUrl('payment', 'login')).toBe(
+      'https://payment.example.invalid/login',
+    );
+  });
 
-export type RegistryConfig = PerServiceConfig | GatewayConfig;
+  it('supprime les barres obliques en trop de la base', () => {
+    // content a une barre finale dans le mock
+    expect(resolveServiceUrl('content', '/items')).toBe(
+      'https://content.example.invalid/items',
+    );
+  });
 
-const config = BUILD_CONFIG.registry as RegistryConfig;
+  it('convertit https en wss pour le temps réel', () => {
+    expect(resolveRealtimeUrl('community', '/ws')).toBe(
+      'wss://community.example.invalid/ws',
+    );
+  });
 
-const trimEndSlash = (value: string): string => value.replace(/\/+$/, '');
-const withLeadingSlash = (value: string): string =>
-  value.startsWith('/') ? value : `/${value}`;
+  it('résout l\'URL web', () => {
+    expect(resolveWebUrl('/register')).toBe(
+      'https://web.example.invalid/register',
+    );
+  });
 
-function assertHttps(label: string, value: unknown): void {
-  if (typeof value !== 'string' || !/^https:\/\/[^\s]+$/.test(value)) {
-    throw new Error(`[serviceRegistry] adresse invalide pour "${label}"`);
-  }
-}
+  it('assertRegistry ne lève pas en mode valide', () => {
+    expect(() => assertRegistry()).not.toThrow();
+  });
+});
 
-// Échec franc au démarrage plutôt qu'une erreur réseau obscure plus tard.
-export function assertRegistry(): void {
-  assertHttps('web', config.web);
-  if (config.mode === 'gateway') {
-    assertHttps('baseUrl', config.baseUrl);
-    SERVICE_IDS.forEach((id) => {
-      if (!config.prefixes[id]) {
-        throw new Error(`[serviceRegistry] préfixe manquant pour "${id}"`);
-      }
-    });
-  } else {
-    SERVICE_IDS.forEach((id) => assertHttps(id, config.urls[id]));
-  }
-}
+describe('serviceRegistry (mode gateway)', () => {
+  beforeEach(() => {
+    jest.resetModules();
+    jest.doMock('./buildConfig.generated', () => ({
+      BUILD_CONFIG: {
+        registry: {
+          mode: 'gateway',
+          baseUrl: 'https://gateway.example.invalid/',
+          prefixes: {
+            payment: '/payment',
+            content: 'content',
+            shop: '/shop/',
+            marketplace: '/marketplace',
+            community: '/community',
+            admin: '/admin',
+          },
+          web: 'https://web.example.invalid',
+        },
+      },
+    }));
+  });
 
-export function resolveServiceUrl(service: ServiceId, path: string): string {
-  const cleanPath = withLeadingSlash(path);
-  if (config.mode === 'gateway') {
-    return `${trimEndSlash(config.baseUrl)}${withLeadingSlash(
-      config.prefixes[service],
-    )}${cleanPath}`;
-  }
-  return `${trimEndSlash(config.urls[service])}${cleanPath}`;
-}
+  it('résout via baseUrl + préfixe + chemin', () => {
+    // Re-require après doMock
+    const {
+      resolveServiceUrl: resolve,
+    } = require('./serviceRegistry');
+    expect(resolve('payment', '/login')).toBe(
+      'https://gateway.example.invalid/payment/login',
+    );
+  });
 
-// Temps réel (WebSocket) : même décision, schéma https -> wss.
-export function resolveRealtimeUrl(service: ServiceId, path: string): string {
-  return resolveServiceUrl(service, path).replace(/^https:/, 'wss:');
-}
+  it('normalise les barres obliques du préfixe', () => {
+    const {resolveServiceUrl: resolve} = require('./serviceRegistry');
+    expect(resolve('content', 'items')).toBe(
+      'https://gateway.example.invalid/content/items',
+    );
+    expect(resolve('shop', '/cart')).toBe(
+      'https://gateway.example.invalid/shop/cart',
+    );
+  });
+});
 
-// Site web (navigateur d'inscription), jamais un Worker.
-export function resolveWebUrl(path: string): string {
-  return `${trimEndSlash(config.web)}${withLeadingSlash(path)}`;
-}
+describe('assertRegistry (échecs)', () => {
+  it('échoue si web est invalide', () => {
+    jest.resetModules();
+    jest.doMock('./buildConfig.generated', () => ({
+      BUILD_CONFIG: {
+        registry: {
+          mode: 'perService',
+          urls: {
+            payment: 'https://payment.example.invalid',
+            content: 'https://content.example.invalid',
+            shop: 'https://shop.example.invalid',
+            marketplace: 'https://marketplace.example.invalid',
+            community: 'https://community.example.invalid',
+            admin: 'https://admin.example.invalid',
+          },
+          web: 'http://not-https.example.invalid',
+        },
+      },
+    }));
+    const {assertRegistry: assert} = require('./serviceRegistry');
+    expect(() => assert()).toThrow(/adresse invalide/);
+  });
+
+  it('échoue si une URL de service est invalide', () => {
+    jest.resetModules();
+    jest.doMock('./buildConfig.generated', () => ({
+      BUILD_CONFIG: {
+        registry: {
+          mode: 'perService',
+          urls: {
+            payment: 'not-a-url',
+            content: 'https://content.example.invalid',
+            shop: 'https://shop.example.invalid',
+            marketplace: 'https://marketplace.example.invalid',
+            community: 'https://community.example.invalid',
+            admin: 'https://admin.example.invalid',
+          },
+          web: 'https://web.example.invalid',
+        },
+      },
+    }));
+    const {assertRegistry: assert} = require('./serviceRegistry');
+    expect(() => assert()).toThrow(/adresse invalide/);
+  });
+});
