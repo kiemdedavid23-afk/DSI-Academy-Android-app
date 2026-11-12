@@ -70,7 +70,10 @@ app  →  features  →  shared  →  core
 - **R-NET-5** Le temps réel passe par `resolveRealtimeUrl`. Aucun WebSocket ne s'ouvre ailleurs.
 - **R-NET-6** Erreurs typées (réseau, 401, 429, contrat inattendu). Messages FR repris du site tels quels.
 - **R-NET-7** Chaque Worker a des fixtures de réponses réelles dans `contracts/`. Après migration, les mêmes tests passent sans modifier l'app.
-
+- **R-NET-8** Authentification par Worker (relevée dans le site, à confirmer par les contrats) : Paiement : `Authorization: Bearer <jeton de session>` pour l'espace membre, `X-Payment-Tracking-Token` pour le suivi d'inscription, aucune en-tête pour les routes publiques. Communauté, Boutique, Marketplace, Contenu : `X-Access-Proof` (jamais le Bearer ; obligatoire sur tous les appels de la Communauté). Le mode d'authentification se déclare par appel (`auth`), avec une valeur par défaut par service.
+- **R-NET-9** Une requête n'est jamais envoyée vers une adresse absolue : seuls des chemins relatifs, résolus par le registre. Cela empêche de transmettre un jeton à un hôte tiers.
+- **R-NET-10** Aucun log dans `core/network` : ni adresse, ni en-têtes, ni corps de requête ou de réponse.
+- **R-NET-11** Limitation de débit : le client signale un 429 ou un code `RATE_LIMITED` au `rateLimitGate` du service concerné. Il ne bloque pas lui-même les appels ; les stores consultent `isRateLimited` avant tout sondage.
 **Migration VPS :**
 1. Le VPS expose les mêmes chemins, un préfixe par service.
 2. Vérifier les collisions de chemins (`profile`, `favorites`, `media`, `catalog`).
