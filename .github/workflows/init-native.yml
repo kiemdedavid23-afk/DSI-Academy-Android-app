@@ -1,0 +1,137 @@
+name: Init native Android scaffold
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  scaffold:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 24
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+
+      - name: Install React Native CLI globally
+        run: npm install -g @react-native-community/cli@20.2.0
+
+      - name: Generate temporary RN project
+        run: |
+          # Génère un projet TypeScript sans iOS dans un dossier temporaire
+          npx @react-native-community/cli@20.2.0 init DSIAcademyTemp \
+            --version 0.88.1 \
+            --pm npm \
+            --skip-install \
+            --directory /tmp/DSIAcademyTemp
+          # Supprime le dossier ios s'il a été créé
+          rm -rf /tmp/DSIAcademyTemp/ios
+
+      - name: Report template vs depot differences
+        run: |
+          echo "## Rapport de comparaison modèle ↔ dépôt"
+          echo ""
+          echo "### Fichiers racine propriété du dépôt (ne seront PAS écrasés)"
+          for f in package.json tsconfig.json jest.config.js babel.config.js metro.config.js index.js app.json .eslintrc.js .gitignore README.md; do
+            if [ -f "/tmp/DSIAcademyTemp/$f" ] && [ -f "$f" ]; then
+              echo "---- $f ----"
+              diff -u "/tmp/DSIAcademyTemp/$f" "$f" || true
+            elif [ -f "$f" ]; then
+              echo "---- $f (présent dans le dépôt, absent du modèle ou nommé différemment) ----"
+            fi
+          done
+          echo ""
+          echo "### Dépendances (modèle / dépôt)"
+          echo "| Paquet | Modèle | Dépôt |"
+          echo "|--------|--------|-------|"
+          # Extraction simple des versions du package.json du modèle
+          node -e '
+            const fs = require("fs");
+            const tpl = JSON.parse(fs.readFileSync("/tmp/DSIAcademyTemp/package.json","utf8"));
+            const dep = JSON.parse(fs.readFileSync("package.json","utf8"));
+            const all = new Set([
+              ...Object.keys(tpl.dependencies||{}),
+              ...Object.keys(tpl.devDependencies||{}),
+              ...Object.keys(dep.dependencies||{}),
+              ...Object.keys(dep.devDependencies||{}),
+            ]);
+            for (const name of [...all].sort()) {
+              const t = (tpl.dependencies||{})[name] || (tpl.devDependencies||{})[name] || "-";
+              const d = (dep.dependencies||{})[name] || (dep.devDependencies||{})[name] || "-";
+              console.log(`| ${name} | ${t} | ${d} |`);
+            }
+          '
+
+      - name: Copy only android/ from template
+        run: |
+          # Supprime l'ancien placeholder
+          rm -rf android
+          # Copie uniquement android/
+          cp -a /tmp/DSIAcademyTemp/android android
+          # Ajuste applicationId, namespace, nom affiché, minSdk (déjà 24 dans le modèle 0.88)
+          # applicationId / namespace → app.dsiacademy
+          find android -type f \( -name "*.gradle" -o -name "*.kt" -o -name "*.xml" -o -name "*.java" \) -print0 | \
+            xargs -0 sed -i 's/com\.helloworld/app.dsiacademy/g' || true
+          find android -type f \( -name "*.gradle" -o -name "*.kt" -o -name "*.xml" -o -name "*.java" \) -print0 | \
+            xargs -0 sed -i 's/com\.dsiacademytemp/app.dsiacademy/g' || true
+          find android -type f \( -name "*.gradle" -o -name "*.kt" -o -name "*.xml" -o -name "*.java" \) -print0 | \
+            xargs -0 sed -i 's/DSIAcademyTemp/DSIAcademy/g' || true
+
+          # Renomme les dossiers de package Java/Kotlin si nécessaire
+          if [ -d android/app/src/main/java/com ]; then
+            mkdir -p android/app/src/main/java/app
+            if [ -d android/app/src/main/java/com/helloworld ]; then
+              mv android/app/src/main/java/com/helloworld android/app/src/main/java/app/dsiacademy
+            elif [ -d android/app/src/main/java/com/dsiacademytemp ]; then
+              mv android/app/src/main/java/com/dsiacademytemp android/app/src/main/java/app/dsiacademy
+            fi
+            rm -rf android/app/src/main/java/com
+          fi
+
+          # Idem pour le dossier de test
+          if [ -d android/app/src/debug/java/com ]; then
+            mkdir -p android/app/src/debug/java/app
+            if [ -d android/app/src/debug/java/com/helloworld ]; then
+              mv android/app/src/debug/java/com/helloworld android/app/src/debug/java/app/dsiacademy
+            elif [ -d android/app/src/debug/java/com/dsiacademytemp ]; then
+              mv android/app/src/debug/java/com/dsiacademytemp android/app/src/debug/java/app/dsiacademy
+            fi
+            rm -rf android/app/src/debug/java/com
+          fi
+
+          # Vérifications
+          echo "=== Vérification applicationId / namespace ==="
+          grep -r "applicationId\|namespace\|package=" android/app --include="*.gradle" --include="*.xml" || true
+          echo "=== minSdkVersion ==="
+          grep -r "minSdkVersion" android --include="*.gradle" || true
+          echo "=== Structure java ==="
+          find android/app/src -type d -name "dsiacademy" || true
+
+      - name: Ensure no ios/ and no signing keys
+        run: |
+          rm -rf ios Gemfile
+          # Aucune clé de signature dans le dépôt
+          find android -name "*.jks" -o -name "*.keystore" | grep -v debug.keystore | while read f; do
+            echo "Suppression clé non-debug: $f"
+            rm -f "$f"
+          done
+
+      - name: Commit and push to chore/native-scaffold
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git checkout -B chore/native-scaffold
+          git add android
+          # Ne jamais ajouter package.json, tsconfig, etc.
+          git status
+          git commit -m "chore: native Android scaffold (RN 0.88.1, app.dsiacademy, minSdk 24)" || {
+            echo "Rien à committer (android/ déjà à jour ?)"
+            exit 0
+          }
+          git push -u origin chore/native-scaffold --force
