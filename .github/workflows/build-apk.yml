@@ -1,0 +1,47 @@
+name: Build debug APK
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 24
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: 'npm'
+
+      - name: Setup Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Generate build config (fixture)
+        run: node scripts/generate-build-config.js --fixture
+
+      - name: Copy fonts
+        run: node scripts/copy-fonts.js
+
+      - name: Make gradlew executable
+        run: chmod +x android/gradlew || true
+
+      - name: Build debug APK
+        working-directory: android
+        run: ./gradlew assembleDebug --no-daemon
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: dsi-academy-debug
+          path: android/app/build/outputs/apk/debug/*.apk
+          if-no-files-found: error
