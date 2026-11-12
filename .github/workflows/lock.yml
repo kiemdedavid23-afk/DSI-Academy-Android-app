@@ -29,11 +29,10 @@ jobs:
             exit 1
           fi
 
-      - name: Pousser sur la branche chore/lockfile
+            - name: Commit sur main
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git checkout -B chore/lockfile
           git add package-lock.json
           git commit -m "chore: générer package-lock.json" || echo "Aucun changement"
-          git push --force origin chore/lockfile
+          git push origin HEAD:main
