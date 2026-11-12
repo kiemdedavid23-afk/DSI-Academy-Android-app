@@ -46,8 +46,7 @@ scripts/                          ← génération de buildConfig.generated.ts
 ```
 
 - **R-TREE-1** Noms de dossiers en minuscules (kebab-case). Composants et écrans en PascalCase (`DsiScreen.tsx`), stores en camelCase (`dsiStore.ts`).
-- **R-TREE-2** Pas de fichier parasite : tout `.gitkeep` est vide et correctement nommé ; tout workflow est un `.yml`.
-
+- **R-TREE-2** Un dossier sans fichier réel contient un `.gitkeep` d'une ligne (`keep`), supprimé dès qu'un vrai fichier arrive. Tout workflow est un `.yml`. Aucun nom de fichier avec espace ou caractère spécial.
 ## 3. Couches et sens des dépendances
 
 ```
