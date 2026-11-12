@@ -179,3 +179,16 @@ Inscription et « rejoindre » natifs, mot de passe oublié, écran d'accueil (r
 4. « Se souvenir de moi » : comportement exact (R-SEC-6).
 5. Notifications push : à décider avec le concepteur du Worker, au plus tard à l'étape Communauté.
 6. Téléchargements de contenu hors ligne : à décider à l'étape Contenu.
+
+
+## 18. Identité de l'application et exceptions imposées par la plateforme
+
+- Nom affiché : **DSI Academy**. Identifiant Android (`applicationId`) : **`app.dsiacademy`** (inverse du domaine `dsiacademy.app`). Il ne change jamais après la publication.
+- Le domaine `dsiacademy.app` est réservé. Il n'est pas utilisé pour les Workers tant que le registre (R-NET-1) pointe vers les adresses `workers.dev`.
+
+Quand Android ou React Native impose une structure, l'architecture s'adapte. Exceptions connues :
+
+- **R-PLAT-1** À la racine : `index.js`, `app.json`, `babel.config.js`, `metro.config.js` et `android/`, imposés par React Native et Android. Ils ne contiennent aucune logique métier et ne font que brancher `src/app/App.tsx`.
+- **R-PLAT-2** Les dossiers du package Android suivent l'identifiant, en minuscules : `android/app/src/main/java/app/dsiacademy/`.
+- **R-PLAT-3** Polices : la source de vérité est `src/assets/fonts`. Un script copie les polices vers `android/app/src/main/assets/fonts` au moment de la compilation. Cette copie est ignorée par Git et n'est jamais modifiée à la main.
+- **R-PLAT-4** Toute autre dérogation imposée par la plateforme est consignée dans la fiche du lot avec sa raison, validée par l'architecte, puis ajoutée à cette liste.
