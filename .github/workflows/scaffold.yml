@@ -1,10 +1,10 @@
-name: Créer l’architecture de départ
+name: Créer l’architecture DSI Academy
 
 on:
   workflow_dispatch:
     inputs:
       branch:
-        description: "Branche où créer l’architecture"
+        description: "Branche cible"
         required: true
         default: "main"
 
@@ -13,6 +13,7 @@ permissions:
 
 jobs:
   scaffold:
+    name: Générer l’arborescence de l’application
     runs-on: ubuntu-latest
 
     steps:
@@ -21,18 +22,18 @@ jobs:
         with:
           ref: ${{ inputs.branch }}
 
-      - name: Créer l’arborescence
+      - name: Créer les dossiers et fichiers de base
         shell: bash
         run: |
           set -euo pipefail
 
+          # Dossiers de l’application — aucun changement à .github/workflows/
           mkdir -p \
             android \
             assets/fonts \
             docs/contrats \
             docs/fiches \
             contracts \
-            .github/workflows \
             src/app/providers \
             src/app/navigation/HouseStacks \
             src/core/config \
@@ -59,10 +60,12 @@ jobs:
             src/features/community \
             src/shared
 
-          # Ajouter des fichiers .gitkeep pour que Git conserve les dossiers vides.
-          find android assets docs contracts src -type d -empty -exec touch '{}/.gitkeep' \;
+          # Conserver les dossiers encore vides dans Git
+          find android assets docs contracts src \
+            -type d -empty \
+            -exec touch '{}/.gitkeep' \;
 
-          # Fichiers de départ minimaux.
+          # Configuration minimale du projet
           cat > package.json <<'EOF'
           {
             "name": "dsi-academy-app",
@@ -107,6 +110,60 @@ jobs:
           !.env.example
           EOF
 
+          cat > README.md <<'EOF'
+          # DSI Academy App
+
+          Application mobile Android React Native.
+
+          ## Structure
+
+          - `src/app` : application, providers et navigation.
+          - `src/core` : configuration, réseau, session et design system.
+          - `src/services` : clients et types des services API.
+          - `src/features` : fonctionnalités organisées par domaine.
+          - `src/shared` : éléments transversaux.
+          - `docs` : architecture, plan, contrats et fiches de livraison.
+          - `contracts` : fixtures JSON des réponses API.
+
+          ## État initial
+
+          Cette première génération crée l’arborescence et les fichiers de configuration.
+          Le projet Android natif et ses dépendances React Native restent à initialiser.
+          EOF
+
+          cat > docs/PLAN.md <<'EOF'
+          # Plan de réalisation
+
+          1. Initialiser React Native pour Android et valider un build local.
+          2. Mettre en place thèmes, design system et internationalisation.
+          3. Ajouter configuration réseau et registre central des services.
+          4. Implémenter session, authentification et navigation.
+          5. Développer les services et fonctionnalités par domaine.
+          6. Ajouter tests et fixtures de contrats API.
+          7. Configurer les workflows CI et build Android séparément.
+          EOF
+
+          cat > docs/ARCHITECTURE.md <<'EOF'
+          # Architecture
+
+          - `src/core` contient les fondations indépendantes des fonctionnalités.
+          - `src/services` contient les clients API, types et mappers.
+          - `src/features` contient les fonctionnalités de l’application.
+          - `src/shared` contient les éléments transversaux.
+          - Les URL de services doivent être centralisées dans
+            `src/core/config/serviceRegistry.ts`.
+          - Aucun composant de fonctionnalité ne doit contenir de littéral visuel
+            lorsqu’un composant du design system est disponible.
+          EOF
+
+          cat > docs/DESIGN-TOKENS.md <<'EOF'
+          # Design tokens — v1.1 React Native
+
+          À compléter avec les valeurs validées du produit :
+          couleurs clair/sombre, typographies, rayons, ombres, espacements,
+          transparence et animations.
+          EOF
+
           cat > src/app/App.tsx <<'EOF'
           import React from 'react';
           import { SafeAreaView, Text } from 'react-native';
@@ -120,140 +177,66 @@ jobs:
           }
           EOF
 
-          cat > README.md <<'EOF'
-          # DSI Academy App
-
-          Application mobile Android React Native.
-
-          ## État
-
-          Cette livraison crée l’arborescence initiale et les fichiers de configuration minimaux.
-          Elle ne génère pas encore le projet natif Android, les écrans métier, ni les services API.
-
-          ## Prochaine étape
-
-          Initialiser React Native et Gradle, installer les dépendances, puis implémenter
-          l’application par lots à partir de `docs/PLAN.md`.
+          cat > src/core/config/buildConfig.ts <<'EOF'
+          /**
+           * Configuration injectée au build.
+           * Ne pas placer de secrets dans l'application mobile.
+           */
+          export const buildConfig = {
+            appName: 'DSI Academy',
+            environment: 'development',
+          } as const;
           EOF
 
-          cat > docs/PLAN.md <<'EOF'
-          # Plan de réalisation
-
-          1. Initialiser le projet React Native Android et valider le build local.
-          2. Mettre en place le design system, les thèmes et l’internationalisation.
-          3. Implémenter la configuration réseau et le registre des services.
-          4. Ajouter l’authentification, la session et la navigation.
-          5. Développer les services et fonctionnalités par domaine.
-          6. Ajouter les tests, les fixtures de contrats et les workflows CI/build.
+          cat > src/core/config/serviceRegistry.ts <<'EOF'
+          /**
+           * Registre central des adresses de services.
+           * Remplacer les valeurs d'exemple par la configuration d'environnement.
+           */
+          export const serviceRegistry = {
+            mode: 'perService' as 'perService' | 'gateway',
+           } as const;
           EOF
 
-          cat > docs/ARCHITECTURE.md <<'EOF'
-          # Architecture
-
-          - `src/core` contient les fondations sans dépendance aux fonctionnalités.
-          - `src/services` contient les clients et types des API, sans URL en dur.
-          - `src/features` contient les fonctionnalités de l’application.
-          - `src/shared` contient les états et composants transverses.
-          - Les adresses de services doivent être centralisées dans
-            `src/core/config/serviceRegistry.ts`.
+          cat > src/core/config/featureFlags.ts <<'EOF'
+          export const featureFlags = {
+            marketplace: false,
+            communityCalls: false,
+          } as const;
           EOF
 
-          cat > docs/DESIGN-TOKENS.md <<'EOF'
-          # Design tokens — v1.1 React Native
-
-          À compléter avec les tokens validés du produit : couleurs, typographie,
-          espacements, rayons, ombres, thèmes clair/sombre et animations.
+          cat > src/core/i18n/fr.json <<'EOF'
+          {
+            "app.name": "DSI Academy",
+            "common.loading": "Chargement…",
+            "common.error": "Une erreur est survenue"
+          }
           EOF
 
-          cat > .github/workflows/ci.yml <<'EOF'
-          name: CI
-          on:
-            workflow_dispatch:
-          permissions:
-            contents: read
-          jobs:
-            checks:
-              runs-on: ubuntu-latest
-              steps:
-                - uses: actions/checkout@v4
-                - uses: actions/setup-node@v4
-                  with:
-                    node-version: 20
-                    cache: npm
-                - run: npm ci
-                - run: npm run typecheck --if-present
-                - run: npm run lint --if-present
-                - run: npm test -- --runInBand
+          cat > src/core/i18n/en.json <<'EOF'
+          {
+            "app.name": "DSI Academy",
+            "common.loading": "Loading…",
+            "common.error": "Something went wrong"
+          }
           EOF
 
-          cat > .github/workflows/build-apk.yml <<'EOF'
-          name: Build APK
-          on:
-            workflow_dispatch:
-          permissions:
-            contents: read
-          jobs:
-            build:
-              runs-on: ubuntu-latest
-              steps:
-                - uses: actions/checkout@v4
-                - uses: actions/setup-node@v4
-                  with:
-                    node-version: 20
-                    cache: npm
-                - uses: actions/setup-java@v4
-                  with:
-                    distribution: temurin
-                    java-version: "17"
-                - run: npm ci
-                - name: Build debug APK
-                  working-directory: android
-                  run: |
-                    chmod +x gradlew
-                    ./gradlew assembleDebug
-                - uses: actions/upload-artifact@v4
-                  with:
-                    name: dsi-academy-debug-apk
-                    path: android/app/build/outputs/apk/debug/*.apk
-                    if-no-files-found: error
-          EOF
-
-          # Prépare le fichier de sync sans pousser un dépôt à la configuration inconnue.
-          cat > .github/workflows/sync-to-private.yml <<'EOF'
-          name: Sync to private repository
-          on:
-            workflow_dispatch:
-              inputs:
-                confirm_sync:
-                  description: "Saisir SYNC pour confirmer"
-                  required: true
-                  type: string
-          permissions:
-            contents: read
-          jobs:
-            sync:
-              if: ${{ inputs.confirm_sync == 'SYNC' }}
-              runs-on: ubuntu-latest
-              steps:
-                - uses: actions/checkout@v4
-                  with:
-                    fetch-depth: 0
-                - name: Configure private remote
-                  run: |
-                    echo "Configurez l'URL du dépôt privé avant d'activer le push."
-                    echo "Ne pas lancer ce workflow avant configuration."
-          EOF
-
-      - name: Commit et pousser
+      - name: Commit et pousser les changements
         env:
-          BRANCH: ${{ inputs.branch }}
+          TARGET_BRANCH: ${{ inputs.branch }}
+        shell: bash
         run: |
+          set -euo pipefail
+
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add .
+
+          git add -A
+
           if git diff --cached --quiet; then
             echo "Aucun changement à committer."
             exit 0
           fi
-          git commit -m "chore: scaffold DSI Academy app architecture"
-          git push origin "HEAD:${BRANCH}"
+
+          git commit -m "chore: create DSI Academy app scaffold"
+          git push origin "HEAD:${TARGET_BRANCH}"
