@@ -1,4 +1,5 @@
 module.exports = {
   preset: 'react-native',
-  testPathIgnorePatterns: ['/node_modules/', '/android/']
+  testMatch: ['**/*.tests.ts', '**/*.tests.tsx'],
+  testPathIgnorePatterns: ['/node_modules/', '/android/'],
 };
