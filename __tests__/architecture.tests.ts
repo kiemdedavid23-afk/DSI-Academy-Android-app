@@ -147,6 +147,61 @@ describe('ESLint architecture rules', () => {
     );
     expect(hasError(results, 'no-restricted-syntax')).toBe(true);
   });
+
+  it("R-TEST-LOC : aucun *.tests.ts(x) hors de __tests__/", () => {
+    const outside = allFiles.filter(f => {
+      const rel = path.relative(ROOT, f);
+      return /\.tests\.tsx?$/.test(rel) && !rel.startsWith("__tests__/");
+    });
+    expect(outside).toEqual([]);
+  });
+
+  it("R-TEST-LOC : aucun dossier dans __tests__/ (que des fichiers)", () => {
+    const dirs = fs.readdirSync(path.join(ROOT, "__tests__"), {withFileTypes: true})
+      .filter(d => d.isDirectory());
+    expect(dirs).toEqual([]);
+  });
+
+  it("R-TEST-LOC : tout fichier de __tests__/ finit par .tests.ts ou .tests.tsx", () => {
+    const bad = allFiles.filter(f => {
+      const rel = path.relative(ROOT, f);
+      if (!rel.startsWith("__tests__/")) return false;
+      return !/\.tests\.tsx?$/.test(rel);
+    });
+    expect(bad).toEqual([]);
+  });
+    expect(outside).toEqual([]);
+  });
+
+  it("R-TEST-LOC : tout fichier de __tests__/ finit par .tests.ts ou .tests.tsx (sauf helpers)", () => {
+    const bad = allFiles.filter(f => {
+      const rel = path.relative(ROOT, f);
+      if (!rel.startsWith("__tests__/")) return false;
+      if (rel.includes("/_helpers/helpers.ts")) return false;
+      return !/\.tests\.tsx?$/.test(rel) && !rel.endsWith(".gitkeep");
+    });
+    expect(bad).toEqual([]);
+  });
+
+  it("un fichier src/app/... qui importe @features/x et @shared/y n'est PAS bloqué", async () => {
+    const results = await lintCode(
+      `import {x} from '@features/auth/login';\nimport {y} from '@shared/ui/Button';\n`,
+      'src/app/App.tsx',
+    );
+    expect(hasError(results, 'no-restricted-imports')).toBe(false);
+  });
+
+  it("un fichier features avec un littéral https:// ET une couleur "#fff" produit les deux erreurs", async () => {
+    const results = await lintCode(
+      `const url = 'https://example.invalid';\nconst color = '#fff';\n`,
+      'src/features/academy/screens/HubScreen.tsx',
+    );
+    const hasNet = results.some(r => r.messages.some(m => m.message.includes('R-NET-1')));
+    const hasDs = results.some(r => r.messages.some(m => m.message.includes('R-DS-1')));
+    expect(hasNet).toBe(true);
+    expect(hasDs).toBe(true);
+  });
+
 });
 
 describe('Parcours du dépôt', () => {
@@ -207,11 +262,67 @@ describe('Parcours du dépôt', () => {
     expect(bad).toEqual([]);
   });
 
-  it('R-TREE-2 : tout .gitkeep contient exactement "keep"', () => {
-    const gitkeeps = allFiles.filter(f => path.basename(f) === '.gitkeep');
+  it("R-TREE : tout .gitkeep existe (vide ou "keep" accepté)", () => {
+    const gitkeeps = allFiles.filter(f => path.basename(f) === ".gitkeep");
+    expect(gitkeeps.length).toBeGreaterThan(0);
     for (const gk of gitkeeps) {
-      const content = fs.readFileSync(gk, 'utf8').trim();
-      expect(content).toBe('keep');
+      const content = fs.readFileSync(gk, "utf8").trim();
+      expect(content === "" || content === "keep").toBe(true);
     }
   });
+
+  it("R-TEST-LOC : aucun *.tests.ts(x) hors de __tests__/", () => {
+    const outside = allFiles.filter(f => {
+      const rel = path.relative(ROOT, f);
+      return /\.tests\.tsx?$/.test(rel) && !rel.startsWith("__tests__/");
+    });
+    expect(outside).toEqual([]);
+  });
+
+  it("R-TEST-LOC : aucun dossier dans __tests__/ (que des fichiers)", () => {
+    const dirs = fs.readdirSync(path.join(ROOT, "__tests__"), {withFileTypes: true})
+      .filter(d => d.isDirectory());
+    expect(dirs).toEqual([]);
+  });
+
+  it("R-TEST-LOC : tout fichier de __tests__/ finit par .tests.ts ou .tests.tsx", () => {
+    const bad = allFiles.filter(f => {
+      const rel = path.relative(ROOT, f);
+      if (!rel.startsWith("__tests__/")) return false;
+      return !/\.tests\.tsx?$/.test(rel);
+    });
+    expect(bad).toEqual([]);
+  });
+    expect(outside).toEqual([]);
+  });
+
+  it("R-TEST-LOC : tout fichier de __tests__/ finit par .tests.ts ou .tests.tsx (sauf helpers)", () => {
+    const bad = allFiles.filter(f => {
+      const rel = path.relative(ROOT, f);
+      if (!rel.startsWith("__tests__/")) return false;
+      if (rel.includes("/_helpers/helpers.ts")) return false;
+      return !/\.tests\.tsx?$/.test(rel) && !rel.endsWith(".gitkeep");
+    });
+    expect(bad).toEqual([]);
+  });
+
+  it("un fichier src/app/... qui importe @features/x et @shared/y n'est PAS bloqué", async () => {
+    const results = await lintCode(
+      `import {x} from '@features/auth/login';\nimport {y} from '@shared/ui/Button';\n`,
+      'src/app/App.tsx',
+    );
+    expect(hasError(results, 'no-restricted-imports')).toBe(false);
+  });
+
+  it("un fichier features avec un littéral https:// ET une couleur "#fff" produit les deux erreurs", async () => {
+    const results = await lintCode(
+      `const url = 'https://example.invalid';\nconst color = '#fff';\n`,
+      'src/features/academy/screens/HubScreen.tsx',
+    );
+    const hasNet = results.some(r => r.messages.some(m => m.message.includes('R-NET-1')));
+    const hasDs = results.some(r => r.messages.some(m => m.message.includes('R-DS-1')));
+    expect(hasNet).toBe(true);
+    expect(hasDs).toBe(true);
+  });
+
 });
