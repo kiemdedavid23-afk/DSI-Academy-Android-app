@@ -1,30 +1,8 @@
 module.exports = {
   root: true,
   extends: '@react-native',
-  rules: {
-    // R-LAY-1 : core n'importe jamais app / shared / features
-    'no-restricted-imports': [
-      'error',
-      {
-        patterns: [
-          {
-            group: ['@app', '@app/*'],
-            message: 'R-LAY-1: src/core ne doit pas importer @app.',
-          },
-          {
-            group: ['@shared', '@shared/*'],
-            message: 'R-LAY-1 / R-LAY-3: imports interdits selon la couche.',
-          },
-          {
-            group: ['@features', '@features/*'],
-            message: 'R-LAY-1 / R-LAY-4: imports interdits selon la couche.',
-          },
-        ],
-      },
-    ],
-  },
   overrides: [
-    // R-LAY-1 : core
+    // --- Core ---
     {
       files: ['src/core/**/*.{ts,tsx,js,jsx}'],
       rules: {
@@ -41,7 +19,7 @@ module.exports = {
         ],
       },
     },
-    // R-LAY-3 : shared n'importe que @core
+    // --- Shared ---
     {
       files: ['src/shared/**/*.{ts,tsx,js,jsx}'],
       rules: {
@@ -58,9 +36,14 @@ module.exports = {
         ],
       },
     },
-    // R-LAY-4 : une feature n'importe pas une autre feature
+    // --- Features (hors screens/components) : R-LAY-4 + R-LAY-6 ---
     {
       files: ['src/features/**/*.{ts,tsx,js,jsx}'],
+      excludedFiles: [
+        'src/features/**/screens/**/*.{ts,tsx,js,jsx}',
+        'src/features/**/components/**/*.{ts,tsx,js,jsx}',
+        'src/features/**/store/**/*.{ts,tsx,js,jsx}',
+      ],
       rules: {
         'no-restricted-imports': [
           'error',
@@ -70,12 +53,16 @@ module.exports = {
                 group: ['@features/*'],
                 message: 'R-LAY-4: une feature n\'importe pas une autre feature. Le commun passe par @shared.',
               },
+              {
+                group: ['@core/api', '@core/api/*'],
+                message: 'R-LAY-6: seuls les stores importent @core/api.',
+              },
             ],
           },
         ],
       },
     },
-    // R-LAY-5 : screens et components n'importent pas core/api, core/network, core/config
+    // --- Features screens + components : R-LAY-4 + R-LAY-5 + R-LAY-6 ---
     {
       files: [
         'src/features/**/screens/**/*.{ts,tsx,js,jsx}',
@@ -87,87 +74,33 @@ module.exports = {
           {
             patterns: [
               {
-                group: [
-                  '@core/api',
-                  '@core/api/*',
-                  '@core/network',
-                  '@core/network/*',
-                  '@core/config',
-                  '@core/config/*',
-                ],
-                message:
-                  'R-LAY-5: screens et components n\'importent jamais @core/api, @core/network ni @core/config. Passer par un store.',
-              },
-              {
                 group: ['@features/*'],
                 message: 'R-LAY-4: une feature n\'importe pas une autre feature.',
               },
-            ],
-          },
-        ],
-      },
-    },
-    // R-LAY-6 : seuls les stores peuvent importer @core/api
-    {
-      files: ['src/features/**/*.{ts,tsx,js,jsx}', 'src/shared/**/*.{ts,tsx,js,jsx}'],
-      excludedFiles: [
-        '**/store/**/*.{ts,tsx,js,jsx}',
-        'src/shared/store/**/*.{ts,tsx,js,jsx}',
-      ],
-      rules: {
-        'no-restricted-imports': [
-          'error',
-          {
-            patterns: [
+              {
+                group: ['@core/api', '@core/api/*', '@core/network', '@core/network/*', '@core/config', '@core/config/*'],
+                message: 'R-LAY-5: screens et components n\'importent pas core/api, core/network ni core/config.',
+              },
               {
                 group: ['@core/api', '@core/api/*'],
-                message: 'R-LAY-6: seuls les dossiers store/ (feature et shared/store) importent @core/api.',
+                message: 'R-LAY-6: seuls les stores importent @core/api.',
               },
             ],
           },
         ],
       },
     },
-    // R-NET-1 : fetch et littéraux http(s) interdits hors core/network et core/config
+    // --- R-NET-1 + R-DS-1 ensemble dans features (hors tests) ---
     {
-      files: ['**/*.{ts,tsx,js,jsx}'],
-      excludedFiles: [
-        'src/core/network/**/*.{ts,tsx,js,jsx}',
-        'src/core/config/**/*.{ts,tsx,js,jsx}',
-        '**/*.tests.ts',
-        '**/*.tests.tsx',
-        'scripts/**/*',
-      ],
+      files: ['src/features/**/*.{ts,tsx,js,jsx}'],
+      excludedFiles: ['**/*.tests.ts', '**/*.tests.tsx', '__tests__/**'],
       rules: {
-        'no-restricted-globals': [
-          'error',
-          {
-            name: 'fetch',
-            message: 'R-NET-1: fetch est interdit hors de src/core/network.',
-          },
-        ],
         'no-restricted-syntax': [
           'error',
           {
             selector: 'Literal[value=/^https?:\\/\\//]',
-            message:
-              'R-NET-1: aucun littéral http(s):// hors de src/core/config (sauf tests *.tests.ts avec hôte .invalid).',
+            message: 'R-NET-1: aucune adresse http(s) en dur. Utiliser le registre.',
           },
-          {
-            selector: 'TemplateElement[value.raw=/https?:\\/\\//]',
-            message:
-              'R-NET-1: aucun littéral http(s):// hors de src/core/config (sauf tests *.tests.ts avec hôte .invalid).',
-          },
-        ],
-      },
-    },
-    // R-DS-1 (partiel) : pas de code couleur dans features
-    {
-      files: ['src/features/**/*.{ts,tsx,js,jsx}'],
-      excludedFiles: ['**/*.tests.ts', '**/*.tests.tsx'],
-      rules: {
-        'no-restricted-syntax': [
-          'error',
           {
             selector: 'Literal[value=/^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$/]',
             message: 'R-DS-1: aucun code couleur hexadécimal dans features. Utiliser le thème.',
@@ -175,6 +108,13 @@ module.exports = {
           {
             selector: 'Literal[value=/^rgba?\\(/]',
             message: 'R-DS-1: aucun rgb()/rgba() dans features. Utiliser le thème.',
+          },
+        ],
+        'no-restricted-globals': [
+          'error',
+          {
+            name: 'fetch',
+            message: 'R-NET: utiliser le client HTTP de core/network, jamais fetch directement.',
           },
         ],
       },
