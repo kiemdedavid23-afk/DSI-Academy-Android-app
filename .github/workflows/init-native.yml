@@ -25,18 +25,15 @@ jobs:
       - name: Install React Native CLI
         run: npm install -g @react-native-community/cli@20.2.0
 
-      - name: Delete other branches (keep main only for this job)
+      - name: Delete all remote branches except main
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -e
           git fetch --prune origin
-          # Branches distantes à conserver
-          KEEP="main"
           echo "Branches distantes actuelles :"
           git branch -r
           echo ""
-          # Supprime toutes les branches distantes sauf main
           for ref in $(git branch -r | sed 's|^[[:space:]]*origin/||' | grep -v '^HEAD' | grep -v '^main$'); do
             echo "Suppression de origin/$ref ..."
             git push origin --delete "$ref" || echo "(déjà absente ou non supprimable: $ref)"
@@ -137,14 +134,13 @@ jobs:
             rm -f "$f"
           done
 
-      - name: Create branch chore/native-scaffold and push
+      - name: Commit android/ on main and push
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-          # Partir de main propre
+          # Reste strictement sur main — aucune autre branche créée
           git checkout main
-          git checkout -B chore/native-scaffold
 
           git add android
           git status
@@ -153,12 +149,8 @@ jobs:
             echo "Rien à committer (android/ déjà à jour ?)"
           else
             git commit -m "chore: native Android scaffold (RN 0.88.1, app.dsiacademy, minSdk 24)"
+            git push origin main
           fi
 
-          # Pousse la branche scaffold (force pour écraser un éventuel état précédent)
-          git push -u origin chore/native-scaffold --force
-
           echo ""
-          echo "Branche chore/native-scaffold poussée."
-          echo "Ouvre une pull request vers main, puis fusionne."
-
+          echo "Scaffold android/ poussé sur main. Aucune autre branche créée."
