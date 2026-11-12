@@ -3,6 +3,10 @@ name: CI
 on:
   workflow_dispatch:
 
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   check:
     runs-on: ubuntu-latest
@@ -18,9 +22,17 @@ jobs:
           cache: 'npm'
 
       - name: Install dependencies
-        run: npm ci --no-audit --no-fund --prefer-offline
+        timeout-minutes: 10
+        run: |
+          if [ -f package-lock.json ]; then
+            npm ci --no-audit --no-fund --prefer-offline
+          else
+            echo "::warning::package-lock.json absent — lance d'abord le workflow lockfile, ou utilise npm install."
+            npm install --no-audit --no-fund
+          fi
 
       - name: Generate build config (secret or fixture)
+        if: ${{ !cancelled() }}
         env:
           DSI_REGISTRY_JSON: ${{ secrets.DSI_REGISTRY_JSON }}
         run: |
@@ -31,10 +43,13 @@ jobs:
           fi
 
       - name: Typecheck
+        if: ${{ !cancelled() }}
         run: npm run typecheck
 
       - name: Lint
+        if: ${{ !cancelled() }}
         run: npm run lint
 
       - name: Test
+        if: ${{ !cancelled() }}
         run: npm test -- --ci --coverage=false --maxWorkers=2
