@@ -18,7 +18,7 @@ jobs:
           cache: 'npm'
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci --no-audit --no-fund --prefer-offline
 
       - name: Generate build config (secret or fixture)
         env:
@@ -37,4 +37,4 @@ jobs:
         run: npm run lint
 
       - name: Test
-        run: npm test -- --ci --coverage=false
+        run: npm test -- --ci --coverage=false --maxWorkers=2
