@@ -81,7 +81,7 @@ function buildHeaders(
   if (auth === 'bearer') {
     const token = providers.getBearerToken();
     if (token) {
-      headers['Authorization'] = `Bearer ${token}`;
+      headers.Authorization = `Bearer ${token}`;
     }
   } else if (auth === 'accessProof') {
     const proof = providers.getAccessProof();
@@ -220,7 +220,7 @@ async function request(
     options.signal,
   );
 
-  let fetchBody: BodyInit | undefined;
+  let fetchBody: RequestInit['body'] | undefined;
   if (options.body !== undefined && method !== 'GET') {
     if (isFormData(options.body)) {
       fetchBody = options.body;
@@ -229,14 +229,27 @@ async function request(
     }
   }
 
+  const abortPromise = new Promise<never>((_, reject) => {
+    if (signal.aborted) {
+      reject(signal.reason ?? new Error('aborted'));
+      return;
+    }
+    signal.addEventListener('abort', () => {
+      reject(signal.reason ?? new Error('aborted'));
+    }, {once: true});
+  });
+
   let response: Response;
   try {
-    response = await fetch(url, {
-      method,
-      headers,
-      body: fetchBody,
-      signal,
-    });
+    response = await Promise.race([
+      fetch(url, {
+        method,
+        headers,
+        body: fetchBody,
+        signal,
+      }),
+      abortPromise,
+    ]);
   } catch (err) {
     cleanup();
     if (wasTimeout()) {
