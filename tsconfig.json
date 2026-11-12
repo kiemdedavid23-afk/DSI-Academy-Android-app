@@ -1,12 +1,22 @@
 {
+  "extends": "@react-native/typescript-config",
   "compilerOptions": {
-    "target": "ES2020",
-    "module": "ESNext",
-    "moduleResolution": "Bundler",
-    "jsx": "react-native",
     "strict": true,
-    "noEmit": true,
-    "skipLibCheck": true
+    "baseUrl": ".",
+    "paths": {
+      "@app/*": ["src/app/*"],
+      "@core/*": ["src/core/*"],
+      "@shared/*": ["src/shared/*"],
+      "@features/*": ["src/features/*"],
+      "@assets/*": ["src/assets/*"]
+    }
   },
-  "include": ["src/**/*.ts", "src/**/*.tsx", "__tests__/**/*.ts", "__tests__/**/*.tsx"]
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "__tests__/**/*.ts",
+    "__tests__/**/*.tsx",
+    "scripts/**/*.ts"
+  ],
+  "exclude": ["node_modules", "android", "**/Pods"]
 }
