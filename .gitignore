@@ -1,6 +1,12 @@
 node_modules/
 android/.gradle/
+android/build/
 android/app/build/
+android/local.properties
+android/app/src/main/assets/fonts/
+*.jks
+*.keystore
 .env
 .env.*
 !.env.example
+src/core/config/buildConfig.generated.ts
