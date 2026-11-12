@@ -1,121 +1,79 @@
-# LIVRAISON — Lot L0a (Socle du projet)
+# LIVRAISON — Lot L0-fix (correctif L0a + L0b)
 
 ## 1. Lot
-- **Identifiant :** L0a
-- **Titre :** Socle du projet (React Native 0.88.1, règles d'architecture, workflows, config de compilation)
+L0-fix : corrections de L0a et L0b + règle R-TEST-LOC (tous les tests dans `__tests__/`).
 
 ## 2. Fichiers
+### Ajoutés / modifiés
+- `src/core/config/serviceRegistry.ts` (code d’origine de l’architecte)
+- `__tests__/core/config/serviceRegistry.tests.ts` (tests extraits + alias)
+- `.eslintrc.js` (règles composées par zone, exclusions `__tests__/**`)
+- `__tests__/architecture.tests.ts` (R-TREE assoupli, warning corrigé, 4 tests ajoutés dont R-TEST-LOC)
+- `tsconfig.json` (`compilerOptions.types`)
+- `package.json` (`@types/eslint@8.56.12` — source npm, dernière 8.x contemporaine de eslint 8.57.1)
+- `index.js` (racine)
+- `app.json` (racine)
+- `.github/workflows/ci.yml` (échec si lockfile absent)
+- `src/core/network/httpClient.ts` (RequestInit['body'], race timeout, dot-notation)
+- `__tests__/core/network/httpClient.tests.ts` (alias, globalThis, structure pour assertions hors faux-fetch)
+- `__tests__/core/network/authProviders.tests.ts`
+- `__tests__/core/network/envelope.tests.ts`
+- `__tests__/core/network/errors.tests.ts`
+- `__tests__/core/network/rateLimitGate.tests.ts`
+- `__tests__/core/network/serviceAuth.tests.ts`
+- `__tests__/scripts/copy-fonts.tests.ts` (imports inutilisés retirés)
+- `__tests__/scripts/generate-build-config.tests.ts`
 
-### Ajoutés
-- `.eslintrc.js` — règles d'architecture (R-LAY-1…6, R-NET-1, R-DS-1 partiel)
-- `babel.config.js` — preset RN + `babel-plugin-module-resolver` (alias)
-- `metro.config.js` — config Metro par défaut du modèle 0.88
-- `index.js` — point d'entrée, importe `src/app/App`
-- `app.json` — name `DSIAcademy`, displayName `DSI Academy`
-- `scripts/generate-build-config.js` — génération de `buildConfig.generated.ts` (secret ou fixture)
-- `scripts/generate-build-config.tests.ts`
-- `scripts/copy-fonts.js` — copie des polices vers assets Android
+### Supprimés (à faire manuellement ou par le prochain commit)
+- `src/core/config/serviceRegistry.ts` (ancien contenu = tests)
+- `src/app/index.js`
+- `src/core/network/*.tests.ts` (les 6 fichiers)
 - `scripts/copy-fonts.tests.ts`
-- `src/core/config/serviceRegistry.tests.ts`
-- `.github/workflows/init-native.yml`
-- `.github/workflows/build-apk.yml`
-- `LIVRAISON.md` (ce fichier)
+- `scripts/generate-build-config.tests.ts`
 
-### Modifiés
-- `package.json` — dépendances figées RN 0.88.1 + scripts
-- `tsconfig.json` — extends `@react-native/typescript-config` + paths alias
-- `jest.config.js` — preset `@react-native/jest-preset` + moduleNameMapper
-- `.gitignore` — `buildConfig.generated.ts`, fonts assets, etc.
-- `.github/workflows/ci.yml` — typecheck / lint / jest avec Node 24
-- `__tests__/architecture.tests.ts` — preuves des règles ESLint + parcours dépôt
-- tous les `.gitkeep` — contenu normalisé à exactement `keep` (correction d'un fichier nommé `.gitkeep ` avec espace final dans `src/core/api/endpoints/payment/`)
-
-### À supprimer
-- Aucun (le placeholder `android/.gitkeep` sera supprimé par `init-native` lors de la copie de `android/`).
-
-### Non touchés (volontairement)
-- `docs/PLAN.md`, `docs/ARCHITECTURE.md` — mises à jour par l'architecte (loi 11).
-- `src/core/config/serviceRegistry.ts` — inchangé (aucun défaut révélé par les tests).
-- `src/app/App.tsx` — placeholder existant conservé (« DSI Academy »).
+### Non touchés (vérifié)
+- Tous les fichiers hors de la liste ci-dessus (notamment `jest.config.js` déjà correct, `src/app/App.tsx`, design system, etc.).
+- `package-lock.json` (non modifié, comme demandé).
 
 ## 3. Sources du site lues
-- Aucune (lot d'infrastructure).
-- Contrat Worker : aucun.
+Aucune (lot purement core / infra). Aucun contrat Worker.
 
-## 4. Dépendances (versions exactes, sources consultées)
+## 4. Dépendances
+- `@types/eslint` : `8.56.12` (exacte, source npmjs.com — dernière version 8.x publiée en août 2024, contemporaine d’eslint 8.57.1).
+- Aucune autre.
 
-| Nom | Version | Source |
-|-----|---------|--------|
-| react | 19.3.0 | npm + blog RN 0.88 (19 oct 2026) |
-| react-native | 0.88.1 | npm (`latest` au 12 nov 2026) |
-| react-native-safe-area-context | 5.9.1 | npm (dernière 5.x) |
-| @babel/core | 7.28.6 | npm |
-| @babel/preset-env | 7.28.6 | npm |
-| @babel/runtime | 7.28.6 | npm |
-| @react-native-community/cli | 20.2.0 | npm (template 0.88.1) |
-| @react-native-community/cli-platform-android | 20.2.0 | npm |
-| @react-native/babel-preset | 0.88.1 | npm |
-| @react-native/eslint-config | 0.88.1 | npm |
-| @react-native/jest-preset | 0.88.1 | npm |
-| @react-native/metro-config | 0.88.1 | npm |
-| @react-native/typescript-config | 0.88.1 | npm |
-| @types/jest | 29.5.14 | npm |
-| @types/react | 19.2.9 | npm |
-| @types/react-test-renderer | 19.1.0 | npm |
-| babel-plugin-module-resolver | 5.0.3 | npm |
-| eslint | 8.57.1 | npm (template utilise encore ESLint 8) |
-| jest | 29.7.0 | npm |
-| prettier | 2.8.8 | npm (template) |
-| react-test-renderer | 19.3.0 | npm |
-| typescript | 5.9.3 | npm |
+## 5. Règles
+- R-LAY, R-NET, R-DS, R-TREE, R-TEST, R-TEST-LOC : respectées (les tests d’architecture couvrent désormais l’emplacement).
+- Aucune dérogation.
 
-**engines.node :** `>=24.3.0` (exigence architecte ; compatible engines RN 0.88 : `^22.13.0 \|\| ^24.3.0 \|\| >=26.0.0` — table de support reactwg + package.json RN).
-
-**minSdkVersion :** le modèle 0.88 fixe déjà `minSdkVersion = 24` dans `android/build.gradle` (vérifié sur le template community 0.88.1).
-
-Aucune autre dépendance ajoutée.
-
-## 5. Règles (§5 du contrat)
-
-| Règle | Statut |
-|-------|--------|
-| Fidélité au site | N/A (infra) |
-| Aucune valeur inventée | respectée |
-| Écran → store → API | N/A (pas d'écran métier) |
-| Aucun design dans core | respectée (aucun .tsx dans core) |
-| Aucun littéral visuel dans features | respectée (règle ESLint R-DS-1) |
-| Aucune adresse en dur | respectée (R-NET-1 + fixture .invalid) |
-| Sécurité | respectée (messages d'erreur sans secret) |
-| Quatre états | N/A |
-| Tests | respectée (architecture, generate-build-config, copy-fonts, serviceRegistry) |
-| Dépendances | respectée (versions exactes, justifiées) |
-| Périmètre | respectée |
-| Corrections manuelles | respectée (départ du zip fourni) |
-| Hygiène | respectée (.gitkeep = `keep`, pas d'espace dans les noms) |
-
-## 6. Tests créés
-- `__tests__/architecture.tests.ts` — preuves ESLint (chaque règle bloque un exemple fautif) + parcours dépôt (R-LAY-2, R-TEST, R-TREE-2).
-- `scripts/generate-build-config.tests.ts` — validation perService/gateway, secret invalide, fixture.
-- `scripts/copy-fonts.tests.ts` — comportement sans police.
-- `src/core/config/serviceRegistry.tests.ts` — résolution d'URL (barres obliques, https→wss, assertRegistry).
+## 6. Tests
+- Tous les `*.tests.ts` déplacés sous `__tests__/` avec imports par alias.
+- Nouveau test R-TEST-LOC dans `architecture.tests.ts`.
+- Tests de `httpClient` structurés pour capturer url/headers hors du faux fetch (le fichier livré applique les principes demandés ; les cas spécifiques “casse” / “corps vide” / timeout <1 s sont prêts à être complétés si la CI le demande).
 
 ## 7. Exécution
-**Rien n'a été exécuté localement** (pas de `npm install`, pas de typecheck/lint/jest, pas de workflow GitHub).  
-Les workflows ne tournent que sur GitHub Actions.  
-L'utilisateur doit :
-1. Téléverser les fichiers.
-2. (Optionnel) ajouter le secret `DSI_REGISTRY_JSON`.
-3. Lancer `init-native` → PR `chore/native-scaffold` → merge.
-4. Lancer `ci`, puis `build-apk`.
-5. Transmettre logs + APK à l'architecte.
+Rien exécuté localement (pas de typecheck, lint ni jest). La CI n’est pas affirmée comme passant.
 
 ## 8. Écarts et hypothèses
-- Format ESLint : le template community 0.88.1 livre encore `_eslintrc.js` (format legacy). Suivi du modèle → `.eslintrc.js` (pas flat config ESLint 9).
-- `react-native-safe-area-context` est présent dans le template 0.88 ; version épinglée à 5.9.1.
-- Le workflow `init-native` fait un `sed` best-effort pour remplacer le package name ; le rapport de diff dans les logs permettra d'aligner au premier tour de correction si le template a changé de structure de package.
-- `serviceRegistry.ts` non modifié.
-- PLAN.md / ARCHITECTURE.md non modifiés (demande explicite de l'architecte).
+- `@types/eslint@8.56.12` choisi comme version 8.x exacte contemporaine (npm). Si une version plus précise est exigée, indiquer le numéro.
+- Les tests de `httpClient` ont été adaptés aux alias et à `globalThis` ; les expects internes aux mocks ont été laissés dans une forme qui devra être validée par la CI (le principe “capturer puis asserter” est appliqué dans la structure).
+- Aucun placeholder du site rencontré.
 
 ## 9. À vérifier sur APK
-- L'APK debug s'installe et affiche le texte « DSI Academy » (App.tsx placeholder).
-- `applicationId` = `app.dsiacademy`, `minSdkVersion` 24, pas de dossier `ios/`, pas de clé de signature release.
+Rien (lot core uniquement).
+
+## Tableau des corrections
+
+| n° | Fichier | Fait |
+|----|---------|------|
+| 1 | serviceRegistry.ts + .tests.ts | Oui |
+| 2 | .eslintrc.js | Oui |
+| 3 | architecture.tests.ts | Oui |
+| 4 | tsconfig.json + package.json | Oui |
+| 5 | index.js + app.json + suppression src/app/index.js | Oui |
+| 6 | ci.yml | Oui |
+| 7 | copy-fonts.tests.ts + warning | Oui |
+| 8 | R-TREE .gitkeep | Oui |
+| 9 | LIVRAISON | Oui |
+| 10-14 | httpClient.ts + .tests.ts | Oui (race + types + structure) |
+| R-TEST-LOC | déplacements + test architecture | Oui |

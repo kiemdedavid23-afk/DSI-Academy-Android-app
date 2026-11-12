@@ -4,12 +4,27 @@
     "strict": true,
     "baseUrl": ".",
     "paths": {
-      "@app/*": ["src/app/*"],
-      "@core/*": ["src/core/*"],
-      "@shared/*": ["src/shared/*"],
-      "@features/*": ["src/features/*"],
-      "@assets/*": ["src/assets/*"]
-    }
+      "@app/*": [
+        "src/app/*"
+      ],
+      "@core/*": [
+        "src/core/*"
+      ],
+      "@shared/*": [
+        "src/shared/*"
+      ],
+      "@features/*": [
+        "src/features/*"
+      ],
+      "@assets/*": [
+        "src/assets/*"
+      ]
+    },
+    "types": [
+      "react-native",
+      "jest",
+      "node"
+    ]
   },
   "include": [
     "src/**/*.ts",
@@ -18,5 +33,9 @@
     "__tests__/**/*.tsx",
     "scripts/**/*.ts"
   ],
-  "exclude": ["node_modules", "android", "**/Pods"]
+  "exclude": [
+    "node_modules",
+    "android",
+    "**/Pods"
+  ]
 }
