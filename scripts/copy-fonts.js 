@@ -1,0 +1,66 @@
+/**
+ * Copie src/assets/fonts/* vers android/app/src/main/assets/fonts/
+ * avant la compilation (R-PLAT-3).
+ *
+ * Fonctionne sans erreur quand le dossier source ne contient que .gitkeep
+ * (aucune police avant L0c).
+ */
+
+'use strict';
+
+const fs = require('fs');
+const path = require('path');
+
+const SRC_DIR = path.join(__dirname, '..', 'src', 'assets', 'fonts');
+const DEST_DIR = path.join(
+  __dirname,
+  '..',
+  'android',
+  'app',
+  'src',
+  'main',
+  'assets',
+  'fonts',
+);
+
+/**
+ * Copie les fichiers de police (ignore .gitkeep et dossiers).
+ * @returns {{ copied: number, skipped: number }}
+ */
+function copyFonts() {
+  if (!fs.existsSync(SRC_DIR)) {
+    return {copied: 0, skipped: 0};
+  }
+
+  fs.mkdirSync(DEST_DIR, {recursive: true});
+
+  const entries = fs.readdirSync(SRC_DIR, {withFileTypes: true});
+  let copied = 0;
+  let skipped = 0;
+
+  for (const entry of entries) {
+    if (!entry.isFile()) {
+      skipped += 1;
+      continue;
+    }
+    if (entry.name === '.gitkeep') {
+      skipped += 1;
+      continue;
+    }
+    const src = path.join(SRC_DIR, entry.name);
+    const dest = path.join(DEST_DIR, entry.name);
+    fs.copyFileSync(src, dest);
+    copied += 1;
+  }
+
+  return {copied, skipped};
+}
+
+if (require.main === module) {
+  const result = copyFonts();
+  console.log(
+    `[copy-fonts] OK (copied=${result.copied}, skipped=${result.skipped})`,
+  );
+}
+
+module.exports = {copyFonts, SRC_DIR, DEST_DIR};
