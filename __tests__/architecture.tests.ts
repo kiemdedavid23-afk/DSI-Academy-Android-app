@@ -150,6 +150,18 @@ describe('ESLint architecture rules', () => {
 });
 
 describe('Parcours du dépôt', () => {
+  const SCAN_ROOTS = ['src', 'scripts', '__tests__', 'docs'].map(d =>
+    path.join(ROOT, d),
+  );
+  const IGNORE_DIR_NAMES = new Set([
+    'node_modules',
+    '.git',
+    'android',
+    'build',
+    'coverage',
+    '.gradle',
+  ]);
+
   function walk(dir: string, files: string[] = []): string[] {
     if (!fs.existsSync(dir)) {
       return files;
@@ -157,7 +169,7 @@ describe('Parcours du dépôt', () => {
     for (const entry of fs.readdirSync(dir, {withFileTypes: true})) {
       const full = path.join(dir, entry.name);
       if (entry.isDirectory()) {
-        if (entry.name === 'node_modules' || entry.name === '.git') {
+        if (IGNORE_DIR_NAMES.has(entry.name)) {
           continue;
         }
         walk(full, files);
@@ -168,7 +180,7 @@ describe('Parcours du dépôt', () => {
     return files;
   }
 
-  const allFiles = walk(ROOT);
+  const allFiles = SCAN_ROOTS.flatMap(root => walk(root));
 
   it('R-LAY-2 : aucun fichier .tsx dans src/core', () => {
     const coreTsx = allFiles.filter(
