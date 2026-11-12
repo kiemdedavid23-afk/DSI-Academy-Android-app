@@ -1,4 +1,4 @@
-name: Update package-lock
+name: Lockfile
 
 on:
   workflow_dispatch:
@@ -6,40 +6,34 @@ on:
 permissions:
   contents: write
 
-concurrency:
-  group: update-lock
-  cancel-in-progress: true
-
 jobs:
-  lock:
+  lockfile:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v5
 
-      - name: Setup Node
-        uses: actions/setup-node@v5
+      - uses: actions/setup-node@v5
         with:
-          node-version: '20'
+          node-version: '24'
 
-      - name: Regenerate package-lock.json (sans installer, sans scripts)
-        run: npm install --package-lock-only --ignore-scripts --no-audit --no-fund
-
-      - name: Check lock contains the new dependency
+      - name: Générer package-lock.json depuis le registre officiel
         run: |
-          grep -q '"node_modules/react-native-blob-util"' package-lock.json \
-            || { echo "::error::react-native-blob-util absent du lock."; exit 1; }
-          grep -q '"version": "0.25.1"' package-lock.json \
-            || { echo "::error::version 0.25.1 absente du lock."; exit 1; }
+          rm -f package-lock.json
+          npm install --package-lock-only --ignore-scripts --no-audit --no-fund --loglevel http
 
-      - name: Commit package-lock.json
+      - name: Vérifier que tous les paquets viennent du registre officiel
         run: |
-          git config user.name "github-actions"
-          git config user.email "github-actions@users.noreply.github.com"
-          git add package-lock.json
-          if git diff --cached --quiet; then
-            echo "Lock déjà à jour."
-          else
-            git commit -m "chore: update package-lock for react-native-blob-util 0.25.1"
-            git push
+          if grep '"resolved"' package-lock.json | grep -v 'https://registry.npmjs.org/'; then
+            echo "Hôte inattendu dans le lockfile"
+            exit 1
           fi
+
+      - name: Pousser sur la branche chore/lockfile
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -B chore/lockfile
+          git add package-lock.json
+          git commit -m "chore: générer package-lock.json" || echo "Aucun changement"
+          git push --force origin chore/lockfile
