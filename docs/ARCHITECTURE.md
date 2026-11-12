@@ -195,3 +195,10 @@ Quand Android ou React Native impose une structure, l'architecture s'adapte. Exc
 - **R-PLAT-2** Les dossiers du package Android suivent l'identifiant, en minuscules : `android/app/src/main/java/app/dsiacademy/`.
 - **R-PLAT-3** Polices : la source de vérité est `src/assets/fonts`. Un script copie les polices vers `android/app/src/main/assets/fonts` au moment de la compilation. Cette copie est ignorée par Git et n'est jamais modifiée à la main.
 - **R-PLAT-4** Toute autre dérogation imposée par la plateforme est consignée dans la fiche du lot avec sa raison, validée par l'architecte, puis ajoutée à cette liste.
+
+R-TEST-LOC — Emplacement des tests
+- Tous les tests vivent dans __tests__/ à la racine, jamais à côté du code.
+- Le chemin reflète celui du code testé (src/core/network/x.ts -> __tests__/core/network/x.tests.ts ;
+  scripts/x.js -> __tests__/scripts/x.tests.ts).
+- Nom : *.tests.ts ou *.tests.tsx. Imports par alias (@core, @shared, @features, @app).
+- Un test d'architecture vérifie qu'aucun *.tests.ts(x) n'existe hors de __tests__/.
