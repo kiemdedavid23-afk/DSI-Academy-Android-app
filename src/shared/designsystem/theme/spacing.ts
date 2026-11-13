@@ -1,4 +1,4 @@
-// src/shared/designsystem/theme/spacing.ts
+/** Espacements (DESIGN-TOKENS §10). `xl` = marge latérale d'écran. */
 export const spacing = {
   xs: 4,
   sm: 8,
@@ -8,3 +8,5 @@ export const spacing = {
   xxl: 24,
   xxxl: 32,
 } as const;
+
+export type Spacing = typeof spacing;
