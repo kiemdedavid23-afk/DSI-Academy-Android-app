@@ -1,10 +1,18 @@
-// src/shared/designsystem/components/index.ts
-export { Text } from './Text';
-export { Button } from './Button';
-// Card, TextField, Skeleton, LoadingState, EmptyState, ErrorState à compléter de la même façon
-export const Card = () => null;
-export const TextField = () => null;
-export const Skeleton = () => null;
-export const LoadingState = () => null;
-export const EmptyState = () => null;
-export const ErrorState = () => null;
+export {Text} from './Text';
+export type {TextProps, TextColor} from './Text';
+export {Button} from './Button';
+export type {ButtonProps, ButtonVariant} from './Button';
+export {Card} from './Card';
+export type {CardProps, CardVariant} from './Card';
+export {TextField} from './TextField';
+export type {TextFieldProps} from './TextField';
+export {Skeleton} from './Skeleton';
+export type {SkeletonProps, SkeletonVariant, SkeletonTone} from './Skeleton';
+export {SkeletonPanel, SkeletonStat, SkeletonEntry} from './SkeletonBlocks';
+export {useSkeletonGate} from './useSkeletonGate';
+export {LoadingState} from './LoadingState';
+export type {LoadingStateProps} from './LoadingState';
+export {EmptyState} from './EmptyState';
+export type {EmptyStateProps} from './EmptyState';
+export {ErrorState} from './ErrorState';
+export type {ErrorStateProps} from './ErrorState';
