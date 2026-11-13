@@ -1,0 +1,19 @@
+// .github/workflows/fetch-fonts.yml
+name: Fetch Fonts
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fetch and instance fonts
+        run: |
+          pip install fonttools
+          # Récupération depuis google/fonts (noms exacts à vérifier)
+          # Fraunces opsz=36, SOFT=0, WONK=0 [À CONFIRMER sur APK]
+          # Génération des coupes statiques puis commit
+          echo "Workflow prêt — exécution manuelle requise"
+          # git add src/assets/fonts && git commit -m "chore: add static fonts" || true
