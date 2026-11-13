@@ -1,5 +1,5 @@
 import React from 'react';
-import Svg, {Circle, Path} from 'react-native-svg';
+import Svg, {Circle, Path, Rect} from 'react-native-svg';
 import {useTheme} from '../theme/ThemeProvider';
 import {
   ICON_STROKE_WIDTH,
@@ -38,13 +38,26 @@ export function Icon({name, size = 20, color}: IconProps) {
       strokeLinejoin="round"
       accessible={false}
       importantForAccessibility="no-hide-descendants">
-      {shapes.map((shape, index) =>
-        shape.type === 'path' ? (
-          <Path key={index} d={shape.d} />
-        ) : (
-          <Circle key={index} cx={shape.cx} cy={shape.cy} r={shape.r} />
-        ),
-      )}
+      {shapes.map((shape, index) => {
+        if (shape.type === 'path') {
+          return <Path key={index} d={shape.d} />;
+        }
+        if (shape.type === 'circle') {
+          return (
+            <Circle key={index} cx={shape.cx} cy={shape.cy} r={shape.r} />
+          );
+        }
+        return (
+          <Rect
+            key={index}
+            x={shape.x}
+            y={shape.y}
+            width={shape.width}
+            height={shape.height}
+            rx={shape.rx ?? 0}
+          />
+        );
+      })}
     </Svg>
   );
 }
