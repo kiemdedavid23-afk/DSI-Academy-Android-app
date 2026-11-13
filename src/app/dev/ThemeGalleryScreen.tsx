@@ -16,7 +16,6 @@ import {
   Icon,
   ICON_NAMES,
   LoadingState,
-  Skeleton,
   Text,
   TextField,
   themePreferences,
@@ -213,14 +212,7 @@ export function ThemeGalleryScreen() {
           <TextField label="Champ désactivé" value="Lecture seule" onChangeText={() => {}} disabled />
         </Section>
 
-        <Section title="Squelettes">
-          <Skeleton width="60%" />
-          <Skeleton width="90%" height={14} />
-          <View style={styles.row}>
-            <Skeleton variant="circle" width={44} />
-            <Skeleton variant="pill" width={90} />
-            <Skeleton variant="block" width={120} height={60} />
-          </View>
+        <Section title="Chargement">
           <LoadingState accessibilityLabel="Chargement" />
         </Section>
 
