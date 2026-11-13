@@ -63,9 +63,8 @@ export function assertRegistry(): void {
 export function resolveServiceUrl(service: ServiceId, path: string): string {
   const cleanPath = withLeadingSlash(path);
   if (config.mode === 'gateway') {
-    return `${trimEndSlash(config.baseUrl)}${withLeadingSlash(
-      config.prefixes[service],
-    )}${cleanPath}`;
+    const prefix = trimEndSlash(withLeadingSlash(config.prefixes[service]));
+    return `${trimEndSlash(config.baseUrl)}${prefix}${cleanPath}`;
   }
   return `${trimEndSlash(config.urls[service])}${cleanPath}`;
 }
