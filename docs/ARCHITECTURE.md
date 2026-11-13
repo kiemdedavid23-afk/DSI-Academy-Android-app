@@ -197,8 +197,7 @@ Quand Android ou React Native impose une structure, l'architecture s'adapte. Exc
 - **R-PLAT-4** Toute autre dérogation imposée par la plateforme est consignée dans la fiche du lot avec sa raison, validée par l'architecte, puis ajoutée à cette liste.
 
 R-TEST-LOC — Emplacement des tests
-- Tous les tests vivent dans __tests__/ à la racine, jamais à côté du code.
-- Le chemin reflète celui du code testé (src/core/network/x.ts -> __tests__/core/network/x.tests.ts ;
-  scripts/x.js -> __tests__/scripts/x.tests.ts).
-- Nom : *.tests.ts ou *.tests.tsx. Imports par alias (@core, @shared, @features, @app).
-- Un test d'architecture vérifie qu'aucun *.tests.ts(x) n'existe hors de __tests__/.
+- Tous les tests vivent dans __tests__/ à la racine, à plat (aucun sous-dossier), jamais à côté du code.
+- Nom : <zone>.<sujet>.tests.ts ou .tests.tsx (par exemple core.httpClient.tests.ts, designsystem.colors.tests.ts).
+- Imports par alias (@core, @shared, @features, @app).
+- Un test d'architecture vérifie qu'aucun *.tests.ts(x) n'existe hors de __tests__/ et qu'aucun sous-dossier n'y existe.
