@@ -1,4 +1,3 @@
-// .github/workflows/fetch-fonts.yml
 name: Fetch Fonts
 on:
   workflow_dispatch:
