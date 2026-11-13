@@ -20,7 +20,12 @@ module.exports = {
   Path: make('Path'),
   Circle: make('Circle'),
   Rect: make('Rect'),
+  G: make('G'),
+  Line: make('Line'),
+  Polygon: make('Polygon'),
+  Polyline: make('Polyline'),
   Defs: make('Defs'),
+  ClipPath: make('ClipPath'),
   LinearGradient: make('LinearGradient'),
   Stop: make('Stop'),
 };
