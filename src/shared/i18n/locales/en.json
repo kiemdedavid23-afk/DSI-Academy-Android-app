@@ -1,1 +1,2225 @@
-
+{
+  "common": {
+    "loading": "Loading…",
+    "error": "An error occurred",
+    "save": "Save",
+    "cancel": "Cancel",
+    "back": "Back",
+    "confirm": "Confirm",
+    "close": "Close",
+    "yes": "Yes",
+    "no": "No",
+    "search": "Search",
+    "noResults": "No results",
+    "retry": "Retry",
+    "comingSoon": "Coming soon",
+    "unavailable": "Unavailable",
+    "readOnly": "Read only"
+  },
+  "notFound": {
+    "eyebrow": "Error 404",
+    "title": "Page not found",
+    "message": "This page does not exist or is no longer available. Check the address, or return to the DSI Academy home page.",
+    "backHome": "Back to home"
+  },
+  "settings": {
+    "title": "Settings",
+    "subtitle": "Manage your account, preferences and notifications.",
+    "back": "Back",
+    "viewProfile": "View my profile",
+    "logout": "Sign out",
+    "sections": {
+      "account": {
+        "title": "Account",
+        "desc": "Identity, subscription and deletion"
+      },
+      "preferences": {
+        "title": "Preferences",
+        "desc": "Language, theme and animations"
+      },
+      "notifications": {
+        "title": "Notifications and privacy",
+        "desc": "Alerts and visibility in the Community"
+      },
+      "security": {
+        "title": "Security",
+        "desc": "Session and account access"
+      },
+      "help": {
+        "title": "Help and networks",
+        "desc": "Support, official networks and about"
+      }
+    },
+    "account": {
+      "title": "Account",
+      "identityTitle": "Identity",
+      "lastName": "Last name",
+      "firstName": "First name",
+      "email": "E-mail",
+      "whatsapp": "WhatsApp",
+      "country": "Country",
+      "matricule": "DSI ID",
+      "loadError": "Unable to load your information.",
+      "readOnlyNote": "This information is read-only. To change it, contact support.",
+      "contactSupport": "Contact support",
+      "viewProfile": "View my profile",
+      "subscriptionTitle": "Subscription",
+      "subStatus": "Status",
+      "subActive": "Active",
+      "subInactive": "Inactive",
+      "validUntil": "Valid until",
+      "manageSub": "Manage my subscription",
+      "dangerTitle": "Sensitive area",
+      "deleteTitle": "Account deletion",
+      "deleteDesc": "This action is irreversible. It requires an official request to support (an active subscription is required for this channel)."
+    },
+    "preferences": {
+      "title": "Preferences",
+      "languageLabel": "Interface language",
+      "languageDesc": "The language changes immediately.",
+      "langFr": "Français",
+      "langEn": "English",
+      "appearanceLabel": "Appearance",
+      "themeLight": "Light",
+      "themeDark": "Dark",
+      "themeSystem": "System",
+      "themeDesc": "“System” follows your device setting.",
+      "accessibilityTitle": "Accessibility",
+      "motionLabel": "Reduce animations",
+      "motionDesc": "Limits motion and transitions in the interface."
+    },
+    "notifications": {
+      "title": "Notifications and privacy",
+      "notifyTitle": "Community alerts",
+      "notifyMessages": "Messages",
+      "notifyMessagesDesc": "Get alerted about new messages.",
+      "notifyCalls": "Calls",
+      "notifyCallsDesc": "Get alerted about incoming calls.",
+      "notifySpaces": "Spaces",
+      "notifySpacesDesc": "Get alerted about activity in your spaces.",
+      "privacyTitle": "Privacy",
+      "showLastSeen": "Last seen visible",
+      "showLastSeenDesc": "Other members can see when you were last online.",
+      "allowDirectMessages": "Direct messages",
+      "allowDirectMessagesDesc": "Allow members to message you privately.",
+      "allowCalls": "Calls",
+      "allowCallsDesc": "Allow members to call you.",
+      "saved": "Setting saved.",
+      "saveError": "Unable to save this setting. Please try again.",
+      "errLoad": "Unable to load your settings.",
+      "errInactive": "An active subscription is required to manage these settings.",
+      "errProfile": "Create your community profile first to manage these settings.",
+      "errSession": "Your session has expired. Please sign in again.",
+      "goSubscription": "View my subscription",
+      "goCommunity": "Open the Community",
+      "futureNote": "E-mail notifications and Academy announcements will be managed here once the notifications service is available."
+    },
+    "security": {
+      "title": "Security",
+      "sessionTitle": "Session",
+      "currentSession": "Current session",
+      "currentSessionDesc": "Signed in on this device.",
+      "sessionActive": "Active",
+      "accountStatus": "Account status",
+      "logoutTitle": "Sign out",
+      "logoutBtn": "Sign out",
+      "logoutDesc": "Close your session on this device."
+    },
+    "help": {
+      "title": "Help and networks",
+      "supportTitle": "Support",
+      "supportRow": "Write to the DSI team",
+      "supportDesc": "Community support channel (active subscription required).",
+      "socialTitle": "Official networks",
+      "aboutTitle": "About",
+      "aboutName": "DSI Academy",
+      "aboutValue": "DSI management and training platform"
+    }
+  },
+  "drawer": {
+    "subtitle": "Your member access",
+    "close": "Close menu",
+    "hello": "Hello,",
+    "subscription": "My subscription",
+    "badgeActive": "Active",
+    "badgeExpired": "Expired",
+    "badgeNone": "Inactive",
+    "daysLeftOne": "1 day left",
+    "daysLeftMany": "{{days}} days left",
+    "expiresOn": "Expires on {{date}}",
+    "expired": "Subscription expired",
+    "expiredOn": "Since {{date}}",
+    "noSubscription": "No active subscription",
+    "loading": "Loading…",
+    "unavailable": "Subscription unavailable",
+    "renew": "Renew",
+    "subscribe": "Subscribe",
+    "view": "View",
+    "follow": "Follow us",
+    "comingSoon": "Coming soon",
+    "darkTheme": "Dark theme",
+    "logout": "Log out",
+    "logoutConfirm": "Do you really want to log out?"
+  },
+  "academy": {
+    "subtitle": "Choose your learning space",
+    "heroEyebrow": "Academy",
+    "heroTitle": "Your space for knowledge",
+    "continueEyebrow": "Pick up where you left off",
+    "continueCta": "Continue",
+    "housesTitle": "The four houses"
+  },
+  "houses": {
+    "academy": "Academy",
+    "short": {
+      "community": "Community",
+      "academy": "Academy",
+      "memberSpace": "Member",
+      "shop": "Shop",
+      "marketplace": "Marketplace"
+    },
+    "welcome": {
+      "community": "Welcome, you're among friends",
+      "academy": "Welcome, let's grow together",
+      "memberSpace": "Welcome home",
+      "library": "Welcome, take your time",
+      "videos": "Welcome, settle in",
+      "formations": "Welcome, at your own pace",
+      "audio": "Welcome, let it carry you",
+      "shop": "Welcome, treat yourself",
+      "marketplace": "Welcome, happy finds"
+    },
+    "menuButton": "Menu",
+    "memberSpace": "Member Space",
+    "library": "Library",
+    "formations": "Courses",
+    "videos": "Video Library",
+    "audio": "Audio Library",
+    "shop": "DSI Shop",
+    "marketplace": "Marketplace",
+    "community": "Community",
+    "eyebrow": "DSI House",
+    "chipCatalog": "Structured catalog",
+    "chipMembers": "Members only",
+    "chipSoon": "Content wiring soon",
+    "categoriesTitle": "Sections & categories",
+    "categoriesCount": "categories",
+    "badgeSoon": "Soon",
+    "openSoon": "Opening soon",
+    "noResults": "No category matches your search.",
+    "noteTitle": "Product note:",
+    "contentNote": "This house is UI-ready. Live content will be served by the Content Worker / catalogs once the API contract is available. accessProof will unlock protected resources.",
+    "searchPlaceholder": "Search this house…",
+    "filters": {
+      "all": "All",
+      "business": "Business",
+      "tech": "Tech",
+      "personal": "Personal growth",
+      "beginner": "Beginner",
+      "intermediate": "Intermediate",
+      "advanced": "Advanced",
+      "cours": "Courses",
+      "tutos": "Tutorials",
+      "replays": "Replays",
+      "podcasts": "Podcasts",
+      "livresAudio": "Audiobooks",
+      "sessions": "Sessions",
+      "digital": "Digital",
+      "packs": "Packs",
+      "services": "Services",
+      "offres": "Offers",
+      "demandes": "Requests",
+      "partenaires": "Partners",
+      "discussions": "Discussions",
+      "events": "Events",
+      "groups": "Groups"
+    }
+  },
+  "rooms": {
+    "home": "Dashboard",
+    "subscription": "My subscription",
+    "dsiHoldings": "My DSI",
+    "withdrawals": "My withdrawals",
+    "payments": "Payment history",
+    "referral": "Referral",
+    "notifications": "Notifications",
+    "profile": "My Profile",
+    "settings": "Settings"
+  },
+  "home": {
+    "loading": "Loading your academic space...",
+    "sessionExpired": "Your session has expired. Please log in again.",
+    "balanceTitle": "Available DSI balance",
+    "balanceSub": "Academic service unit",
+    "subscriptionTitle": "Subscription status",
+    "subscriptionNone": "None",
+    "subscriptionEnd": "Ends: {{date}}",
+    "subscriptionInactive": "No active subscription",
+    "totalEarnedTitle": "Total DSI earned",
+    "totalEarnedSub": "Since your registration",
+    "withdrawalsTitle": "Withdrawals",
+    "withdrawalsSub": "Total number of requests"
+  },
+  "dashboard": {
+    "badge": "OFFICIAL DSI ACADEMY",
+    "welcome": "Welcome back, {{name}}",
+    "welcomeDefault": "DSI Member",
+    "subtitle": "Access your courses, resources and services from your academic space.",
+    "matricule": "DSI ID",
+    "referralCode": "REFERRAL CODE",
+    "servicesTitle": "Services & Actions",
+    "requestWithdrawal": "💸 Request a withdrawal",
+    "referralLink": "🤝 Referral link",
+    "manageDsi": "🪙 Manage my DSI",
+    "recentActivity": "Recent activity",
+    "noActivity": "No recent activity",
+    "withdrawalStatus": {
+      "pending": "Pending",
+      "approved": "Approved",
+      "rejected": "Rejected",
+      "paid": "Paid"
+    }
+  },
+  "connexion": {
+    "title": "Log in",
+    "subtitle": "Access your DSI Academy member space",
+    "identifier": "DSI Identifier",
+    "identifierPlaceholder": "Your identifier",
+    "password": "Password",
+    "passwordPlaceholder": "Your password",
+    "rememberMe": "Remember me",
+    "submit": "Log in",
+    "submitting": "Logging in…",
+    "noAccount": "Don't have an account yet?",
+    "register": "Sign up",
+    "forgotPassword": "Forgot password?",
+    "errorGeneric": "Incorrect identifier or password.",
+    "eyebrow": "Member space",
+    "heading": "Welcome back",
+    "idLabel": "Email or WhatsApp number",
+    "idPlaceholder": "you@example.com",
+    "idError": "Enter your email or WhatsApp number.",
+    "passwordLabel": "Password",
+    "passwordError": "Enter your password.",
+    "showPassword": "Show password",
+    "createAccount": "Create an account"
+  },
+  "rejoindre": {
+    "title": "Join DSI Academy",
+    "subtitle": "Create your account and access the academic ecosystem",
+    "cta": "Start my registration",
+    "alreadyMember": "Already a member?",
+    "login": "Log in",
+    "eyebrow": "Join DSI Academy",
+    "heading": "Join DSI Academy and develop your skills at your own pace",
+    "back": "Back",
+    "secureNote": "Simple registration, personal access and a platform designed for you.",
+    "sectionResources": "One place for all your resources",
+    "sectionAccess": "What you get with your access",
+    "sectionWhy": "A platform designed for you",
+    "sectionHow": "How does registration work?",
+    "sectionFaq": "FAQ",
+    "sectionAssistant": "An AI assistant guides you",
+    "sectionCta": "Ready to start learning?"
+  },
+  "notifications": {
+    "title": "General Notifications",
+    "empty": "No notifications at the moment",
+    "emptyHint": "Important announcements and alerts will appear here.",
+    "subtitle": "View official announcements, maintenance and system information from DSI Academy.",
+    "loading": "Loading notifications...",
+    "errorTitle": "Loading error",
+    "emptyTitle": "No notifications",
+    "emptyMessage": "There are no active announcements or system notifications at the moment.",
+    "period": "Period: {{start}} to {{end}}",
+    "types": {
+      "maintenance": "Maintenance",
+      "info": "Information",
+      "urgent": "Alert",
+      "default": "General"
+    }
+  },
+  "profile": {
+    "title": "My Profile",
+    "loading": "Loading your profile information…",
+    "errorTitle": "Loading error",
+    "notProvided": "Not provided",
+    "notAssigned": "Not assigned",
+    "memberDefault": "DSI Member",
+    "memberLevel": "Member",
+    "none": "None",
+    "identifier": "Identifier:",
+    "personalTitle": "Personal information",
+    "lastName": "Last name",
+    "firstName": "First name",
+    "email": "Email",
+    "whatsapp": "WhatsApp",
+    "country": "Country",
+    "dsiTitle": "DSI information",
+    "dsiId": "DSI Identifier",
+    "level": "Current level",
+    "referralCode": "Personal referral code",
+    "accountTitle": "Account information",
+    "registrationDate": "Registration date",
+    "activationDate": "Activation date",
+    "accountStatus": "Account status",
+    "subtitle": "Your personal information and your member card.",
+    "copy": "Copy",
+    "copied": "Copied",
+    "copyError": "Automatic copy failed.",
+    "avatarAlt": "Profile photo of {{name}}",
+    "shortcutsTitle": "Shortcuts",
+    "goReferral": "My referral",
+    "goSubscription": "My subscription",
+    "goSettings": "Settings"
+  },
+  "dsi": {
+    "title": "My DSI",
+    "loading": "Loading your DSI…",
+    "balanceTitle": "DSI Balance",
+    "loadingBalance": "Loading balance…",
+    "errorBalance": "Unable to retrieve your balance at the moment.",
+    "loadingWithdrawals": "Loading withdrawals…",
+    "errorWithdrawals": "Unable to retrieve your withdrawals at the moment.",
+    "sessionExpired": "Your session has expired. Please log in again.",
+    "recentWithdrawals": "Recent withdrawals",
+    "emptyWithdrawals": "No withdrawals yet.",
+    "subtitle": "View your DSI balance and recent withdrawals in the DSI Academy ecosystem.",
+    "balanceLabel": "AVAILABLE DSI BALANCE",
+    "balanceDescription": "Your access and service units within the DSI Academy.",
+    "useButton": "Use my DSI",
+    "useTitle": "Where would you like to use your DSI?",
+    "use": {
+      "subscription": "Subscription",
+      "subscriptionDesc": "Renew or extend your access.",
+      "shop": "Shop",
+      "shopDesc": "Browse the Academy shop.",
+      "marketplace": "Marketplace",
+      "marketplaceDesc": "Browse offers from sellers."
+    },
+    "giftBannerTitle": "I received a gift",
+    "giftBannerText": "Enter your reward code to claim it.",
+    "giftOpen": "Enter my code",
+    "statEarned": "Total DSI earned",
+    "statEarnedNote": "Total rewards received",
+    "statUpdated": "Last updated",
+    "statUpdatedNote": "Synchronized with your DSI account",
+    "recentSubtitle": "Your latest DSI withdrawal requests.",
+    "withdrawalLabel": "DSI withdrawal",
+    "viewAllWithdrawals": "View all my withdrawals",
+    "historyTitle": "Detailed movement history",
+    "historySubtitle": "Full log of DSI transactions and allocations.",
+    "historySoon": "This feature will be available soon.",
+    "gift": {
+      "eyebrow": "REWARD CODE",
+      "title": "You received a gift",
+      "intro": "Enter the code you were given to claim your reward.",
+      "label": "Your code",
+      "placeholder": "Enter your code",
+      "submit": "Validate my code",
+      "submitting": "Checking…",
+      "close": "Close",
+      "note": "The code is verified by the Academy.",
+      "successTitle": "Gift claimed",
+      "successAmount": "{{amount}} DSI have been added to your balance.",
+      "successDefault": "Your reward has been recorded.",
+      "done": "Done",
+      "errors": {
+        "empty": "Enter your code to continue.",
+        "invalid": "This code is invalid or has expired.",
+        "session": "Your session has expired. Please log in again.",
+        "unavailable": "Unable to verify this code at the moment.",
+        "alreadyUsed": "You have already used this code."
+      }
+    }
+  },
+  "subscription": {
+    "title": "My subscription",
+    "loading": "Loading your subscription...",
+    "sessionExpired": "Your session has expired. Please log in again.",
+    "empty": "No active subscription at the moment.",
+    "renewSuccess": "Subscription renewed with your DSI.",
+    "renewRefused": "Renewal refused.",
+    "subtitle": "Check the status of your academic access and your renewal deadlines.",
+    "currentAccess": "CURRENT ACCESS",
+    "startDate": "Start date",
+    "endDate": "End date",
+    "paymentMode": "Payment method",
+    "modeFounder": "Founder account",
+    "renewButton": "Renew my access",
+    "chooseMode": "Choose a payment method",
+    "payFcfa": "Pay in FCFA",
+    "payDsi": "Pay with my DSI",
+    "confirmWarning": "This action will immediately debit <strong>{{amount}} DSI</strong> from your balance and extend your subscription. This action cannot be undone once confirmed.",
+    "confirmDebit": "Confirm the debit of {{amount}} DSI",
+    "processing": "Processing...",
+    "continuePayment": "Continue payment →",
+    "actionNote": "Academic access guaranteed by DSI Academy",
+    "historyTitle": "Renewal history",
+    "historyEmpty": "No renewal history available at the moment.",
+    "renewalLabel": "Renewal",
+    "modeLabel": "Method:",
+    "newDueDate": "New due date:",
+    "unexpectedResponse": "Unexpected response from the payment service.",
+    "direct": {
+      "loadError": "We cannot load the payment methods right now.",
+      "noCountry": "Your country is not set on your profile. Contact support to pay in FCFA.",
+      "unavailable": "Mobile Money payment is not available for your country at the moment.",
+      "networkTitle": "Choose your network",
+      "phoneTitle": "Your Mobile Money number ({{network}})",
+      "sending": "Sending the payment request…",
+      "pending": "A payment request has been sent to your phone. Approve it, then wait a few seconds: this page updates by itself.",
+      "refused": "Your payment was not confirmed. You can try again.",
+      "expired": "Tracking for this payment has expired. Reload the page to check your subscription.",
+      "error": "We cannot check your payment right now. Please try again in a moment.",
+      "checkAgain": "Check again",
+      "retryPayment": "Try the payment again"
+    },
+    "renewSuccessFcfa": "Payment confirmed: your subscription is renewed."
+  },
+  "layout": {
+    "logout": "Log out",
+    "memberSpace": "Member Space"
+  },
+  "payments": {
+    "title": "Payment History",
+    "subtitle": "View all transactions and payments made on your DSI Academy account.",
+    "sessionExpired": "Your session has expired. Please log in again to view your payments.",
+    "loading": "Loading payment history...",
+    "empty": "No payments recorded yet.",
+    "errorLoad": "Unable to retrieve payment history.",
+    "colDate": "Date",
+    "colRef": "Reference",
+    "colType": "Type",
+    "colPlatform": "Platform",
+    "colAmount": "Amount",
+    "colStatus": "Status",
+    "statusPaid": "Paid",
+    "statusPending": "Pending",
+    "statusUnknown": "Unknown",
+    "prev": "Previous",
+    "next": "Next",
+    "pageInfo": "Page {{page}} of {{totalPages}} ({{total}} payment)",
+    "pageInfoPlural": "Page {{page}} of {{totalPages}} ({{total}} payments)",
+    "heroLabel": "HISTORY",
+    "heroCaption": "payment recorded on your account",
+    "heroCaptionPlural": "payments recorded on your account",
+    "statPaid": "Paid (this page)",
+    "statPending": "Pending (this page)",
+    "statPage": "Page",
+    "pageOf": "{{page}} / {{totalPages}}",
+    "listTitle": "Transactions",
+    "paginationLabel": "Payments pagination"
+  },
+  "referral": {
+    "title": "Referral Program",
+    "subtitle": "Invite your contacts and earn DSI for each qualified referral.",
+    "linkLabel": "Your exclusive referral link",
+    "copy": "Copy",
+    "copied": "Copied!",
+    "code": "Code:",
+    "rulesTitle": "DSI reward rules",
+    "level1": "Level 1",
+    "level1Desc": "Direct referral for each qualified invitee.",
+    "level2": "Level 2",
+    "level2Desc": "Indirect referral (invitee of your invitee).",
+    "reminder": "Important reminder:",
+    "reminderText": "DSI rewards are granted only when the invitee activates their account and completes their subscription.",
+    "statTotal": "Total Referral DSI",
+    "statDirect": "Direct referrals",
+    "statActive": "Active direct referrals",
+    "statReward1": "Level 1 rewards",
+    "statReward2": "Level 2 rewards",
+    "historyTitle": "Referral earnings history",
+    "colType": "Type",
+    "colFilleul": "Invitee",
+    "colDate": "Date",
+    "colGain": "DSI earned",
+    "empty": "No referral earnings yet.",
+    "loading": "Loading referral data...",
+    "sessionExpired": "Your session has expired. Please log in again.",
+    "heroLabel": "REFERRAL EARNINGS",
+    "heroEmpty": "Share your link to start earning DSI.",
+    "copyLink": "Copy link",
+    "share": "Share",
+    "shareText": "Join DSI Academy with my referral link:",
+    "copyError": "Automatic copy failed. Please select the link manually.",
+    "linkUnavailable": "Link unavailable",
+    "progressTitle": "Your referrals",
+    "progressCaption": "{{percent}}% of your direct referrals are active.",
+    "progressEmpty": "No direct referrals yet.",
+    "noticeText": "DSI rewards are granted only after the payment is strictly confirmed and the account concerned is actually activated.",
+    "typeLevel1": "Level 1 referral",
+    "typeLevel2": "Level 2 referral",
+    "emptyHistory": "No referral registered yet. Share your link to start earning DSI.",
+    "historyMore": "Older operations exist: only the most recent ones are shown here.",
+    "errorLoad": "Unable to retrieve your referral data."
+  },
+  "accueil": {
+    "eyebrow": "DSI Academy digital platform",
+    "heading": "Welcome to DSI Academy",
+    "cta": "Get started",
+    "cards": {
+      "library": {
+        "title": "📚 Digital library",
+        "desc": "Educational books and documents."
+      },
+      "formations": {
+        "title": "🎓 Courses",
+        "desc": "Learning across different fields."
+      },
+      "audio": {
+        "title": "🎧 Audio",
+        "desc": "Content accessible wherever you are."
+      },
+      "videos": {
+        "title": "🎬 Video library",
+        "desc": "Tutorials and practical content."
+      },
+      "ai": {
+        "title": "🤖 AI tools",
+        "desc": "Discover artificial intelligence tools."
+      }
+    },
+    "why": {
+      "1": {
+        "title": "Library available 24/7",
+        "desc": "All your resources available at any time."
+      },
+      "2": {
+        "title": "Content organised by category",
+        "desc": "Quickly find what you need."
+      },
+      "3": {
+        "title": "Evolving platform",
+        "desc": "New content added regularly."
+      },
+      "4": {
+        "title": "Multi-device",
+        "desc": "Phone, tablet or computer."
+      },
+      "5": {
+        "title": "AI assistant",
+        "desc": "Guidance to support you."
+      }
+    },
+    "steps": {
+      "1": {
+        "title": "Create your account",
+        "desc": "Simple registration with your basic information."
+      },
+      "2": {
+        "title": "Choose your access",
+        "desc": "Select the plan that suits you."
+      },
+      "3": {
+        "title": "Receive your access",
+        "desc": "Your platform access is activated."
+      },
+      "4": {
+        "title": "Learn at your pace",
+        "desc": "Explore all available resources."
+      }
+    },
+    "faq": {
+      "1": {
+        "q": "What is DSI?",
+        "a": "DSI Academy (Digital Service International Academy) is a digital platform bringing together courses, library, audio, video and AI tools, accessible from your phone."
+      }
+    }
+  },
+  "withdrawals": {
+    "title": "My withdrawals",
+    "subtitle": "Track your DSI withdrawal requests and monitor the status of your operations.",
+    "loading": "Loading your withdrawals...",
+    "sessionExpired": "Your session has expired. Please log in again.",
+    "balanceLabel": "Available balance",
+    "institutional": "Institutional",
+    "totalEarned": "Total earned:",
+    "overview": "Withdrawals overview",
+    "totalRequested": "Total requested",
+    "pending": "Pending",
+    "lastWithdrawal": "Last withdrawal",
+    "lastStatus": "Last status",
+    "none": "None",
+    "newRequest": "New DSI withdrawal request",
+    "countryLabel": "Receiving country",
+    "searchCountry": "Search for a country...",
+    "noCountry": "No country found",
+    "paymentMethod": "Payment method",
+    "loadingMethods": "Loading available methods...",
+    "noMethods": "No payment method available for this country.",
+    "amountLabel": "Desired DSI amount",
+    "amountPlaceholder": "E.g.: 50",
+    "submit": "Submit request",
+    "submitting": "Submitting…",
+    "historyTitle": "Withdrawal history",
+    "emptyHistory": "No withdrawal requests yet.",
+    "colDate": "Date",
+    "colAmount": "Amount",
+    "colStatus": "Status",
+    "colActions": "Actions",
+    "details": "Details",
+    "requestBtn": "Request a withdrawal",
+    "errorLoad": "Unable to load your withdrawals at the moment.",
+    "withdrawButton": "Withdraw my DSI",
+    "closeForm": "Close the form",
+    "convLabel": "Amount in FCFA",
+    "successDefault": "Withdrawal request recorded.",
+    "errors": {
+      "incomplete": "Please fill in the payment method, the amount and the payment number.",
+      "unexpected": "Unexpected response from the payment service."
+    },
+    "field": {
+      "card": {
+        "label": "Bank card number",
+        "placeholder": "E.g.: 4000 1234 5678 9010"
+      },
+      "bank": {
+        "label": "IBAN / Bank account number",
+        "placeholder": "E.g.: BF12 3456 7890 1234 5678"
+      },
+      "mobile": {
+        "label": "Mobile Money number",
+        "placeholder": "E.g.: +226 70 00 00 00"
+      },
+      "other": {
+        "label": "Payment number / identifier",
+        "placeholder": "Your payment identifier"
+      },
+      "default": {
+        "label": "Payment number / identifier",
+        "placeholder": "Select a payment method first"
+      }
+    },
+    "colId": "Withdrawal ID",
+    "colRequested": "DSI requested",
+    "colContribution": "Stability contribution",
+    "colNet": "Net DSI",
+    "colFcfa": "FCFA amount",
+    "colCountry": "Country",
+    "colMethod": "Method",
+    "status": {
+      "demande": "Request received",
+      "validee": "Approved",
+      "envoyee": "Sent",
+      "payee": "Paid",
+      "rejetee": "Rejected"
+    },
+    "detailTitle": "Withdrawal #{{id}} details",
+    "rejectedMessage": "This withdrawal request was rejected.",
+    "step": {
+      "demande": "Request created",
+      "validee": "Approval",
+      "envoyee": "Sent",
+      "payee": "Payment"
+    },
+    "rulesTitle": "Rules applied",
+    "journalTitle": "Event log",
+    "journalEmpty": "No events recorded yet."
+  },
+  "inscription": {
+    "back": "Back",
+    "haveAccount": "I already have an account",
+    "signIn": "Sign in",
+    "stepOf": "Step {{current}} of {{total}}",
+    "continue": "Continue",
+    "skip": "Skip this step",
+    "optional": "optional",
+    "showPasswords": "Show passwords",
+    "hidePasswords": "Hide passwords",
+    "steps": {
+      "identity": {
+        "title": "Let's get acquainted",
+        "subtitle": "What should we call you?"
+      },
+      "contact": {
+        "title": "How can we reach you?",
+        "subtitle": "Your country and your WhatsApp number."
+      },
+      "extras": {
+        "title": "A little more",
+        "subtitle": "These two details are optional."
+      },
+      "password": {
+        "title": "Secure your account",
+        "subtitle": "Choose a password that only you know."
+      }
+    },
+    "fields": {
+      "nom": {
+        "label": "Last name",
+        "placeholder": "E.g. Smith"
+      },
+      "prenom": {
+        "label": "First name",
+        "placeholder": "E.g. Jane"
+      },
+      "pays": {
+        "label": "Country",
+        "placeholder": "Select your country"
+      },
+      "whatsapp": {
+        "label": "WhatsApp number",
+        "placeholder": "+226 78 62 75 30",
+        "hint": "With your country code."
+      },
+      "email": {
+        "label": "Email address",
+        "placeholder": "you@example.com",
+        "hint": "To receive your confirmations."
+      },
+      "parrain": {
+        "label": "Referral code",
+        "placeholder": "E.g. PARRAIN-12345",
+        "hint": "If someone invited you, enter their code."
+      },
+      "mdp": {
+        "label": "Password",
+        "placeholder": "Your password",
+        "hint": "At least 8 characters."
+      },
+      "mdp2": {
+        "label": "Confirm password",
+        "placeholder": "Re-enter the password"
+      },
+      "numeroPaiement": {
+        "label": "Mobile Money number",
+        "placeholder": "+226 70 00 00 00",
+        "hint": "The number that will receive the payment request."
+      },
+      "otp": {
+        "label": "Validation code",
+        "placeholder": "E.g. 123456",
+        "hint": "Digits only."
+      },
+      "emailPaiement": {
+        "label": "Email address",
+        "placeholder": "you@example.com",
+        "hint": "Needed to complete the payment."
+      }
+    },
+    "errors": {
+      "name": "Enter at least 2 characters.",
+      "country": "Select your country.",
+      "whatsapp": "Enter a valid number, including the country code.",
+      "email": "This email address is not valid.",
+      "sponsor": "This referral code is not valid.",
+      "password": "Your password must be at least 8 characters long.",
+      "mismatch": "The two passwords do not match.",
+      "duplicateWhatsapp": "An account already exists with this number.",
+      "duplicateEmail": "An account already exists with this address.",
+      "tooMany": "Too many attempts. Please try again in a moment.",
+      "network": "Your account could not be created. Check your connection and try again.",
+      "generic": "Your account could not be created. Please try again in a moment.",
+      "payPhone": "Enter a valid Mobile Money number, including the country code.",
+      "otp": "Enter the validation code (digits only).",
+      "emailRequired": "A valid email address is needed for the payment.",
+      "networkUnavailable": "This network is temporarily unavailable. Choose another one or try again later.",
+      "payGeneric": "The payment could not be started. Check the details you entered and try again.",
+      "payNetwork": "The payment could not be started. Check your connection and try again.",
+      "whatsappInternational": "For this country, enter your number with the country code, for example +22670123456."
+    },
+    "creating": {
+      "eyebrow": "One moment",
+      "title": "Creating your account",
+      "subtitle": "We are preparing your space."
+    },
+    "failure": {
+      "eyebrow": "Registration",
+      "title": "The account could not be created",
+      "retry": "Try again"
+    },
+    "payment": {
+      "eyebrow": "Last step",
+      "title": "Activate your access",
+      "subtitle": "Your account is ready, only activation is missing.",
+      "amount": "{{amount}} FCFA",
+      "offer": "First access: first month free, then {{monthly}} FCFA per month.",
+      "idLabel": "Your DSI identifier",
+      "pay": "Proceed to payment",
+      "done": "I have completed my payment",
+      "afterHint": "Once the payment is made, come back here to confirm it.",
+      "unavailable": "Payment is not available right now. Please try again in a moment."
+    },
+    "status": {
+      "eyebrow": "Payment tracking",
+      "titles": {
+        "checking": "Checking in progress",
+        "pending": "Payment pending",
+        "refused": "Payment not confirmed",
+        "notStarted": "Payment to start",
+        "expired": "Tracking expired",
+        "error": "Check unavailable",
+        "success": "Welcome to DSI Academy"
+      },
+      "pending": "We are waiting for your payment to be confirmed. This page updates by itself.",
+      "refused": "Your payment was not confirmed. You can try again.",
+      "notStarted": "Your payment has not been started yet.",
+      "expired": "Tracking for this payment has expired. Sign in to resume your registration.",
+      "error": "We cannot check your payment right now. Please try again in a moment.",
+      "retryPayment": "Try the payment again",
+      "checkAgain": "Check again",
+      "backToPayment": "Back to payment",
+      "successLead": "Your DSI access is activated. Here is your DSI identifier, keep it safe.",
+      "successHint": "To sign in, use your email or your WhatsApp number with the password you just created.",
+      "pendingDirect": "A payment request has been sent to your phone. Approve it, then wait a few seconds: this page updates by itself.",
+      "openValidation": "Open the validation page"
+    },
+    "direct": {
+      "country": {
+        "title": "Which country are you paying from?",
+        "subtitle": "We will show the payment methods available."
+      },
+      "network": {
+        "title": "Choose your network",
+        "subtitle": "The payment is made from your Mobile Money account.",
+        "amountHint": "First access, to be paid from your phone.",
+        "fees": "Extra fees: about {{percent}}%",
+        "error": "We cannot show the payment methods right now.",
+        "empty": "No payment method is available for your country at the moment.",
+        "retry": "Try again"
+      },
+      "phone": {
+        "title": "Your Mobile Money number",
+        "subtitle": "Selected network: {{network}}",
+        "otpIntro": "This network asks for a validation code. Generate it from your phone using the instruction below, then enter it.",
+        "confirmIntro": "You will receive a payment request on your phone. Approve it with your secret code."
+      },
+      "email": {
+        "title": "An email address",
+        "subtitle": "It is needed to complete your payment."
+      },
+      "launch": "Pay {{amount}} FCFA",
+      "launchShort": "Start the payment",
+      "launching": {
+        "title": "Sending the request",
+        "subtitle": "Please stay on this page."
+      }
+    }
+  },
+  "library": {
+    "subtitle": "Books, documents and written resources to learn at your pace.",
+    "searchPlaceholder": "Search a book or guide…",
+    "note": "The library will list DSI-approved titles. Until the catalog is live, explore the section structure.",
+    "cat": {
+      "ebooks": {
+        "title": "E-books",
+        "desc": "Digital books by academic theme."
+      },
+      "docs": {
+        "title": "Pro documents",
+        "desc": "Sheets, models and reference dossiers."
+      },
+      "guides": {
+        "title": "Practical guides",
+        "desc": "Step-by-step paths to apply fast."
+      },
+      "research": {
+        "title": "Research notes",
+        "desc": "Syntheses and deeper reading notes."
+      },
+      "templates": {
+        "title": "Templates",
+        "desc": "Reusable templates for your projects."
+      },
+      "archives": {
+        "title": "DSI archives",
+        "desc": "Institutional document collection."
+      }
+    }
+  },
+  "formations": {
+    "subtitle": "Structured paths, modules and certifications to build skills.",
+    "searchPlaceholder": "Search a course…",
+    "note": "Courses will be served by the Content Worker. UI is ready for lists, levels and progress.",
+    "cat": {
+      "parcours": {
+        "title": "Guided paths",
+        "desc": "Full journeys from first module to mastery."
+      },
+      "modules": {
+        "title": "Single modules",
+        "desc": "Short blocks to assemble for your goal."
+      },
+      "certifs": {
+        "title": "Certifications",
+        "desc": "Official validation of your DSI skills."
+      },
+      "ateliers": {
+        "title": "Workshops",
+        "desc": "Hands-on exercises and practice."
+      },
+      "coaching": {
+        "title": "Coaching",
+        "desc": "Personal support (coming soon)."
+      },
+      "examens": {
+        "title": "Assessments",
+        "desc": "Quizzes and end-of-path exams."
+      }
+    }
+  },
+  "videos": {
+    "subtitle": "Filmed lessons, tutorials and replays to learn visually.",
+    "searchPlaceholder": "Search a video…",
+    "note": "The video library will connect to DSI media storage. Category structure is already in place.",
+    "cat": {
+      "series": {
+        "title": "Course series",
+        "desc": "Ordered episodes for continuous learning."
+      },
+      "tutos": {
+        "title": "Tutorials",
+        "desc": "Short, focused demonstrations."
+      },
+      "live": {
+        "title": "Live replays",
+        "desc": "Recorded live sessions."
+      },
+      "masterclass": {
+        "title": "Masterclass",
+        "desc": "Expert DSI sessions."
+      },
+      "shorts": {
+        "title": "Short formats",
+        "desc": "Quick capsules for revision."
+      },
+      "docs": {
+        "title": "Documentaries",
+        "desc": "Narrative educational films."
+      }
+    }
+  },
+  "audio": {
+    "subtitle": "Podcasts, audiobooks and sessions to learn on the go.",
+    "searchPlaceholder": "Search audio…",
+    "note": "Audio will use the same protected access contract (accessProof) as other content houses.",
+    "cat": {
+      "podcasts": {
+        "title": "DSI podcasts",
+        "desc": "Regular shows on your topics."
+      },
+      "audiobooks": {
+        "title": "Audiobooks",
+        "desc": "Books to listen while mobile."
+      },
+      "meditations": {
+        "title": "Focus sessions",
+        "desc": "Concentration and learning rituals."
+      },
+      "interviews": {
+        "title": "Interviews",
+        "desc": "Conversations with practitioners."
+      },
+      "cours": {
+        "title": "Audio courses",
+        "desc": "Structured sound modules."
+      },
+      "playlists": {
+        "title": "Playlists",
+        "desc": "Themed selections ready to play."
+      }
+    }
+  },
+  "shop": {
+    "brand": "DSI Shop",
+    "brandTag": "Premium acquisition",
+    "backHouses": "Back to houses",
+    "menu": "Shop menu",
+    "close": "Close",
+    "drawerTitle": "Shop space",
+    "nav": {
+      "home": "Home",
+      "explore": "Explore",
+      "categories": "Categories",
+      "cart": "Cart",
+      "space": "My space"
+    },
+    "drawer": {
+      "purchases": "My purchases",
+      "library": "My content",
+      "favorites": "Favorites",
+      "history": "History",
+      "forYou": "For you",
+      "codes": "Codes & perks",
+      "balance": "DSI balance",
+      "help": "Shop help"
+    },
+    "heroTitle": "DSI storefront",
+    "heroBody": "Resources to acquire for your journey — distinct from included access in Library, Courses, Video and Audio houses.",
+    "popularCats": "Universes",
+    "featured": "Featured",
+    "newArrivals": "New",
+    "bestSellers": "Best sellers",
+    "seeAll": "See all",
+    "exploreTitle": "Browse catalog",
+    "searchPlaceholder": "Search a product…",
+    "allCategories": "All categories",
+    "categoriesTitle": "Categories",
+    "categoriesHint": "Shop = acquisition. Content houses = included member access.",
+    "products": "products",
+    "noResults": "No products found.",
+    "notFound": "Product not found.",
+    "back": "Back",
+    "addToCart": "Add to cart",
+    "favorite": "Favorite",
+    "acquisitionNote": "One-time purchase in DSI tokens (local demo — Shop Worker later).",
+    "cartTitle": "Cart",
+    "cartEmpty": "Your cart is empty.",
+    "total": "Total",
+    "checkout": "Checkout (demo)",
+    "checkoutDemo": "Order saved locally (demo). The Shop Worker will handle real DSI debit.",
+    "spaceTitle": "My shop space",
+    "spaceBody": "Purchases, acquired content and recommendations.",
+    "favEmpty": "No shop favorites.",
+    "purchasesEmpty": "No purchases yet.",
+    "libraryHint": "Digital content obtained via the Shop (not included access from other houses).",
+    "libraryEmpty": "No acquired content.",
+    "forYouBody": "Because entrepreneurship and premium courses often come up in the DSI ecosystem — basic suggestions, ready for a smarter engine.",
+    "codesBody": "Enter a promo code. Real validation will go through the Shop Worker.",
+    "codePlaceholder": "Promo code",
+    "applyCode": "Apply",
+    "balanceBody": "View only. Balance management stays in the member DSI room.",
+    "openDsiRoom": "Open my DSI balance",
+    "helpBody": "Need help with a purchase or acquired content? Contact DSI support. Payment disputes stay with the Payment Worker.",
+    "free": "Free",
+    "sort": {
+      "popular": "Popularity",
+      "new": "New",
+      "priceAsc": "Price: low to high",
+      "priceDesc": "Price: high to low"
+    },
+    "badges": {
+      "best": "Best-seller",
+      "promo": "Sale",
+      "new": "New",
+      "exclusive": "Exclusive",
+      "partner": "Partner"
+    },
+    "cats": {
+      "ebooks": "E-books",
+      "formations": "Courses",
+      "video": "Video resources",
+      "audio": "Audio resources",
+      "tools": "Digital tools",
+      "docs": "Documents",
+      "partners": "Partners",
+      "exclusive": "DSI exclusives"
+    },
+    "workerNote": "Catalog, cart and purchases connected to the Shop Worker.",
+    "loading": "Loading…",
+    "addedToCart": "Added to cart.",
+    "checkoutSuccess": "Purchase confirmed — find it under \"My purchases\".",
+    "checkoutPending": "Payment is being verified. Check \"My purchases\" shortly.",
+    "promoValid": "Valid code",
+    "promoIndicativeNote": "Indicative preview only — the real discount is applied and verified at checkout.",
+    "openAsset": "Open",
+    "assetUnavailable": "File not available at the moment."
+  },
+  "marketplace": {
+    "subtitle": "Offers, missions and partnerships in the DSI ecosystem.",
+    "searchPlaceholder": "Search an offer…",
+    "note": "Marketplace is being prepared. Secure trades will respect member subscription status.",
+    "cat": {
+      "services": {
+        "title": "Listed services",
+        "desc": "Services published by the community."
+      },
+      "missions": {
+        "title": "Missions",
+        "desc": "Requests and calls for help."
+      },
+      "partenariats": {
+        "title": "Partnerships",
+        "desc": "Institutional collaborations."
+      },
+      "talents": {
+        "title": "Talents",
+        "desc": "Visible profiles and skills."
+      },
+      "opportunites": {
+        "title": "Opportunities",
+        "desc": "Priority listings for members."
+      },
+      "securise": {
+        "title": "Safe framework",
+        "desc": "Rules and guarantees for DSI trades."
+      }
+    }
+  },
+  "community": {
+    "subtitle": "Discussions, circles and events among DSI Academy members.",
+    "searchPlaceholder": "Search the community…",
+    "note": "Community will open forums and events when related services ship.",
+    "cat": {
+      "forums": {
+        "title": "Forums",
+        "desc": "Moderated topic discussions."
+      },
+      "cercles": {
+        "title": "Circles",
+        "desc": "Small groups by interest."
+      },
+      "events": {
+        "title": "Events",
+        "desc": "Lives, meetups and group sessions."
+      },
+      "mentorat": {
+        "title": "Mentoring",
+        "desc": "Mentor / mentee matching."
+      },
+      "annonces": {
+        "title": "Announcements",
+        "desc": "Official DSI updates."
+      },
+      "reseau": {
+        "title": "Network",
+        "desc": "Directory and member connections."
+      }
+    }
+  },
+  "forgotPassword": {
+    "title": "Forgot password",
+    "lead": "Enter your DSI identifier. We will tell you how to recover access to your account.",
+    "idLabel": "DSI identifier",
+    "idPlaceholder": "e.g. your member ID",
+    "submit": "Request reset",
+    "backLogin": "Back to login",
+    "errorEmpty": "Please enter your identifier.",
+    "success": "If an account matches this identifier, reset instructions will be shared by DSI support. (Worker wiring coming soon.)"
+  },
+  "paymentReturn": {
+    "title": "Payment return",
+    "lead": "We are checking your registration payment status with DSI services.",
+    "checking": "Checking…",
+    "success": "Payment confirmed. You can sign in to your member space.",
+    "pending": "Payment still being confirmed. Refresh shortly or sign in later.",
+    "error": "Payment could not be confirmed. You may resume registration or contact support.",
+    "goLogin": "Sign in",
+    "refresh": "Refresh status",
+    "retry": "Back to registration"
+  },
+  "premium": {
+    "memberCardChip": "Member card",
+    "subscriptionActive": "Active subscription",
+    "subscriptionInactive": "No active subscription",
+    "printCard": "Print / save card",
+    "continueTitle": "Continue",
+    "continueEmpty": "Browse a house (Library, Courses…) then star a category to resume here.",
+    "continueCta": "Resume",
+    "favoritesTitle": "Favorites",
+    "favoritesEmpty": "No favorites yet. In a house, tap ★ to save one.",
+    "removeFavorite": "Remove from favorites",
+    "toggleFavorite": "Toggle favorite",
+    "reduceMotion": "Reduce motion",
+    "preferencesHint": "These preferences are saved on this device. They work without Workers and will carry over to the mobile app.",
+    "notifLangTitle": "Language updated",
+    "notifLangBody": "Interface switched to {{lang}}.",
+    "notifWelcomeTitle": "Welcome to your space",
+    "notifWelcomeBody": "Theme, language and member card are ready — independent of Workers.",
+    "notifHousesTitle": "DSI Houses",
+    "notifHousesBody": "Library, Courses, Videos and other houses are available from navigation.",
+    "notificationsLocalHint": "Local inbox (notifications Worker unavailable or empty).",
+    "markAllRead": "Mark all as read"
+  },
+  "content": {
+    "taglines": {
+      "library": "Discover and read",
+      "formations": "Learn and progress",
+      "videos": "Discover and watch",
+      "audio": "Discover and listen"
+    },
+    "tabs": {
+      "discover": "Discover",
+      "search": "Search",
+      "categories": "Categories",
+      "myLibrary": "My library",
+      "myCourses": "My courses",
+      "myVideos": "My videos",
+      "myAudio": "My audio",
+      "selections": "Picks",
+      "new": "New",
+      "trending": "Trending",
+      "popular": "Popular"
+    },
+    "discoverTitle": "Featured",
+    "continueSection": "Continue",
+    "searchPlaceholder": "Search this house…",
+    "noResults": "No results.",
+    "notStarted": "Not started",
+    "modules": "modules",
+    "back": "Back",
+    "backToDetail": "Back to details",
+    "notFound": "Content not found.",
+    "loading": "Loading…",
+    "errorLoad": "Unable to load this content right now.",
+    "categoryEmpty": "Nothing in this category yet.",
+    "accessProofMissing": "Access unavailable. Please sign in again or check your subscription.",
+    "accessProofInvalid": "Your access proof is invalid. Please sign in again.",
+    "accessProofExpired": "Your access session has expired. Please sign in again.",
+    "accessDenied": "Your subscription doesn't allow you to view this content.",
+    "contentNotAvailable": "This content is no longer available.",
+    "notDownloadable": "This content isn't downloadable.",
+    "deliveryError": "Unable to retrieve this content right now.",
+    "openContent": "Open",
+    "newBadge": "New",
+    "selectionsTitle": "DSI selections",
+    "newTitle": "New arrivals",
+    "trendingTitle": "Trending",
+    "programTitle": "Syllabus",
+    "module": "Module",
+    "workerNote": "Local demo card. The Content Worker will feed real titles, accessProof and media without changing these screens.",
+    "playerNote": "Shell player — ready for real media (Content Worker / CDN).",
+    "my": {
+      "continue": "Continue",
+      "favorites": "Favorites",
+      "later": "Saved for later",
+      "history": "History",
+      "empty": "Nothing here yet."
+    },
+    "actions": {
+      "read": "Read",
+      "learn": "Learn",
+      "watch": "Watch",
+      "listen": "Listen",
+      "program": "View syllabus",
+      "favorite": "Favorite",
+      "select": "Select",
+      "download": "Download"
+    },
+    "player": {
+      "read": "Reading space",
+      "learn": "Learning space",
+      "watch": "Watch space",
+      "listen": "Listen space",
+      "play": "Play"
+    },
+    "nav": {
+      "discover": "Discover",
+      "explore": "Explore",
+      "mylist": "My list",
+      "new": "New",
+      "switcherLabel": "Academy houses",
+      "sectionsLabel": "House sections"
+    },
+    "discoverCta": "View details",
+    "browseByCategory": "Browse by category",
+    "searchClear": "Clear search",
+    "searchHint": "Search for a title, an author or a topic.",
+    "resultsOne": "{{count}} result",
+    "resultsMany": "{{count}} results",
+    "exploreCta": "Explore the catalog",
+    "rail": {
+      "viewAll": "View all",
+      "prev": "Previous",
+      "next": "Next"
+    },
+    "detail": {
+      "addFav": "Add to favorites",
+      "removeFav": "Remove from favorites",
+      "addSel": "Add to my list",
+      "removeSel": "Remove from my list",
+      "share": "Share",
+      "linkCopied": "Link copied",
+      "aboutTitle": "About",
+      "readMore": "Read more",
+      "readLess": "Show less",
+      "similarTitle": "In the same category"
+    },
+    "download": {
+      "label": "Download",
+      "started": "Download started.",
+      "failed": "Download is not possible right now.",
+      "notAllowed": "Downloading is not allowed for this content."
+    }
+  },
+  "cm": {
+    "brand": "DSI Community",
+    "brandTag": "Member network",
+    "more": "More",
+    "moreTitle": "More — Community",
+    "close": "Close",
+    "nav": {
+      "home": "Home",
+      "chats": "Chats",
+      "spaces": "Spaces",
+      "activity": "Activity",
+      "more": "More",
+      "contacts": "Contacts",
+      "calls": "Calls",
+      "discover": "Discover",
+      "settings": "Settings"
+    },
+    "homeTitle": "Your DSI network",
+    "homeBody": "Discussions, topic spaces and member activity — an institutional exchange hub, not a consumer messenger.",
+    "recentChats": "Recent chats",
+    "yourSpaces": "Your spaces",
+    "recentActivity": "Recent activity",
+    "seeAll": "See all",
+    "chatsTitle": "Discussions",
+    "searchChats": "Search discussions…",
+    "chatNotFound": "Chat not found",
+    "back": "Back",
+    "groupChat": "Group conversation",
+    "directChat": "Private conversation",
+    "typeMessage": "Write a message…",
+    "send": "Send",
+    "spacesTitle": "Spaces",
+    "spacesBody": "Join topic circles to exchange with other DSI members.",
+    "members": "members",
+    "openSpace": "Open",
+    "join": "Join",
+    "leave": "Leave",
+    "spaceNotFound": "Space not found",
+    "spaceDiscussions": "Space discussions",
+    "noSpaceChats": "No linked discussion yet.",
+    "activityTitle": "Activity",
+    "contactsTitle": "DSI contacts",
+    "mutual": "in common",
+    "callsTitle": "Calls",
+    "callsHint": "Local history. Real audio/video calls will use a media service later.",
+    "audio": "Audio",
+    "video": "Video",
+    "incoming": "Incoming",
+    "outgoing": "Outgoing",
+    "missed": "Missed",
+    "discoverTitle": "Discover",
+    "discoverBody": "New spaces, members and topics to grow your DSI network.",
+    "newSpaces": "Spaces to explore",
+    "suggestedMembers": "Suggested members",
+    "settingsTitle": "Community settings",
+    "settings": {
+      "privacy": "Privacy",
+      "prefs": "Preferences",
+      "blocked": "Blocked members",
+      "notifications": "Community notifications"
+    },
+    "workerNote": "Local UI. The Community Worker will plug messages, spaces and presence without changing this structure.",
+    "loading": "Loading…",
+    "onboarding": {
+      "title": "Create your community profile",
+      "body": "A display name is enough to get started — the pseudonym can be generated automatically.",
+      "namePlaceholder": "Display name",
+      "pseudonymPlaceholder": "Pseudonym (optional)",
+      "submit": "Create my profile",
+      "submitting": "Creating…"
+    },
+    "contactsSection": {
+      "requestPlaceholder": "DSI userId or @pseudonym",
+      "requestButton": "Send a request",
+      "incoming": "Incoming requests",
+      "outgoing": "Outgoing requests",
+      "accept": "Accept",
+      "reject": "Reject",
+      "cancelRequest": "Cancel",
+      "remove": "Remove",
+      "block": "Block",
+      "unblock": "Unblock",
+      "noContacts": "No contacts yet.",
+      "noRequests": "No pending requests."
+    },
+    "notificationsPage": {
+      "title": "Notifications",
+      "empty": "No notifications.",
+      "types": {
+        "messageCreated": "New message from {{name}}",
+        "messageCreatedGeneric": "New message",
+        "callIncoming": "Incoming call from {{name}}",
+        "callIncomingGeneric": "Incoming call",
+        "spaceJoined": "A member joined your space",
+        "supportMessage": "Reply from DSI Support",
+        "internal": "Notification"
+      }
+    },
+    "supportPage": {
+      "title": "DSI Support",
+      "body": "A single official conversation with DSI Support."
+    },
+    "callsSection": {
+      "ringing": "Ringing…",
+      "connected": "In call",
+      "ended": "Ended",
+      "declined": "Declined",
+      "cancelled": "Cancelled",
+      "waiting": "Waiting for the other person…",
+      "decline": "Decline",
+      "cancelCall": "Cancel",
+      "endCall": "Hang up",
+      "joinCall": "Pick up",
+      "quotaTitle": "Call quota",
+      "dayRemaining": "Remaining today",
+      "monthRemaining": "Remaining this month",
+      "incomingBanner": "Incoming call",
+      "callBtn": "Call",
+      "callNotFound": "This call was not found.",
+      "incoming": "received",
+      "outgoing": "made"
+    },
+    "memberPage": {
+      "notFound": "Not found in the community.",
+      "startChat": "Message",
+      "addContact": "Add contact",
+      "requestSent": "Request sent.",
+      "requestPending": "Request sent",
+      "self": "This is your own profile.",
+      "blockedByMe": "You have blocked this person.",
+      "blockedByThem": "This person has limited interactions with you."
+    },
+    "settingsFields": {
+      "displayName": "Display name",
+      "pseudonym": "Pseudonym",
+      "discoverable": "Visible in directory",
+      "save": "Save",
+      "saved": "Saved.",
+      "showLastSeen": "Show my last seen",
+      "allowDirectMessages": "Allow direct messages",
+      "allowCalls": "Allow calls",
+      "notifyMessages": "Message notifications",
+      "notifyCalls": "Call notifications",
+      "notifySpaces": "Space notifications"
+    }
+  },
+  "mp": {
+    "brand": "DSI Marketplace",
+    "brandTag": "Between members",
+    "more": "More",
+    "close": "Close",
+    "memberTitle": "My marketplace space",
+    "nav": {
+      "home": "Home",
+      "explore": "Explore",
+      "categories": "Categories",
+      "trending": "Trending",
+      "sellers": "Sellers",
+      "becomeSeller": "Become a seller"
+    },
+    "member": {
+      "favorites": "Favorites",
+      "purchases": "My purchases",
+      "history": "History",
+      "codes": "Promo codes",
+      "balance": "DSI balance",
+      "help": "Help"
+    },
+    "homeTitle": "Member marketplace",
+    "homeBody": "Buy and sell guides, courses and digital tools between members, paid in DSI.",
+    "categories": "Categories",
+    "featured": "Featured",
+    "trending": "Trending",
+    "sellers": "Sellers",
+    "seeAll": "See all",
+    "exploreTitle": "Explore",
+    "search": "Search…",
+    "allCats": "All",
+    "sort": {
+      "popular": "Popular",
+      "new": "New",
+      "priceAsc": "Price: low to high",
+      "priceDesc": "Price: high to low"
+    },
+    "categoriesTitle": "Categories",
+    "trendingTitle": "Trending",
+    "trendingBody": "Popular and rising products.",
+    "sellersTitle": "Member stores",
+    "sellerNotFound": "Seller not found",
+    "sellerProducts": "Products",
+    "notFound": "Product not found",
+    "back": "Back",
+    "by": "By",
+    "buy": "Buy",
+    "favorite": "Favorite",
+    "purchaseDemo": "Purchase confirmed.",
+    "products": "products",
+    "noResults": "No results",
+    "emptyFav": "No favorites",
+    "emptyPurchases": "No purchases",
+    "codesBody": "Your promo codes will appear here.",
+    "balanceBody": "View only. Management stays in the member DSI room.",
+    "openDsi": "Open DSI balance",
+    "helpBody": "A question about a purchase or a payment? Find the most common answers here.",
+    "cats": {
+      "ebooks": "Books",
+      "formations": "Courses",
+      "video": "Videos",
+      "audio": "Audio",
+      "tools": "Tools",
+      "docs": "Documents",
+      "ai": "AI tools",
+      "creative": "Creative",
+      "templates": "Templates",
+      "courses": "Courses",
+      "assets": "Assets",
+      "services": "Services",
+      "other": "Other"
+    },
+    "become": {
+      "title": "Become a seller",
+      "intro": "Offer resources to DSI members after your application is approved.",
+      "c1": "Products compliant with the DSI charter",
+      "c2": "Verifiable seller identity",
+      "c3": "Our team reviews every application before accepting it",
+      "name": "Storefront name",
+      "pitch": "Short pitch",
+      "submit": "Submit application",
+      "authority": "Our team reviews your application and lets you know its decision.",
+      "pendingBody": "Your application is under review.",
+      "appliedAt": "Applied on",
+      "rejectedBody": "Application rejected. You may reapply if allowed.",
+      "reapply": "New application",
+      "suspendedBody": "Seller account suspended. Seller space access blocked.",
+      "approvedBody": "You are an approved seller. Open your seller space."
+    },
+    "sellerSpace": {
+      "entry": "My seller space",
+      "locked": "Seller space locked",
+      "lockedBody": "This space is for approved sellers. Submit your application or follow its progress.",
+      "dashboard": "Dashboard",
+      "products": "My products",
+      "addProduct": "Add product",
+      "orders": "Orders",
+      "earnings": "Earnings",
+      "analytics": "Analytics",
+      "settings": "Seller settings",
+      "statSales": "Sales",
+      "statProducts": "Products",
+      "statOrders": "Orders",
+      "statRevenue": "Revenue",
+      "demoDash": "Your numbers appear here as soon as you make your first sales.",
+      "noProducts": "No products yet.",
+      "productTitle": "Title",
+      "productPrice": "Price (DSI)",
+      "saveProduct": "Save product",
+      "noOrders": "No orders yet.",
+      "available": "Available balance",
+      "commission": "Commission",
+      "earningsNote": "The platform commission is deducted from each sale.",
+      "analyticsBody": "Detailed analytics later (views, conversion…)."
+    },
+    "workerNote": "Applications and sales are checked by our team.",
+    "shell": {
+      "eyebrow": "DSI Marketplace",
+      "sectionsLabel": "Marketplace sections",
+      "subLabel": "Section pages",
+      "searchLabel": "Search a product",
+      "back": "Back"
+    },
+    "sections": {
+      "discover": {
+        "name": "Discover",
+        "tagline": "Resources members are sharing right now."
+      },
+      "explore": {
+        "name": "Explore",
+        "tagline": "Search by keyword, category or store."
+      },
+      "purchases": {
+        "name": "My purchases",
+        "tagline": "Your purchases, favorites and history."
+      },
+      "seller": {
+        "name": "Seller",
+        "tagline": "Offer your resources to DSI members."
+      }
+    },
+    "tabs": {
+      "search": "Search"
+    },
+    "home": {
+      "searchPlaceholder": "Search a product…",
+      "featuredEyebrow": "Featured",
+      "featuredCta": "View product",
+      "newTitle": "New arrivals",
+      "catalogTitle": "Whole catalog",
+      "emptyTitle": "The catalog is empty for now",
+      "emptyHint": "Come back soon: members are publishing new resources."
+    },
+    "card": {
+      "currency": "DSI",
+      "fallbackTitle": "Product",
+      "rank": "Number {{rank}} in trending",
+      "rating": "Rating: {{value}} out of 5",
+      "free": "Free"
+    },
+    "explore": {
+      "searchPlaceholder": "Search the catalog…",
+      "clear": "Clear search",
+      "sortLabel": "Sort by",
+      "results_one": "{{count}} result",
+      "results_other": "{{count}} results",
+      "emptyHint": "Try another keyword or another category.",
+      "clearFilters": "Clear filters"
+    },
+    "categoriesPage": {
+      "count_one": "{{count}} product",
+      "count_other": "{{count}} products",
+      "emptyTitle": "No category yet",
+      "emptyHint": "Categories will appear as soon as products are published."
+    },
+    "trendingPage": {
+      "emptyTitle": "No trends yet",
+      "emptyHint": "The best-selling products will appear here."
+    },
+    "sellersPage": {
+      "emptyTitle": "No store yet",
+      "emptyHint": "Approved stores will appear here.",
+      "cta": "Open my store",
+      "count_one": "{{count}} product",
+      "count_other": "{{count}} products"
+    },
+    "sellerPage": {
+      "eyebrow": "Store",
+      "emptyTitle": "This store has no product yet",
+      "emptyHint": "Come back soon to discover what’s new.",
+      "notFoundHint": "This store doesn’t exist or is no longer available."
+    },
+    "states": {
+      "errorTitle": "We couldn’t load this page",
+      "errorHint": "Check your connection, then try again.",
+      "errorNetwork": "No connection. Check your network, then try again.",
+      "errorBusy": "It’s busy right now. Try again in a moment.",
+      "errorSession": "Your session has expired. Sign in again to continue.",
+      "authTitle": "Sign in to continue",
+      "signIn": "Sign in"
+    },
+    "status": {
+      "paid": "Paid",
+      "processing": "Payment in progress",
+      "pending_payment": "Awaiting payment",
+      "failed": "Failed",
+      "unknown": "Being checked"
+    },
+    "pd": {
+      "fallbackTitle": "Product",
+      "sellerFallback": "Store",
+      "back": "Back",
+      "by": "By {{store}}",
+      "notFound": "This product is no longer available",
+      "notFoundHint": "Its seller may have removed it.",
+      "buy": "Buy",
+      "getFree": "Get it for free",
+      "price": "Price",
+      "favoriteOn": "Remove from favorites",
+      "favoriteOff": "Add to favorites",
+      "favoriteNote": {
+        "login": "Sign in to add favorites.",
+        "error": "We couldn’t update your favorites right now."
+      },
+      "instant": "Access as soon as payment is confirmed",
+      "secure": "Secure payment in DSI",
+      "sold_one": "{{count}} sale",
+      "sold_other": "{{count}} sales",
+      "reviewCount_one": "{{count}} review",
+      "reviewCount_other": "{{count}} reviews",
+      "ratingAria": "Average rating: {{value}} out of 5",
+      "description": "Description",
+      "showMore": "Read more",
+      "showLess": "Show less",
+      "storeTitle": "Store",
+      "storeVisit": "Visit the store",
+      "reviewsTitle": "Member reviews",
+      "reviewsEmpty": "No review for this product yet.",
+      "reviewNoComment": "Rating without a comment.",
+      "moreFromStore": "From the same seller"
+    },
+    "checkout": {
+      "progress": "Step {{current}} of {{total}}",
+      "back": "Back",
+      "close": "Close",
+      "secure": "Secure payment",
+      "summaryTitle": "Summary",
+      "total": "Total",
+      "deliveryNote": "You get access to the product as soon as payment is confirmed.",
+      "continue": "Continue",
+      "methodTitle": "Payment method",
+      "methodIntro": "Pay with your DSI balance.",
+      "methodFree": "This product is free: nothing to pay.",
+      "dsiName": "DSI balance",
+      "balanceLoading": "Reading your balance…",
+      "balanceNow": "Current balance: {{amount}} DSI",
+      "balanceMissing": "You are {{amount}} DSI short",
+      "balanceAfter": "Balance after purchase: {{amount}} DSI",
+      "balanceError": "We can’t read your balance right now.",
+      "balanceRetry": "Try again",
+      "sessionExpired": "Your session has expired. Sign in again to continue.",
+      "mobileMoney": "Mobile Money",
+      "transfer": "Bank transfer",
+      "soon": "Soon",
+      "recharge": "Top up my balance",
+      "paying": "Payment in progress…",
+      "pay": "Pay {{amount}} DSI",
+      "getFree": "Get it for free",
+      "result": {
+        "paidTitle": "Purchase confirmed",
+        "paidText": "Your product is ready. You can access it now.",
+        "paidNoLink": "Your purchase is confirmed. Find your access in My purchases.",
+        "processingTitle": "Payment being processed",
+        "processingText": "This usually takes a few seconds. Tap “Check my payment” to refresh.",
+        "failedTitle": "Payment declined",
+        "failedText": "Your payment didn’t go through. You can try again.",
+        "errorTitle": "Purchase not possible",
+        "verifyingTitle": "Checking in progress",
+        "orderRef": "Purchase number: {{ref}}",
+        "access": "Access my purchase",
+        "myPurchases": "View my purchases",
+        "refreshing": "Checking…",
+        "refresh": "Check my payment",
+        "retry": "Try again",
+        "done": "Done",
+        "backToProduct": "Back to product",
+        "signIn": "Sign in"
+      },
+      "errors": {
+        "network": "No connection. Check your network, then try again.",
+        "invalidResponse": "Something went wrong on our side. Try again in a moment.",
+        "unknown": "Something went wrong on our side. Try again in a moment.",
+        "busy": "Something went wrong on our side. Try again in a moment.",
+        "session": "Your session has expired. Sign in again to continue.",
+        "subscription": "Your subscription is inactive. Renew it to buy.",
+        "notFound": "This product is no longer available.",
+        "private": "This product isn’t accessible.",
+        "ownProduct": "You can’t buy your own product.",
+        "sellerUnavailable": "This store isn’t available right now.",
+        "forbidden": "This product can’t be purchased.",
+        "insufficient": "Your DSI balance isn’t enough for this purchase.",
+        "rejected": "The payment was declined.",
+        "verifying": "We’re checking your payment. See My purchases in a moment.",
+        "refresh": "The payment isn’t confirmed yet. Try again in a few seconds."
+      }
+    },
+    "orders": {
+      "emptyTitle": "You haven’t bought anything yet",
+      "emptyHint": "Discover resources published by members.",
+      "emptyCta": "Browse the catalog",
+      "fallbackTitle": "Purchased product",
+      "access": "Access my purchase",
+      "accessLoading": "Opening…",
+      "open": "Open my purchase",
+      "check": "Check my payment",
+      "checking": "Checking…",
+      "noteProcessing": "Your payment is being processed: the amount is already reserved on your balance.",
+      "notePending": "We’re checking that your payment was received.",
+      "noteRetired": "This product is no longer in the catalog, but your purchase stays available.",
+      "accessErrors": {
+        "network": "No connection. Check your network, then try again.",
+        "unpaid": "This purchase isn’t paid yet.",
+        "unavailable": "The seller hasn’t added the access link yet. Try again later.",
+        "session": "Your session has expired. Sign in again to continue.",
+        "unknown": "We can’t open this purchase right now. Try again in a moment."
+      }
+    },
+    "favs": {
+      "emptyTitle": "No favorites yet",
+      "emptyHint": "Tap the bookmark on a product to find it here.",
+      "emptyCta": "Browse the catalog",
+      "remove": "Remove from favorites",
+      "removeError": "We couldn’t remove this favorite right now."
+    },
+    "hist": {
+      "emptyTitle": "No activity yet",
+      "emptyHint": "Your purchases will appear here with their date and amount.",
+      "fallbackTitle": "Purchased product"
+    },
+    "codes": {
+      "title": "Promo codes are coming soon",
+      "hint": "Soon you’ll be able to use a code to pay less."
+    },
+    "faq": {
+      "buy": {
+        "q": "How do I buy a product?",
+        "a": "Open the product page, tap Buy, then confirm the payment with your DSI balance. You get access as soon as the payment is confirmed."
+      },
+      "recharge": {
+        "q": "How do I see or top up my DSI balance?",
+        "a": "Your balance is shown and topped up in your DSI space, from the member space."
+      },
+      "pending": {
+        "q": "My payment is “in progress”, what should I do?",
+        "a": "Wait a few seconds, then tap “Check my payment” in My purchases. Confirmation usually arrives very quickly."
+      },
+      "access": {
+        "q": "Where do I find my purchases?",
+        "a": "In the My purchases tab. Tap “Access my purchase” to open the product, as often as you like."
+      },
+      "twice": {
+        "q": "Can I buy the same product twice?",
+        "a": "Yes. Each purchase is independent and charged separately: check My purchases before buying a product again."
+      },
+      "sell": {
+        "q": "How do I become a seller?",
+        "a": "Open the Seller tab and submit your application. Our team reviews it and lets you know its decision."
+      },
+      "rechargeCta": "Open my DSI space"
+    },
+    "ss": {
+      "tabs": {
+        "home": "Dashboard",
+        "products": "Listings",
+        "orders": "Orders",
+        "earnings": "Earnings",
+        "settings": "Settings"
+      },
+      "locked": {
+        "title": "This space is for approved sellers",
+        "body": "Submit your application or follow its progress.",
+        "cta": "My application"
+      },
+      "revoked": {
+        "title": "Your seller access has been removed",
+        "body": "You can no longer manage listings with this account.",
+        "reason": "Reason: {{reason}}"
+      },
+      "suspended": {
+        "title": "Your seller space is suspended",
+        "reason": "Reason: {{reason}}",
+        "until": "The suspension lasts until {{date}}.",
+        "open": "The suspension stays in place until the DSI team decides.",
+        "note": "You can view your data, but you can’t publish or edit listings."
+      },
+      "dash": {
+        "products": "Products",
+        "orders": "Paid orders",
+        "revenue": "Earnings after commission",
+        "unit": "DSI",
+        "pending_one": "{{count}} listing awaiting review",
+        "pending_other": "{{count}} listings awaiting review",
+        "bestTitle": "Your best sellers",
+        "bestEmpty": "Your best sellers will appear here after your first sale.",
+        "sales_one": "{{count}} sale",
+        "sales_other": "{{count}} sales",
+        "note": "Amounts calculated by the Marketplace after commission. Your real balance is shown in your DSI space.",
+        "dsiLink": "Open my DSI space",
+        "status": "Account status"
+      },
+      "listings": {
+        "title": "My listings",
+        "new": "New listing",
+        "emptyTitle": "You don’t have a listing yet",
+        "emptyHint": "Publish your first resource to offer it to members.",
+        "status": {
+          "pending_review": "Awaiting review",
+          "published": "Published",
+          "rejected": "Declined",
+          "suspended": "Suspended",
+          "draft": "Draft",
+          "archived": "Archived",
+          "unknown": "Being checked"
+        },
+        "noteReview": "Our team is checking your listing before publishing it.",
+        "noteRejected": "This listing wasn’t approved. Edit it, or contact the DSI team to learn why.",
+        "privateTag": "Private",
+        "edit": "Edit",
+        "archive": "Archive",
+        "archiveTitle": "Archive this listing?",
+        "archiveText": "It will no longer be offered in the catalog. Members who already bought it keep their access.",
+        "archiveYes": "Yes, archive",
+        "cancel": "Cancel",
+        "archiveError": "We couldn’t archive this listing right now. Try again.",
+        "sales_one": "{{count}} sale",
+        "sales_other": "{{count}} sales"
+      },
+      "form": {
+        "titleNew": "New listing",
+        "titleEdit": "Edit listing",
+        "intro": "Our team checks every listing before publishing it.",
+        "editNote": "After an edit, the listing goes back to review by our team.",
+        "name": "Title",
+        "description": "Description",
+        "category": "Category",
+        "price": "Price in DSI",
+        "priceHint": "Enter 0 for a free product.",
+        "link": "Access link to the product",
+        "linkHint": "The link the buyer will open after paying (starting with https://).",
+        "visibility": "Visibility",
+        "public": "Public: visible to members",
+        "private": "Private: not visible to members",
+        "submit": "Send for review",
+        "saveEdit": "Save changes",
+        "busy": "Sending…",
+        "created": "Listing sent. It will be visible after review by our team.",
+        "updated": "Changes sent. The listing goes back to review.",
+        "seeListings": "View my listings",
+        "errors": {
+          "validation": "Some information is invalid. Check the fields.",
+          "network": "No connection. Check your network, then try again.",
+          "session": "Your session has expired. Sign in again to continue.",
+          "forbidden": "This action isn’t possible with this account right now.",
+          "unknown": "We couldn’t save right now. Try again in a moment.",
+          "url": "Enter a link starting with https://"
+        }
+      },
+      "orders": {
+        "emptyTitle": "No sales yet",
+        "emptyHint": "Your sales will appear here as soon as a member buys one of your products.",
+        "share": "Your share after commission: {{amount}} DSI",
+        "fallbackTitle": "Product"
+      },
+      "earnings": {
+        "title": "Earnings after commission",
+        "total": "Total after commission",
+        "sale": "Sale",
+        "emptyTitle": "No earnings yet",
+        "emptyHint": "Each paid sale will appear here.",
+        "note": "Amounts calculated by the Marketplace after commission. Your real balance is shown in your DSI space.",
+        "dsiLink": "Open my DSI space"
+      },
+      "settings": {
+        "title": "My store",
+        "storeName": "Store name",
+        "bio": "Description",
+        "save": "Save",
+        "saved": "Changes saved.",
+        "status": "Account status",
+        "rating": "Average rating",
+        "noRating": "No rating yet",
+        "statusValues": {
+          "APPROVED": "Approved",
+          "SUSPENDED": "Suspended",
+          "REVOKED": "Removed"
+        },
+        "note": "The logo and the slogan can’t be changed after approval."
+      }
+    },
+    "apply": {
+      "title": "Become a seller",
+      "intro": "Submit your file in 3 steps. The DSI team reviews it before opening your seller space.",
+      "stepsLabel": "Application steps",
+      "steps": {
+        "shop": "My store",
+        "description": "My description",
+        "logo": "My logo",
+        "identity": "My identity",
+        "selfie": "My selfie",
+        "review": "Review"
+      },
+      "session": {
+        "title": "Session to renew",
+        "body": "To submit an application, sign in again then come back to this page.",
+        "signIn": "Sign in"
+      },
+      "step1": {
+        "title": "Present your store",
+        "body": "This information is used to present your store to buyers.",
+        "storeName": "Store name",
+        "slogan": "Slogan",
+        "description": "Description",
+        "descriptionPlaceholder": "Describe what you sell and what sets you apart.",
+        "logo": "Logo"
+      },
+      "step2": {
+        "title": "Let’s verify your identity",
+        "privacy": "Your ID documents are never shown publicly. Only the administration team can view them.",
+        "filedFor": "File submitted under the name: {{name}}"
+      },
+      "step3": {
+        "title": "Review and send",
+        "shop": "Store",
+        "slogan": "Slogan",
+        "description": "Description",
+        "name": "In the name of",
+        "consent": "I confirm that this information and these documents are accurate and that I am the person concerned.",
+        "submit": "Send my application",
+        "submitting": "Sending…"
+      },
+      "nav": {
+        "continue": "Continue",
+        "back": "Back"
+      },
+      "slots": {
+        "logo": {
+          "label": "Store logo",
+          "hint": "A square, readable image, even when small."
+        },
+        "id_front": {
+          "label": "ID document, front",
+          "hint": "Sharp photo, all 4 corners visible."
+        },
+        "id_back": {
+          "label": "ID document, back",
+          "hint": "Sharp photo, all 4 corners visible."
+        },
+        "id_selfie": {
+          "label": "Selfie",
+          "hint": "Your face clearly visible, facing the camera."
+        },
+        "camera": "Take a photo",
+        "gallery": "Choose from gallery",
+        "change": "Change",
+        "retry": "Try again",
+        "preparing": "Preparing the photo…",
+        "uploading": "Sending…",
+        "doneExisting": "Already saved: you can keep it.",
+        "done": "Photo saved."
+      },
+      "errors": {
+        "notImage": "Choose a photo (JPEG or PNG).",
+        "unreadable": "This image can’t be read. Try a JPEG or PNG photo.",
+        "prepareFailed": "We couldn’t prepare this photo. Try again.",
+        "tooLarge": "Photo too large (8 MB maximum)."
+      },
+      "uploadErrors": {
+        "network": "No connection. Check your network, then try again.",
+        "session": "Your session has expired. Sign in again, then try again.",
+        "busy": "It’s busy right now. Try again in a moment.",
+        "tooLarge": "Photo too large (8 MB maximum).",
+        "rejected": "This photo wasn’t accepted. Try another one.",
+        "unavailable": "Uploading is temporarily unavailable. Try again later.",
+        "unknown": "Upload failed. Try again."
+      },
+      "submitErrors": {
+        "network": "No connection. Check your network, then try again.",
+        "session": "Your session has expired. Sign in again, then try again.",
+        "conflict": "An application is already in progress or approved.",
+        "invalid": "Some information is invalid. Go back to the previous steps to check it.",
+        "unavailable": "The service is temporarily unavailable. Try again later.",
+        "unknown": "Sending failed. Try again."
+      },
+      "pending": {
+        "badge": "Under review",
+        "sent": "Your application has been sent.",
+        "title": "Application under review",
+        "body": "The DSI team is reviewing your file before opening your seller space. You can follow its status on this page.",
+        "shop": "Store",
+        "sentOn": "Sent on"
+      },
+      "approved": {
+        "badge": "Approved",
+        "title": "You are a seller",
+        "body": "Your application is approved. Your seller space is open.",
+        "cta": "Open my seller space"
+      },
+      "revoked": {
+        "badge": "Access removed",
+        "title": "Your seller access has been removed",
+        "since": "This decision dates from {{date}}. ",
+        "body": "You can no longer publish listings with this account.",
+        "reason": "Reason: {{reason}}"
+      },
+      "suspended": {
+        "badge": "Suspended",
+        "title": "Your seller space is suspended",
+        "reason": "Reason: {{reason}}",
+        "until": "The suspension lasts until {{date}}.",
+        "open": "The suspension stays in place until the DSI team decides."
+      },
+      "rejected": {
+        "title": "Your previous application wasn’t accepted.",
+        "reason": "Reason: {{reason}}",
+        "again": "Fix your file and send it again. Your ID documents must be uploaded again."
+      },
+      "unknown": "Your application has a status this page can’t show yet. Try again or contact the DSI team.",
+      "landing": {
+        "title": "Sell your resources to DSI members",
+        "body": "Join the Marketplace sellers: offer your guides, courses, templates and tools, and get paid in DSI on every sale.",
+        "howTitle": "How it works",
+        "how1": "You fill in your file in a few minutes.",
+        "how2": "The DSI team reviews it before accepting it.",
+        "how3": "Your seller space opens: you publish your listings.",
+        "needTitle": "What you need",
+        "need1": "Your store logo",
+        "need2": "Your ID document (front and back)",
+        "need3": "A selfie, face clearly visible",
+        "need4": "About 10 minutes",
+        "termsPrefix": "I have read and accept the ",
+        "termsLink": "terms of use",
+        "termsSuffix": " of the DSI Marketplace.",
+        "start": "Start my application",
+        "startAgain": "Fix my application",
+        "hintCheck": "Tick the box to continue."
+      },
+      "w": {
+        "stepOf": "Step {{current}} of {{total}}",
+        "back": "Back",
+        "close": "Leave the form",
+        "leaveTitle": "Leave the application?",
+        "leaveText": "Your answers and photos will be erased.",
+        "leaveStay": "Continue my application",
+        "leaveYes": "Leave",
+        "s1": {
+          "title": "What is your store called?",
+          "body": "Choose a name and a slogan buyers will remember."
+        },
+        "s2": {
+          "title": "Describe your store",
+          "body": "Explain what you sell and what sets you apart.",
+          "tip": "A few clear lines are enough."
+        },
+        "s3": {
+          "title": "Add your logo",
+          "body": "A square, readable image, even when small. It will appear on your store."
+        },
+        "s4": {
+          "title": "Your ID document",
+          "body": "Photograph the front then the back, on a plain, well-lit background."
+        },
+        "s5": {
+          "title": "Take a selfie",
+          "body": "Your face clearly visible, facing the camera, no sunglasses or cap."
+        },
+        "s6": {
+          "title": "Review and send",
+          "body": "Read your file again. After you send it, the DSI team reviews it."
+        }
+      }
+    }
+  },
+  "player": {
+    "back": "Back",
+    "play": "Play",
+    "pause": "Pause",
+    "replay": "Watch again",
+    "resumedAt": "Resumed at {{time}}",
+    "startOver": "Start over",
+    "progress": "Progress",
+    "rewind10": "Rewind 10 seconds",
+    "forward10": "Forward 10 seconds",
+    "mute": "Mute",
+    "unmute": "Unmute",
+    "volume": "Volume",
+    "speed": "Playback speed",
+    "loop": "Repeat",
+    "pip": "Picture-in-picture",
+    "fullscreen": "Fullscreen",
+    "exitFullscreen": "Exit fullscreen",
+    "share": "Share",
+    "sleepTimer": "Sleep timer",
+    "timerOff": "Turn off"
+  },
+  "reader": {
+    "close": "Close",
+    "settings": "Reading settings",
+    "textSize": "Text size",
+    "decrease": "Decrease text",
+    "increase": "Increase text",
+    "font": "Font",
+    "fontSerif": "Serif",
+    "fontSans": "Sans-serif",
+    "theme": "Reading theme",
+    "themeLight": "Light",
+    "themeSepia": "Sepia",
+    "themeNight": "Night",
+    "tableOfContents": "Contents and bookmarks",
+    "outline": "Contents",
+    "bookmarks": "Bookmarks",
+    "noBookmarks": "No bookmarks yet. Tap the bookmark to add one on the current page.",
+    "addBookmark": "Add bookmark",
+    "removeBookmark": "Remove bookmark",
+    "page": "Page {{page}}",
+    "goToPage": "Go to page",
+    "go": "Go",
+    "zoomIn": "Zoom in",
+    "zoomOut": "Zoom out",
+    "zoomReset": "Reset zoom",
+    "resumedAtPage": "Resumed at page {{page}}",
+    "resumedAtPercent": "Resumed at {{percent}}%"
+  },
+  "module": {
+    "title": "Course program",
+    "progress": "{{done}} / {{total}} completed",
+    "markDone": "Mark as completed",
+    "markUndone": "Mark as not completed",
+    "previous": "Previous",
+    "next": "Next",
+    "nextModule": "Next module"
+  }
+}
