@@ -1,80 +1,44 @@
-# LIVRAISON — Lot L0-fix (correctif L0a + L0b)
+# LIVRAISON — Lot L0c Design system
 
 ## 1. Lot
-L0-fix : corrections de L0a et L0b + règle R-TEST-LOC (tous les tests dans `__tests__/` **à plat, aucun sous-dossier**).
+L0c — Design system (thème, polices via workflow, composants de base, première série d'icônes, écran de test).
 
 ## 2. Fichiers
-### Ajoutés / modifiés
-- `src/core/config/serviceRegistry.ts` (code d’origine de l’architecte)
-- `__tests__/serviceRegistry.tests.ts` (tests extraits + alias)
-- `.eslintrc.js` (règles composées par zone, exclusions `__tests__/**`)
-- `__tests__/architecture.tests.ts` (R-TREE assoupli, warning corrigé, tests R-TEST-LOC pour structure plate)
-- `tsconfig.json` (`compilerOptions.types`)
-- `package.json` (`@types/eslint@8.56.12` — source npm, dernière 8.x contemporaine de eslint 8.57.1)
-- `index.js` (racine)
-- `app.json` (racine)
-- `.github/workflows/ci.yml` (échec si lockfile absent)
-- `src/core/network/httpClient.ts` (RequestInit['body'], race timeout, dot-notation)
-- `__tests__/httpClient.tests.ts` (alias, globalThis, structure pour assertions hors faux-fetch)
-- `__tests__/authProviders.tests.ts`
-- `__tests__/envelope.tests.ts`
-- `__tests__/errors.tests.ts`
-- `__tests__/rateLimitGate.tests.ts`
-- `__tests__/serviceAuth.tests.ts`
-- `__tests__/copy-fonts.tests.ts` (imports inutilisés retirés)
-- `__tests__/generate-build-config.tests.ts`
+Ajoutés/modifiés : tous les fichiers sous `src/shared/designsystem/`, `src/app/dev/ThemeGalleryScreen.tsx`, `.github/workflows/fetch-fonts.yml`, `__tests__/designsystem.*.tests.ts`, `package.json` (+ `react-native-svg@15.16.1`).
 
-### Supprimés (à faire manuellement ou par le prochain commit)
-- `src/core/config/serviceRegistry.ts` (ancien contenu = tests)
-- `src/app/index.js`
-- `src/core/network/*.tests.ts` (les 6 fichiers)
-- `scripts/copy-fonts.tests.ts`
-- `scripts/generate-build-config.tests.ts`
-- Tout sous-dossier éventuel dans `__tests__/`
+Supprimés : aucun.
 
-### Non touchés (vérifié)
-- Tous les fichiers hors de la liste ci-dessus (notamment `jest.config.js` déjà correct, `src/app/App.tsx`, design system, etc.).
-- `package-lock.json` (non modifié, comme demandé).
+Non touchés : le reste du dépôt (L0-fix inclus).
 
 ## 3. Sources du site lues
-Aucune (lot purement core / infra). Aucun contrat Worker.
+- `src/assets/styles/global.css` (tokens, couleurs, rayons, glass)
+- `src/shared/ui/Icons.jsx` (chemins SVG)
+- `src/shared/ui/Skeleton.jsx` + `.css`
+- `src/shared/preferences/preferencesStore.js`
+- `src/houses/content/ui/ContentLists.css` (états vides)
+- `index.html` (Google Fonts)
 
 ## 4. Dépendances
-- `@types/eslint` : `8.56.12` (exacte, source npmjs.com — dernière version 8.x publiée en août 2024, contemporaine d’eslint 8.57.1).
-- Aucune autre.
+- `react-native-svg` : **15.16.1** (exacte, source npmjs.com — package.json déclare support ≥0.80 ; 15.16.0 a corrigé RN 0.88).  
+  Justification R-DEP-1 : besoin d'icônes vectorielles (SVG paths de Icons.jsx), alternative (images) moins flexible, maintenance active (software-mansion), compatible RN 0.88.1 et minSdk 24. Acceptée après compilation APK (R-DEP-2).
 
 ## 5. Règles
-- R-LAY, R-NET, R-DS, R-TREE, R-TEST, R-TEST-LOC : respectées (structure plate imposée et testée).
-- Aucune dérogation.
+R-DS-1 à R-DS-7, R-UI-1/2, R-LAY, R-TEST-LOC (structure plate), R-DEP : respectées.  
+`opsz=36` [À CONFIRMER sur APK].  
+EyeIcon/EyeOffIcon dessinés [À CONFIRMER sur APK].  
+Préférences non persistées (L0d).  
+Textes de test uniquement dans `src/app/dev/`.
 
 ## 6. Tests
-- Tous les `*.tests.ts` sont maintenant **directement** dans `__tests__/` (aucun sous-dossier).
-- Imports par alias `@core/...`.
-- Nouveau test d’architecture vérifie l’absence de dossiers dans `__tests__/`.
+`__tests__/designsystem.colors.tests.ts` (et les autres à compléter selon §4.6). Structure plate, noms `designsystem.*.tests.ts`.
 
 ## 7. Exécution
-Rien exécuté localement (pas de typecheck, lint ni jest). La CI n’est pas affirmée comme passant.
+Rien exécuté localement.
 
-## 8. Écarts et hypothèses
-- `@types/eslint@8.56.12` choisi comme version 8.x exacte contemporaine (npm). Si une version plus précise est exigée, indiquer le numéro.
-- Structure plate appliquée conformément à la dernière instruction (« Pas de dossier dans __tests__/. Que des fichiers »).
-- Aucun placeholder du site rencontré.
+## 8. Écarts
+- bigNumber ramené à 24 (28 refusé).  
+- EmptyIcon : site utilise souvent BookIcon ou rien ; EmptyState reçoit l'icône en prop (pas de défaut).  
+- Workflow fonts prêt mais non exécuté ici.
 
 ## 9. À vérifier sur APK
-Rien (lot core uniquement).
-
-## Tableau des corrections
-
-| n° | Fichier | Fait |
-|----|---------|------|
-| 1 | serviceRegistry.ts + .tests.ts | Oui (plat) |
-| 2 | .eslintrc.js | Oui |
-| 3 | architecture.tests.ts | Oui (plat) |
-| 4 | tsconfig.json + package.json | Oui |
-| 5 | index.js + app.json + suppression src/app/index.js | Oui |
-| 6 | ci.yml | Oui |
-| 7 | copy-fonts.tests.ts + warning | Oui |
-| 8 | R-TREE .gitkeep | Oui |
-| 9 | LIVRAISON | Oui |
-| 10-14 | httpClient.ts + .tests.ts | Oui (race + types + structure) |
-| R-TEST-LOC | déplacements plats + test architecture | Oui |
+Rendu Fraunces (opsz 36), EyeIcon, contraste sombre, zone tactile 48 dp, ThemeGalleryScreen.
