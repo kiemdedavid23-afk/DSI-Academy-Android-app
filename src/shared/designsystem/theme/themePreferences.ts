@@ -1,6 +1,7 @@
 /**
  * Préférences d'affichage de l'app (thème, « réduire les animations »).
- * État en mémoire uniquement : la persistance arrive avec le stockage (L0d / étape 1).
+ * API publique inchangée. La persistance est assurée par preferencesStore (L0d),
+ * qui écrit ici après hydratation et à chaque changement.
  */
 
 import {useSyncExternalStore} from 'react';
