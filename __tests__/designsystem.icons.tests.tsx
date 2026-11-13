@@ -29,6 +29,13 @@ describe('icônes (première série)', () => {
         'BellIcon',
         'EyeIcon',
         'EyeOffIcon',
+        'HomeIcon',
+        'DsiIcon',
+        'SubscriptionIcon',
+        'WithdrawalsIcon',
+        'PaymentsIcon',
+        'ReferralIcon',
+        'SettingsIcon',
       ].sort(),
     );
   });
