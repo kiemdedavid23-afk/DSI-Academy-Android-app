@@ -24,7 +24,12 @@ jobs:
           java-version: '17'
 
       - name: Install dependencies
-        run: npm install
+        run: |
+          if [ ! -f package-lock.json ]; then
+            echo "::error::package-lock.json absent. Lance d'abord le workflow Lockfile."
+            exit 1
+          fi
+          npm ci --no-audit --no-fund
 
       - name: Generate build config (fixture)
         run: node scripts/generate-build-config.js --fixture
