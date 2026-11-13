@@ -1,6 +1,7 @@
 import React from 'react';
 import {
   Animated,
+  Image,
   StyleSheet,
   Text as RNText,
   TextInput,
@@ -14,7 +15,7 @@ import {
   EmptyState,
   ErrorState,
   LoadingState,
-  Skeleton,
+  BrandLoader,
   Text,
   TextField,
   ThemeProvider,
@@ -322,76 +323,6 @@ describe('TextField', () => {
   });
 });
 
-describe('Skeleton', () => {
-  const sweep = {start: jest.fn(), stop: jest.fn(), reset: jest.fn()};
-
-  beforeEach(() => {
-    sweep.start.mockClear();
-    sweep.stop.mockClear();
-    jest.spyOn(Animated, 'loop').mockReturnValue(sweep as never);
-  });
-
-  async function measure(r: ReactTestRenderer, width = 120) {
-    const node = r.root
-      .findAllByType(View)
-      .find(n => typeof n.props.onLayout === 'function');
-    expect(node).toBeDefined();
-    await act(async () => {
-      node!.props.onLayout({nativeEvent: {layout: {width, height: 12, x: 0, y: 0}}});
-    });
-  }
-
-  it('forme ligne par défaut : 12 dp de haut, rayon 6, couleur du thème', async () => {
-    const r = await render(<Skeleton width={100} />);
-    const style = StyleSheet.flatten(r.root.findAllByType(View)[0].props.style);
-    expect(style.height).toBe(12);
-    expect(style.borderRadius).toBe(6);
-    expect(style.backgroundColor).toBe(lightColors.skeletonBase);
-  });
-
-  it('cercle : la hauteur suit la largeur', async () => {
-    const r = await render(<Skeleton variant="circle" width={44} />);
-    const style = StyleSheet.flatten(r.root.findAllByType(View)[0].props.style);
-    expect(style.width).toBe(44);
-    expect(style.height).toBe(44);
-    expect(style.borderRadius).toBe(9999);
-  });
-
-  it('pilule : 24 dp de haut', async () => {
-    const r = await render(<Skeleton variant="pill" width={80} />);
-    const style = StyleSheet.flatten(r.root.findAllByType(View)[0].props.style);
-    expect(style.height).toBe(24);
-  });
-
-  it('caché aux lecteurs d\'écran', async () => {
-    const r = await render(<Skeleton width={100} />);
-    const node = r.root.findAllByType(View)[0];
-    expect(node.props.importantForAccessibility).toBe('no-hide-descendants');
-    expect(node.props.accessibilityElementsHidden).toBe(true);
-  });
-
-  it('animé (reflet) quand les animations ne sont pas réduites', async () => {
-    const r = await render(<Skeleton width={100} />);
-    await measure(r);
-    expect(r.root.findAllByType(Svg).length).toBeGreaterThan(0);
-    expect(sweep.start).toHaveBeenCalled();
-  });
-
-  it('immobile quand « réduire les animations » est actif', async () => {
-    const r = await render(<Skeleton width={100} />, {reduceMotion: true});
-    await measure(r);
-    expect(r.root.findAllByType(Svg)).toHaveLength(0);
-    expect(Animated.loop).not.toHaveBeenCalled();
-  });
-
-  it('arrête l\'animation au démontage', async () => {
-    const r = await render(<Skeleton width={100} />);
-    await measure(r);
-    await act(async () => r.unmount());
-    expect(sweep.stop).toHaveBeenCalled();
-  });
-});
-
 describe('LoadingState', () => {
   it('annonce le chargement et n\'affiche aucun texte', async () => {
     const r = await render(<LoadingState accessibilityLabel="Chargement en cours" testID="ld" />);
@@ -402,13 +333,63 @@ describe('LoadingState', () => {
     expect(textsOf(r)).toEqual([]);
   });
 
-  it('accepte un squelette propre à l\'écran', async () => {
-    const r = await render(
-      <LoadingState accessibilityLabel="x" testID="ld">
-        <View testID="custom" />
-      </LoadingState>,
-    );
-    expect(host(r, 'custom')).toBeDefined();
+  it('fill : occupe tout l\'espace ; sinon marge verticale', async () => {
+    const full = await render(<LoadingState accessibilityLabel="x" testID="ld" fill />);
+    expect(StyleSheet.flatten(host(full, 'ld').props.style).flex).toBe(1);
+    const small = await render(<LoadingState accessibilityLabel="x" testID="ld2" />);
+    expect(StyleSheet.flatten(host(small, 'ld2').props.style).paddingVertical).toBe(32);
+  });
+
+  it('contient le logo animé', async () => {
+    const r = await render(<LoadingState accessibilityLabel="x" />);
+    expect(r.root.findAllByType(Image).length).toBeGreaterThan(0);
+  });
+});
+
+describe('BrandLoader', () => {
+  const loop = {start: jest.fn(), stop: jest.fn(), reset: jest.fn()};
+
+  beforeEach(() => {
+    loop.start.mockClear();
+    loop.stop.mockClear();
+    jest.spyOn(Animated, 'loop').mockReturnValue(loop as never);
+  });
+
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
+
+  it('proportions du logo et 3 lettres animées D, S, I', async () => {
+    const r = await render(<BrandLoader width={196} testID="bl" />);
+    const root = StyleSheet.flatten(host(r, 'bl').props.style);
+    expect(root.width).toBe(196);
+    expect(root.height).toBe(Math.round(196 / (784 / 484)));
+    for (const key of ['d', 's', 'i']) {
+      expect(host(r, `bl-${key}`)).toBeDefined();
+    }
+  });
+
+  it('lance la boucle puis l\'arrête au démontage', async () => {
+    const r = await render(<BrandLoader testID="bl" />);
+    expect(loop.start).toHaveBeenCalledTimes(1);
+    mounted.splice(mounted.indexOf(r), 1);
+    await act(async () => r.unmount());
+    expect(loop.stop).toHaveBeenCalledTimes(1);
+  });
+
+  it('réduire les animations : logo fixe, aucune boucle', async () => {
+    const r = await render(<BrandLoader testID="bl" />, {reduceMotion: true});
+    expect(loop.start).not.toHaveBeenCalled();
+    expect(r.root.findAll(n => n.props.testID === 'bl-d')).toHaveLength(0);
+    expect(r.root.findAllByType(Image).length).toBeGreaterThan(0);
+  });
+
+  it('thème sombre : texte du logo en version claire', async () => {
+    const light = await render(<BrandLoader testID="bl" />);
+    const dark = await render(<BrandLoader testID="bl" />, {mode: 'dark'});
+    const sources = (r: ReactTestRenderer) =>
+      r.root.findAllByType(Image).map(n => n.props.source);
+    expect(sources(light)).not.toEqual(sources(dark));
   });
 });
 
@@ -468,7 +449,6 @@ describe('thème sombre : rendu de tous les composants sans erreur', () => {
         <Text variant="title">T</Text>
         <Button label="B" />
         <TextField label="L" value="" onChangeText={() => {}} secure showPasswordLabel="a" hidePasswordLabel="b" />
-        <Skeleton width={50} />
         <LoadingState accessibilityLabel="c" />
         <EmptyState message="m" icon="BellIcon" />
         <ErrorState message="m" />
