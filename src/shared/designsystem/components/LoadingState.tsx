@@ -1,24 +1,27 @@
 import React from 'react';
 import {StyleSheet, View, type StyleProp, type ViewStyle} from 'react-native';
 import {useTheme} from '../theme/ThemeProvider';
-import {SkeletonEntry, SkeletonStat} from './SkeletonBlocks';
+import {BrandLoader} from './BrandLoader';
 
 export type LoadingStateProps = {
   /** Annonce « chargement » lue par TalkBack (texte fourni par l'appelant, i18n). */
   accessibilityLabel: string;
-  /** Squelette propre à l'écran. Défaut : une carte chiffre clé et trois entrées. */
-  children?: React.ReactNode;
+  /** Occupe tout l'espace disponible (écran de démarrage). Défaut : faux. */
+  fill?: boolean;
+  /** Largeur du logo en dp. */
+  logoWidth?: number;
   style?: StyleProp<ViewStyle>;
   testID?: string;
 };
 
 /**
- * État « chargement » : squelettes, aucun texte visible. La région annonce le
- * chargement aux lecteurs d'écran (SkeletonRegion du site).
+ * État « chargement » : le logo animé de la marque, aucun texte visible.
+ * La région annonce le chargement aux lecteurs d'écran.
  */
 export function LoadingState({
   accessibilityLabel,
-  children,
+  fill = false,
+  logoWidth = 200,
   style,
   testID,
 }: LoadingStateProps) {
@@ -30,21 +33,17 @@ export function LoadingState({
       accessibilityRole="progressbar"
       accessibilityLabel={accessibilityLabel}
       accessibilityState={{busy: true}}
-      style={[styles.column, {gap: spacing.md}, style]}>
-      {children ?? (
-        <>
-          <SkeletonStat />
-          <SkeletonEntry />
-          <SkeletonEntry />
-          <SkeletonEntry />
-        </>
-      )}
+      style={[
+        styles.center,
+        fill ? styles.fill : {paddingVertical: spacing.xxxl},
+        style,
+      ]}>
+      <BrandLoader width={logoWidth} />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  column: {
-    flexDirection: 'column',
-  },
+  center: {alignItems: 'center', justifyContent: 'center'},
+  fill: {flex: 1},
 });
