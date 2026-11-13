@@ -24,12 +24,11 @@ jobs:
       - name: Install dependencies
         timeout-minutes: 10
         run: |
-          if [ -f package-lock.json ]; then
-            npm ci --no-audit --no-fund --prefer-offline
-          else
-            echo "::warning::package-lock.json absent — lance d'abord le workflow lockfile, ou utilise npm install."
-            npm install --no-audit --no-fund
+          if [ ! -f package-lock.json ]; then
+            echo "::error::package-lock.json absent. Lance d'abord le workflow Lockfile."
+            exit 1
           fi
+          npm ci --no-audit --no-fund --prefer-offline
 
       - name: Generate build config (secret or fixture)
         if: ${{ !cancelled() }}
