@@ -1,10 +1,10 @@
 /**
  * Tests d'architecture (R-LAY, R-NET, R-DS, R-TREE, R-TEST).
  *
- * 1. Preuve que chaque règle ESLint du §3.3 bloque un exemple fautif
- *    et laisse passer un exemple conforme.
- * 2. Parcours du dépôt : pas de .tsx dans core, suffixe .tests, noms propres,
- *    contenu exact des .gitkeep.
+ * 1. Preuve que chaque règle ESLint bloque un exemple fautif et laisse passer
+ *    un exemple conforme.
+ * 2. Parcours du dépôt : pas de .tsx dans core, tests dans __tests__ à plat,
+ *    noms de fichiers propres, .gitkeep présents.
  */
 
 import * as fs from 'fs';
@@ -20,188 +20,232 @@ async function lintCode(
   const eslint = new ESLint({
     cwd: ROOT,
     useEslintrc: true,
-    // On ignore les ignores globaux pour pouvoir tester des chemins virtuels
+    // Chemins virtuels : on ignore les ignores globaux.
     ignore: false,
   });
   return eslint.lintText(code, {filePath: path.join(ROOT, filePath)});
 }
 
-function hasError(results: ESLint.LintResult[], ruleId?: string): boolean {
-  return results.some(r =>
-    r.messages.some(
-      m => m.severity === 2 && (ruleId === undefined || m.ruleId === ruleId),
-    ),
-  );
+type Message = ESLint.LintResult['messages'][number];
+
+function errors(results: ESLint.LintResult[]): Message[] {
+  return results.flatMap(r => r.messages.filter(m => m.severity === 2));
 }
 
-describe('ESLint architecture rules', () => {
-  // R-LAY-1 : core n'importe pas @app / @shared / @features
-  it('R-LAY-1 : bloque un import @app depuis core', async () => {
-    const results = await lintCode(
-      `import {x} from '@app/navigation/RootNavigator';\n`,
+function hasRule(results: ESLint.LintResult[], ruleId: string): boolean {
+  return errors(results).some(m => m.ruleId === ruleId);
+}
+
+function hasMessage(results: ESLint.LintResult[], fragment: string): boolean {
+  return errors(results).some(m => (m.message || '').includes(fragment));
+}
+
+describe('ESLint : R-LAY (imports par couche)', () => {
+  it('R-LAY-1 : core ne peut pas importer @app', async () => {
+    const r = await lintCode(
+      `import {x} from '@app/navigation/RootNavigator';\nexport const y = x;\n`,
       'src/core/session/session.ts',
     );
-    expect(hasError(results, 'no-restricted-imports')).toBe(true);
+    expect(hasRule(r, 'no-restricted-imports')).toBe(true);
   });
 
-  it('R-LAY-1 : autorise un import relatif interne à core', async () => {
-    const results = await lintCode(
-      `import {resolveServiceUrl} from '../config/serviceRegistry';\n`,
+  it('R-LAY-1 : core ne peut pas importer @shared', async () => {
+    const r = await lintCode(
+      `import {x} from '@shared/designsystem';\nexport const y = x;\n`,
+      'src/core/session/session.ts',
+    );
+    expect(hasRule(r, 'no-restricted-imports')).toBe(true);
+  });
+
+  it('R-LAY-1 : core peut importer en relatif', async () => {
+    const r = await lintCode(
+      `import {resolveServiceUrl} from '../config/serviceRegistry';\nexport const y = resolveServiceUrl;\n`,
       'src/core/network/http.ts',
     );
-    expect(hasError(results, 'no-restricted-imports')).toBe(false);
+    expect(hasRule(r, 'no-restricted-imports')).toBe(false);
   });
 
-  // R-LAY-3 : shared n'importe que @core
-  it('R-LAY-3 : bloque un import @features depuis shared', async () => {
-    const results = await lintCode(
-      `import {x} from '@features/auth/login';\n`,
-      'src/shared/store/cache.ts',
+  it('R-LAY-3 : shared ne peut pas importer @features', async () => {
+    const r = await lintCode(
+      `import {x} from '@features/auth/login';\nexport const y = x;\n`,
+      'src/shared/designsystem/components/Foo.ts',
     );
-    expect(hasError(results, 'no-restricted-imports')).toBe(true);
+    expect(hasRule(r, 'no-restricted-imports')).toBe(true);
   });
 
-  // R-LAY-4 : une feature n'importe pas une autre
-  it('R-LAY-4 : bloque un import inter-feature', async () => {
-    const results = await lintCode(
-      `import {x} from '@features/shop/cart';\n`,
+  it('R-LAY-3 : shared peut importer @core', async () => {
+    const r = await lintCode(
+      `import {isRateLimited} from '@core/network';\nexport const y = isRateLimited;\n`,
+      'src/shared/designsystem/components/Foo.ts',
+    );
+    expect(hasRule(r, 'no-restricted-imports')).toBe(false);
+  });
+
+  it('R-LAY-4 : une feature ne peut pas importer une autre feature', async () => {
+    const r = await lintCode(
+      `import {x} from '@features/shop/cart';\nexport const y = x;\n`,
       'src/features/academy/screens/HubScreen.tsx',
     );
-    expect(hasError(results, 'no-restricted-imports')).toBe(true);
+    expect(hasRule(r, 'no-restricted-imports')).toBe(true);
   });
 
-  // R-LAY-5 : screens/components n'importent pas core/api|network|config
-  it('R-LAY-5 : bloque un import @core/api depuis un screen', async () => {
-    const results = await lintCode(
-      `import {login} from '@core/api/endpoints/payment/payment.api';\n`,
+  it('R-LAY-4 : un store de feature ne peut pas importer une autre feature', async () => {
+    const r = await lintCode(
+      `import {x} from '@features/shop/cart';\nexport const y = x;\n`,
+      'src/features/academy/store/hubStore.ts',
+    );
+    expect(hasRule(r, 'no-restricted-imports')).toBe(true);
+  });
+
+  it('R-LAY-5 : un screen ne peut pas importer @core/api', async () => {
+    const r = await lintCode(
+      `import {login} from '@core/api/endpoints/payment/payment.api';\nexport const y = login;\n`,
       'src/features/auth/screens/LoginScreen.tsx',
     );
-    expect(hasError(results, 'no-restricted-imports')).toBe(true);
+    expect(hasRule(r, 'no-restricted-imports')).toBe(true);
   });
 
-  it('R-LAY-5 : bloque un import @core/config depuis un component', async () => {
-    const results = await lintCode(
-      `import {resolveServiceUrl} from '@core/config/serviceRegistry';\n`,
+  it('R-LAY-5 : un component ne peut pas importer @core/config', async () => {
+    const r = await lintCode(
+      `import {resolveServiceUrl} from '@core/config/serviceRegistry';\nexport const y = resolveServiceUrl;\n`,
       'src/features/member-space/components/MemberCard.tsx',
     );
-    expect(hasError(results, 'no-restricted-imports')).toBe(true);
+    expect(hasRule(r, 'no-restricted-imports')).toBe(true);
   });
 
-  // R-LAY-6 : seuls les stores importent @core/api
-  it('R-LAY-6 : bloque un import @core/api hors store', async () => {
-    const results = await lintCode(
-      `import {login} from '@core/api/endpoints/payment/payment.api';\n`,
+  it('R-LAY-5 : un screen ne peut pas importer @core/network', async () => {
+    const r = await lintCode(
+      `import {http} from '@core/network';\nexport const y = http;\n`,
+      'src/features/auth/screens/LoginScreen.tsx',
+    );
+    expect(hasRule(r, 'no-restricted-imports')).toBe(true);
+  });
+
+  it('R-LAY-6 : un hook de feature ne peut pas importer @core/api', async () => {
+    const r = await lintCode(
+      `import {login} from '@core/api/endpoints/payment/payment.api';\nexport const y = login;\n`,
       'src/features/auth/hooks/useLogin.ts',
     );
-    expect(hasError(results, 'no-restricted-imports')).toBe(true);
+    expect(hasRule(r, 'no-restricted-imports')).toBe(true);
   });
 
-  it('R-LAY-6 : autorise un import @core/api depuis un store', async () => {
-    const results = await lintCode(
-      `import {login} from '@core/api/endpoints/payment/payment.api';\n`,
+  it('R-LAY-6 : un store de feature peut importer @core/api', async () => {
+    const r = await lintCode(
+      `import {login} from '@core/api/endpoints/payment/payment.api';\nexport const y = login;\n`,
       'src/features/auth/store/authStore.ts',
     );
-    // Le override store exclus les restrictions R-LAY-6
-    // (il peut encore y avoir d'autres règles, mais pas celle-ci sur @core/api)
-    const apiErrors = results.flatMap(r =>
-      r.messages.filter(
-        m =>
-          m.severity === 2 &&
-          m.ruleId === 'no-restricted-imports' &&
-          (m.message || '').includes('R-LAY-6'),
-      ),
-    );
-    expect(apiErrors.length).toBe(0);
+    expect(hasRule(r, 'no-restricted-imports')).toBe(false);
   });
 
-  // R-NET-1 : fetch et littéraux http interdits hors network/config
-  it('R-NET-1 : bloque fetch hors core/network', async () => {
-    const results = await lintCode(
-      `export async function bad() { return fetch('https://example.invalid'); }\n`,
+  it('R-LAY-6 : shared/store peut importer @core/api', async () => {
+    const r = await lintCode(
+      `import {login} from '@core/api/endpoints/payment/payment.api';\nexport const y = login;\n`,
+      'src/shared/store/cache.ts',
+    );
+    expect(hasRule(r, 'no-restricted-imports')).toBe(false);
+  });
+
+  it('R-LAY-6 : shared hors store ne peut pas importer @core/api', async () => {
+    const r = await lintCode(
+      `import {login} from '@core/api/endpoints/payment/payment.api';\nexport const y = login;\n`,
+      'src/shared/designsystem/components/Foo.ts',
+    );
+    expect(hasRule(r, 'no-restricted-imports')).toBe(true);
+  });
+
+  it('src/app peut importer @features et @shared', async () => {
+    const r = await lintCode(
+      `import {x} from '@features/auth/login';\nimport {y} from '@shared/designsystem';\nexport const z = [x, y];\n`,
+      'src/app/navigation/RootNavigator.tsx',
+    );
+    expect(hasRule(r, 'no-restricted-imports')).toBe(false);
+  });
+});
+
+describe('ESLint : R-NET-1 (fetch et adresses en dur)', () => {
+  it('bloque fetch hors core/network', async () => {
+    const r = await lintCode(
+      `export async function bad() { return fetch('/x'); }\n`,
       'src/features/auth/store/authStore.ts',
     );
-    expect(hasError(results, 'no-restricted-globals')).toBe(true);
+    expect(hasRule(r, 'no-restricted-globals')).toBe(true);
   });
 
-  it('R-NET-1 : bloque un littéral https hors core/config', async () => {
-    const results = await lintCode(
-      `const url = 'https://payment.example.invalid/login';\n`,
+  it('bloque fetch dans shared', async () => {
+    const r = await lintCode(
+      `export async function bad() { return fetch('/x'); }\n`,
+      'src/shared/designsystem/components/Foo.ts',
+    );
+    expect(hasRule(r, 'no-restricted-globals')).toBe(true);
+  });
+
+  it('autorise fetch dans core/network', async () => {
+    const r = await lintCode(
+      `export async function ok() { return fetch('/x'); }\n`,
+      'src/core/network/httpClient.ts',
+    );
+    expect(hasRule(r, 'no-restricted-globals')).toBe(false);
+  });
+
+  it('bloque un littéral https dans un store de feature', async () => {
+    const r = await lintCode(
+      `export const url = 'https://payment.example.invalid/login';\n`,
       'src/features/auth/store/authStore.ts',
     );
-    expect(hasError(results, 'no-restricted-syntax')).toBe(true);
+    expect(hasRule(r, 'no-restricted-syntax')).toBe(true);
+    expect(hasMessage(r, 'R-NET-1')).toBe(true);
   });
 
-  // R-DS-1 (partiel) : pas de couleur dans features
-  it('R-DS-1 : bloque un code couleur hex dans features', async () => {
-    const results = await lintCode(
-      `const color = '#FF5500';\n`,
+  it('bloque un littéral https dans shared', async () => {
+    const r = await lintCode(
+      `export const url = 'https://payment.example.invalid/login';\n`,
+      'src/shared/designsystem/components/Foo.ts',
+    );
+    expect(hasMessage(r, 'R-NET-1')).toBe(true);
+  });
+
+  it('autorise un littéral https dans core/config', async () => {
+    const r = await lintCode(
+      `export const url = 'https://payment.example.invalid/login';\n`,
+      'src/core/config/serviceRegistry.ts',
+    );
+    expect(hasMessage(r, 'R-NET-1')).toBe(false);
+  });
+});
+
+describe('ESLint : R-DS-1 (aucun littéral visuel dans features)', () => {
+  it('bloque un code couleur hexadécimal', async () => {
+    const r = await lintCode(
+      `export const color = '#FF5500';\n`,
       'src/features/academy/screens/HubScreen.tsx',
     );
-    expect(hasError(results, 'no-restricted-syntax')).toBe(true);
+    expect(hasMessage(r, 'R-DS-1')).toBe(true);
   });
 
-  it('R-DS-1 : bloque rgb() dans features', async () => {
-    const results = await lintCode(
-      `const color = 'rgb(255, 85, 0)';\n`,
+  it('bloque rgb()', async () => {
+    const r = await lintCode(
+      `export const color = 'rgb(255, 85, 0)';\n`,
       'src/features/academy/components/Card.tsx',
     );
-    expect(hasError(results, 'no-restricted-syntax')).toBe(true);
+    expect(hasMessage(r, 'R-DS-1')).toBe(true);
   });
 
-  it("R-TEST-LOC : aucun *.tests.ts(x) hors de __tests__/", () => {
-    const outside = allFiles.filter(f => {
-      const rel = path.relative(ROOT, f);
-      return /\.tests\.tsx?$/.test(rel) && !rel.startsWith("__tests__/");
-    });
-    expect(outside).toEqual([]);
-  });
-
-  it("R-TEST-LOC : aucun dossier dans __tests__/ (que des fichiers)", () => {
-    const dirs = fs.readdirSync(path.join(ROOT, "__tests__"), {withFileTypes: true})
-      .filter(d => d.isDirectory());
-    expect(dirs).toEqual([]);
-  });
-
-  it("R-TEST-LOC : tout fichier de __tests__/ finit par .tests.ts ou .tests.tsx", () => {
-    const bad = allFiles.filter(f => {
-      const rel = path.relative(ROOT, f);
-      if (!rel.startsWith("__tests__/")) return false;
-      return !/\.tests\.tsx?$/.test(rel);
-    });
-    expect(bad).toEqual([]);
-  });
-    expect(outside).toEqual([]);
-  });
-
-  it("R-TEST-LOC : tout fichier de __tests__/ finit par .tests.ts ou .tests.tsx (sauf helpers)", () => {
-    const bad = allFiles.filter(f => {
-      const rel = path.relative(ROOT, f);
-      if (!rel.startsWith("__tests__/")) return false;
-      if (rel.includes("/_helpers/helpers.ts")) return false;
-      return !/\.tests\.tsx?$/.test(rel) && !rel.endsWith(".gitkeep");
-    });
-    expect(bad).toEqual([]);
-  });
-
-  it("un fichier src/app/... qui importe @features/x et @shared/y n'est PAS bloqué", async () => {
-    const results = await lintCode(
-      `import {x} from '@features/auth/login';\nimport {y} from '@shared/ui/Button';\n`,
-      'src/app/App.tsx',
+  it('autorise un code couleur dans shared/designsystem (le thème)', async () => {
+    const r = await lintCode(
+      `export const color = '#FF5500';\n`,
+      'src/shared/designsystem/theme/colors.ts',
     );
-    expect(hasError(results, 'no-restricted-imports')).toBe(false);
+    expect(hasMessage(r, 'R-DS-1')).toBe(false);
   });
 
-  it("un fichier features avec un littéral https:// ET une couleur "#fff" produit les deux erreurs", async () => {
-    const results = await lintCode(
-      `const url = 'https://example.invalid';\nconst color = '#fff';\n`,
+  it('features : un littéral https ET une couleur produisent les deux erreurs (règles composées)', async () => {
+    const r = await lintCode(
+      `export const url = 'https://example.invalid';\nexport const color = '#fff';\n`,
       'src/features/academy/screens/HubScreen.tsx',
     );
-    const hasNet = results.some(r => r.messages.some(m => m.message.includes('R-NET-1')));
-    const hasDs = results.some(r => r.messages.some(m => m.message.includes('R-DS-1')));
-    expect(hasNet).toBe(true);
-    expect(hasDs).toBe(true);
+    expect(hasMessage(r, 'R-NET-1')).toBe(true);
+    expect(hasMessage(r, 'R-DS-1')).toBe(true);
   });
-
 });
 
 describe('Parcours du dépôt', () => {
@@ -236,93 +280,77 @@ describe('Parcours du dépôt', () => {
   }
 
   const allFiles = SCAN_ROOTS.flatMap(root => walk(root));
+  const rel = (f: string): string =>
+    path.relative(ROOT, f).split(path.sep).join('/');
 
   it('R-LAY-2 : aucun fichier .tsx dans src/core', () => {
     const coreTsx = allFiles.filter(
-      f =>
-        f.includes(`${path.sep}src${path.sep}core${path.sep}`) &&
-        f.endsWith('.tsx'),
+      f => rel(f).startsWith('src/core/') && f.endsWith('.tsx'),
     );
-    expect(coreTsx).toEqual([]);
+    expect(coreTsx.map(rel)).toEqual([]);
   });
 
-  it('R-TEST : aucun fichier nommé *.test.ts(x) (suffixe obligatoire .tests)', () => {
-    const wrongSuffix = allFiles.filter(f =>
-      /\.test\.tsx?$/.test(f),
+  it('R-TEST-1 : aucun fichier *.test.ts(x) (suffixe obligatoire .tests)', () => {
+    const wrongSuffix = allFiles.filter(f => /\.test\.tsx?$/.test(f));
+    expect(wrongSuffix.map(rel)).toEqual([]);
+  });
+
+  it('R-TEST-LOC : aucun *.tests.ts(x) hors de __tests__/', () => {
+    const outside = allFiles.filter(
+      f => /\.tests\.tsx?$/.test(f) && !rel(f).startsWith('__tests__/'),
     );
-    expect(wrongSuffix).toEqual([]);
+    expect(outside.map(rel)).toEqual([]);
   });
 
-  it('R-TREE-2 : aucun nom de fichier ou dossier avec espace ou caractère spécial', () => {
-    const bad = allFiles.filter(f => {
-      const rel = path.relative(ROOT, f);
-      // Autorise le point, le tiret, l'underscore, les alphanumériques
-      return /[^a-zA-Z0-9._/\-]/.test(rel);
-    });
-    expect(bad).toEqual([]);
-  });
-
-  it("R-TREE : tout .gitkeep existe (vide ou "keep" accepté)", () => {
-    const gitkeeps = allFiles.filter(f => path.basename(f) === ".gitkeep");
-    expect(gitkeeps.length).toBeGreaterThan(0);
-    for (const gk of gitkeeps) {
-      const content = fs.readFileSync(gk, "utf8").trim();
-      expect(content === "" || content === "keep").toBe(true);
-    }
-  });
-
-  it("R-TEST-LOC : aucun *.tests.ts(x) hors de __tests__/", () => {
-    const outside = allFiles.filter(f => {
-      const rel = path.relative(ROOT, f);
-      return /\.tests\.tsx?$/.test(rel) && !rel.startsWith("__tests__/");
-    });
-    expect(outside).toEqual([]);
-  });
-
-  it("R-TEST-LOC : aucun dossier dans __tests__/ (que des fichiers)", () => {
-    const dirs = fs.readdirSync(path.join(ROOT, "__tests__"), {withFileTypes: true})
-      .filter(d => d.isDirectory());
+  it('R-TEST-LOC : aucun sous-dossier dans __tests__/ (fichiers à plat)', () => {
+    const testsDir = path.join(ROOT, '__tests__');
+    const dirs = fs
+      .readdirSync(testsDir, {withFileTypes: true})
+      .filter(d => d.isDirectory())
+      .map(d => d.name);
     expect(dirs).toEqual([]);
   });
 
-  it("R-TEST-LOC : tout fichier de __tests__/ finit par .tests.ts ou .tests.tsx", () => {
-    const bad = allFiles.filter(f => {
-      const rel = path.relative(ROOT, f);
-      if (!rel.startsWith("__tests__/")) return false;
-      return !/\.tests\.tsx?$/.test(rel);
-    });
-    expect(bad).toEqual([]);
-  });
-    expect(outside).toEqual([]);
-  });
-
-  it("R-TEST-LOC : tout fichier de __tests__/ finit par .tests.ts ou .tests.tsx (sauf helpers)", () => {
-    const bad = allFiles.filter(f => {
-      const rel = path.relative(ROOT, f);
-      if (!rel.startsWith("__tests__/")) return false;
-      if (rel.includes("/_helpers/helpers.ts")) return false;
-      return !/\.tests\.tsx?$/.test(rel) && !rel.endsWith(".gitkeep");
-    });
-    expect(bad).toEqual([]);
-  });
-
-  it("un fichier src/app/... qui importe @features/x et @shared/y n'est PAS bloqué", async () => {
-    const results = await lintCode(
-      `import {x} from '@features/auth/login';\nimport {y} from '@shared/ui/Button';\n`,
-      'src/app/App.tsx',
+  it('R-TEST-LOC : tout fichier de __tests__/ finit par .tests.ts ou .tests.tsx', () => {
+    const bad = allFiles.filter(
+      f => rel(f).startsWith('__tests__/') && !/\.tests\.tsx?$/.test(f),
     );
-    expect(hasError(results, 'no-restricted-imports')).toBe(false);
+    expect(bad.map(rel)).toEqual([]);
   });
 
-  it("un fichier features avec un littéral https:// ET une couleur "#fff" produit les deux erreurs", async () => {
-    const results = await lintCode(
-      `const url = 'https://example.invalid';\nconst color = '#fff';\n`,
-      'src/features/academy/screens/HubScreen.tsx',
+  it('R-TREE-2 : aucun nom de fichier ou dossier avec espace ou caractère spécial', () => {
+    const bad = allFiles.filter(f => /[^a-zA-Z0-9._/-]/.test(rel(f)));
+    expect(bad.map(rel)).toEqual([]);
+  });
+
+  it('R-TREE-2 : tout .gitkeep est un petit fichier (contenu libre, GitHub web exige une ligne)', () => {
+    const gitkeeps = allFiles.filter(f => path.basename(f) === '.gitkeep');
+    const tooBig = gitkeeps.filter(f => fs.statSync(f).size > 200);
+    expect(tooBig.map(rel)).toEqual([]);
+  });
+
+  it('R-TREE-2 : un dossier qui contient un vrai fichier n\'a plus de .gitkeep', () => {
+    const stale = allFiles
+      .filter(f => path.basename(f) === '.gitkeep')
+      .filter(gk => {
+        const dir = path.dirname(gk);
+        return fs
+          .readdirSync(dir, {withFileTypes: true})
+          .some(e => e.isFile() && e.name !== '.gitkeep');
+      });
+    expect(stale.map(rel)).toEqual([]);
+  });
+
+  it('R-DS-1 : aucun code couleur ni taille en dur dans src/app hors src/app/dev', () => {
+    const appFiles = allFiles.filter(
+      f =>
+        rel(f).startsWith('src/app/') &&
+        !rel(f).startsWith('src/app/dev/') &&
+        /\.(ts|tsx)$/.test(f),
     );
-    const hasNet = results.some(r => r.messages.some(m => m.message.includes('R-NET-1')));
-    const hasDs = results.some(r => r.messages.some(m => m.message.includes('R-DS-1')));
-    expect(hasNet).toBe(true);
-    expect(hasDs).toBe(true);
+    const offenders = appFiles.filter(f =>
+      /#[0-9a-fA-F]{3,8}\b|rgba?\(/.test(fs.readFileSync(f, 'utf8')),
+    );
+    expect(offenders.map(rel)).toEqual([]);
   });
-
 });

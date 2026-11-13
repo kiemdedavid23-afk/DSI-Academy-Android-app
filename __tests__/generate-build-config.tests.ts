@@ -12,7 +12,7 @@ const {
   buildFixtureConfig,
   generateBuildConfig,
   SERVICE_IDS,
-} = require('../../scripts/generate-build-config.js');
+} = require('../scripts/generate-build-config.js');
 
 describe('validateRegistryConfig', () => {
   it('accepte un secret perService valide', () => {
