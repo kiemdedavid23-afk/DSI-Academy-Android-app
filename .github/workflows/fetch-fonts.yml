@@ -1,18 +1,47 @@
-name: Fetch Fonts
+name: Fetch fonts
+
+# Télécharge Fraunces, Manrope et IBM Plex Mono (licence SIL OFL) depuis le dépôt
+# officiel google/fonts, génère les coupes statiques et les commit dans src/assets/fonts.
+# À lancer une fois (puis seulement si la liste des polices change).
 on:
   workflow_dispatch:
+
 permissions:
   contents: write
+
+concurrency:
+  group: fetch-fonts
+  cancel-in-progress: false
+
 jobs:
-  fetch:
+  fonts:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v4
-      - name: Fetch and instance fonts
+      - uses: actions/checkout@v5
+        with:
+          ref: main
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Installer fonttools
+        run: python -m pip install fonttools==4.55.0
+
+      - name: Générer les polices
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python scripts/fetch-fonts.py
+
+      - name: Lister le résultat
+        run: ls -la src/assets/fonts
+
+      - name: Commit sur main
         run: |
-          pip install fonttools
-          # Récupération depuis google/fonts (noms exacts à vérifier)
-          # Fraunces opsz=36, SOFT=0, WONK=0 [À CONFIRMER sur APK]
-          # Génération des coupes statiques puis commit
-          echo "Workflow prêt — exécution manuelle requise"
-          # git add src/assets/fonts && git commit -m "chore: add static fonts" || true
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git rm -f --ignore-unmatch src/assets/fonts/.gitkeep
+          git add src/assets/fonts
+          git commit -m "chore: polices embarquées (Fraunces, Manrope, IBM Plex Mono)" || echo "Aucun changement"
+          git push origin HEAD:main
