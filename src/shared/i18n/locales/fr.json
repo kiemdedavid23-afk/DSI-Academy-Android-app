@@ -302,7 +302,9 @@
     "passwordLabel": "Mot de passe",
     "passwordError": "Renseignez votre mot de passe.",
     "showPassword": "Afficher le mot de passe",
-    "createAccount": "Créer un compte"
+    "createAccount": "Créer un compte",
+    "errorNetwork": "Connexion impossible. Vérifiez votre connexion internet et réessayez.",
+    "errorServer": "Le service est momentanément indisponible. Réessayez dans un instant."
   },
   "rejoindre": {
     "title": "Rejoindre DSI Academy",
