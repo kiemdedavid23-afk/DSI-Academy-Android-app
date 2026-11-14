@@ -22,10 +22,6 @@ import type {
   MemberWithdrawalsResult,
 } from './membre.types';
 
-function networkOrServer(): {kind: 'failure'; errorKind: 'network' | 'server'} {
-  return {kind: 'failure', errorKind: 'server'};
-}
-
 function catchNetwork(err: unknown): {kind: 'failure'; errorKind: 'network' | 'server'} {
   if (
     err instanceof NetworkError ||
