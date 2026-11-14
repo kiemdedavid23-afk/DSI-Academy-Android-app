@@ -164,7 +164,7 @@ export function RegisterBrowserScreen({navigation, route}: Props) {
         onError={() => registerBrowserStore.markError()}
         onHttpError={() => registerBrowserStore.markError()}
         injectedJavaScriptBeforeContentLoaded={
-          registerBrowserStore.consumeInjectedScript() ?? undefined
+          registerBrowserStore.getInjectedScript() ?? undefined
         }
       />
     </View>
