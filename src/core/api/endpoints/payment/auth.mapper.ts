@@ -44,22 +44,37 @@ function paymentModeOf(value: unknown): PaymentMode {
 
 /**
  * Transforme le corps HTTP en résultat discriminé.
- * HTTP 400 (erreur) → failure.
+ *
+ * - 400 → credentials
+ * - 5xx / 401 / 429 → server
+ * - corps illisible / absent → server
+ * - status refuse → credentials
+ * - status suspendu → refused
+ * - status inconnu → server
  */
 export function mapAuthConnexionResponse(
   status: number,
   body: unknown,
+  bodyKind?: 'json' | 'empty' | 'invalid' | string,
 ): AuthConnexionResult {
-  const payload = asRecord(body);
-
   if (status === 400) {
+    const payload = asRecord(body);
     const msg =
       asString(payload?.erreur) ?? asString(payload?.message) ?? undefined;
-    return {kind: 'failure', message: msg};
+    return {kind: 'failure', errorKind: 'credentials', message: msg};
   }
 
+  if (status >= 500 || status === 401 || status === 429) {
+    return {kind: 'failure', errorKind: 'server'};
+  }
+
+  if (bodyKind === 'invalid' || bodyKind === 'empty') {
+    return {kind: 'failure', errorKind: 'server'};
+  }
+
+  const payload = asRecord(body);
   if (!payload) {
-    return {kind: 'failure'};
+    return {kind: 'failure', errorKind: 'server'};
   }
 
   const statusField = asString(payload.status);
@@ -67,7 +82,7 @@ export function mapAuthConnexionResponse(
   if (statusField === 'connecte') {
     const token = asString(payload.token);
     if (!token) {
-      return {kind: 'failure'};
+      return {kind: 'failure', errorKind: 'server'};
     }
     return {
       kind: 'session',
@@ -85,7 +100,7 @@ export function mapAuthConnexionResponse(
   if (statusField === 'pending_payment') {
     const tracking = asString(payload.paymentTrackingToken);
     if (!tracking) {
-      return {kind: 'failure'};
+      return {kind: 'failure', errorKind: 'server'};
     }
     const mode = paymentModeOf(payload.paymentMode);
     const url =
@@ -99,12 +114,22 @@ export function mapAuthConnexionResponse(
     };
   }
 
-  if (statusField === 'refuse' || statusField === 'suspendu') {
+  if (statusField === 'refuse') {
     return {
       kind: 'failure',
+      errorKind: 'credentials',
       message: asString(payload.message) ?? undefined,
     };
   }
 
-  return {kind: 'failure'};
+  if (statusField === 'suspendu') {
+    return {
+      kind: 'failure',
+      errorKind: 'refused',
+      message: asString(payload.message) ?? undefined,
+    };
+  }
+
+  // status inconnu ou absent
+  return {kind: 'failure', errorKind: 'server'};
 }
