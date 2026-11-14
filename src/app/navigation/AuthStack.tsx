@@ -7,7 +7,7 @@ import React from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {useTranslation} from '@shared/i18n';
 import {LoginScreen} from '@features/auth/login/screens/LoginScreen';
-import {RegisterBrowserScreen} from '@features/auth/register/screens/RegisterBrowserScreen';
+import {RegisterBrowserScreen} from '@features/auth/registration-browser/screens/RegisterBrowserScreen';
 
 export type AuthStackParamList = {
   Login: {prefillIdentifiant?: string} | undefined;

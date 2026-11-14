@@ -9,6 +9,7 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {Icon, useTheme, type IconName} from '@shared/designsystem';
 import {useTranslation} from '@shared/i18n';
 import {PlaceholderScreen} from './PlaceholderScreen';
+import {SettingsScreen} from '@features/member-space/rooms/settings/screens/SettingsScreen';
 
 export type MemberTabParamList = {
   Home: undefined;
@@ -83,13 +84,8 @@ function MoreNavigator() {
       />
       <MoreStack.Screen
         name="Settings"
+        component={SettingsScreen}
         options={{title: t('rooms.settings')}}
-        children={() => (
-          <PlaceholderScreen
-            titleKey="rooms.settings"
-            testID="screen-settings"
-          />
-        )}
       />
     </MoreStack.Navigator>
   );
