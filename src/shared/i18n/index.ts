@@ -13,6 +13,8 @@ import communityFr from './locales/community.fr.json';
 import communityEn from './locales/community.en.json';
 import communityProfileFr from './locales/communityProfile.fr.json';
 import communityProfileEn from './locales/communityProfile.en.json';
+import appFr from './locales/app.fr.json';
+import appEn from './locales/app.en.json';
 
 export type AppLanguage = 'fr' | 'en';
 
@@ -22,6 +24,7 @@ const resources = {
       ...fr,
       ...communityProfileFr,
       ...communityFr,
+      ...appFr,
     },
   },
   en: {
@@ -29,6 +32,7 @@ const resources = {
       ...en,
       ...communityProfileEn,
       ...communityEn,
+      ...appEn,
     },
   },
 };
