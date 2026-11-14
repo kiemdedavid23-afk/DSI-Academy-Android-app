@@ -24,8 +24,7 @@ import {
 } from '@shared/designsystem';
 import {useTranslation} from '@shared/i18n';
 import {loginStore} from '../store/loginStore';
-import {registerBrowserStore} from '@features/auth/registration-browser/store/registerBrowserStore';
-import {sessionEndReason} from '@core/session';
+import {lastLoginIdentifier, sessionEndReason} from '@core/session';
 import type {AuthStackParamList} from '@app/navigation/AuthStack';
 
 type Nav = NativeStackNavigationProp<AuthStackParamList, 'Login'>;
@@ -80,7 +79,7 @@ export function LoginScreen() {
     if (badId || badMdp) {
       return;
     }
-    registerBrowserStore.rememberLoginIdentifier(idPropre);
+    lastLoginIdentifier.set(idPropre);
     void loginStore.submit(
       idPropre,
       motDePasse,
