@@ -1,0 +1,10 @@
+{
+  "identifiantDsi": "DSI-000123",
+  "nom": "Ouedraogo",
+  "prenom": "Awa",
+  "whatsapp": "+22670123456",
+  "email": "awa@example.com",
+  "pays": "BF",
+  "statut": "active",
+  "codeParrainagePersonnel": "DSI-ABC123"
+}
