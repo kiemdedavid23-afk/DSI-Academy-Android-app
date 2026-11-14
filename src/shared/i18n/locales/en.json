@@ -277,7 +277,9 @@
       "pending": "Pending",
       "approved": "Approved",
       "rejected": "Rejected",
-      "paid": "Paid"
+      "paid": "Paid",
+      "en_attente": "Pending",
+      "traite": "Processed"
     }
   },
   "connexion": {
