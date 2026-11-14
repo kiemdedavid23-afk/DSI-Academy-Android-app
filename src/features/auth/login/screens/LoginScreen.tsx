@@ -3,7 +3,7 @@
  * Aucun import @core/api, @core/network, @core/config (R-LAY).
  */
 
-import React, {useEffect, useRef, useState, useSyncExternalStore} from 'react';
+import React, {useEffect, useState, useSyncExternalStore} from 'react';
 import {
   KeyboardAvoidingView,
   Platform,
@@ -11,7 +11,6 @@ import {
   ScrollView,
   StyleSheet,
   View,
-  type TextInput,
 } from 'react-native';
 import type {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import type {RouteProp} from '@react-navigation/native';
@@ -37,8 +36,6 @@ export function LoginScreen() {
   const {colors, spacing, touch} = useTheme();
   const navigation = useNavigation<Nav>();
   const route = useRoute<LoginRoute>();
-  const passwordRef = useRef<TextInput>(null);
-
   const state = useSyncExternalStore(
     loginStore.subscribe,
     loginStore.getState,
@@ -154,7 +151,7 @@ export function LoginScreen() {
           autoComplete="username"
           keyboardType="email-address"
           autoCapitalize="none"
-          onSubmitEditing={() => passwordRef.current?.focus()}
+          onSubmitEditing={() => {}}
           disabled={loading}
           testID="login-identifier"
         />
