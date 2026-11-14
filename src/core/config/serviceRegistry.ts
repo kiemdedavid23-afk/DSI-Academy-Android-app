@@ -76,3 +76,21 @@ export function resolveRealtimeUrl(service: ServiceId, path: string): string {
 export function resolveWebUrl(path: string): string {
   return `${trimEndSlash(config.web)}${withLeadingSlash(path)}`;
 }
+
+/**
+ * True si l'URL appartient strictement à l'hôte du site (https uniquement).
+ * Comparaison d'hôte stricte — pas de « contient ».
+ * R-WEB-2 / R-WEB-4.
+ */
+export function isSiteUrl(url: string): boolean {
+  try {
+    const candidate = new URL(url);
+    if (candidate.protocol !== 'https:') {
+      return false;
+    }
+    const site = new URL(config.web);
+    return candidate.hostname === site.hostname;
+  } catch {
+    return false;
+  }
+}
