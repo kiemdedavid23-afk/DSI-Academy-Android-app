@@ -1,10 +1,11 @@
 /**
- * Cloche — ouvre Notifications (placeholder). Badge = unread (0 pour l'instant).
+ * Cloche en-tête — chemins SVG exacts du site + pastille MemberBell.css.
  */
 
 import React from 'react';
-import {Pressable, View, StyleSheet} from 'react-native';
-import {Icon, Text, useTheme} from '@shared/designsystem';
+import {View, Pressable, StyleSheet} from 'react-native';
+import Svg, {Path} from 'react-native-svg';
+import {Text, useTheme} from '@shared/designsystem';
 import {useTranslation} from '@shared/i18n';
 import {useUnreadNotifications} from '@shared/store';
 
@@ -14,7 +15,7 @@ type Props = {
 
 export function MemberBell({onPress}: Props) {
   const {t} = useTranslation();
-  const {colors, spacing, radii} = useTheme();
+  const {colors} = useTheme();
   const unread = useUnreadNotifications();
 
   return (
@@ -24,20 +25,38 @@ export function MemberBell({onPress}: Props) {
       accessibilityLabel={t('rooms.notifications')}
       hitSlop={8}
       style={styles.wrap}
-      testID="member-bell">
-      <Icon name="BellIcon" size={22} color={colors.textPrimary} />
+      testID="member-bell"
+      android_ripple={{color: colors.bgSurfaceAlt, borderless: true}}>
+      <Svg width={20} height={20} viewBox="0 0 24 24" fill="none">
+        <Path
+          d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4l2-2z"
+          stroke={colors.textPrimary}
+          strokeWidth={1.8}
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <Path
+          d="M10 21h4"
+          stroke={colors.textPrimary}
+          strokeWidth={1.8}
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </Svg>
       {unread > 0 ? (
         <View
           style={[
             styles.badge,
             {
-              backgroundColor: colors.error,
-              borderRadius: radii.round,
-              minWidth: 16,
-              paddingHorizontal: spacing.xs,
+              backgroundColor: colors.goldPrestige,
+              borderColor: colors.bgSurface,
             },
           ]}>
-          <Text variant="caption" color="onDark">
+          <Text
+            style={[
+              styles.badgeText,
+              {color: colors.bgDarkPremium, fontFamily: 'Manrope-Bold'},
+            ]}>
             {unread > 9 ? '9+' : String(unread)}
           </Text>
         </View>
@@ -47,12 +66,26 @@ export function MemberBell({onPress}: Props) {
 }
 
 const styles = StyleSheet.create({
-  wrap: {padding: 4},
+  wrap: {
+    position: 'relative',
+    padding: 4,
+  },
   badge: {
     position: 'absolute',
-    top: 0,
-    right: 0,
+    top: -4,
+    right: -4,
+    minWidth: 18,
+    height: 18,
+    paddingHorizontal: 4,
+    borderRadius: 9,
+    borderWidth: 2,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  badgeText: {
+    fontSize: 10.9, // 0.68rem
+    fontWeight: '700',
+    lineHeight: 14,
+    textAlign: 'center',
   },
 });
