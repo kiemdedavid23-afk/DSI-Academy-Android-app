@@ -94,3 +94,16 @@ export function isSiteUrl(url: string): boolean {
     return false;
   }
 }
+
+/**
+ * Origines autorisées pour la WebView d'inscription (schéma + hôte du site).
+ * Aucun littéral http(s) hors de ce module.
+ */
+export function getSiteOriginWhitelist(): string[] {
+  try {
+    const site = new URL(config.web);
+    return [`${site.protocol}//${site.host}`];
+  } catch {
+    return [];
+  }
+}
