@@ -64,6 +64,9 @@ export function createResourceStore<T>(
   options: CreateResourceStoreOptions<T>,
 ): ResourceStore<T> {
   const clock = options.now ?? (() => Date.now());
+  // Incrémenté à chaque reset/purge : une réponse arrivée après une purge
+  // (déconnexion) est ignorée et ne remet jamais les données de l'ancienne session.
+  let generation = 0;
 
   const api = createStore<InternalState<T>>((set, get) => {
     const isFresh = (): boolean => {
@@ -75,11 +78,15 @@ export function createResourceStore<T>(
     };
 
     const runFetch = async (background: boolean): Promise<void> => {
+      const startedIn = generation;
       if (!background) {
         set({status: 'loading', error: null});
       }
       try {
         const data = await options.fetcher();
+        if (startedIn !== generation) {
+          return;
+        }
         set({
           data,
           status: 'success',
@@ -87,6 +94,9 @@ export function createResourceStore<T>(
           updatedAt: clock(),
         });
       } catch (err) {
+        if (startedIn !== generation) {
+          return;
+        }
         const message =
           err instanceof Error ? err.message : 'Erreur de chargement';
         const {data} = get();
@@ -116,8 +126,10 @@ export function createResourceStore<T>(
           return;
         }
         const background = !force && current.data != null;
-        const promise = runFetch(background).finally(() => {
-          set({inFlight: null});
+        const promise: Promise<void> = runFetch(background).finally(() => {
+          if (get().inFlight === promise) {
+            set({inFlight: null});
+          }
         });
         set({inFlight: promise});
         await promise;
@@ -128,6 +140,7 @@ export function createResourceStore<T>(
       },
 
       reset: () => {
+        generation += 1;
         set({
           data: null,
           status: 'idle',
