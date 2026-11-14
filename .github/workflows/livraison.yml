@@ -1,0 +1,257 @@
+name: Livraison
+
+# Applique un zip livré par Grok (déposé dans une Release de ce dépôt) sur la branche main :
+# fichier absent -> créé ; fichier présent -> remplacé ; _delete.txt -> fichiers supprimés.
+
+on:
+  workflow_dispatch:
+    inputs:
+      release:
+        description: "Lien de la page de la Release (ou son tag) qui contient le zip"
+        required: true
+        type: string
+      simulation:
+        description: "Simulation : montre ce qui changerait, sans rien enregistrer"
+        required: false
+        type: boolean
+        default: false
+      lancer_ci:
+        description: "Lancer le CI après l'enregistrement"
+        required: false
+        type: boolean
+        default: true
+
+permissions:
+  contents: write
+  actions: write
+
+concurrency:
+  group: livraison
+  cancel-in-progress: false
+
+env:
+  CI_WORKFLOW: ci.yml
+
+jobs:
+  appliquer:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Récupérer le dépôt
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Télécharger le zip de la Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_REF: ${{ inputs.release }}
+        run: |
+          set -euo pipefail
+          ref="$(printf '%s' "$RELEASE_REF" | tr -d '[:space:]')"
+          repo_lc="$(printf '%s' "$GITHUB_REPOSITORY" | tr 'A-Z' 'a-z')"
+          tag="$ref"
+          if [[ "$ref" == http* ]]; then
+            ref_lc="$(printf '%s' "$ref" | tr 'A-Z' 'a-z')"
+            case "$ref_lc" in
+              "https://github.com/$repo_lc/"*) ;;
+              *) echo "::error::Ce lien ne pointe pas vers ce dépôt ($GITHUB_REPOSITORY)."; exit 1 ;;
+            esac
+            case "$ref" in
+              */releases/tag/*) tag="${ref#*/releases/tag/}" ;;
+              */releases/download/*) tag="${ref#*/releases/download/}"; tag="${tag%%/*}" ;;
+              *) echo "::error::Lien non reconnu. Colle le lien de la page de la Release."; exit 1 ;;
+            esac
+          fi
+          tag="${tag%%[?#]*}"
+          tag="${tag%/}"
+          tag="$(python3 -c 'import sys,urllib.parse;print(urllib.parse.unquote(sys.argv[1]))' "$tag")"
+          if [ -z "$tag" ]; then echo "::error::Tag de Release introuvable."; exit 1; fi
+          echo "Release : $tag"
+          mkdir -p "$RUNNER_TEMP/dl" "$RUNNER_TEMP/zip"
+          if ! gh release download "$tag" --repo "$GITHUB_REPOSITORY" --pattern '*.zip' --dir "$RUNNER_TEMP/dl"; then
+            echo "::error::Téléchargement impossible. La Release doit être PUBLIÉE (une version brouillon n'est pas accessible) et contenir un fichier .zip."
+            exit 1
+          fi
+          n="$(find "$RUNNER_TEMP/dl" -maxdepth 1 -name '*.zip' | wc -l)"
+          if [ "$n" != "1" ]; then
+            echo "::error::La Release doit contenir exactement 1 fichier .zip (trouvé : $n)."
+            ls -1 "$RUNNER_TEMP/dl"
+            exit 1
+          fi
+          zipfile="$(find "$RUNNER_TEMP/dl" -maxdepth 1 -name '*.zip')"
+          size="$(stat -c %s "$zipfile")"
+          if [ "$size" -gt 104857600 ]; then echo "::error::Zip trop gros (> 100 Mo)."; exit 1; fi
+          unzip -q -o "$zipfile" -d "$RUNNER_TEMP/zip"
+          echo "TAG=$tag" >> "$GITHUB_ENV"
+          echo "EXTRACT=$RUNNER_TEMP/zip" >> "$GITHUB_ENV"
+
+      - name: Appliquer les fichiers
+        env:
+          SIMULATION: ${{ inputs.simulation }}
+        run: |
+          python3 - <<'PY'
+          import os, shutil, filecmp, pathlib
+
+          repo = pathlib.Path(os.environ["GITHUB_WORKSPACE"]).resolve()
+          root = pathlib.Path(os.environ["EXTRACT"])
+          ROOTS = {"src", "docs", "__tests__", "__mocks__", "contracts", "scripts",
+                   "android", "ios", "assets", ".github"}
+          DELETE_NAMES = {"_delete.txt", "_a_supprimer.txt"}
+
+          def visible(d):
+              return [p for p in d.iterdir() if p.name != "__MACOSX"]
+
+          entries = visible(root)
+          while len(entries) == 1 and entries[0].is_dir() and entries[0].name not in ROOTS:
+              root = entries[0]
+              entries = visible(root)
+
+          def case_clash(rel):
+              cur = repo
+              for part in rel.split("/"):
+                  if not cur.is_dir():
+                      return None
+                  names = [n.name for n in cur.iterdir()]
+                  if part not in names:
+                      key = part.lower().replace("-", "").replace("_", "")
+                      for n in names:
+                          if n.lower().replace("-", "").replace("_", "") == key:
+                              return "le dossier « %s » existe déjà avec un nom très proche (« %s »)" % (n, part)
+                      return None
+                  cur = cur / part
+              return None
+
+          created, updated, same, deleted, skipped, warnings = [], [], [], [], [], []
+          livraisons, delete_file = [], None
+
+          for f in sorted(root.rglob("*")):
+              if f.is_dir():
+                  continue
+              rel = f.relative_to(root).as_posix()
+              parts = rel.split("/")
+              if "__MACOSX" in parts or parts[0] == ".git" or parts[-1] == ".DS_Store":
+                  continue
+              if f.is_symlink():
+                  skipped.append((rel, "lien symbolique ignoré")); continue
+              if ".." in parts or rel.startswith("/"):
+                  skipped.append((rel, "chemin refusé")); continue
+              if rel.startswith(".github/workflows/"):
+                  skipped.append((rel, "un workflow ne peut pas être modifié par ce workflow : à téléverser à la main")); continue
+              if rel == "package-lock.json":
+                  skipped.append((rel, "généré par le workflow Lockfile : ignoré")); continue
+              if len(parts) == 1 and parts[0].upper().startswith("LIVRAISON") and rel.endswith(".md"):
+                  livraisons.append(f); continue
+              if len(parts) == 1 and rel.lower() in DELETE_NAMES:
+                  delete_file = f; continue
+              target = (repo / rel).resolve()
+              if repo not in target.parents:
+                  skipped.append((rel, "hors du dépôt")); continue
+              if target.is_dir():
+                  skipped.append((rel, "un dossier porte ce nom")); continue
+              clash = case_clash(rel)
+              if clash:
+                  warnings.append("%s : %s" % (rel, clash))
+              if target.exists():
+                  if filecmp.cmp(f, target, shallow=False):
+                      same.append(rel); continue
+                  updated.append(rel)
+              else:
+                  created.append(rel)
+              target.parent.mkdir(parents=True, exist_ok=True)
+              shutil.copyfile(f, target)
+
+          if delete_file is not None:
+              for line in delete_file.read_text(encoding="utf-8").splitlines():
+                  rel = line.strip().replace("\\", "/")
+                  if not rel or rel.startswith("#"):
+                      continue
+                  parts = rel.split("/")
+                  if rel.startswith("/") or ".." in parts or parts[0] in (".git", ".github"):
+                      skipped.append((rel, "suppression refusée")); continue
+                  t = (repo / rel).resolve()
+                  if repo not in t.parents:
+                      skipped.append((rel, "suppression refusée")); continue
+                  if t.is_file():
+                      t.unlink(); deleted.append(rel)
+                  elif not t.exists():
+                      skipped.append((rel, "déjà absent"))
+                  else:
+                      skipped.append((rel, "est un dossier : liste les fichiers un par un"))
+
+          changed = bool(created or updated or deleted)
+          pkg = "package.json" in created or "package.json" in updated
+
+          out = []
+          out.append("## Livraison `%s`%s\n" % (os.environ["TAG"],
+                     " — SIMULATION" if os.environ["SIMULATION"] == "true" else ""))
+          out.append("| Créés | Modifiés | Supprimés | Identiques | Ignorés |\n|---|---|---|---|---|")
+          out.append("| %d | %d | %d | %d | %d |\n" % (len(created), len(updated), len(deleted), len(same), len(skipped)))
+          def block(title, items):
+              if items:
+                  out.append("### %s\n" % title)
+                  out.extend("- `%s`" % i for i in items)
+                  out.append("")
+          block("Créés", created); block("Modifiés", updated); block("Supprimés", deleted)
+          if skipped:
+              out.append("### Ignorés\n")
+              out.extend("- `%s` — %s" % s for s in skipped); out.append("")
+          if warnings:
+              out.append("### ⚠ Attention : dossiers au nom très proche (doublon possible)\n")
+              out.extend("- %s" % w for w in warnings); out.append("")
+          if pkg:
+              out.append("### ⚠ package.json a changé : lance le workflow Lockfile AVANT le CI.\n")
+          for l in livraisons:
+              txt = l.read_text(encoding="utf-8", errors="replace").splitlines()[:150]
+              out.append("<details><summary>%s</summary>\n\n%s\n\n</details>\n" % (l.name, "\n".join(txt)))
+          summary = "\n".join(out)
+          with open(os.environ["GITHUB_STEP_SUMMARY"], "a", encoding="utf-8") as fh:
+              fh.write(summary + "\n")
+          print(summary)
+          for w in warnings:
+              print("::warning::" + w)
+          if pkg:
+              print("::warning::package.json a changé : lance le workflow Lockfile avant le CI.")
+          if not (created or updated or deleted or same):
+              print("::error::Le zip ne contient aucun fichier utilisable.")
+              raise SystemExit(1)
+          with open(os.environ["GITHUB_ENV"], "a") as fh:
+              fh.write("CHANGED=%s\nPKG_CHANGED=%s\nNB_C=%d\nNB_U=%d\nNB_D=%d\n" % (
+                  "true" if changed else "false", "true" if pkg else "false",
+                  len(created), len(updated), len(deleted)))
+          PY
+
+      - name: Enregistrer sur main
+        if: ${{ !inputs.simulation }}
+        run: |
+          set -euo pipefail
+          if [ "$CHANGED" != "true" ]; then
+            echo "Rien à enregistrer : tous les fichiers sont déjà à jour."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "Aucun changement."
+            echo "CHANGED=false" >> "$GITHUB_ENV"
+            exit 0
+          fi
+          git commit -q -m "Livraison $TAG : $NB_C créé(s), $NB_U modifié(s), $NB_D supprimé(s)"
+          git push origin HEAD:main
+          echo "Enregistré : $(git rev-parse --short HEAD)"
+
+      - name: Lancer le CI
+        if: ${{ !inputs.simulation && inputs.lancer_ci }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if [ "${CHANGED:-false}" != "true" ]; then
+            echo "Rien n'a changé : CI non lancé."
+            exit 0
+          fi
+          if [ "${PKG_CHANGED:-false}" = "true" ]; then
+            echo "::warning::package.json a changé : CI non lancé. Lance d'abord le workflow Lockfile, puis le CI."
+            exit 0
+          fi
+          gh workflow run "$CI_WORKFLOW" --ref main || echo "::warning::Impossible de lancer $CI_WORKFLOW : lance-le à la main."
