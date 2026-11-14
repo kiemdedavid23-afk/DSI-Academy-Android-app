@@ -104,7 +104,11 @@ describe('ThemeProvider', () => {
       return null;
     }
     const spy = jest.spyOn(console, 'error').mockImplementation(() => {});
-    expect(() => create(<Bad />)).toThrow();
+    expect(() => {
+      act(() => {
+        create(<Bad />);
+      });
+    }).toThrow();
     spy.mockRestore();
   });
 

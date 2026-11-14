@@ -149,4 +149,41 @@ describe('createResourceStore', () => {
       updatedAt: null,
     });
   });
+
+  it('une réponse arrivée après une purge est ignorée', async () => {
+    let resolveFetch: (value: {value: number}) => void = () => undefined;
+    const store = createResourceStore<{value: number}>({
+      ttlMs: 10_000,
+      now: clock,
+      fetcher: () =>
+        new Promise(resolve => {
+          resolveFetch = resolve;
+        }),
+    });
+
+    const pending = store.load();
+    sessionStore.clearSession();
+    resolveFetch({value: 99});
+    await pending;
+
+    expect(store.getState().data).toBeNull();
+    expect(store.getState().status).toBe('idle');
+    expect(store.getState().updatedAt).toBeNull();
+  });
+
+  it('un nouveau chargement après purge fonctionne', async () => {
+    let n = 0;
+    const store = createResourceStore<number>({
+      ttlMs: 10_000,
+      now: clock,
+      fetcher: async () => {
+        n += 1;
+        return n;
+      },
+    });
+    await store.load();
+    store.purge();
+    await store.load();
+    expect(store.getState().data).toBe(2);
+  });
 });

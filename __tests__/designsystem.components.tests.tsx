@@ -385,11 +385,14 @@ describe('BrandLoader', () => {
   });
 
   it('thème sombre : texte du logo en version claire', async () => {
-    const light = await render(<BrandLoader testID="bl" />);
-    const dark = await render(<BrandLoader testID="bl" />, {mode: 'dark'});
     const sources = (r: ReactTestRenderer) =>
-      r.root.findAllByType(Image).map(n => n.props.source);
-    expect(sources(light)).not.toEqual(sources(dark));
+      JSON.stringify(r.root.findAllByType(Image).map(n => n.props.source));
+    const light = await render(<BrandLoader testID="bl" />);
+    const lightSources = sources(light);
+    const dark = await render(<BrandLoader testID="bl" />, {mode: 'dark'});
+    expect(lightSources).toContain('logo-word.png');
+    expect(lightSources).not.toContain('logo-word-dark.png');
+    expect(sources(dark)).toContain('logo-word-dark.png');
   });
 });
 
