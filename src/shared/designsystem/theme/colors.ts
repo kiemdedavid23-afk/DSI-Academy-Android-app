@@ -20,13 +20,32 @@ export type ColorTokens = {
   goldLight: string;
   goldBorder: string;
   goldGradientEnd: string;
+  /** Texte doré des phrases d'accueil / tags (MemberSpaceLayout --dsi-gold-text). */
+  goldText: string;
+  /** Or d'accueil membre (--home-gold). */
+  homeGold: string;
   // Bleu
   bluePrimary: string;
   blueLight: string;
   /** Bleu « actif / lien » : lisible en clair comme en sombre (§3). */
   blueActive: string;
+  // Royal title (dégradé impossible en RN → repli uni)
+  /** Repli titre « DSI Academy » clair (MemberSpaceLayout --dsi-royal-start). */
+  royalStart: string;
+  /** Fin du dégradé royal (référence, non utilisée seule). */
+  royalEnd: string;
+  /** Titre « DSI Academy » en thème sombre. */
+  titleOnDark: string;
   // Bordure
   borderLight: string;
+  // Overlay tiroir
+  overlay: string;
+  // Badge abonnement accueil
+  badgeNoneBg: string;
+  badgeNoneText: string;
+  badgeActiveText: string;
+  badgeExpiredBg: string;
+  badgeExpiredText: string;
   // Sémantiques (§5) : `error` est la couleur du texte
   error: string;
   errorBg: string;
@@ -81,12 +100,26 @@ export const lightColors: ColorTokens = {
   goldLight: '#FDF6E2',
   goldBorder: withAlpha('#D4AF37', 0.35),
   goldGradientEnd: '#E8C77E',
+  goldText: '#8c6a12',
+  homeGold: '#8c6a12',
 
   bluePrimary: '#1E40AF',
   blueLight: '#EFF6FF',
   blueActive: '#1E40AF',
 
+  royalStart: '#0a1b54',
+  royalEnd: '#1d4ed8',
+  titleOnDark: '#dbeafe',
+
   borderLight: '#E2E8F0',
+
+  overlay: 'rgba(15, 23, 42, 0.45)',
+
+  badgeNoneBg: '#e2e8f0',
+  badgeNoneText: '#334155',
+  badgeActiveText: '#6b4f00',
+  badgeExpiredBg: '#fee2e2',
+  badgeExpiredText: '#991b1b',
 
   error: '#B91C1C',
   errorBg: '#FEF2F2',
@@ -124,12 +157,26 @@ export const darkColors: ColorTokens = {
   goldLight: withAlpha('#D4AF37', SEMANTIC_BG_ALPHA),
   goldBorder: withAlpha('#D4AF37', 0.35),
   goldGradientEnd: '#E8C77E',
+  goldText: '#D4AF37',
+  homeGold: '#D4AF37',
 
   bluePrimary: '#1E40AF',
   blueLight: '#1E3A5F',
   blueActive: '#93C5FD',
 
+  royalStart: '#0a1b54',
+  royalEnd: '#1d4ed8',
+  titleOnDark: '#dbeafe',
+
   borderLight: '#334155',
+
+  overlay: 'rgba(15, 23, 42, 0.45)',
+
+  badgeNoneBg: '#334155',
+  badgeNoneText: '#CBD5E1',
+  badgeActiveText: '#F5D778',
+  badgeExpiredBg: withAlpha('#F87171', SEMANTIC_BG_ALPHA),
+  badgeExpiredText: '#FCA5A5',
 
   error: '#F87171',
   errorBg: withAlpha('#F87171', SEMANTIC_BG_ALPHA),
