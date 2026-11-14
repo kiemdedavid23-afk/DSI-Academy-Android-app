@@ -25,7 +25,8 @@ import {
 } from '@shared/designsystem';
 import {useTranslation} from '@shared/i18n';
 import {loginStore} from '../store/loginStore';
-import {registerBrowserStore} from '@features/auth/register/store/registerBrowserStore';
+import {registerBrowserStore} from '@features/auth/registration-browser/store/registerBrowserStore';
+import {sessionEndReason} from '@core/session';
 import type {AuthStackParamList} from '@app/navigation/AuthStack';
 
 type Nav = NativeStackNavigationProp<AuthStackParamList, 'Login'>;
@@ -50,12 +51,20 @@ export function LoginScreen() {
   const [souvenir, setSouvenir] = useState(false);
   const [idError, setIdError] = useState(false);
   const [mdpError, setMdpError] = useState(false);
+  const [sessionInfo, setSessionInfo] = useState<string | null>(null);
 
   useEffect(() => {
     if (prefill) {
       setIdentifiant(prefill);
     }
   }, [prefill]);
+
+  useEffect(() => {
+    const reason = sessionEndReason.consume();
+    if (reason === 'unauthorized' || reason === 'expired') {
+      setSessionInfo(t('home.sessionExpired'));
+    }
+  }, [t]);
 
   useEffect(() => {
     return () => {
@@ -206,6 +215,16 @@ export function LoginScreen() {
           disabled={loading}
           testID="login-submit"
         />
+
+        {sessionInfo ? (
+          <Text
+            variant="bodySmall"
+            color="secondary"
+            style={{marginTop: spacing.md}}
+            testID="login-session-info">
+            {sessionInfo}
+          </Text>
+        ) : null}
 
         {state.error ? (
           <Text
