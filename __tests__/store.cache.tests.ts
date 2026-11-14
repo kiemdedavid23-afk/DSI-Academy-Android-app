@@ -9,9 +9,9 @@ import {sessionStore} from '@core/session';
 describe('createResourceStore', () => {
   let now = 1_000_000;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     storeRegistry.clearRegistry();
-    sessionStore.setSessionPresent(false);
+    await sessionStore.clearSessionAsync();
     now = 1_000_000;
   });
 

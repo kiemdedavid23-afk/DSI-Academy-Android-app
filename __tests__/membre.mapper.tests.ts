@@ -73,6 +73,10 @@ describe('membre.mapper', () => {
   });
 
   it('503 → server', () => {
-    expect(mapMemberProfile(503, {}).errorKind).toBe('server');
+    const r = mapMemberProfile(503, {});
+    expect(r.kind).toBe('failure');
+    if (r.kind === 'failure') {
+      expect(r.errorKind).toBe('server');
+    }
   });
 });

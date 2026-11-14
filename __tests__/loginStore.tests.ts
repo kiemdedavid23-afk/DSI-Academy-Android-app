@@ -1,11 +1,6 @@
 import {loginStore} from '@features/auth/login/store/loginStore';
 import * as authApi from '@core/api/endpoints/payment/auth.api';
 import {sessionStore, registrationTracking} from '@core/session';
-import {
-  NetworkError,
-  TimeoutError,
-} from '@core/network/errors';
-
 jest.mock('@core/api/endpoints/payment/auth.api');
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports

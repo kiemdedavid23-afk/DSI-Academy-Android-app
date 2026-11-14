@@ -1,5 +1,4 @@
-import {continueStore} from '@shared/store/continueStore';
-import {favoritesStore} from '@shared/store/favoritesStore';
+import {continueStore, favoritesStore} from '@shared/store';
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const asyncStorage = require('@react-native-async-storage/async-storage');

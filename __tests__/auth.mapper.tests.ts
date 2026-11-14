@@ -51,6 +51,7 @@ describe('mapAuthConnexionResponse', () => {
     const r = mapAuthConnexionResponse(200, refuse);
     expect(r).toEqual({
       kind: 'failure',
+      errorKind: 'credentials',
       message: 'Identifiant ou mot de passe incorrect.',
     });
   });
@@ -58,6 +59,9 @@ describe('mapAuthConnexionResponse', () => {
   it('mappe suspendu avec message Worker', () => {
     const r = mapAuthConnexionResponse(200, suspendu);
     expect(r.kind).toBe('failure');
+    if (r.kind === 'failure') {
+      expect(r.errorKind).toBe('refused');
+    }
     if (r.kind === 'failure') {
       expect(r.message).toContain('suspendu');
     }
