@@ -21,7 +21,7 @@ import {
 } from '@shared/store';
 import {sessionStore} from '@core/session';
 import {computeSubscription} from '@core/utils/subscription';
-import {SOCIAL_LINKS} from '@core/config/socialLinks';
+import {socialLinksStore} from '../store/socialLinksStore';
 import {useSyncExternalStore} from 'react';
 
 export type MemberRoomId =
@@ -142,10 +142,8 @@ export function MemberDrawer({open, onClose, activeRoom, onNavigateRoom}: Props)
     outputRange: [-320, 0],
   });
 
-  const openHttps = (href: string) => {
-    if (!href.startsWith('https://')) {
-      return;
-    }
+  const openSocial = (href: string) => {
+    // href déjà validé https dans core/config/socialLinks
     void Linking.openURL(href).catch(() => {});
   };
 
@@ -326,11 +324,11 @@ export function MemberDrawer({open, onClose, activeRoom, onNavigateRoom}: Props)
             <View
               style={[styles.social, {paddingHorizontal: spacing.lg, gap: spacing.md}]}
               accessibilityLabel={t('drawer.follow')}>
-              {SOCIAL_LINKS.map(s =>
+              {socialLinksStore.list().map(s =>
                 s.href ? (
                   <Pressable
                     key={s.id}
-                    onPress={() => openHttps(s.href!)}
+                    onPress={() => openSocial(s.href!)}
                     accessibilityRole="link"
                     accessibilityLabel={s.label}
                     style={styles.socialBtn}>
@@ -370,7 +368,7 @@ export function MemberDrawer({open, onClose, activeRoom, onNavigateRoom}: Props)
 
 const styles = StyleSheet.create({
   overlay: {flex: 1, flexDirection: 'row'},
-  backdrop: {flex: 1, backgroundColor: 'rgba(2,6,23,0.45)'},
+  backdrop: {flex: 1, backgroundColor: colors.bgDarkPremium, opacity: 0.7},
   panel: {width: 300, maxWidth: '86%', height: '100%'},
   top: {
     flexDirection: 'row',
