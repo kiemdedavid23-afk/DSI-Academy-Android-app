@@ -14,7 +14,8 @@ import {
   type TextInput,
 } from 'react-native';
 import type {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {useNavigation} from '@react-navigation/native';
+import type {RouteProp} from '@react-navigation/native';
+import {useNavigation, useRoute} from '@react-navigation/native';
 import {
   Button,
   Card,
@@ -24,14 +25,17 @@ import {
 } from '@shared/designsystem';
 import {useTranslation} from '@shared/i18n';
 import {loginStore} from '../store/loginStore';
+import {registerBrowserStore} from '@features/auth/register/store/registerBrowserStore';
 import type {AuthStackParamList} from '@app/navigation/AuthStack';
 
 type Nav = NativeStackNavigationProp<AuthStackParamList, 'Login'>;
+type LoginRoute = RouteProp<AuthStackParamList, 'Login'>;
 
 export function LoginScreen() {
   const {t} = useTranslation();
   const {colors, spacing, touch} = useTheme();
   const navigation = useNavigation<Nav>();
+  const route = useRoute<LoginRoute>();
   const passwordRef = useRef<TextInput>(null);
 
   const state = useSyncExternalStore(
@@ -40,11 +44,18 @@ export function LoginScreen() {
     loginStore.getState,
   );
 
-  const [identifiant, setIdentifiant] = useState('');
+  const prefill = route.params?.prefillIdentifiant ?? '';
+  const [identifiant, setIdentifiant] = useState(prefill);
   const [motDePasse, setMotDePasse] = useState('');
   const [souvenir, setSouvenir] = useState(false);
   const [idError, setIdError] = useState(false);
   const [mdpError, setMdpError] = useState(false);
+
+  useEffect(() => {
+    if (prefill) {
+      setIdentifiant(prefill);
+    }
+  }, [prefill]);
 
   useEffect(() => {
     return () => {
@@ -63,6 +74,7 @@ export function LoginScreen() {
     if (badId || badMdp) {
       return;
     }
+    registerBrowserStore.rememberLoginIdentifier(idPropre);
     void loginStore.submit(
       idPropre,
       motDePasse,
@@ -92,7 +104,7 @@ export function LoginScreen() {
           </Text>
           <Button
             label={t('inscription.payment.pay')}
-            onPress={() => navigation.navigate('RegisterBrowser')}
+            onPress={() => navigation.navigate('RegisterBrowser', {mode: 'resume'})}
             testID="login-pending-pay"
           />
         </Card>
@@ -218,7 +230,7 @@ export function LoginScreen() {
           </Text>
           <Pressable
             testID="login-create-account"
-            onPress={() => navigation.navigate('RegisterBrowser')}
+            onPress={() => navigation.navigate('RegisterBrowser', {mode: 'new'})}
             accessibilityRole="link"
             accessibilityLabel={t('connexion.createAccount')}
             style={{minHeight: touch.min, justifyContent: 'center'}}>
