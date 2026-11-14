@@ -24,16 +24,10 @@ export function decideNavigation(url: string): NavigationDecision {
   if (!trimmed || trimmed === 'about:blank') {
     return {action: 'allow'};
   }
-  try {
-    const parsed = new URL(trimmed);
-    if (parsed.protocol === 'https:') {
-      if (isSiteUrl(trimmed)) {
-        return {action: 'allow'};
-      }
-      return {action: 'openExternal', url: trimmed};
-    }
-    return {action: 'deny'};
-  } catch {
-    return {action: 'deny'};
+  if (/^https:\/\/[^\s/?#@\\]+/i.test(trimmed)) {
+    return isSiteUrl(trimmed)
+      ? {action: 'allow'}
+      : {action: 'openExternal', url: trimmed};
   }
+  return {action: 'deny'};
 }
