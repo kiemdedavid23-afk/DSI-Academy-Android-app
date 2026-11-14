@@ -8,7 +8,7 @@ import {View, StyleSheet} from 'react-native';
 import {ThemeProvider, LoadingState, useTheme} from '@shared/designsystem';
 import {initI18n, changeLanguage} from '@shared/i18n';
 import {preferencesStore} from '@shared/preferences';
-import {sessionStore} from '@core/session';
+import {sessionStore, sessionExpiryWatch} from '@core/session';
 import {RootNavigator} from '../navigation/RootNavigator';
 import {featureFlags} from '@core/config/featureFlags';
 import {ThemeGalleryScreen} from '../dev/ThemeGalleryScreen';
@@ -23,6 +23,9 @@ function Bootstrap({children}: {children: React.ReactNode}) {
       const prefs = await preferencesStore.hydrate();
       initI18n(prefs.language);
       await sessionStore.hydrate();
+      sessionExpiryWatch.start(reason => {
+        void sessionStore.expireSession(reason);
+      });
       if (!cancelled) {
         setReady(true);
       }
