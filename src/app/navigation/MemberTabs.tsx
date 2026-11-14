@@ -3,7 +3,7 @@
  * Entrée active = style pilule. Lancement → Espace membre > Accueil.
  */
 
-import React, {useCallback} from 'react';
+import React from 'react';
 import {View, Pressable, StyleSheet, Platform} from 'react-native';
 import {
   createBottomTabNavigator,
@@ -67,7 +67,7 @@ const HOUSES: HouseTab[] = [
   },
 ];
 
-function MemberTabBar({state, descriptors, navigation}: BottomTabBarProps) {
+function MemberTabBar({state, navigation}: BottomTabBarProps) {
   const {t} = useTranslation();
   const {colors, spacing, radii} = useTheme();
 
