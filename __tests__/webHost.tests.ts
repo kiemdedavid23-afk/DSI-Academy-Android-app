@@ -22,6 +22,26 @@ describe('isSiteUrl', () => {
     expect(isSiteUrl(`http://${siteHost}/x`)).toBe(false);
   });
 
+  it('refuse les identifiants dans l’adresse et les ports étrangers', () => {
+    expect(isSiteUrl(`https://${siteHost}@evil.invalid/x`)).toBe(false);
+    expect(isSiteUrl(`https://evil.invalid@${siteHost}/x`)).toBe(false);
+    expect(isSiteUrl(`https://${siteHost}:8443/x`)).toBe(false);
+    expect(isSiteUrl(`https://${siteHost}\\@evil.invalid/x`)).toBe(false);
+  });
+
+  it('accepte le port 443, la casse et le point final', () => {
+    expect(isSiteUrl(`https://${siteHost}:443/x`)).toBe(true);
+    expect(isSiteUrl(`HTTPS://${siteHost.toUpperCase()}/x`)).toBe(true);
+    expect(isSiteUrl(`https://${siteHost}./x`)).toBe(true);
+  });
+
+  it('refuse les valeurs vides ou invalides', () => {
+    expect(isSiteUrl('')).toBe(false);
+    expect(isSiteUrl('https://')).toBe(false);
+    expect(isSiteUrl(`https://${siteHost} /x`)).toBe(false);
+    expect(isSiteUrl(undefined as unknown as string)).toBe(false);
+  });
+
   it('refuse intent et file', () => {
     expect(isSiteUrl('intent://pay')).toBe(false);
     expect(isSiteUrl('file:///tmp/x')).toBe(false);
