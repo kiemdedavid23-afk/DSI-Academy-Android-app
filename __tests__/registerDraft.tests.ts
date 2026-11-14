@@ -1,7 +1,7 @@
 import {
   buildDraftInjectionScript,
   buildDraftPayload,
-} from '@features/auth/register/logic/draftInjection';
+} from '@features/auth/registration-browser/logic/draftInjection';
 import {isSiteUrl} from '@core/config/serviceRegistry';
 import {BUILD_CONFIG} from '@core/config/buildConfig.generated';
 
