@@ -9,7 +9,7 @@ import {storageGet, storageSet} from '@core/storage';
 import {
   themePreferences,
   type ThemePreference,
-} from '@shared/designsystem/theme/themePreferences';
+} from '../designsystem/theme/themePreferences';
 
 const STORAGE_KEY = 'dsi_preferences';
 
