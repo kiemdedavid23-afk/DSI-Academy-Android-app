@@ -7,9 +7,9 @@ import {sessionStore} from '@core/session';
 import {createResourceStore, storeRegistry} from '@shared/store';
 
 describe('session purge', () => {
-  beforeEach(() => {
+  beforeEach(async () => {
     storeRegistry.clearRegistry();
-    sessionStore.setSessionPresent(false);
+    await sessionStore.clearSessionAsync();
   });
 
   it('onSessionCleared est appelé par clearSession', () => {
@@ -33,9 +33,21 @@ describe('session purge', () => {
     expect(store.getState().status).toBe('idle');
   });
 
-  it('hasSession reste false en L0d', () => {
+  it('hasSession false puis true après setSession explicite', async () => {
     expect(sessionStore.hasSession()).toBe(false);
-    sessionStore.setSessionPresent(true);
+    await sessionStore.setSession(
+      {
+        token: 'TEST_TOKEN_NOT_REAL',
+        userId: 'DSI-00000',
+        accountStatus: null,
+        subscriptionStatus: null,
+        subscriptionActive: false,
+        dateFin: null,
+        accessProof: null,
+        expiresIn: 604800,
+      },
+      false,
+    );
     expect(sessionStore.hasSession()).toBe(true);
     sessionStore.clearSession();
     expect(sessionStore.hasSession()).toBe(false);

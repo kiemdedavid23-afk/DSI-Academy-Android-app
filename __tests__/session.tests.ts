@@ -51,11 +51,9 @@ describe('sessionStore L1a', () => {
       true,
       1_000_000,
     );
-    // reset mémoire sans toucher secure : on force hydrate
-    sessionStore.setSessionPresent(false);
-    // setSessionPresent(false) clears and emits cleared - also clears secure via clearSession path
-    // Better: hydrate after set with souvenir
-    await sessionStore.hydrate(1_000_000);
+    // Session en mémoire + secure. hydrate doit confirmer.
+    const ok = await sessionStore.hydrate(1_000_000);
+    expect(ok).toBe(true);
     expect(sessionStore.hasSession()).toBe(true);
     expect(sessionStore.getAccessProof()).toBe('PROOF');
   });

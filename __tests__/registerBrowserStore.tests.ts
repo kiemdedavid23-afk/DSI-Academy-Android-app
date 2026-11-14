@@ -55,4 +55,15 @@ describe('registerBrowserStore', () => {
       'user@test.invalid',
     );
   });
+
+  it('getInjectedScript est idempotent (deux lectures = même script)', async () => {
+    // Forcer un script via prepare resume nécessite tracking ; on set via prepare new puis injection manuelle n'est pas exposée.
+    // prepare('new') laisse injectedScript null — deux lectures restent null.
+    await registerBrowserStore.prepare('new');
+    const a = registerBrowserStore.getInjectedScript();
+    const b = registerBrowserStore.getInjectedScript();
+    expect(a).toBe(b);
+    expect(a).toBeNull();
+  });
+
 });
