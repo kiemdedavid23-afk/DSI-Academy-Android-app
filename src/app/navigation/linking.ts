@@ -1,41 +1,32 @@
 /**
- * Table des liens profonds (R-NAV-4). Minimale pour L0d.
- * Les types viennent des listes de routes des navigateurs : la pile « Plus »
- * est imbriquée dans l'onglet « More ».
+ * Liens profonds — seul endroit (R-NAV).
  */
 
-import type {
-  LinkingOptions,
-  NavigatorScreenParams,
-} from '@react-navigation/native';
-import type {AuthStackParamList} from './AuthStack';
-import type {MemberTabParamList, MoreStackParamList} from './MemberTabs';
+import type {LinkingOptions} from '@react-navigation/native';
+import type {MemberTabParamList} from './MemberTabs';
 
-export type RootParamList = AuthStackParamList &
-  Omit<MemberTabParamList, 'More'> & {
-    More: NavigatorScreenParams<MoreStackParamList>;
-  };
-
-export const linking: LinkingOptions<RootParamList> = {
-  prefixes: ['dsiacademy://'],
+export const linking: LinkingOptions<MemberTabParamList> = {
+  prefixes: ['dsiacademy://', 'https://dsiacademy.app'],
   config: {
     screens: {
-      Login: 'connexion',
-      RegisterBrowser: 'inscription',
-      Home: 'member-space',
-      Dsi: 'member-space/dsi-holdings',
-      Notifications: 'member-space/notifications',
-      Profile: 'member-space/profile',
-      More: {
+      Community: 'community',
+      Academy: 'academy',
+      MemberSpace: {
+        path: 'member-space',
         screens: {
-          MoreHome: 'member-space/more',
-          Subscription: 'member-space/subscription',
-          Withdrawals: 'member-space/withdrawals',
-          Payments: 'member-space/payments',
-          Referral: 'member-space/referral',
-          Settings: 'member-space/settings',
+          MemberHome: '',
+          MemberSubscription: 'subscription',
+          MemberDsiHoldings: 'dsi-holdings',
+          MemberWithdrawals: 'withdrawals',
+          MemberPayments: 'payments',
+          MemberReferral: 'referral',
+          MemberNotifications: 'notifications',
+          MemberProfile: 'profile',
+          MemberSettings: 'settings',
         },
       },
+      Shop: 'shop',
+      Marketplace: 'marketplace',
     },
   },
 };

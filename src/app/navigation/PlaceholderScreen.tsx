@@ -1,37 +1,43 @@
 /**
- * Écran placeholder : titre i18n uniquement, aucune API.
+ * Écran « Bientôt disponible » — aucune donnée fictive.
  */
 
 import React from 'react';
-import {StyleSheet, View} from 'react-native';
+import {View, StyleSheet} from 'react-native';
 import {Text, useTheme} from '@shared/designsystem';
 import {useTranslation} from '@shared/i18n';
 
-type Props = {
-  /** Clé i18n du titre (ex. rooms.home). */
-  titleKey: string;
+export type PlaceholderScreenProps = {
+  /** Clé i18n du titre (ex. rooms.subscription). */
+  titleKey?: string;
   testID?: string;
 };
 
-export function PlaceholderScreen({titleKey, testID}: Props) {
+export function PlaceholderScreen({titleKey, testID}: PlaceholderScreenProps) {
   const {t} = useTranslation();
   const {colors, spacing} = useTheme();
-
   return (
     <View
-      testID={testID}
+      testID={testID ?? 'screen-placeholder'}
       style={[
-        styles.container,
-        {backgroundColor: colors.bgApp, padding: spacing.lg},
+        styles.fill,
+        {
+          backgroundColor: colors.bgApp,
+          padding: spacing.xl,
+        },
       ]}>
-      <Text variant="title">{t(titleKey)}</Text>
+      {titleKey ? (
+        <Text variant="title" color="primary" style={{marginBottom: spacing.md}}>
+          {t(titleKey)}
+        </Text>
+      ) : null}
+      <Text variant="body" color="secondary">
+        {t('common.comingSoon')}
+      </Text>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-  },
+  fill: {flex: 1, justifyContent: 'center'},
 });

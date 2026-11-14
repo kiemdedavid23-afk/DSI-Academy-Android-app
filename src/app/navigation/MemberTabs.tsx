@@ -1,176 +1,170 @@
 /**
- * Navigation membre : 5 onglets bas + pile « Plus » pour le reste.
- * Entrées calquées sur MEMBER_ROOMS du site.
+ * 5 grandes maisons : Communauté, Academy, Espace membre, Boutique, Marketplace.
+ * Entrée active = style pilule. Lancement → Espace membre > Accueil.
  */
 
-import React from 'react';
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import {Icon, useTheme, type IconName} from '@shared/designsystem';
+import React, {useCallback} from 'react';
+import {View, Pressable, StyleSheet, Platform} from 'react-native';
+import {
+  createBottomTabNavigator,
+  type BottomTabBarProps,
+} from '@react-navigation/bottom-tabs';
+import {Text, Icon, useTheme, type IconName} from '@shared/designsystem';
 import {useTranslation} from '@shared/i18n';
-import {PlaceholderScreen} from './PlaceholderScreen';
-import {SettingsScreen} from '@features/member-space/rooms/settings/screens/SettingsScreen';
+import {CommunityStack} from './house-stacks/CommunityStack';
+import {AcademyStack} from './house-stacks/AcademyStack';
+import {MemberSpaceStack} from './house-stacks/MemberSpaceStack';
+import {ShopStack} from './house-stacks/ShopStack';
+import {MarketplaceStack} from './house-stacks/MarketplaceStack';
 
 export type MemberTabParamList = {
-  Home: undefined;
-  Dsi: undefined;
-  Notifications: undefined;
-  Profile: undefined;
-  More: undefined;
-};
-
-export type MoreStackParamList = {
-  MoreHome: undefined;
-  Subscription: undefined;
-  Withdrawals: undefined;
-  Payments: undefined;
-  Referral: undefined;
-  Settings: undefined;
+  Community: undefined;
+  Academy: undefined;
+  MemberSpace: undefined;
+  Shop: undefined;
+  Marketplace: undefined;
 };
 
 const Tab = createBottomTabNavigator<MemberTabParamList>();
-const MoreStack = createNativeStackNavigator<MoreStackParamList>();
 
-function MoreNavigator() {
+type HouseTab = {
+  name: keyof MemberTabParamList;
+  shortKey: string;
+  fullKey: string;
+  icon: IconName;
+};
+
+const HOUSES: HouseTab[] = [
+  {
+    name: 'Community',
+    shortKey: 'houses.short.community',
+    fullKey: 'houses.community',
+    icon: 'UserIcon',
+  },
+  {
+    name: 'Academy',
+    shortKey: 'houses.short.academy',
+    fullKey: 'houses.academy',
+    icon: 'HomeIcon',
+  },
+  {
+    name: 'MemberSpace',
+    shortKey: 'houses.short.memberSpace',
+    fullKey: 'houses.memberSpace',
+    icon: 'DsiIcon',
+  },
+  {
+    name: 'Shop',
+    shortKey: 'houses.short.shop',
+    fullKey: 'houses.shop',
+    icon: 'PaymentsIcon',
+  },
+  {
+    name: 'Marketplace',
+    shortKey: 'houses.short.marketplace',
+    fullKey: 'houses.marketplace',
+    icon: 'ReferralIcon',
+  },
+];
+
+function MemberTabBar({state, descriptors, navigation}: BottomTabBarProps) {
   const {t} = useTranslation();
-  return (
-    <MoreStack.Navigator>
-      <MoreStack.Screen
-        name="MoreHome"
-        options={{title: t('cm.nav.more')}}
-        children={() => (
-          <PlaceholderScreen titleKey="cm.nav.more" testID="screen-more" />
-        )}
-      />
-      <MoreStack.Screen
-        name="Subscription"
-        options={{title: t('rooms.subscription')}}
-        children={() => (
-          <PlaceholderScreen
-            titleKey="rooms.subscription"
-            testID="screen-subscription"
-          />
-        )}
-      />
-      <MoreStack.Screen
-        name="Withdrawals"
-        options={{title: t('rooms.withdrawals')}}
-        children={() => (
-          <PlaceholderScreen
-            titleKey="rooms.withdrawals"
-            testID="screen-withdrawals"
-          />
-        )}
-      />
-      <MoreStack.Screen
-        name="Payments"
-        options={{title: t('rooms.payments')}}
-        children={() => (
-          <PlaceholderScreen
-            titleKey="rooms.payments"
-            testID="screen-payments"
-          />
-        )}
-      />
-      <MoreStack.Screen
-        name="Referral"
-        options={{title: t('rooms.referral')}}
-        children={() => (
-          <PlaceholderScreen
-            titleKey="rooms.referral"
-            testID="screen-referral"
-          />
-        )}
-      />
-      <MoreStack.Screen
-        name="Settings"
-        component={SettingsScreen}
-        options={{title: t('rooms.settings')}}
-      />
-    </MoreStack.Navigator>
-  );
-}
+  const {colors, spacing, radii} = useTheme();
 
-function tabIcon(name: IconName) {
-  return function TabBarIcon({color, size}: {color: string; size: number}) {
-    return <Icon name={name} color={color} size={size} />;
-  };
+  return (
+    <View
+      style={[
+        styles.bar,
+        {
+          backgroundColor: colors.bgSurface,
+          borderTopColor: colors.borderLight,
+          paddingBottom: spacing.sm,
+          paddingTop: spacing.sm,
+          paddingHorizontal: spacing.sm,
+        },
+      ]}
+      accessibilityRole="tablist">
+      {state.routes.map((route, index) => {
+        const focused = state.index === index;
+        const house = HOUSES.find(h => h.name === route.name);
+        if (!house) {
+          return null;
+        }
+        const label = t(house.shortKey);
+        const a11yLabel = t(house.fullKey);
+        const onPress = () => {
+          const event = navigation.emit({
+            type: 'tabPress',
+            target: route.key,
+            canPreventDefault: true,
+          });
+          if (!focused && !event.defaultPrevented) {
+            navigation.navigate(route.name);
+          }
+        };
+        return (
+          <Pressable
+            key={route.key}
+            onPress={onPress}
+            accessibilityRole="tab"
+            accessibilityState={{selected: focused}}
+            accessibilityLabel={a11yLabel}
+            style={[
+              styles.tab,
+              focused && {
+                backgroundColor: colors.blueLight,
+                borderRadius: radii.md,
+              },
+            ]}
+            testID={`tab-${house.name.toLowerCase()}`}>
+            <Icon
+              name={house.icon}
+              size={22}
+              color={focused ? colors.bluePrimary : colors.textSecondary}
+            />
+            <Text
+              variant="caption"
+              color={focused ? 'link' : 'secondary'}
+              numberOfLines={1}
+              style={{marginTop: spacing.xs}}>
+              {label}
+            </Text>
+          </Pressable>
+        );
+      })}
+    </View>
+  );
 }
 
 export function MemberTabs() {
-  const {t} = useTranslation();
-  const {colors} = useTheme();
-
   return (
     <Tab.Navigator
-      screenOptions={{
-        headerShown: true,
-        tabBarActiveTintColor: colors.blueActive,
-        tabBarInactiveTintColor: colors.textMuted,
-      }}>
-      <Tab.Screen
-        name="Home"
-        options={{
-          title: t('rooms.home'),
-          tabBarLabel: t('rooms.home'),
-          tabBarIcon: tabIcon('HomeIcon'),
-        }}
-        children={() => (
-          <PlaceholderScreen titleKey="rooms.home" testID="screen-home" />
-        )}
-      />
-      <Tab.Screen
-        name="Dsi"
-        options={{
-          title: t('rooms.dsiHoldings'),
-          tabBarLabel: t('rooms.dsiHoldings'),
-          tabBarIcon: tabIcon('DsiIcon'),
-        }}
-        children={() => (
-          <PlaceholderScreen
-            titleKey="rooms.dsiHoldings"
-            testID="screen-dsi"
-          />
-        )}
-      />
-      <Tab.Screen
-        name="Notifications"
-        options={{
-          title: t('rooms.notifications'),
-          tabBarLabel: t('rooms.notifications'),
-          tabBarIcon: tabIcon('BellIcon'),
-        }}
-        children={() => (
-          <PlaceholderScreen
-            titleKey="rooms.notifications"
-            testID="screen-notifications"
-          />
-        )}
-      />
-      <Tab.Screen
-        name="Profile"
-        options={{
-          title: t('rooms.profile'),
-          tabBarLabel: t('rooms.profile'),
-          tabBarIcon: tabIcon('UserIcon'),
-        }}
-        children={() => (
-          <PlaceholderScreen
-            titleKey="rooms.profile"
-            testID="screen-profile"
-          />
-        )}
-      />
-      <Tab.Screen
-        name="More"
-        component={MoreNavigator}
-        options={{
-          headerShown: false,
-          title: t('cm.nav.more'),
-          tabBarLabel: t('cm.nav.more'),
-          tabBarIcon: tabIcon('SettingsIcon'),
-        }}
-      />
+      initialRouteName="MemberSpace"
+      tabBar={props => <MemberTabBar {...props} />}
+      screenOptions={{headerShown: false}}>
+      <Tab.Screen name="Community" component={CommunityStack} />
+      <Tab.Screen name="Academy" component={AcademyStack} />
+      <Tab.Screen name="MemberSpace" component={MemberSpaceStack} />
+      <Tab.Screen name="Shop" component={ShopStack} />
+      <Tab.Screen name="Marketplace" component={MarketplaceStack} />
     </Tab.Navigator>
   );
 }
+
+const styles = StyleSheet.create({
+  bar: {
+    flexDirection: 'row',
+    borderTopWidth: StyleSheet.hairlineWidth,
+    ...Platform.select({
+      android: {elevation: 8},
+      default: {},
+    }),
+  },
+  tab: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    minHeight: 48,
+    paddingVertical: 4,
+  },
+});
