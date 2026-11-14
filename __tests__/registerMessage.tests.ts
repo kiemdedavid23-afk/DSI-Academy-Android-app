@@ -1,105 +1,110 @@
-import {parseRegistrationDoneMessage} from '@features/auth/register/logic/registrationMessage';
-import {resolvePrefillIdentifier} from '@features/auth/register/logic/prefillIdentifier';
-import {lastLoginIdentifier} from '@features/auth/register/logic/lastLoginIdentifier';
+import {parseRegistrationDoneMessage} from '@features/auth/registration-browser/logic/registrationMessage';
+import {resolvePrefillIdentifier} from '@features/auth/registration-browser/logic/prefillIdentifier';
+import {lastLoginIdentifier} from '@core/session';
 import {BUILD_CONFIG} from '@core/config/buildConfig.generated';
 
 const origin = `${BUILD_CONFIG.registry.web.replace(/\/+$/, '')}/inscription`;
 
-describe('parseRegistrationDoneMessage', () => {
+describe('parseRegistrationDoneMessage (L1b patch)', () => {
   beforeEach(() => lastLoginIdentifier.clear());
 
-  it('accepte un message valide', () => {
+  it('accepte message avec identifiant valide', () => {
     const r = parseRegistrationDoneMessage(
-      JSON.stringify({type: 'dsi:registration-done', identifiant: 'user@test.invalid'}),
+      JSON.stringify({
+        type: 'dsi:registration-done',
+        identifiant: 'user@test.invalid',
+        reason: 'success',
+      }),
       origin,
     );
     expect(r?.identifiant).toBe('user@test.invalid');
   });
 
-  it('refuse mauvais type', () => {
-    expect(
-      parseRegistrationDoneMessage(
-        JSON.stringify({type: 'other', identifiant: 'a@b.c'}),
-        origin,
-      ),
-    ).toBeNull();
+  it('accepte identifiant vide (traité null) + ferme quand même côté store', () => {
+    const r = parseRegistrationDoneMessage(
+      JSON.stringify({type: 'dsi:registration-done', identifiant: ''}),
+      origin,
+    );
+    expect(r).not.toBeNull();
+    expect(r?.identifiant).toBeNull();
   });
 
-  it('refuse origine étrangère', () => {
+  it('DSI- traité comme absent', () => {
+    const r = parseRegistrationDoneMessage(
+      JSON.stringify({
+        type: 'dsi:registration-done',
+        identifiant: 'DSI-12345',
+      }),
+      origin,
+    );
+    expect(r?.identifiant).toBeNull();
+  });
+
+  it('reason inconnu ignoré', () => {
+    const r = parseRegistrationDoneMessage(
+      JSON.stringify({
+        type: 'dsi:registration-done',
+        identifiant: 'a@b.c',
+        reason: 'whatever',
+      }),
+      origin,
+    );
+    expect(r?.identifiant).toBe('a@b.c');
+  });
+
+  it('champs supplémentaires ignorés', () => {
+    const r = parseRegistrationDoneMessage(
+      JSON.stringify({
+        type: 'dsi:registration-done',
+        identifiant: 'a@b.c',
+        token: 'TEST_TOKEN_NOT_REAL',
+        userId: 'DSI-00000',
+      }),
+      origin,
+    );
+    expect(JSON.stringify(r)).not.toContain('TOKEN');
+    expect(JSON.stringify(r)).not.toContain('userId');
+  });
+
+  it('origine étrangère ignorée', () => {
     expect(
       parseRegistrationDoneMessage(
-        JSON.stringify({type: 'dsi:registration-done', identifiant: 'a@b.c'}),
+        JSON.stringify({type: 'dsi:registration-done'}),
         'https://evil.invalid/',
       ),
     ).toBeNull();
   });
 
-  it('refuse identifiant vide ou trop long', () => {
+  it('type différent ignoré', () => {
     expect(
       parseRegistrationDoneMessage(
-        JSON.stringify({type: 'dsi:registration-done', identifiant: '  '}),
-        origin,
-      ),
-    ).toBeNull();
-    expect(
-      parseRegistrationDoneMessage(
-        JSON.stringify({
-          type: 'dsi:registration-done',
-          identifiant: 'x'.repeat(255),
-        }),
+        JSON.stringify({type: 'other'}),
         origin,
       ),
     ).toBeNull();
   });
 
-  it('ignore identifiant DSI-', () => {
-    expect(
-      parseRegistrationDoneMessage(
-        JSON.stringify({type: 'dsi:registration-done', identifiant: 'DSI-00000'}),
-        origin,
-      ),
-    ).toBeNull();
-  });
-
-  it('JSON invalide → null', () => {
+  it('JSON invalide ignoré', () => {
     expect(parseRegistrationDoneMessage('{', origin)).toBeNull();
-  });
-
-  it('ignore un jeton présent dans le message', () => {
-    const r = parseRegistrationDoneMessage(
-      JSON.stringify({
-        type: 'dsi:registration-done',
-        identifiant: 'user@test.invalid',
-        token: 'TEST_TOKEN_NOT_REAL',
-      }),
-      origin,
-    );
-    expect(r?.identifiant).toBe('user@test.invalid');
-    expect(JSON.stringify(r)).not.toContain('TOKEN');
   });
 });
 
 describe('resolvePrefillIdentifier', () => {
   beforeEach(() => lastLoginIdentifier.clear());
 
-  it('priorité au message valide', () => {
+  it('priorité message valide', () => {
     lastLoginIdentifier.set('fallback@test.invalid');
     expect(resolvePrefillIdentifier('main@test.invalid')).toBe(
       'main@test.invalid',
     );
   });
 
-  it('fallback si message absent', () => {
+  it('repli si message null', () => {
     lastLoginIdentifier.set('+22500000000');
     expect(resolvePrefillIdentifier(null)).toBe('+22500000000');
   });
 
-  it('vide si aucun', () => {
-    expect(resolvePrefillIdentifier(undefined)).toBe('');
-  });
-
-  it('ignore DSI- et bascule sur fallback', () => {
-    lastLoginIdentifier.set('ok@test.invalid');
-    expect(resolvePrefillIdentifier('DSI-00000')).toBe('ok@test.invalid');
+  it('vide sans repli', () => {
+    expect(resolvePrefillIdentifier(null)).toBe('');
   });
 });
