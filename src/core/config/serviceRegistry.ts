@@ -78,21 +78,34 @@ export function resolveWebUrl(path: string): string {
 }
 
 /**
+ * Hôte d'une adresse https, ou null. Analyse volontairement manuelle : la classe
+ * URL de React Native/Hermes n'implémente pas tous ses accesseurs.
+ * Refusés : autre schéma, identifiants (user@), port autre que 443, espaces, anti-slash.
+ */
+function parseHttpsHost(url: unknown): string | null {
+  if (typeof url !== 'string') {
+    return null;
+  }
+  const match = /^https:\/\/([^/?#]*)/i.exec(url.trim());
+  if (!match) {
+    return null;
+  }
+  const authority = match[1];
+  if (!/^[a-z0-9.-]+(:443)?$/i.test(authority)) {
+    return null;
+  }
+  const host = authority.replace(/:443$/, '').replace(/\.$/, '').toLowerCase();
+  return host.length > 0 ? host : null;
+}
+
+/**
  * True si l'URL appartient strictement à l'hôte du site (https uniquement).
- * Comparaison d'hôte stricte — pas de « contient ».
- * R-WEB-2 / R-WEB-4.
+ * Comparaison d'hôte stricte, pas de « contient ». R-WEB-2 / R-WEB-4.
  */
 export function isSiteUrl(url: string): boolean {
-  try {
-    const candidate = new URL(url);
-    if (candidate.protocol !== 'https:') {
-      return false;
-    }
-    const site = new URL(config.web);
-    return candidate.hostname === site.hostname;
-  } catch {
-    return false;
-  }
+  const candidate = parseHttpsHost(url);
+  const site = parseHttpsHost(config.web);
+  return candidate !== null && site !== null && candidate === site;
 }
 
 /**
@@ -100,10 +113,6 @@ export function isSiteUrl(url: string): boolean {
  * Aucun littéral http(s) hors de ce module.
  */
 export function getSiteOriginWhitelist(): string[] {
-  try {
-    const site = new URL(config.web);
-    return [`${site.protocol}//${site.host}`];
-  } catch {
-    return [];
-  }
+  const site = parseHttpsHost(config.web);
+  return site ? [`https://${site}`] : [];
 }
