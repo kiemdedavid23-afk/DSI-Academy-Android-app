@@ -1,14 +1,18 @@
 /**
  * Session membre : token, état, accessProof, expiresAt.
- * - « Se souvenir de moi » → Keychain ; sinon mémoire process uniquement.
- * - Connexion sans souvenir : purge d'abord le Keychain (évite reprise d'ancienne session).
- * - Au démarrage : relecture sécurisée ; session expirée → clearSession.
- * core n'importe jamais shared (R-LAY-1).
+ * Fin de session unique : expireSession(reason).
  */
 
 import {useSyncExternalStore} from 'react';
 import {configureHttpAuth} from '../network/authProviders';
 import {secureGet, secureRemove, secureSet} from '../storage/secureStorage';
+import {registrationTracking} from './registrationTracking';
+import {lastLoginIdentifier} from './lastLoginIdentifier';
+import {
+  sessionEndReason,
+  type SessionEndReason,
+} from './sessionEndReason';
+import {sessionExpiryWatch} from './sessionExpiryWatch';
 
 type SessionListener = () => void;
 
@@ -27,6 +31,7 @@ const SESSION_SECURE_KEY = 'member_session';
 
 let memorySession: MemberSession | null = null;
 let rememberFlag = false;
+let ending = false;
 
 const listeners = new Set<SessionListener>();
 const clearedListeners = new Set<SessionListener>();
@@ -43,6 +48,11 @@ function bindHttpAuth(): void {
   configureHttpAuth({
     getBearerToken: () => memorySession?.token ?? null,
     getAccessProof: () => memorySession?.accessProof ?? null,
+    onUnauthorized: ctx => {
+      if (ctx.auth === 'bearer' && ctx.status === 401) {
+        void sessionStore.expireSession('unauthorized');
+      }
+    },
   });
 }
 
@@ -75,10 +85,6 @@ export const sessionStore = {
     return memorySession?.accessProof ?? null;
   },
 
-  /**
-   * Active une présence de session en mémoire (tests / compat L0d).
-   * Ne crée pas de jeton réel.
-   */
   setSessionPresent(present: boolean): void {
     if (!present) {
       if (memorySession !== null) {
@@ -107,10 +113,6 @@ export const sessionStore = {
     emit();
   },
 
-  /**
-   * Enregistre une session après connexion réussie.
-   * souvenir=true → Keychain ; sinon mémoire seule, après purge Keychain.
-   */
   async setSession(
     input: {
       token: string;
@@ -151,13 +153,11 @@ export const sessionStore = {
 
     memorySession = session;
     bindHttpAuth();
+    sessionEndReason.clear();
     emit();
+    sessionExpiryWatch.reschedule();
   },
 
-  /**
-   * Relecture au démarrage (avant navigation).
-   * Session absente ou expirée → clearSession.
-   */
   async hydrate(now = Date.now()): Promise<boolean> {
     const raw = await secureGet(SESSION_SECURE_KEY);
     if (!raw) {
@@ -202,13 +202,14 @@ export const sessionStore = {
           typeof parsed.expiresAt === 'number' ? parsed.expiresAt : 0,
       };
       if (isExpired(session, now)) {
-        await this.clearSessionAsync();
+        await this.expireSession('expired');
         return false;
       }
       memorySession = session;
       rememberFlag = true;
       bindHttpAuth();
       emit();
+      sessionExpiryWatch.reschedule();
       return true;
     } catch {
       await clearSecure();
@@ -220,6 +221,50 @@ export const sessionStore = {
     }
   },
 
+  /**
+   * Fin de session unique (idempotente).
+   * 1) mémoire + Keychain 2) tracking + prefill id 3) clearSession/purge
+   * 4) motif one-shot (sauf loggedOut → pas de message)
+   */
+  async expireSession(reason: SessionEndReason): Promise<void> {
+    if (ending) {
+      return;
+    }
+    if (reason !== 'loggedOut' && memorySession === null) {
+      // 401 sans session : ignoré
+      if (reason === 'unauthorized') {
+        return;
+      }
+    }
+    ending = true;
+    try {
+      memorySession = null;
+      rememberFlag = false;
+      bindHttpAuth();
+      emit();
+      emitCleared();
+      try {
+        await clearSecure();
+      } catch {
+        // toléré : pas de log détaillé
+      }
+      try {
+        await registrationTracking.clear();
+      } catch {
+        // ignore
+      }
+      lastLoginIdentifier.clear();
+      if (reason === 'unauthorized' || reason === 'expired') {
+        sessionEndReason.set(reason);
+      } else {
+        sessionEndReason.clear();
+      }
+      sessionExpiryWatch.reschedule();
+    } finally {
+      ending = false;
+    }
+  },
+
   clearSession(): void {
     memorySession = null;
     rememberFlag = false;
@@ -227,6 +272,7 @@ export const sessionStore = {
     emit();
     emitCleared();
     void clearSecure();
+    sessionExpiryWatch.reschedule();
   },
 
   async clearSessionAsync(): Promise<void> {
@@ -236,6 +282,7 @@ export const sessionStore = {
     emit();
     emitCleared();
     await clearSecure();
+    sessionExpiryWatch.reschedule();
   },
 
   isRemembered(): boolean {
@@ -265,5 +312,4 @@ export function useHasSession(): boolean {
   );
 }
 
-// Branche les fournisseurs HTTP dès le chargement du module.
 bindHttpAuth();
