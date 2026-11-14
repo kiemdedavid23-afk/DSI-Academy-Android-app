@@ -167,7 +167,7 @@ export function MemberDrawer({open, onClose, activeRoom, onNavigateRoom}: Props)
       testID="member-drawer-modal">
       <View style={styles.overlay}>
         <Pressable
-          style={styles.backdrop}
+          style={[styles.backdrop, {backgroundColor: colors.bgDarkPremium ?? colors.bgApp}]}
           onPress={onClose}
           accessibilityRole="button"
           accessibilityLabel={t('drawer.close')}
@@ -368,7 +368,7 @@ export function MemberDrawer({open, onClose, activeRoom, onNavigateRoom}: Props)
 
 const styles = StyleSheet.create({
   overlay: {flex: 1, flexDirection: 'row'},
-  backdrop: {flex: 1, backgroundColor: colors.bgDarkPremium, opacity: 0.7},
+  backdrop: {flex: 1, opacity: 0.7},
   panel: {width: 300, maxWidth: '86%', height: '100%'},
   top: {
     flexDirection: 'row',
