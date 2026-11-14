@@ -24,8 +24,23 @@ export type PendingPaymentAuthResult = {
   paymentUrl: string | null;
 };
 
+/**
+ * Nature de l'échec de connexion (discriminé côté API/mapper, stocké par le store).
+ * - credentials : mauvais identifiants / HTTP 400 / status refuse
+ * - refused    : compte suspendu (status suspendu)
+ * - network    : coupure, timeout, annulation
+ * - server     : 5xx, 401/429 inattendus, JSON illisible, status inconnu
+ */
+export type LoginErrorKind =
+  | 'credentials'
+  | 'refused'
+  | 'network'
+  | 'server';
+
 export type FailureAuthResult = {
   kind: 'failure';
+  errorKind: LoginErrorKind;
+  /** Texte métier du Worker (credentials / refused), sinon absent. */
   message?: string;
 };
 
