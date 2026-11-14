@@ -1,6 +1,7 @@
 /**
  * Session membre : token, état, accessProof, expiresAt.
  * Fin de session unique : expireSession(reason).
+ * Aucune fausse session de production (R-DATA-6).
  */
 
 import {useSyncExternalStore} from 'react';
@@ -85,34 +86,6 @@ export const sessionStore = {
     return memorySession?.accessProof ?? null;
   },
 
-  setSessionPresent(present: boolean): void {
-    if (!present) {
-      if (memorySession !== null) {
-        memorySession = null;
-        rememberFlag = false;
-        bindHttpAuth();
-        emit();
-        emitCleared();
-      }
-      return;
-    }
-    if (memorySession !== null) {
-      return;
-    }
-    memorySession = {
-      token: 'TEST_PRESENT',
-      accountStatus: null,
-      subscriptionStatus: null,
-      subscriptionActive: false,
-      dateFin: null,
-      accessProof: null,
-      expiresAt: Date.now() + 604800_000,
-      userId: '',
-    };
-    bindHttpAuth();
-    emit();
-  },
-
   async setSession(
     input: {
       token: string;
@@ -128,10 +101,9 @@ export const sessionStore = {
     now = Date.now(),
   ): Promise<void> {
     const expiresInMs =
-      (typeof input.expiresIn === 'number' && input.expiresIn > 0
-        ? input.expiresIn
-        : 604800) * 1000;
-
+      typeof input.expiresIn === 'number' && input.expiresIn > 0
+        ? input.expiresIn * 1000
+        : 604800_000;
     const session: MemberSession = {
       token: input.token,
       userId: input.userId,
@@ -142,34 +114,42 @@ export const sessionStore = {
       accessProof: input.accessProof,
       expiresAt: now + expiresInMs,
     };
-
-    if (souvenir) {
-      await persistSecure(session);
-      rememberFlag = true;
-    } else {
-      await clearSecure();
-      rememberFlag = false;
-    }
-
     memorySession = session;
+    rememberFlag = souvenir;
     bindHttpAuth();
-    sessionEndReason.clear();
     emit();
+    if (souvenir) {
+      try {
+        await persistSecure(session);
+      } catch {
+        // toléré
+      }
+    } else {
+      try {
+        await clearSecure();
+      } catch {
+        // toléré
+      }
+    }
     sessionExpiryWatch.reschedule();
   },
 
   async hydrate(now = Date.now()): Promise<boolean> {
-    const raw = await secureGet(SESSION_SECURE_KEY);
-    if (!raw) {
-      memorySession = null;
-      rememberFlag = false;
-      bindHttpAuth();
-      emit();
-      return false;
-    }
     try {
+      const raw = await secureGet(SESSION_SECURE_KEY);
+      if (!raw) {
+        memorySession = null;
+        rememberFlag = false;
+        bindHttpAuth();
+        emit();
+        return false;
+      }
       const parsed = JSON.parse(raw) as Partial<MemberSession>;
-      if (typeof parsed.token !== 'string' || !parsed.token) {
+      if (
+        typeof parsed.token !== 'string' ||
+        parsed.token.length === 0 ||
+        typeof parsed.expiresAt !== 'number'
+      ) {
         await clearSecure();
         memorySession = null;
         rememberFlag = false;
@@ -198,8 +178,7 @@ export const sessionStore = {
           parsed.accessProof === null || typeof parsed.accessProof === 'string'
             ? (parsed.accessProof as string | null)
             : null,
-        expiresAt:
-          typeof parsed.expiresAt === 'number' ? parsed.expiresAt : 0,
+        expiresAt: parsed.expiresAt,
       };
       if (isExpired(session, now)) {
         await this.expireSession('expired');
