@@ -1,5 +1,6 @@
 /**
  * Store du navigateur d'inscription. L'écran ne parle qu'à ce store (R-LAY).
+ * injectedScript est en lecture pure : pas de consommation pendant le rendu.
  */
 
 import {Linking} from 'react-native';
@@ -44,7 +45,6 @@ let state: State = {
 };
 
 const listeners = new Set<Listener>();
-let draftInjectedOnce = false;
 let sessionClearUnsub: (() => void) | null = null;
 
 function emit(): void {
@@ -83,7 +83,6 @@ export const registerBrowserStore = {
    */
   async prepare(mode: RegisterMode): Promise<void> {
     ensureSessionClearHook();
-    draftInjectedOnce = false;
     const startUrl = resolveWebUrl(START_PATH);
     setState({
       status: 'loading',
@@ -117,15 +116,11 @@ export const registerBrowserStore = {
     });
   },
 
-  /** Script à injecter une seule fois (before content loaded). */
-  consumeInjectedScript(): string | null {
-    if (draftInjectedOnce) {
-      return null;
-    }
-    if (!state.injectedScript) {
-      return null;
-    }
-    draftInjectedOnce = true;
+  /**
+   * Lecture pure du script à injecter (idempotent, safe en StrictMode).
+   * La WebView ne le lit qu'au chargement de la page.
+   */
+  getInjectedScript(): string | null {
     return state.injectedScript;
   },
 
@@ -165,7 +160,7 @@ export const registerBrowserStore = {
    * Message postMessage de la WebView.
    * @returns true si parcours terminé (navigation à déclencher par l'écran)
    */
-handleMessage(data: string, originUrl: string | undefined): boolean {
+  handleMessage(data: string, originUrl: string | undefined): boolean {
     const parsed = parseRegistrationDoneMessage(data, originUrl);
     if (!parsed) {
       return false;
@@ -179,7 +174,6 @@ handleMessage(data: string, originUrl: string | undefined): boolean {
     return true;
   },
 
-
   consumePrefill(): string {
     const value = state.prefillIdentifiant;
     setState({done: false, prefillIdentifiant: ''});
@@ -192,7 +186,6 @@ handleMessage(data: string, originUrl: string | undefined): boolean {
   },
 
   reset(): void {
-    draftInjectedOnce = false;
     setState({
       status: 'loading',
       mode: 'new',
