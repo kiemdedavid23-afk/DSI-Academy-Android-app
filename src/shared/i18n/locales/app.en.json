@@ -1,0 +1,14 @@
+{
+  "app": {
+    "register": {
+      "title": "Sign up",
+      "leaveTitle": "Leave registration?",
+      "leaveMessage": "You can continue later. Your draft is kept.",
+      "leaveStay": "Stay",
+      "leaveConfirm": "Leave",
+      "loadErrorTitle": "Unable to load",
+      "loadErrorMessage": "Check your connection and try again.",
+      "retry": "Retry"
+    }
+  }
+}

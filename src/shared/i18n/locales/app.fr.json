@@ -1,0 +1,14 @@
+{
+  "app": {
+    "register": {
+      "title": "Inscription",
+      "leaveTitle": "Quitter l'inscription ?",
+      "leaveMessage": "Vous pourrez reprendre plus tard. Votre brouillon est conservé.",
+      "leaveStay": "Rester",
+      "leaveConfirm": "Quitter",
+      "loadErrorTitle": "Chargement impossible",
+      "loadErrorMessage": "Vérifiez votre connexion et réessayez.",
+      "retry": "Réessayer"
+    }
+  }
+}
