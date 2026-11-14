@@ -1,17 +1,17 @@
 /**
  * Pile authentification (R-NAV-2).
- * Login réel (L1a) ; RegisterBrowser reste un placeholder jusqu'à L1b.
+ * Login (L1a) + navigateur d'inscription (L1b).
  */
 
 import React from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {useTranslation} from '@shared/i18n';
 import {LoginScreen} from '@features/auth/login/screens/LoginScreen';
-import {PlaceholderScreen} from './PlaceholderScreen';
+import {RegisterBrowserScreen} from '@features/auth/register/screens/RegisterBrowserScreen';
 
 export type AuthStackParamList = {
-  Login: undefined;
-  RegisterBrowser: undefined;
+  Login: {prefillIdentifiant?: string} | undefined;
+  RegisterBrowser: {mode?: 'new' | 'resume'} | undefined;
 };
 
 const Stack = createNativeStackNavigator<AuthStackParamList>();
@@ -28,13 +28,8 @@ export function AuthStack() {
       />
       <Stack.Screen
         name="RegisterBrowser"
-        options={{title: t('inscription.title')}}
-        children={() => (
-          <PlaceholderScreen
-            titleKey="inscription.title"
-            testID="screen-register"
-          />
-        )}
+        component={RegisterBrowserScreen}
+        options={{title: t('app.register.title')}}
       />
     </Stack.Navigator>
   );
