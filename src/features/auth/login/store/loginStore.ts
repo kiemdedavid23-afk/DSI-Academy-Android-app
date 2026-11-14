@@ -1,9 +1,11 @@
 /**
  * Store de connexion. L'écran ne parle qu'à ce store (R-LAY).
  * Le mot de passe n'est jamais conservé après l'appel.
+ * errorKind + workerMessage uniquement (pas de texte i18n dans le store).
  */
 
 import {connecter} from '@core/api/endpoints/payment/auth.api';
+import type {LoginErrorKind} from '@core/api/endpoints/payment/auth.types';
 import {
   registrationTracking,
   sessionStore,
@@ -23,9 +25,13 @@ export type PendingPaymentState = {
   paymentUrl: string | null;
 };
 
+export type {LoginErrorKind};
+
 type LoginState = {
   status: LoginStatus;
-  error: string | null;
+  errorKind: LoginErrorKind | null;
+  /** Message métier du Worker (credentials / refused), sinon null. */
+  workerMessage: string | null;
   pending: PendingPaymentState | null;
 };
 
@@ -33,7 +39,8 @@ type Listener = () => void;
 
 let state: LoginState = {
   status: 'idle',
-  error: null,
+  errorKind: null,
+  workerMessage: null,
   pending: null,
 };
 
@@ -61,24 +68,33 @@ export const loginStore = {
   },
 
   reset(): void {
-    setState({status: 'idle', error: null, pending: null});
+    setState({
+      status: 'idle',
+      errorKind: null,
+      workerMessage: null,
+      pending: null,
+    });
   },
 
   /**
    * Soumet la connexion. Bloque si déjà loading (pas de double envoi).
-   * genericErrorMessage : clé i18n déjà résolue par l'écran.
+   * Ne reçoit plus de texte i18n : l'écran résout selon errorKind.
    */
   async submit(
     identifiant: string,
     motDePasse: string,
     souvenir: boolean,
-    genericErrorMessage: string,
   ): Promise<void> {
     if (state.status === 'loading') {
       return;
     }
 
-    setState({status: 'loading', error: null, pending: null});
+    setState({
+      status: 'loading',
+      errorKind: null,
+      workerMessage: null,
+      pending: null,
+    });
 
     const result = await connecter(identifiant, motDePasse);
     // motDePasse ne doit plus être référencé après cet appel.
@@ -97,7 +113,14 @@ export const loginStore = {
         },
         souvenir,
       );
-      setState({status: 'success', error: null, pending: null});
+      // Tracking d'inscription/paiement plus pertinent après connexion réussie.
+      await registrationTracking.clear();
+      setState({
+        status: 'success',
+        errorKind: null,
+        workerMessage: null,
+        pending: null,
+      });
       return;
     }
 
@@ -110,7 +133,8 @@ export const loginStore = {
       });
       setState({
         status: 'pendingPayment',
-        error: null,
+        errorKind: null,
+        workerMessage: null,
         pending: {
           userId: result.userId,
           paymentMode: result.paymentMode,
@@ -120,9 +144,11 @@ export const loginStore = {
       return;
     }
 
+    // failure
     setState({
       status: 'error',
-      error: result.message ?? genericErrorMessage,
+      errorKind: result.errorKind,
+      workerMessage: result.message ?? null,
       pending: null,
     });
   },
