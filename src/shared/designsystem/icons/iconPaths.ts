@@ -105,6 +105,20 @@ export const iconShapes = {
     {type: 'circle', cx: 15, cy: 7, r: 2},
     {type: 'circle', cx: 9, cy: 17, r: 2},
   ],
+  /** Thème sombre — RoomIcons.MoonIcon */
+  MoonIcon: [
+    {type: 'path', d: 'M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z'},
+  ],
+  /** Thème clair — RoomIcons.SunIcon */
+  SunIcon: [
+    {type: 'circle', cx: 12, cy: 12, r: 4},
+    {type: 'path', d: 'M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4'},
+  ],
+  /** Déconnexion — RoomIcons.LogoutIcon */
+  LogoutIcon: [
+    {type: 'path', d: 'M10 4.5H6.5a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2H10'},
+    {type: 'path', d: 'M15 8l4 4-4 4M19 12H9.5'},
+  ],
 } as const satisfies Record<string, readonly IconShape[]>;
 
 export type IconName = keyof typeof iconShapes;
