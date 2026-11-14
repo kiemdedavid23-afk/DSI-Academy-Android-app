@@ -1,16 +1,21 @@
 /**
  * Carte membre (site MemberCard) — sans bouton imprimer (Android).
- * Utilisée dans la pièce Profil (étape ultérieure), pas sur l'accueil.
+ * Type local (pas d'import core/api dans un composant, R-LAY-6).
  */
 
 import React from 'react';
 import {View, StyleSheet} from 'react-native';
 import {Text, useTheme} from '@shared/designsystem';
 import {useTranslation} from '@shared/i18n';
-import type {MemberProfile} from '@core/api/endpoints/payment/membre.types';
+
+export type MemberCardProfile = {
+  identifiantDsi: string;
+  nom: string;
+  prenom: string;
+};
 
 export type MemberCardProps = {
-  profile: MemberProfile;
+  profile: MemberCardProfile;
   subscriptionActive: boolean;
 };
 
