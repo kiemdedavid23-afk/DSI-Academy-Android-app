@@ -28,10 +28,8 @@ export function MemberHeader({
   welcomeKey = 'houses.welcome.memberSpace',
 }: Props) {
   const {t} = useTranslation();
-  const {colors, elevation} = useTheme();
+  const {colors, elevation, isDark} = useTheme();
   const insets = useSafeAreaInsets();
-  const isDark =
-    colors.bgApp === '#0B1120' || colors.bgApp.toLowerCase() === '#0b1120';
 
   return (
     <View

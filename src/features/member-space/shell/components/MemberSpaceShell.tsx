@@ -1,11 +1,10 @@
 /**
- * Coquille Espace membre : fond photo fixe + en-tête + tiroir.
- * Le fond member-bg.webp couvre TOUT l'Espace membre (has-member-bg).
- * object-position 25% 45% approximé via Image resizeMode + transform.
+ * Coquille Espace membre : fond photo fixe (cover, focal 25%/45%) + en-tête + tiroir.
+ * Le fond couvre TOUT l'Espace membre. Écrans enfants en transparent.
  */
 
-import React, {useCallback, useState} from 'react';
-import {View, Image, StyleSheet, Dimensions} from 'react-native';
+import React, {useCallback, useMemo, useState} from 'react';
+import {View, Image, StyleSheet, useWindowDimensions} from 'react-native';
 import {useNavigation, useNavigationState} from '@react-navigation/native';
 import type {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {useTheme} from '@shared/designsystem';
@@ -16,6 +15,10 @@ import type {MemberSpaceStackParamList} from '@app/navigation/house-stacks/Membe
 type Nav = NativeStackNavigationProp<MemberSpaceStackParamList>;
 
 const BG = require('@assets/images/member-bg.webp');
+
+// Dimensions connues du fichier member-bg.webp (site public/)
+const IMG_W = 1200;
+const IMG_H = 800;
 
 const ROUTE_TO_ROOM: Record<string, MemberRoomId> = {
   MemberHome: 'home',
@@ -33,17 +36,42 @@ type Props = {
   children: React.ReactNode;
 };
 
+/**
+ * Calcule left/top pour un cover avec point focal (fx, fy) en fractions 0–1.
+ * object-position: 25% 45% → fx=0.25, fy=0.45
+ */
+function coverFocal(
+  screenW: number,
+  screenH: number,
+  imgW: number,
+  imgH: number,
+  fx: number,
+  fy: number,
+): {width: number; height: number; left: number; top: number} {
+  const scale = Math.max(screenW / imgW, screenH / imgH);
+  const w = imgW * scale;
+  const h = imgH * scale;
+  // Le point focal de l'image doit coincider avec le point focal de l'écran
+  const left = screenW * fx - w * fx;
+  const top = screenH * fy - h * fy;
+  return {width: w, height: h, left, top};
+}
+
 export function MemberSpaceShell({children}: Props) {
-  const {colors} = useTheme();
+  const {colors, isDark} = useTheme();
   const navigation = useNavigation<Nav>();
+  const {width: screenW, height: screenH} = useWindowDimensions();
   const [drawerOpen, setDrawerOpen] = useState(false);
   const routeName = useNavigationState(state => {
     const route = state?.routes[state.index];
     return route?.name ?? 'MemberHome';
   });
   const activeRoom: MemberRoomId = ROUTE_TO_ROOM[routeName] ?? 'home';
-  const isDark =
-    colors.bgApp === '#0B1120' || colors.bgApp.toLowerCase() === '#0b1120';
+
+  const bgLayout = useMemo(
+    () => coverFocal(screenW, screenH, IMG_W, IMG_H, 0.25, 0.45),
+    [screenW, screenH],
+  );
 
   const navigateRoom = useCallback(
     (room: MemberRoomId) => {
@@ -68,29 +96,23 @@ export function MemberSpaceShell({children}: Props) {
     [navigation],
   );
 
-  // object-position 25% 45% : RN n'a pas object-position.
-  // On place l'image en cover et on décale légèrement vers la gauche/haut.
-  const {width: W, height: H} = Dimensions.get('window');
-
   return (
     <View style={styles.fill}>
-      {/* Fond photo plein écran, sous tout le contenu */}
       <Image
         source={BG}
         style={[
           styles.bg,
           {
-            width: W * 1.15,
-            height: H * 1.15,
-            left: -W * 0.08, // ~25% bias
-            top: -H * 0.05,
+            width: bgLayout.width,
+            height: bgLayout.height,
+            left: bgLayout.left,
+            top: bgLayout.top,
           },
         ]}
-        resizeMode="cover"
+        resizeMode="stretch"
         accessibilityElementsHidden
         importantForAccessibility="no"
       />
-      {/* Assombrissement thème sombre ≈ brightness(0.8) */}
       {isDark ? (
         <View
           style={[styles.bgOverlay, {backgroundColor: 'rgba(0,0,0,0.20)'}]}

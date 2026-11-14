@@ -1,8 +1,10 @@
 /**
- * Tiroir Espace membre — Modal + Animated, sans dépendance drawer.
+ * Tiroir Espace membre — fidélité MemberDrawer.css (519 lignes) + MemberDrawer.jsx.
+ * Panneau 300 / max 86 %, fond bg-surface (clair en thème clair), ombre, padding 16/14.4,
+ * gap 16, animations 200/250 ms (désactivées si reduceMotion).
  */
 
-import React, {useEffect, useRef} from 'react';
+import React, {useEffect, useRef, useCallback} from 'react';
 import {
   Modal,
   View,
@@ -11,6 +13,10 @@ import {
   Animated,
   StyleSheet,
   Linking,
+  BackHandler,
+  Platform,
+  Image,
+  useWindowDimensions,
 } from 'react-native';
 import {Text, Icon, useTheme, type IconName} from '@shared/designsystem';
 import {useTranslation} from '@shared/i18n';
@@ -23,6 +29,8 @@ import {sessionStore} from '@core/session';
 import {computeSubscription} from '@core/utils/subscription';
 import {socialLinksStore} from '../store/socialLinksStore';
 import {useSyncExternalStore} from 'react';
+
+const APP_ICON = require('@assets/images/app-icon.png');
 
 export type MemberRoomId =
   | 'home'
@@ -62,12 +70,16 @@ function initials(prenom: string, nom: string): string {
 
 export function MemberDrawer({open, onClose, activeRoom, onNavigateRoom}: Props) {
   const {t, i18n} = useTranslation();
-  const {colors, spacing, radii} = useTheme();
+  const {colors, elevation, isDark: isDarkMode} = useTheme();
+  const {width: screenW} = useWindowDimensions();
+  const panelW = Math.min(300, Math.round(screenW * 0.86));
+
   const reduceMotion = useSyncExternalStore(
     preferencesStore.subscribe,
     () => preferencesStore.get().reduceMotion,
     () => preferencesStore.get().reduceMotion,
   );
+
   const profileState = useSyncExternalStore(
     cb => memberProfileStore.subscribe(() => cb()),
     () => memberProfileStore.getState(),
@@ -78,84 +90,111 @@ export function MemberDrawer({open, onClose, activeRoom, onNavigateRoom}: Props)
     () => memberSubscriptionStore.getState(),
     () => memberSubscriptionStore.getState(),
   );
-  const slide = useRef(new Animated.Value(0)).current;
+
+  const slide = useRef(new Animated.Value(-panelW)).current;
+  const fade = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
     if (open) {
-      void memberProfileStore.load();
-      void memberSubscriptionStore.load();
+      if (reduceMotion) {
+        slide.setValue(0);
+        fade.setValue(1);
+      } else {
+        Animated.parallel([
+          Animated.timing(fade, {
+            toValue: 1,
+            duration: 200,
+            useNativeDriver: true,
+          }),
+          Animated.timing(slide, {
+            toValue: 0,
+            duration: 250,
+            useNativeDriver: true,
+          }),
+        ]).start();
+      }
+    } else {
+      if (reduceMotion) {
+        slide.setValue(-panelW);
+        fade.setValue(0);
+      } else {
+        Animated.parallel([
+          Animated.timing(fade, {
+            toValue: 0,
+            duration: 200,
+            useNativeDriver: true,
+          }),
+          Animated.timing(slide, {
+            toValue: -panelW,
+            duration: 250,
+            useNativeDriver: true,
+          }),
+        ]).start();
+      }
     }
-  }, [open]);
+  }, [open, reduceMotion, slide, fade, panelW]);
 
+  // Retour Android ferme d'abord le tiroir
   useEffect(() => {
-    if (reduceMotion) {
-      slide.setValue(open ? 1 : 0);
+    if (!open) {
       return;
     }
-    Animated.timing(slide, {
-      toValue: open ? 1 : 0,
-      duration: 220,
-      useNativeDriver: true,
-    }).start();
-  }, [open, reduceMotion, slide]);
+    const sub = BackHandler.addEventListener('hardwareBackPress', () => {
+      onClose();
+      return true;
+    });
+    return () => sub.remove();
+  }, [open, onClose]);
 
   const profile = profileState.data;
+  const prenom = profile?.prenom ?? '';
+  const nom = profile?.nom ?? '';
+  const fullName = `${prenom} ${nom}`.trim() || t('drawer.member');
+
   const sub = computeSubscription(subState.data);
-  const locale = i18n.language?.startsWith('en') ? 'en-US' : 'fr-FR';
-  const formatDate = (d: Date) =>
-    d.toLocaleDateString(locale, {day: 'numeric', month: 'short', year: 'numeric'});
+  const subViewState: 'active' | 'expired' | 'none' | 'loading' =
+    subState.status === 'loading' && !subState.data
+      ? 'loading'
+      : sub.state;
+  const subPercent = sub.state === 'active' ? sub.percent : 0;
+  const subDays = sub.state === 'active' ? sub.days : null;
+  const subEndIso =
+    sub.state === 'active' || sub.state === 'expired'
+      ? sub.fin.toISOString()
+      : null;
 
-  let subLine = t('drawer.noSubscription');
-  let subBadge = t('drawer.badgeNone');
-  let percent = 0;
-  let subFoot = '';
-  let subBtn = t('drawer.subscribe');
-  let subStateKey: 'loading' | 'active' | 'expired' | 'none' | 'error' = 'none';
+  const formatDate = (iso?: string | null) => {
+    if (!iso) {
+      return null;
+    }
+    try {
+      const locale = i18n.language?.startsWith('en') ? 'en-US' : 'fr-FR';
+      return new Date(iso).toLocaleDateString(locale);
+    } catch {
+      return null;
+    }
+  };
 
-  if (subState.status === 'loading' && !subState.data) {
-    subStateKey = 'loading';
-    subLine = t('drawer.loading');
-  } else if (subState.status === 'error' && !subState.data) {
-    subStateKey = 'error';
-    subLine = t('drawer.unavailable');
-    subBtn = t('drawer.view');
-  } else if (sub.state === 'active') {
-    subStateKey = 'active';
-    subBadge = t('drawer.badgeActive');
-    subLine =
-      sub.days === 1
-        ? t('drawer.daysLeftOne')
-        : t('drawer.daysLeftMany', {days: sub.days});
-    subFoot = t('drawer.expiresOn', {date: formatDate(sub.fin)});
-    percent = sub.percent;
-    subBtn = t('drawer.renew');
-  } else if (sub.state === 'expired') {
-    subStateKey = 'expired';
-    subBadge = t('drawer.badgeExpired');
-    subLine = t('drawer.expired');
-    subFoot = t('drawer.expiredOn', {date: formatDate(sub.fin)});
-    subBtn = t('drawer.renew');
-  }
+  const onItem = useCallback(
+    (id: MemberRoomId) => {
+      onNavigateRoom(id);
+      onClose();
+    },
+    [onNavigateRoom, onClose],
+  );
 
-  const translateX = slide.interpolate({
-    inputRange: [0, 1],
-    outputRange: [-320, 0],
-  });
+  const onLogout = useCallback(async () => {
+    onClose();
+    await sessionStore.clearSessionAsync();
+  }, [onClose]);
+
+  const toggleTheme = useCallback(() => {
+    const next = isDarkMode ? 'light' : 'dark';
+    preferencesStore.setTheme(next);
+  }, [isDarkMode]);
 
   const openSocial = (href: string) => {
-    // href déjà validé https dans core/config/socialLinks
-    void Linking.openURL(href).catch(() => {});
-  };
-
-  const onLogout = () => {
-    onClose();
-    void sessionStore.expireSession('loggedOut');
-  };
-
-  const toggleTheme = () => {
-    const current = preferencesStore.get().theme;
-    const next = current === 'dark' ? 'light' : 'dark';
-    void preferencesStore.setTheme(next);
+    Linking.openURL(href).catch(() => {});
   };
 
   return (
@@ -164,165 +203,307 @@ export function MemberDrawer({open, onClose, activeRoom, onNavigateRoom}: Props)
       transparent
       animationType="none"
       onRequestClose={onClose}
-      testID="member-drawer-modal">
-      <View style={styles.overlay}>
-        <Pressable
-          style={[styles.backdrop, {backgroundColor: colors.bgDarkPremium ?? colors.bgApp}]}
-          onPress={onClose}
-          accessibilityRole="button"
-          accessibilityLabel={t('drawer.close')}
-        />
+      statusBarTranslucent>
+      <View style={styles.overlay} testID="member-drawer">
+        <Animated.View
+          style={[
+            styles.backdrop,
+            {backgroundColor: colors.overlay, opacity: fade},
+          ]}>
+          <Pressable
+            style={StyleSheet.absoluteFill}
+            onPress={onClose}
+            accessibilityRole="button"
+            accessibilityLabel={t('drawer.close')}
+          />
+        </Animated.View>
+
         <Animated.View
           style={[
             styles.panel,
             {
-              backgroundColor: colors.bgDarkPremium ?? colors.bgApp,
-              paddingTop: spacing.xl,
-              transform: [{translateX}],
+              width: panelW,
+              backgroundColor: colors.bgSurface,
+              transform: [{translateX: slide}],
+              ...Platform.select({
+                android: {elevation: elevation.raised},
+                default: {
+                  shadowColor: elevation.shadowColor,
+                  shadowOffset: {width: 4, height: 0},
+                  shadowOpacity: 0.12,
+                  shadowRadius: 12,
+                },
+              }),
             },
-          ]}
-          accessibilityViewIsModal>
-          <View style={[styles.top, {paddingHorizontal: spacing.lg}]}>
-            <Text variant="title" color="onDark">
-              {t('houses.memberSpace')}
-            </Text>
-            <Pressable onPress={onClose} accessibilityLabel={t('drawer.close')}>
-              <Icon name="XIcon" size={22} color={colors.textOnDark} />
-            </Pressable>
-          </View>
+          ]}>
+          <ScrollView
+            contentContainerStyle={styles.scroll}
+            showsVerticalScrollIndicator={false}
+            bounces={false}>
+            {/* En-tête */}
+            <View style={styles.head}>
+              <Image
+                source={APP_ICON}
+                style={[
+                  styles.headIcon,
+                  {borderColor: colors.goldBorder},
+                ]}
+              />
+              <View style={styles.headText}>
+                <Text
+                  style={[
+                    styles.headTitle,
+                    {
+                      color: isDarkMode
+                        ? colors.titleOnDark
+                        : colors.royalStart,
+                      fontFamily: 'Fraunces-Bold',
+                    },
+                  ]}
+                  numberOfLines={1}>
+                  DSI Academy
+                </Text>
+                <Text
+                  style={[
+                    styles.headSub,
+                    {
+                      color: colors.goldText,
+                      fontFamily: 'Fraunces-MediumItalic',
+                    },
+                  ]}
+                  numberOfLines={1}>
+                  {t('houses.welcome.memberSpace')}
+                </Text>
+              </View>
+              <Pressable
+                onPress={onClose}
+                style={[
+                  styles.closeBtn,
+                  {backgroundColor: colors.bgSurfaceAlt},
+                ]}
+                accessibilityRole="button"
+                accessibilityLabel={t('drawer.close')}
+                testID="drawer-close"
+                android_ripple={{color: colors.borderLight}}>
+                <Icon name="XIcon" size={18} color={colors.textSecondary} />
+              </Pressable>
+            </View>
 
-          <Pressable
-            onPress={() => {
-              onNavigateRoom('profile');
-              onClose();
-            }}
-            style={[styles.userCard, {margin: spacing.lg, borderRadius: radii.md}]}
-            accessibilityRole="button">
-            <View
+            {/* Carte utilisateur */}
+            <Pressable
+              onPress={() => onItem('profile')}
               style={[
-                styles.avatar,
-                {backgroundColor: colors.goldPrestige, borderRadius: radii.round},
-              ]}>
-              <Text variant="label" color="onDark">
-                {profile
-                  ? initials(profile.prenom, profile.nom)
-                  : '?'}
-              </Text>
-            </View>
-            <View style={{marginLeft: spacing.md, flex: 1}}>
-              <Text variant="caption" color="muted">
-                {t('drawer.hello')}
-              </Text>
-              <Text variant="body" color="onDark" numberOfLines={1}>
-                {profile
-                  ? `${profile.prenom} ${profile.nom}`.trim()
-                  : '—'}
-              </Text>
-            </View>
-          </Pressable>
+                styles.userCard,
+                {backgroundColor: colors.bgSurfaceAlt},
+              ]}
+              accessibilityRole="button"
+              accessibilityLabel={fullName}>
+              <View
+                style={[
+                  styles.avatar,
+                  {
+                    borderColor: colors.goldBorder,
+                  },
+                ]}>
+                <Text
+                  style={{
+                    color: '#FFFFFF',
+                    fontWeight: '700',
+                    fontSize: 14.4,
+                    fontFamily: 'Manrope-Bold',
+                  }}>
+                  {initials(prenom, nom)}
+                </Text>
+              </View>
+              <View style={styles.userText}>
+                <Text
+                  style={{
+                    color: colors.goldText,
+                    fontFamily: 'Fraunces-MediumItalic',
+                    fontSize: 12.8,
+                    fontWeight: '500',
+                  }}>
+                  {t('drawer.hello')}
+                </Text>
+                <Text
+                  style={{
+                    color: colors.textPrimary,
+                    fontFamily: 'Fraunces-Bold',
+                    fontSize: 15.7,
+                    fontWeight: '700',
+                  }}
+                  numberOfLines={1}>
+                  {fullName}
+                </Text>
+              </View>
+            </Pressable>
 
-          <ScrollView style={{flex: 1}} contentContainerStyle={{paddingBottom: spacing.xxl}}>
-            <View accessibilityRole="menu">
+            {/* Liste des pièces */}
+            <View style={styles.menu}>
               {ROOMS.map(room => {
-                const active = room.id === activeRoom;
+                const active = activeRoom === room.id;
+                const iconColor = active
+                  ? '#FFFFFF'
+                  : colors.textSecondary;
+                const labelColor = active
+                  ? isDarkMode
+                    ? colors.blueActive
+                    : colors.bluePrimary
+                  : colors.textSecondary;
                 return (
                   <Pressable
                     key={room.id}
-                    onPress={() => {
-                      onNavigateRoom(room.id);
-                      onClose();
-                    }}
-                    accessibilityRole="menuitem"
-                    accessibilityState={{selected: active}}
+                    onPress={() => onItem(room.id)}
                     style={[
                       styles.item,
-                      {
-                        paddingHorizontal: spacing.lg,
-                        paddingVertical: spacing.md,
-                        backgroundColor: active ? colors.bgDarkCard : 'transparent',
+                      active && {
+                        backgroundColor: colors.blueLight,
                       },
                     ]}
-                    testID={`drawer-room-${room.id}`}>
-                    <Icon name={room.icon} size={20} color={colors.textOnDark} />
+                    accessibilityRole="button"
+                    accessibilityState={{selected: active}}
+                    testID={`drawer-room-${room.id}`}
+                    android_ripple={{color: colors.blueLight}}>
+                    <View
+                      style={[
+                        styles.ico,
+                        active && {
+                          backgroundColor: isDarkMode
+                            ? '#2563eb'
+                            : colors.bluePrimary,
+                        },
+                      ]}>
+                      <Icon
+                        name={room.icon}
+                        size={19}
+                        color={iconColor}
+                      />
+                    </View>
                     <Text
-                      variant="body"
-                      color="onDark"
-                      style={{marginLeft: spacing.md, flex: 1}}>
+                      style={[
+                        styles.label,
+                        {
+                          color: labelColor,
+                          fontWeight: active ? '700' : '500',
+                        },
+                      ]}
+                      numberOfLines={1}>
                       {t(room.labelKey)}
                     </Text>
+                    {active ? (
+                      <View
+                        style={[
+                          styles.mark,
+                          {backgroundColor: colors.goldPrestige},
+                        ]}
+                      />
+                    ) : null}
                   </Pressable>
                 );
               })}
+
+              {/* Déconnexion */}
               <Pressable
                 onPress={onLogout}
+                style={[styles.item, {marginTop: 4.8}]}
                 accessibilityRole="button"
-                style={[styles.item, {paddingHorizontal: spacing.lg, paddingVertical: spacing.md}]}
-                testID="drawer-logout">
-                <Icon name="XIcon" size={20} color={colors.textOnDark} />
-                <Text variant="body" color="onDark" style={{marginLeft: spacing.md}}>
+                accessibilityLabel={t('drawer.logout')}
+                testID="drawer-logout"
+                android_ripple={{color: 'rgba(220,38,38,0.08)'}}>
+                <View style={styles.ico}>
+                  <Icon
+                    name="LogoutIcon"
+                    size={19}
+                    color={isDarkMode ? '#f87171' : '#dc2626'}
+                  />
+                </View>
+                <Text
+                  style={[
+                    styles.label,
+                    {
+                      color: isDarkMode ? '#f87171' : '#dc2626',
+                      fontWeight: '500',
+                    },
+                  ]}>
                   {t('drawer.logout')}
                 </Text>
               </Pressable>
             </View>
 
-            <View
-              style={[
-                styles.subCard,
-                {
-                  margin: spacing.lg,
-                  padding: spacing.md,
-                  borderRadius: radii.md,
-                  backgroundColor: colors.bgDarkCard,
-                },
-              ]}
-              accessibilityLabel={t('drawer.subscription')}>
+            {/* Carte abonnement */}
+            <View style={styles.subCard}>
               <View style={styles.subTop}>
-                <Text variant="label" color="onDark">
-                  {t('drawer.subscription')}
-                </Text>
-                {subStateKey !== 'loading' && subStateKey !== 'error' ? (
-                  <Text variant="caption" color="muted">
-                    {subBadge}
-                  </Text>
+                <Text style={styles.subTitle}>{t('drawer.subscription')}</Text>
+                {subViewState !== 'loading' && subViewState !== 'none' ? (
+                  <View
+                    style={[
+                      styles.subBadge,
+                      subViewState === 'active'
+                        ? {backgroundColor: 'rgba(212,175,55,0.22)'}
+                        : {backgroundColor: 'rgba(248,113,113,0.22)'},
+                    ]}>
+                    <Text
+                      style={{
+                        color:
+                          subViewState === 'active' ? '#f5d778' : '#fca5a5',
+                        fontSize: 10.6,
+                        fontWeight: '700',
+                      }}>
+                      {subViewState === 'active'
+                        ? t('drawer.badgeActive')
+                        : t('drawer.badgeExpired')}
+                    </Text>
+                  </View>
                 ) : null}
               </View>
-              <Text variant="body" color="onDark" style={{marginTop: spacing.xs}}>
-                {subLine}
+              <Text style={styles.subLine}>
+                {subViewState === 'loading'
+                  ? '…'
+                  : subViewState === 'none'
+                    ? t('drawer.noSubscription')
+                    : subEndIso
+                      ? t('home.subscriptionEnd', {
+                          date: formatDate(subEndIso) ?? '',
+                        })
+                      : t('drawer.subscription')}
               </Text>
-              <View
-                style={[
-                  styles.barTrack,
-                  {backgroundColor: colors.borderLight, marginTop: spacing.sm},
-                ]}
-                accessibilityRole="progressbar"
-                accessibilityValue={{min: 0, max: 100, now: percent}}>
+              <View style={styles.barTrack}>
                 <View
-                  style={{
-                    width: `${percent}%`,
-                    height: 6,
-                    backgroundColor: colors.goldPrestige,
-                    borderRadius: 3,
-                  }}
+                  style={[
+                    styles.barFill,
+                    {
+                      width: `${Math.min(100, Math.max(0, subPercent))}%`,
+                    },
+                  ]}
                 />
               </View>
-              <View style={[styles.subFoot, {marginTop: spacing.sm}]}>
-                <Text variant="caption" color="muted">
-                  {subFoot || ' '}
+              <View style={styles.subFoot}>
+                <Text style={styles.subFootText}>
+                  {subDays != null
+                    ? t('drawer.daysLeft', {count: subDays})
+                    : ''}
                 </Text>
                 <Pressable
-                  onPress={() => {
-                    onNavigateRoom('subscription');
-                    onClose();
-                  }}>
-                  <Text variant="label" color="link">
-                    {subBtn}
+                  onPress={() => onItem('subscription')}
+                  style={styles.subBtn}
+                  accessibilityRole="button">
+                  <Text
+                    style={{
+                      color: '#0f172a',
+                      fontSize: 11.5,
+                      fontWeight: '700',
+                    }}>
+                    {subViewState === 'none'
+                      ? t('drawer.subscribe')
+                      : t('drawer.manage')}
                   </Text>
                 </Pressable>
               </View>
             </View>
 
+            {/* Réseaux sociaux */}
             <View
-              style={[styles.social, {paddingHorizontal: spacing.lg, gap: spacing.md}]}
+              style={styles.social}
               accessibilityLabel={t('drawer.follow')}>
               {socialLinksStore.list().map(s =>
                 s.href ? (
@@ -331,34 +512,91 @@ export function MemberDrawer({open, onClose, activeRoom, onNavigateRoom}: Props)
                     onPress={() => openSocial(s.href!)}
                     accessibilityRole="link"
                     accessibilityLabel={s.label}
-                    style={styles.socialBtn}>
-                    <Text variant="caption" color="onDark">
-                      {s.label}
+                    style={[
+                      styles.socialBtn,
+                      {backgroundColor: colors.bgSurfaceAlt},
+                    ]}>
+                    <Text
+                      style={{
+                        color: colors.textSecondary,
+                        fontSize: 12,
+                        fontWeight: '600',
+                      }}>
+                      {s.label.slice(0, 2).toUpperCase()}
                     </Text>
                   </Pressable>
                 ) : (
                   <View
                     key={s.id}
-                    accessibilityState={{disabled: true}}
-                    style={[styles.socialBtn, {opacity: 0.4}]}>
-                    <Text variant="caption" color="muted">
-                      {s.label}
+                    style={[
+                      styles.socialBtn,
+                      {
+                        backgroundColor: colors.bgSurfaceAlt,
+                        opacity: 0.45,
+                      },
+                    ]}>
+                    <Text
+                      style={{
+                        color: colors.textMuted,
+                        fontSize: 12,
+                      }}>
+                      {s.label.slice(0, 2).toUpperCase()}
                     </Text>
                   </View>
                 ),
               )}
             </View>
 
-            <Pressable
-              onPress={toggleTheme}
-              style={[styles.item, {paddingHorizontal: spacing.lg, marginTop: spacing.md}]}
-              accessibilityRole="switch"
-              accessibilityLabel={t('drawer.darkTheme')}>
-              <Icon name="EyeIcon" size={20} color={colors.textOnDark} />
-              <Text variant="body" color="onDark" style={{marginLeft: spacing.md}}>
-                {t('drawer.darkTheme')}
-              </Text>
-            </Pressable>
+            {/* Interrupteur thème */}
+            <View style={styles.themeRow}>
+              <View
+                style={{
+                  opacity: isDarkMode ? 0.4 : 1,
+                }}>
+                <Icon
+                  name="SunIcon"
+                  size={18}
+                  color={
+                    !isDarkMode ? colors.blueActive : colors.textMuted
+                  }
+                />
+              </View>
+              <Pressable
+                onPress={toggleTheme}
+                style={[
+                  styles.switch,
+                  {
+                    borderColor: colors.borderLight,
+                    backgroundColor: colors.bgSurfaceAlt,
+                  },
+                  isDarkMode && styles.switchDark,
+                ]}
+                accessibilityRole="switch"
+                accessibilityState={{checked: isDarkMode}}
+                accessibilityLabel={t('drawer.darkTheme')}
+                testID="drawer-theme-switch">
+                <View
+                  style={[
+                    styles.knob,
+                    {
+                      backgroundColor: isDarkMode
+                        ? colors.blueActive
+                        : colors.bluePrimary,
+                    },
+                    isDarkMode && {transform: [{translateX: 20}]},
+                  ]}
+                />
+              </Pressable>
+              <View style={{opacity: isDarkMode ? 1 : 0.4}}>
+                <Icon
+                  name="MoonIcon"
+                  size={18}
+                  color={
+                    isDarkMode ? colors.blueActive : colors.textMuted
+                  }
+                />
+              </View>
+            </View>
           </ScrollView>
         </Animated.View>
       </View>
@@ -367,34 +605,201 @@ export function MemberDrawer({open, onClose, activeRoom, onNavigateRoom}: Props)
 }
 
 const styles = StyleSheet.create({
-  overlay: {flex: 1, flexDirection: 'row'},
-  backdrop: {flex: 1, opacity: 0.7},
-  panel: {width: 300, maxWidth: '86%', height: '100%'},
-  top: {
+  overlay: {
+    flex: 1,
+    flexDirection: 'row',
+  },
+  backdrop: {
+    ...StyleSheet.absoluteFillObject,
+  },
+  panel: {
+    height: '100%',
+    maxWidth: '86%',
+  },
+  scroll: {
+    paddingTop: 16,
+    paddingHorizontal: 14.4,
+    paddingBottom: 18,
+    gap: 16,
+  },
+  head: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
+    gap: 10.4,
   },
-  userCard: {flexDirection: 'row', alignItems: 'center'},
-  avatar: {
-    width: 44,
-    height: 44,
+  headIcon: {
+    width: 40,
+    height: 40,
+    borderRadius: 10,
+    borderWidth: 1,
+  },
+  headText: {
+    flex: 1,
+    minWidth: 0,
+  },
+  headTitle: {
+    fontSize: 17.6,
+    fontWeight: '700',
+    letterSpacing: 0.09,
+    lineHeight: 20.24,
+  },
+  headSub: {
+    fontSize: 12.5,
+    fontWeight: '500',
+    fontStyle: 'italic',
+    lineHeight: 16.2,
+  },
+  closeBtn: {
+    width: 36,
+    height: 36,
+    borderRadius: 10,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  item: {flexDirection: 'row', alignItems: 'center', minHeight: 48},
-  subCard: {},
+  userCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 11.2,
+    paddingVertical: 10.4,
+    paddingHorizontal: 12,
+    borderRadius: 16,
+  },
+  avatar: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    alignItems: 'center',
+    justifyContent: 'center',
+    // gradient fallback = blue-primary solid
+    backgroundColor: '#1E40AF',
+    borderWidth: 2,
+  },
+  userText: {
+    flex: 1,
+    minWidth: 0,
+  },
+  menu: {
+    gap: 2.4,
+  },
+  item: {
+    position: 'relative',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 11.2,
+    width: '100%',
+    paddingVertical: 6,
+    paddingHorizontal: 10,
+    borderRadius: 12,
+  },
+  ico: {
+    width: 32,
+    height: 32,
+    borderRadius: 9,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  label: {
+    flex: 1,
+    minWidth: 0,
+    fontSize: 14.1, // 0.88rem
+  },
+  mark: {
+    position: 'absolute',
+    right: 8,
+    width: 4,
+    height: 18,
+    borderRadius: 4,
+  },
+  subCard: {
+    padding: 14.4,
+    borderRadius: 16,
+    backgroundColor: '#1E40AF', // gradient fallback
+  },
   subTop: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 8,
   },
-  barTrack: {height: 6, borderRadius: 3, overflow: 'hidden'},
+  subTitle: {
+    fontSize: 12.5,
+    fontWeight: '700',
+    color: 'rgba(255,255,255,0.9)',
+  },
+  subBadge: {
+    paddingVertical: 2,
+    paddingHorizontal: 8,
+    borderRadius: 9999,
+  },
+  subLine: {
+    marginTop: 8,
+    marginBottom: 8.8,
+    fontSize: 15.2,
+    fontWeight: '700',
+    color: '#FFFFFF',
+  },
+  barTrack: {
+    height: 8,
+    borderRadius: 9999,
+    backgroundColor: 'rgba(255,255,255,0.22)',
+    overflow: 'hidden',
+  },
+  barFill: {
+    height: '100%',
+    borderRadius: 9999,
+    backgroundColor: '#D4AF37',
+  },
   subFoot: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 8,
+    marginTop: 10.4,
   },
-  social: {flexDirection: 'row', flexWrap: 'wrap'},
-  socialBtn: {minHeight: 44, justifyContent: 'center', paddingHorizontal: 4},
+  subFootText: {
+    fontSize: 11.2,
+    color: 'rgba(255,255,255,0.78)',
+    flex: 1,
+  },
+  subBtn: {
+    flexShrink: 0,
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    borderRadius: 9999,
+    backgroundColor: '#D4AF37',
+  },
+  social: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    gap: 9.6,
+  },
+  socialBtn: {
+    width: 38,
+    height: 38,
+    borderRadius: 19,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  themeRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 9.6,
+  },
+  switch: {
+    width: 44,
+    height: 24,
+    borderWidth: 1,
+    borderRadius: 9999,
+    justifyContent: 'center',
+  },
+  switchDark: {},
+  knob: {
+    position: 'absolute',
+    top: 2,
+    left: 2,
+    width: 18,
+    height: 18,
+    borderRadius: 9,
+  },
 });
