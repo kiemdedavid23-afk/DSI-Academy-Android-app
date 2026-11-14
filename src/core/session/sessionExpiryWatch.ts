@@ -1,18 +1,27 @@
 /**
  * Surveillance d'expiration : AppState 'active' + minuterie plafonnée.
  * Un seul timer actif. Nettoyé à chaque fin / nouvelle session.
+ * Aucun import de sessionStore (cycle cassé) : reçoit getSession + onExpire.
  */
 
 import {AppState, type AppStateStatus, type NativeEventSubscription} from 'react-native';
-import {sessionStore} from './sessionStore';
 
 /** Plafond setTimeout (évite débordement ~24,8 j). */
 const MAX_TIMEOUT_MS = 2_147_483_647;
 
+type SessionLike = {
+  expiresAt: number;
+};
+
+type WatchDeps = {
+  getSession: () => SessionLike | null;
+  onExpire: (reason: 'expired') => void;
+};
+
 let timer: ReturnType<typeof setTimeout> | null = null;
 let appSub: NativeEventSubscription | null = null;
 let started = false;
-let expireFn: ((reason: 'expired') => void) | null = null;
+let deps: WatchDeps | null = null;
 
 function clearTimer(): void {
   if (timer !== null) {
@@ -23,21 +32,27 @@ function clearTimer(): void {
 
 function scheduleFromSession(): void {
   clearTimer();
-  const session = sessionStore.getSession();
+  if (!deps) {
+    return;
+  }
+  const session = deps.getSession();
   if (!session) {
     return;
   }
   const delay = session.expiresAt - Date.now();
   if (delay <= 0) {
-    expireFn?.('expired');
+    deps.onExpire('expired');
     return;
   }
   const capped = Math.min(delay, MAX_TIMEOUT_MS);
   timer = setTimeout(() => {
     timer = null;
-    const current = sessionStore.getSession();
+    if (!deps) {
+      return;
+    }
+    const current = deps.getSession();
     if (current && current.expiresAt <= Date.now()) {
-      expireFn?.('expired');
+      deps.onExpire('expired');
     } else {
       scheduleFromSession();
     }
@@ -48,12 +63,15 @@ function onAppState(next: AppStateStatus): void {
   if (next !== 'active') {
     return;
   }
-  const session = sessionStore.getSession();
+  if (!deps) {
+    return;
+  }
+  const session = deps.getSession();
   if (!session) {
     return;
   }
   if (session.expiresAt <= Date.now()) {
-    expireFn?.('expired');
+    deps.onExpire('expired');
     return;
   }
   scheduleFromSession();
@@ -61,10 +79,10 @@ function onAppState(next: AppStateStatus): void {
 
 export const sessionExpiryWatch = {
   /**
-   * Démarre le watch une fois. `expire` = sessionStore.expireSession branché.
+   * Démarre le watch une fois. Injection totale : pas d'import sessionStore.
    */
-  start(expire: (reason: 'expired') => void): void {
-    expireFn = expire;
+  start(options: WatchDeps): void {
+    deps = options;
     if (started) {
       scheduleFromSession();
       return;
@@ -84,6 +102,6 @@ export const sessionExpiryWatch = {
     appSub?.remove();
     appSub = null;
     started = false;
-    expireFn = null;
+    deps = null;
   },
 };
