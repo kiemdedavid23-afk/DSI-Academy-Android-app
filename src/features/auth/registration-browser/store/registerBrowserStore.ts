@@ -13,7 +13,7 @@ import {
 import {parseRegistrationDoneMessage} from '../logic/registrationMessage';
 import {resolvePrefillIdentifier} from '../logic/prefillIdentifier';
 import {lastLoginIdentifier} from '../logic/lastLoginIdentifier';
-import {isSiteUrl, resolveWebUrl} from '../logic/siteUrl';
+import {isSiteUrl, resolveWebUrl, getSiteOriginWhitelist} from '../logic/siteUrl';
 
 export type RegisterMode = 'new' | 'resume';
 
@@ -25,6 +25,7 @@ type State = {
   status: RegisterStatus;
   mode: RegisterMode;
   startUrl: string;
+  originWhitelist: string[];
   injectedScript: string | null;
   prefillIdentifiant: string;
   done: boolean;
@@ -36,6 +37,7 @@ let state: State = {
   status: 'loading',
   mode: 'new',
   startUrl: '',
+  originWhitelist: [],
   injectedScript: null,
   prefillIdentifiant: '',
   done: false,
@@ -87,6 +89,7 @@ export const registerBrowserStore = {
       status: 'loading',
       mode,
       startUrl,
+      originWhitelist: getSiteOriginWhitelist(),
       injectedScript: null,
       done: false,
       prefillIdentifiant: '',
@@ -194,6 +197,7 @@ handleMessage(data: string, originUrl: string | undefined): boolean {
       status: 'loading',
       mode: 'new',
       startUrl: '',
+      originWhitelist: [],
       injectedScript: null,
       prefillIdentifiant: '',
       done: false,
