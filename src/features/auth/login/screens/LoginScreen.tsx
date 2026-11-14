@@ -84,7 +84,6 @@ export function LoginScreen() {
       idPropre,
       motDePasse,
       souvenir,
-      t('connexion.errorGeneric'),
     );
   };
 
@@ -222,13 +221,19 @@ export function LoginScreen() {
           </Text>
         ) : null}
 
-        {state.error ? (
+        {state.status === 'error' && state.errorKind ? (
           <Text
             variant="bodySmall"
             color="error"
             style={{marginTop: spacing.md}}
             testID="login-error">
-            {state.error}
+            {state.errorKind === 'network'
+              ? t('connexion.errorNetwork')
+              : state.errorKind === 'server'
+                ? t('connexion.errorServer')
+                : state.workerMessage
+                  ? state.workerMessage
+                  : t('connexion.errorGeneric')}
           </Text>
         ) : null}
 
