@@ -74,12 +74,15 @@ describe('loginStore', () => {
   });
 
   it('bloque le double envoi', async () => {
-    let resolveFn: (v: unknown) => void = () => {};
+    let resolveFn: (value: {
+      kind: 'failure';
+      message: string;
+    }) => void = () => {};
     connecter.mockImplementation(
       () =>
-        new Promise(resolve => {
+        new Promise<{kind: 'failure'; message: string}>(resolve => {
           resolveFn = resolve;
-        }) as Promise<never>,
+        }),
     );
     const p1 = loginStore.submit('a', 'b', false, 'g');
     const p2 = loginStore.submit('a', 'b', false, 'g');

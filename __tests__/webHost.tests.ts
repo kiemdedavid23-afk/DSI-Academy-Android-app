@@ -1,4 +1,4 @@
-import {isSiteUrl} from '@core/config/serviceRegistry';
+import {isSiteUrl, getSiteOriginWhitelist} from '@core/config/serviceRegistry';
 import {BUILD_CONFIG} from '@core/config/buildConfig.generated';
 
 const siteHost = new URL(BUILD_CONFIG.registry.web).hostname;
@@ -25,5 +25,14 @@ describe('isSiteUrl', () => {
   it('refuse intent et file', () => {
     expect(isSiteUrl('intent://pay')).toBe(false);
     expect(isSiteUrl('file:///tmp/x')).toBe(false);
+  });
+});
+
+describe('getSiteOriginWhitelist', () => {
+  it('renvoie schéma+hôte du site, sans chemin', () => {
+    const list = getSiteOriginWhitelist();
+    expect(list.length).toBe(1);
+    expect(list[0]).toMatch(/^https:\/\/[^/]+$/);
+    expect(list[0]).not.toContain('/inscription');
   });
 });

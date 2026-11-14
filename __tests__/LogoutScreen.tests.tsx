@@ -8,6 +8,18 @@ import {sessionStore} from '@core/session';
 
 jest.spyOn(Alert, 'alert');
 
+async function renderScreen() {
+  let tree: renderer.ReactTestRenderer;
+  await act(async () => {
+    tree = renderer.create(
+      <ThemeProvider>
+        <SettingsScreen />
+      </ThemeProvider>,
+    );
+  });
+  return tree!;
+}
+
 describe('SettingsScreen logout provisoire', () => {
   beforeAll(() => {
     initI18n('fr');
@@ -18,22 +30,14 @@ describe('SettingsScreen logout provisoire', () => {
     await sessionStore.clearSessionAsync();
   });
 
-  it('affiche le bouton déconnexion', () => {
-    const tree = renderer.create(
-      <ThemeProvider>
-        <SettingsScreen />
-      </ThemeProvider>,
-    );
+  it('affiche le bouton déconnexion', async () => {
+    const tree = await renderScreen();
     expect(tree.root.findByProps({testID: 'settings-logout'})).toBeTruthy();
   });
 
-  it('ouvre la confirmation', () => {
-    const tree = renderer.create(
-      <ThemeProvider>
-        <SettingsScreen />
-      </ThemeProvider>,
-    );
-    act(() => {
+  it('ouvre la confirmation', async () => {
+    const tree = await renderScreen();
+    await act(async () => {
       tree.root.findByProps({testID: 'settings-logout'}).props.onPress();
     });
     expect(Alert.alert).toHaveBeenCalled();

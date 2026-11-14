@@ -7,24 +7,25 @@ import {loginStore} from '@features/auth/login/store/loginStore';
 
 const mockNavigate = jest.fn();
 
-jest.mock('@react-navigation/native', () => {
-  const actual = jest.requireActual('@react-navigation/native');
-  return {
-    ...actual,
-    useNavigation: () => ({navigate: mockNavigate}),
-  };
-});
+jest.mock('@react-navigation/native', () => ({
+  useNavigation: () => ({navigate: mockNavigate}),
+  useRoute: () => ({params: undefined}),
+}));
 
 jest.mock('@core/api/endpoints/payment/auth.api', () => ({
   connecter: jest.fn(),
 }));
 
-function renderScreen() {
-  return renderer.create(
-    <ThemeProvider>
-      <LoginScreen />
-    </ThemeProvider>,
-  );
+async function renderScreen() {
+  let tree: renderer.ReactTestRenderer;
+  await act(async () => {
+    tree = renderer.create(
+      <ThemeProvider>
+        <LoginScreen />
+      </ThemeProvider>,
+    );
+  });
+  return tree!;
 }
 
 describe('LoginScreen', () => {
@@ -37,8 +38,8 @@ describe('LoginScreen', () => {
     mockNavigate.mockReset();
   });
 
-  it('affiche les champs identifiant et mot de passe', () => {
-    const tree = renderScreen();
+  it('affiche les champs identifiant et mot de passe', async () => {
+    const tree = await renderScreen();
     expect(tree.root.findByProps({testID: 'login-identifier'})).toBeTruthy();
     expect(tree.root.findByProps({testID: 'login-password'})).toBeTruthy();
     expect(tree.root.findByProps({testID: 'login-submit'})).toBeTruthy();
@@ -48,28 +49,28 @@ describe('LoginScreen', () => {
     ).toBeTruthy();
   });
 
-  it('n’affiche pas mot de passe oublié', () => {
-    const tree = renderScreen();
+  it('n’affiche pas mot de passe oublié', async () => {
+    const tree = await renderScreen();
     const json = JSON.stringify(tree.toJSON());
     expect(json).not.toMatch(/Mot de passe oublié/i);
     expect(json).not.toMatch(/forgot/i);
   });
 
-  it('valide les champs vides sans appeler le store loading', () => {
-    const tree = renderScreen();
+  it('valide les champs vides sans appeler le store loading', async () => {
+    const tree = await renderScreen();
     const btn = tree.root.findByProps({testID: 'login-submit'});
-    act(() => {
+    await act(async () => {
       btn.props.onPress();
     });
     expect(loginStore.getState().status).toBe('idle');
   });
 
-  it('lien Créer un compte navigue vers RegisterBrowser', () => {
-    const tree = renderScreen();
+  it('lien Créer un compte navigue vers RegisterBrowser', async () => {
+    const tree = await renderScreen();
     const link = tree.root.findByProps({testID: 'login-create-account'});
-    act(() => {
+    await act(async () => {
       link.props.onPress();
     });
-    expect(mockNavigate).toHaveBeenCalledWith('RegisterBrowser');
+    expect(mockNavigate).toHaveBeenCalledWith('RegisterBrowser', {mode: 'new'});
   });
 });

@@ -1,5 +1,5 @@
-import {registerBrowserStore} from '@features/auth/register/store/registerBrowserStore';
-import {lastLoginIdentifier} from '@features/auth/register/logic/lastLoginIdentifier';
+import {registerBrowserStore} from '@features/auth/registration-browser/store/registerBrowserStore';
+import {lastLoginIdentifier} from '@core/session';
 import {Linking} from 'react-native';
 import {BUILD_CONFIG} from '@core/config/buildConfig.generated';
 
