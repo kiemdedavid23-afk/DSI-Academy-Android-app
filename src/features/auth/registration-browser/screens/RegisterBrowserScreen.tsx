@@ -82,7 +82,6 @@ export function RegisterBrowserScreen({navigation, route}: Props) {
       if (state.done) {
         return;
       }
-      // Intercepter le bouton retour header
       if (e.data.action.type === 'GO_BACK' || e.data.action.type === 'POP') {
         e.preventDefault();
         confirmLeave();
@@ -91,18 +90,13 @@ export function RegisterBrowserScreen({navigation, route}: Props) {
     return unsub;
   }, [navigation, confirmLeave, state.done]);
 
-  const onShouldStart = useCallback(
-    (req: {url: string}): boolean => {
-      return registerBrowserStore.handleShouldStart(req.url);
-    },
-    [],
-  );
+  const onShouldStart = useCallback((req: {url: string}): boolean => {
+    return registerBrowserStore.handleShouldStart(req.url);
+  }, []);
 
   const onMessage = useCallback(
     (event: {nativeEvent: {data: string; url?: string}}) => {
-      const origin =
-        event.nativeEvent.url ??
-        state.startUrl;
+      const origin = event.nativeEvent.url ?? state.startUrl;
       registerBrowserStore.handleMessage(event.nativeEvent.data, origin);
     },
     [state.startUrl],
@@ -112,10 +106,12 @@ export function RegisterBrowserScreen({navigation, route}: Props) {
     canGoBackRef.current = nav.canGoBack;
   }, []);
 
+  const loadingLabel = t('app.register.loading');
+
   if (!state.startUrl) {
     return (
       <View style={[styles.fill, {backgroundColor: colors.bgApp}]}>
-        <LoadingState fill />
+        <LoadingState accessibilityLabel={loadingLabel} fill />
       </View>
     );
   }
@@ -124,7 +120,7 @@ export function RegisterBrowserScreen({navigation, route}: Props) {
     <View style={[styles.fill, {backgroundColor: colors.bgApp}]}>
       {state.status === 'loading' ? (
         <View style={styles.overlay} pointerEvents="none">
-          <LoadingState fill />
+          <LoadingState accessibilityLabel={loadingLabel} fill />
         </View>
       ) : null}
 
@@ -151,7 +147,7 @@ export function RegisterBrowserScreen({navigation, route}: Props) {
         javaScriptEnabled
         domStorageEnabled
         setSupportMultipleWindows
-        originWhitelist={['https://*']}
+        originWhitelist={state.originWhitelist}
         mixedContentMode="never"
         allowFileAccess={false}
         allowsInlineMediaPlayback
@@ -164,9 +160,6 @@ export function RegisterBrowserScreen({navigation, route}: Props) {
         }}
         onMessage={onMessage}
         onNavigationStateChange={onNavChange}
-        onLoadStart={() => {
-          /* keep loading until end */
-        }}
         onLoadEnd={() => registerBrowserStore.markReady()}
         onError={() => registerBrowserStore.markError()}
         onHttpError={() => registerBrowserStore.markError()}
@@ -182,7 +175,7 @@ const styles = StyleSheet.create({
   fill: {flex: 1},
   webview: {flex: 1},
   overlay: {
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.absoluteFill,
     zIndex: 2,
     justifyContent: 'center',
     backgroundColor: 'transparent',
