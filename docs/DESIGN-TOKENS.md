@@ -174,3 +174,20 @@ Le site coupe toutes les animations quand « réduire les animations » est acti
 5. Bibliothèque de flou sur Android 12 et plus (§9), décidée à l'étape 2.
 
 Aucun de ces points ne bloque l'étape 0 : les valeurs de départ sont dans ce document.
+## 15. Tokens ajoutés pour fidélité L2 (en-tête / tiroir / accueil)
+
+| Token | Clair | Sombre | Source site |
+|-------|-------|--------|-------------|
+| `royalStart` | `#0a1b54` | `#0a1b54` | `--dsi-royal-start` (MemberSpaceLayout) |
+| `royalEnd` | `#1d4ed8` | `#1d4ed8` | `--dsi-royal-end` |
+| `titleOnDark` | `#dbeafe` | `#dbeafe` | repli titre sombre |
+| `goldText` | `#8c6a12` | `#D4AF37` | `--dsi-gold-text` |
+| `homeGold` | `#8c6a12` | `#D4AF37` | `--home-gold` |
+| `overlay` | `rgba(15,23,42,0.45)` | idem | `.dsi-mdrawer-backdrop` |
+| `badgeNoneBg` | `#e2e8f0` | `#334155` | `.dsi-home-badge` |
+| `badgeNoneText` | `#334155` | `#CBD5E1` | |
+| `badgeActiveText` | `#6b4f00` | `#F5D778` | `.is-active` |
+| `badgeExpiredBg` | `#fee2e2` | rgba error 0.16 | `.is-expired` |
+| `badgeExpiredText` | `#991b1b` | `#FCA5A5` | |
+
+Dégradé de titre impossible en RN Text → repli uni `royalStart` / `titleOnDark`.
