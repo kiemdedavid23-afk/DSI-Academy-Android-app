@@ -1,0 +1,13 @@
+{
+  "_note": "Forme déduite du contrat Worker — accessProof null = cas normal.",
+  "status": "connecte",
+  "authenticated": true,
+  "userId": "DSI-00000",
+  "accountStatus": "actif",
+  "subscriptionStatus": null,
+  "subscriptionActive": false,
+  "dateFin": null,
+  "token": "TEST_TOKEN_NOT_REAL",
+  "expiresIn": 604800,
+  "accessProof": null
+}

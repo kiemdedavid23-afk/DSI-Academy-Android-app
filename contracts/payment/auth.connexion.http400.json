@@ -1,0 +1,4 @@
+{
+  "_note": "HTTP 400 du Worker — champ manquant.",
+  "erreur": "identifiant ou motDePasse manquant"
+}

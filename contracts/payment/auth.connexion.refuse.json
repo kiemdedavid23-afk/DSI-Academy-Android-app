@@ -1,0 +1,5 @@
+{
+  "_note": "Forme déduite du contrat Worker — refuse (mauvais identifiants ou anti-bruteforce).",
+  "status": "refuse",
+  "message": "Identifiant ou mot de passe incorrect."
+}

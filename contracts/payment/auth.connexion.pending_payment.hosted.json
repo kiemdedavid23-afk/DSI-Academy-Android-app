@@ -1,0 +1,8 @@
+{
+  "_note": "Forme déduite du contrat Worker — mode hosted, URL factice .invalid.",
+  "status": "pending_payment",
+  "userId": "DSI-00000",
+  "paymentTrackingToken": "TEST_TRACKING_TOKEN_NOT_REAL",
+  "paymentMode": "hosted",
+  "paymentUrl": "https://checkout.example.invalid/pay/TEST"
+}

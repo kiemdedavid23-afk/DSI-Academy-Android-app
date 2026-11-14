@@ -1,0 +1,8 @@
+{
+  "_note": "Forme déduite du contrat Worker — mode direct, paymentUrl null.",
+  "status": "pending_payment",
+  "userId": "DSI-00000",
+  "paymentTrackingToken": "TEST_TRACKING_TOKEN_NOT_REAL",
+  "paymentMode": "direct",
+  "paymentUrl": null
+}

@@ -1,0 +1,13 @@
+{
+  "_note": "Forme déduite du contrat Worker docs/contrats/payment/auth-connexion.md — à remplacer par une réponse réelle. Aucun vrai jeton.",
+  "status": "connecte",
+  "authenticated": true,
+  "userId": "DSI-00000",
+  "accountStatus": "actif",
+  "subscriptionStatus": "actif",
+  "subscriptionActive": true,
+  "dateFin": "2027-01-01T00:00:00.000Z",
+  "token": "TEST_TOKEN_NOT_REAL",
+  "expiresIn": 604800,
+  "accessProof": "TEST_ACCESS_PROOF_NOT_REAL"
+}
