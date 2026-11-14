@@ -10,6 +10,12 @@
       "loadErrorMessage": "Check your connection and try again.",
       "retry": "Retry",
       "loading": "Loading…"
+    },
+    "connectivity": {
+      "offlineTitle": "You are offline",
+      "offlineMessage": "Showing the last saved data.",
+      "onlineTitle": "Back online",
+      "onlineMessage": "Refreshing your data…"
     }
   }
 }

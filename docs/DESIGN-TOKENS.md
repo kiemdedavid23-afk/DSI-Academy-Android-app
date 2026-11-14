@@ -191,3 +191,6 @@ Aucun de ces points ne bloque l'étape 0 : les valeurs de départ sont dans ce d
 | `badgeExpiredText` | `#991b1b` | `#FCA5A5` | |
 
 Dégradé de titre impossible en RN Text → repli uni `royalStart` / `titleOnDark`.
+
+| `logout` | `#dc2626` | `#f87171` | MemberDrawer.css .logout / dark |
+

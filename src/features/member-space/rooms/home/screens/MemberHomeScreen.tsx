@@ -248,27 +248,12 @@ export function MemberHomeScreen() {
 
   return (
     <View style={styles.fill} testID="member-home">
-      {showOfflineBanner ? (
-        <View
-          style={[
-            styles.offlineBanner,
-            {backgroundColor: colors.warningBg, borderBottomColor: colors.warningBorder},
-          ]}
-          testID="offline-banner">
-          <Text style={{color: colors.warning, fontSize: 13, fontWeight: '600'}}>
-            {t('home.offlineBanner', {
-              defaultValue: 'Hors ligne — dernières données en cache',
-            })}
-          </Text>
-        </View>
-      ) : null}
-
       <ScrollView
         contentContainerStyle={{paddingBottom: 24}}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }>
-        {error && !showOfflineBanner ? (
+        {error ? (
           <View
             style={[
               styles.glassCard,
@@ -728,11 +713,6 @@ export function MemberHomeScreen() {
 
 const styles = StyleSheet.create({
   fill: {flex: 1, backgroundColor: 'transparent'},
-  offlineBanner: {
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    borderBottomWidth: 1,
-  },
   hero: {
     flexDirection: 'column',
     justifyContent: 'space-between',

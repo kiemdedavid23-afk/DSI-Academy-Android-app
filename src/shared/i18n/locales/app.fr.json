@@ -10,6 +10,12 @@
       "loadErrorMessage": "Vérifiez votre connexion et réessayez.",
       "retry": "Réessayer",
       "loading": "Chargement…"
+    },
+    "connectivity": {
+      "offlineTitle": "Vous êtes hors connexion",
+      "offlineMessage": "Les dernières données enregistrées sont affichées.",
+      "onlineTitle": "Connexion rétablie",
+      "onlineMessage": "Mise à jour des données en cours…"
     }
   }
 }

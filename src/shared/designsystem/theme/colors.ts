@@ -46,6 +46,8 @@ export type ColorTokens = {
   badgeActiveText: string;
   badgeExpiredBg: string;
   badgeExpiredText: string;
+  /** Déconnexion tiroir (MemberDrawer.css .logout) */
+  logout: string;
   // Sémantiques (§5) : `error` est la couleur du texte
   error: string;
   errorBg: string;
@@ -120,6 +122,7 @@ export const lightColors: ColorTokens = {
   badgeActiveText: '#6b4f00',
   badgeExpiredBg: '#fee2e2',
   badgeExpiredText: '#991b1b',
+  logout: '#dc2626',
 
   error: '#B91C1C',
   errorBg: '#FEF2F2',
@@ -177,6 +180,7 @@ export const darkColors: ColorTokens = {
   badgeActiveText: '#F5D778',
   badgeExpiredBg: withAlpha('#F87171', SEMANTIC_BG_ALPHA),
   badgeExpiredText: '#FCA5A5',
+  logout: '#f87171',
 
   error: '#F87171',
   errorBg: withAlpha('#F87171', SEMANTIC_BG_ALPHA),

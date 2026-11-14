@@ -414,14 +414,14 @@ export function MemberDrawer({open, onClose, activeRoom, onNavigateRoom}: Props)
                   <Icon
                     name="LogoutIcon"
                     size={19}
-                    color={isDarkMode ? '#f87171' : '#dc2626'}
+                    color={colors.logout}
                   />
                 </View>
                 <Text
                   style={[
                     styles.label,
                     {
-                      color: isDarkMode ? '#f87171' : '#dc2626',
+                      color: colors.logout,
                       fontWeight: '500',
                     },
                   ]}>

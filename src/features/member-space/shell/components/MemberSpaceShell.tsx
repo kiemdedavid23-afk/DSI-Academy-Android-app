@@ -3,11 +3,13 @@
  * Le fond couvre TOUT l'Espace membre. Écrans enfants en transparent.
  */
 
-import React, {useCallback, useMemo, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import {View, Image, StyleSheet, useWindowDimensions} from 'react-native';
 import {useNavigation, useNavigationState} from '@react-navigation/native';
 import type {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {useTheme} from '@shared/designsystem';
+import {useTheme, InAppBanner} from '@shared/designsystem';
+import {connectivityStore} from '@shared/store';
+import {loadHomeDashboard} from '../../rooms/home/store/homeDashboardStore';
 import {MemberHeader} from './MemberHeader';
 import {MemberDrawer, type MemberRoomId} from './MemberDrawer';
 import type {MemberSpaceStackParamList} from '@app/navigation/house-stacks/MemberSpaceStack';
@@ -67,6 +69,19 @@ export function MemberSpaceShell({children}: Props) {
     return route?.name ?? 'MemberHome';
   });
   const activeRoom: MemberRoomId = ROUTE_TO_ROOM[routeName] ?? 'home';
+
+
+  useEffect(() => {
+    connectivityStore.start();
+    const unsub = connectivityStore.onReconnected(() => {
+      // rechargement arrière-plan stores visibles (pas de spinner plein écran)
+      void loadHomeDashboard();
+    });
+    return () => {
+      unsub();
+      // ne pas stop globalement : d'autres écrans peuvent s'appuyer dessus
+    };
+  }, []);
 
   const bgLayout = useMemo(
     () => coverFocal(screenW, screenH, IMG_W, IMG_H, 0.25, 0.45),
@@ -129,6 +144,7 @@ export function MemberSpaceShell({children}: Props) {
         <View style={[styles.fill, {backgroundColor: 'transparent'}]}>
           {children}
         </View>
+        <InAppBanner topOffset={64} />
       </View>
 
       <MemberDrawer
