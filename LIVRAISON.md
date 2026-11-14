@@ -1,80 +1,70 @@
-# LIVRAISON — L1a (session sécurisée + connexion)
+# LIVRAISON — L1b (navigateur d'inscription)
 
-**Rien n'a pu être exécuté ici** (pas de `npm install`, pas de CI, pas d'APK).
+**Rien n'a pu être exécuté ici** (pas de npm install / CI / APK).
 
-## Bibliothèque sécurisée
+## Dépendances
 
-| | |
-|---|---|
-| Paquet | `react-native-keychain` |
-| Version exacte | **11.0.0** |
-| Pourquoi pas 10.0.0 | Les notes v11 exigent RN **0.82+**, New Architecture (TurboModules), React **19.1.1+**, Node **20.19.4+**, Android **API 24+**. Notre projet : RN 0.88.1, React 19.3, Node ≥ 24 → **11.0.0** est la version déclarée compatible. |
-| API | `setGenericPassword` / `getGenericPassword` / `resetGenericPassword` avec **`service` distinct** par clé logique (`app.dsiacademy.secure.member_session` vs `…registration_tracking`). **Aucune option biométrique.** |
-| minSdk | 24 (exigé par la lib et le projet) |
-| R-DEP-2 | Dépendance native → **build-apk vert** obligatoire |
+| Paquet | Version | Note |
+|--------|---------|------|
+| `react-native-webview` | **17.0.2** | Existe sur npm (2026-11-04). Exige RN ≥ 0.80 / New Architecture. Compatible RN 0.88.1. **Native → APK vert.** |
+| Onglet externe | *aucune* | `Linking.openURL` (try/catch). R-WEB-3 appliquée via navigateur externe système, pas Custom Tabs. |
 
 ## Fichiers créés
 
-| Fichier |
-|---|
-| `src/core/api/endpoints/payment/auth.types.ts` |
-| `src/core/api/endpoints/payment/auth.mapper.ts` |
-| `src/core/api/endpoints/payment/auth.api.ts` |
-| `contracts/payment/auth.connexion.connecte.json` |
-| `contracts/payment/auth.connexion.connecte.accessProof-null.json` |
-| `contracts/payment/auth.connexion.pending_payment.direct.json` |
-| `contracts/payment/auth.connexion.pending_payment.hosted.json` |
-| `contracts/payment/auth.connexion.refuse.json` |
-| `contracts/payment/auth.connexion.suspendu.json` |
-| `contracts/payment/auth.connexion.http400.json` |
-| `src/core/storage/secureStorage.ts` |
-| `src/core/session/registrationTracking.ts` |
-| `src/features/auth/login/store/loginStore.ts` |
-| `src/features/auth/login/screens/LoginScreen.tsx` |
-| `__mocks__/react-native-keychain.js` |
-| `__tests__/auth.mapper.tests.ts` |
-| `__tests__/auth.api.tests.ts` |
-| `__tests__/secureStorage.tests.ts` |
-| `__tests__/session.tests.ts` |
-| `__tests__/registrationTracking.tests.ts` |
-| `__tests__/loginStore.tests.ts` |
-| `__tests__/LoginScreen.tests.tsx` |
-| `docs/fiches/L1a.md` |
+- `src/features/auth/register/logic/siteUrl.ts`
+- `src/features/auth/register/logic/navigationFilter.ts`
+- `src/features/auth/register/logic/registrationMessage.ts`
+- `src/features/auth/register/logic/draftInjection.ts`
+- `src/features/auth/register/logic/lastLoginIdentifier.ts`
+- `src/features/auth/register/logic/prefillIdentifier.ts`
+- `src/features/auth/register/store/registerBrowserStore.ts`
+- `src/features/auth/register/screens/RegisterBrowserScreen.tsx`
+- `src/shared/i18n/locales/app.fr.json`
+- `src/shared/i18n/locales/app.en.json`
+- `__mocks__/react-native-webview.js`
+- `__tests__/webHost.tests.ts`
+- `__tests__/registerNavigationFilter.tests.ts`
+- `__tests__/registerMessage.tests.ts`
+- `__tests__/registerDraft.tests.ts`
+- `__tests__/registerBrowserStore.tests.ts`
+- `__tests__/appI18nParity.tests.ts`
+- `docs/fiches/L1b.md`
 
 ## Fichiers modifiés
 
-| Fichier | Changement |
-|---|---|
-| `package.json` | `react-native-keychain@11.0.0` |
-| `src/core/session/sessionStore.ts` | Session complète, expiresAt, hydrate, souvenir, HTTP auth |
-| `src/core/session/index.ts` | Exports registrationTracking |
-| `src/core/storage/index.ts` | Export secure* |
-| `src/app/navigation/AuthStack.tsx` | LoginScreen réel |
-| `src/app/providers/AppProviders.tsx` | hydrate session + préférences avant nav |
+- `package.json` — react-native-webview@17.0.2
+- `src/core/config/serviceRegistry.ts` — `isSiteUrl`
+- `src/shared/i18n/index.ts` — fusion app.fr / app.en
+- `src/app/navigation/AuthStack.tsx` — RegisterBrowser réel + params
+- `src/features/auth/login/screens/LoginScreen.tsx` — mode new/resume, prefill, rememberLoginIdentifier
 
-## Fichiers supprimés
+## Supprimés
 
-- `src/core/session/.gitkeep`
-- `src/core/storage/.gitkeep`
-- `src/core/api/endpoints/payment/.gitkeep`
+- `src/features/auth/registration-browser/.gitkeep` (dossier placeholder)
+
+## Textes neufs (app.*)
+
+| Clé | fr |
+|-----|-----|
+| app.register.title | Inscription |
+| app.register.leaveTitle | Quitter l'inscription ? |
+| app.register.leaveMessage | Vous pourrez reprendre plus tard… |
+| app.register.leaveStay | Rester |
+| app.register.leaveConfirm | Quitter |
+| app.register.loadErrorTitle | Chargement impossible |
+| app.register.loadErrorMessage | Vérifiez votre connexion… |
+| app.register.retry | Réessayer |
+
+Parité fr/en testée (`appI18nParity.tests.ts`).
 
 ## Ordre d’exécution
 
-1. Lockfile (`npm install` / `npm ci`)
-2. CI (typecheck, lint, jest)
-3. **build-apk** (Keychain natif)
+1. Lockfile  
+2. CI  
+3. **build-apk** (webview natif)
 
-## Points [À CONFIRMER] / notes
+## [À CONFIRMER]
 
-1. Keychain 11.0.0 + New Architecture sur l’APK de CI.
-2. Libellés `connexion.idLabel` (email / WhatsApp) — l’identifiant DSI n’est pas accepté par le Worker ; aucun format imposé côté app.
-3. Texte pending : `inscription.payment.title` / `subtitle` / `pay` uniquement.
-4. Aucun jeton / mot de passe dans les logs (aucun `console.log` ajouté).
-5. Tests existants session.purge conservés (API `setSessionPresent` / `clearSession` / `onSessionCleared`).
-
-## Auto-contrôle
-
-- Écrans : pas d’import `@core/api` / `@core/network` / `@core/config`
-- Chemins relatifs uniquement dans auth.api
-- Tests à plat dans `__tests__/`
-- core n’importe pas shared
+1. Étape S site : embed, postMessage identifiant email/WhatsApp, pas DSI-
+2. R-WEB-3 via navigateur externe (pas Custom Tabs) accepté durablement
+3. `inscription.title` absent des locales site → titre via `app.register.title`
