@@ -41,7 +41,7 @@ function Bootstrap({children}: {children: React.ReactNode}) {
   if (!ready) {
     return (
       <View style={[styles.fill, {backgroundColor: colors.bgApp}]}>
-        <LoadingState accessibilityLabel="Chargement…" />
+        <LoadingState accessibilityLabel="Chargement…" fill />
       </View>
     );
   }
