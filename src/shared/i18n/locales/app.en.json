@@ -59,7 +59,13 @@
       "tooLarge": "This text is too large to be read here.",
       "unsupported": "This content can't be read in the app for now.",
       "formatSoon": "This format (PDF, EPUB…) will be available in an upcoming update.",
-      "rateLimited": "The source is temporarily limiting access. Try again in a few minutes."
+      "rateLimited": "The source is temporarily limiting access. Try again in a few minutes.",
+      "pdfProtected": "This PDF is password protected and can't be read here.",
+      "pdfInvalid": "This PDF file can't be read.",
+      "pageOf": "Page {{current}} / {{total}}",
+      "docInvalid": "This file is unreadable or damaged.",
+      "docEncrypted": "This book is DRM-protected and can't be read here.",
+      "docUnsupportedMobi": "This MOBI variant isn't supported."
     }
   }
 }

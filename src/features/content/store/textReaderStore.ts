@@ -24,6 +24,8 @@ export type TextReaderState = {
   contentId: number | null;
   title: string;
   status: 'idle' | 'loading' | 'ready' | 'unsupported' | 'error';
+  /** Format du livre quand ce n'est pas du texte brut. */
+  format: string | null;
   chunks: string[];
   errorKind: MediaErrorKind | null;
   retryable: boolean;
@@ -36,6 +38,7 @@ const INITIAL: TextReaderState = {
   contentId: null,
   title: '',
   status: 'idle',
+  format: null,
   chunks: [],
   errorKind: null,
   retryable: false,
@@ -100,7 +103,7 @@ export function createTextReaderStore() {
       return;
     }
     if (res.kind === 'notText') {
-      store.setState({status: 'unsupported'});
+      store.setState({status: 'unsupported', format: res.format});
       return;
     }
     const chunks = chunkText(res.text);

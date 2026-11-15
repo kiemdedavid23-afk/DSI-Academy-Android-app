@@ -15,6 +15,9 @@ import {
   useTheme,
 } from '@shared/designsystem';
 import {useTranslation} from '@shared/i18n';
+import {isDocFormat} from '@core/media/docNative';
+import {DocReaderScreen} from './DocReaderScreen';
+import {PdfReaderScreen} from './PdfReaderScreen';
 import {FONT_SCALES, textReaderStore} from '../store/textReaderStore';
 
 export type TextReaderScreenProps = {id: number; title: string};
@@ -66,6 +69,12 @@ export function TextReaderScreen({id, title}: TextReaderScreenProps) {
 
   if (st.status === 'loading' || st.status === 'idle') {
     return <LoadingState fill accessibilityLabel={t('content.loading')} />;
+  }
+  if (st.status === 'unsupported' && st.format?.toLowerCase() === 'pdf') {
+    return <PdfReaderScreen id={id} title={title} />;
+  }
+  if (st.status === 'unsupported' && isDocFormat(st.format)) {
+    return <DocReaderScreen id={id} title={title} />;
   }
   if (st.status === 'unsupported') {
     return (
