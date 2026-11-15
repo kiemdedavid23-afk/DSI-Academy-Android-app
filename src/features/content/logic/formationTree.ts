@@ -1,0 +1,94 @@
+/**
+ * Programme d'une formation : arbre de composants (GET /components/tree) aplati
+ * en sections et modules. Chaque module est un contenu à part entière : l'app
+ * demande la livraison avec l'id du MODULE, jamais celui de la formation.
+ */
+
+import type {ContentTreeNode} from '@core/utils/contentDisplay';
+
+export type ModuleType = 'book' | 'audio' | 'video';
+
+export type ProgramItem =
+  | {kind: 'section'; key: string; title: string; depth: number}
+  | {
+      kind: 'module';
+      key: string;
+      contentId: number;
+      title: string;
+      type: ModuleType;
+      depth: number;
+      durationSeconds: number | null;
+    };
+
+export type ProgramModule = Extract<ProgramItem, {kind: 'module'}>;
+
+/** Seuil au-delà duquel un module compte comme terminé (même seuil que les lecteurs). */
+export const DONE_PERCENT = 97;
+const MAX_DEPTH = 10;
+
+export function flattenProgram(root: ContentTreeNode): ProgramItem[] {
+  const out: ProgramItem[] = [];
+  const seen = new Set<number>([root.content.id]);
+
+  function walk(node: ContentTreeNode, depth: number) {
+    if (depth > MAX_DEPTH) {
+      return;
+    }
+    const children = [...node.children].sort(
+      (a, b) => a.component.position - b.component.position,
+    );
+    for (const {component, node: child} of children) {
+      const c = child.content;
+      if (seen.has(c.id)) {
+        continue;
+      }
+      seen.add(c.id);
+      if (c.type === 'training') {
+        out.push({kind: 'section', key: `s${component.id}`, title: c.title, depth});
+        walk(child, depth + 1);
+      } else {
+        out.push({
+          kind: 'module',
+          key: `m${component.id}`,
+          contentId: c.id,
+          title: c.title,
+          type: c.type,
+          depth,
+          durationSeconds: c.durationSeconds,
+        });
+      }
+    }
+  }
+
+  walk(root, 0);
+  return out;
+}
+
+export function modulesOf(items: ProgramItem[]): ProgramModule[] {
+  return items.filter((i): i is ProgramModule => i.kind === 'module');
+}
+
+export type FormationSummary = {
+  total: number;
+  done: number;
+  percent: number;
+  /** Premier module non terminé, sinon null (formation terminée ou vide). */
+  nextModuleId: number | null;
+  started: boolean;
+};
+
+export function summarize(
+  items: ProgramItem[],
+  progress: Record<number, number>,
+): FormationSummary {
+  const modules = modulesOf(items);
+  const done = modules.filter(m => (progress[m.contentId] ?? 0) >= DONE_PERCENT).length;
+  const next = modules.find(m => (progress[m.contentId] ?? 0) < DONE_PERCENT);
+  return {
+    total: modules.length,
+    done,
+    percent: modules.length === 0 ? 0 : Math.round((done / modules.length) * 100),
+    nextModuleId: next ? next.contentId : null,
+    started: modules.some(m => (progress[m.contentId] ?? 0) > 0),
+  };
+}

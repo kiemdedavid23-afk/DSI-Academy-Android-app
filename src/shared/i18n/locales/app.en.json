@@ -81,6 +81,22 @@
       "searchVideo": "Search videos",
       "audioEmpty": "No audio available yet.",
       "videoEmpty": "No videos available yet."
+    },
+    "formation": {
+      "search": "Search a course",
+      "listEmpty": "No courses available yet.",
+      "open": "View the program",
+      "progress": "{{done}} / {{total}} modules completed",
+      "continue": "Continue",
+      "start": "Start",
+      "done": "Done",
+      "percent": "{{percent}} %",
+      "notStarted": "Not started",
+      "completed": "Course completed",
+      "empty": "This course has no modules yet.",
+      "typeBook": "Reading",
+      "typeAudio": "Audio",
+      "typeVideo": "Video"
     }
   }
 }

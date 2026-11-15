@@ -81,6 +81,22 @@
       "searchVideo": "Rechercher une vidéo",
       "audioEmpty": "Aucun audio disponible pour le moment.",
       "videoEmpty": "Aucune vidéo disponible pour le moment."
+    },
+    "formation": {
+      "search": "Rechercher une formation",
+      "listEmpty": "Aucune formation disponible pour le moment.",
+      "open": "Voir le programme",
+      "progress": "{{done}} / {{total}} modules terminés",
+      "continue": "Continuer",
+      "start": "Commencer",
+      "done": "Terminé",
+      "percent": "{{percent}} %",
+      "notStarted": "Pas commencé",
+      "completed": "Formation terminée",
+      "empty": "Cette formation n'a pas encore de module.",
+      "typeBook": "Lecture",
+      "typeAudio": "Audio",
+      "typeVideo": "Vidéo"
     }
   }
 }

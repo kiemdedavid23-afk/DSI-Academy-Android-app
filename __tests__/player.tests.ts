@@ -40,6 +40,6 @@ describe('Reprendre', () => {
   it('mène à la fiche pour bibliothèque, audio et vidéos', () => {
     expect(continueContentId({id: '12', house: 'audio'})).toBe(12);
     expect(continueContentId({id: '7', house: 'videos'})).toBe(7);
-    expect(continueContentId({id: '7', house: 'formations'})).toBeNull();
+    expect(continueContentId({id: '7', house: 'community'})).toBeNull();
   });
 });

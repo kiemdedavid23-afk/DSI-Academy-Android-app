@@ -4,7 +4,7 @@ import {createCatalogueStore, libraryCatalogueStore} from './catalogueStore';
 import {createCategoriesStore, libraryCategoriesStore} from './categoriesStore';
 import {createSearchStore, librarySearchStore} from './searchStore';
 
-export type DiscoverHouse = 'library' | 'audio' | 'videos';
+export type DiscoverHouse = 'library' | 'audio' | 'videos' | 'formations';
 
 export const HOUSE_STORES = {
   library: {
@@ -21,5 +21,10 @@ export const HOUSE_STORES = {
     catalogue: createCatalogueStore('video'),
     categories: createCategoriesStore('video'),
     search: createSearchStore('video'),
+  },
+  formations: {
+    catalogue: createCatalogueStore('training'),
+    categories: createCategoriesStore('training'),
+    search: createSearchStore('training'),
   },
 } as const;

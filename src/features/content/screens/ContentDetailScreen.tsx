@@ -149,6 +149,8 @@ export function ContentDetailScreen({id, onRead}: ContentDetailScreenProps) {
             ? t('app.player.listen')
             : item.type === 'video'
             ? t('app.player.watch')
+            : item.type === 'training'
+            ? t('app.formation.open')
             : t('app.reader.read')
         }
         onPress={() => onRead(item.id, item.title, item.type, item.thumbnailUrl)}
@@ -162,7 +164,13 @@ export function ContentDetailScreen({id, onRead}: ContentDetailScreenProps) {
             .toggle({
               id: String(item.id),
               house:
-                item.type === 'audio' ? 'audio' : item.type === 'video' ? 'videos' : 'library',
+                item.type === 'audio'
+                  ? 'audio'
+                  : item.type === 'video'
+                  ? 'videos'
+                  : item.type === 'training'
+                  ? 'formations'
+                  : 'library',
               title: item.title,
               path: '',
             })

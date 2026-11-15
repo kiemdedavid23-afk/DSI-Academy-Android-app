@@ -104,6 +104,8 @@ export function LibraryDiscoverScreen({house = 'library', onOpenItem}: LibraryDi
                 ? t('app.player.searchAudio')
                 : house === 'videos'
                 ? t('app.player.searchVideo')
+                : house === 'formations'
+                ? t('app.formation.search')
                 : t('library.searchPlaceholder')
             }
             testID="library-search"
@@ -155,6 +157,8 @@ export function LibraryDiscoverScreen({house = 'library', onOpenItem}: LibraryDi
       ? t('app.player.audioEmpty')
       : house === 'videos'
       ? t('app.player.videoEmpty')
+      : house === 'formations'
+      ? t('app.formation.listEmpty')
       : t('app.catalogue.libraryEmpty');
     body = <EmptyState message={message} testID="library-empty" />;
   }
