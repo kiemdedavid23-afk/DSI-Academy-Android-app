@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import {http} from '@core/network';
 import {sessionStore} from '@core/session';
 import {NetworkError} from '@core/network/errors';

@@ -67,7 +67,7 @@ export function LibraryDiscoverScreen({house = 'library', onOpenItem}: LibraryDi
   const list = searching ? search : cat;
   const items = list.items;
   const loading = list.status === 'loading' || list.status === 'idle';
-  const categoryList = categories.data ?? [];
+  const categoryList = useMemo(() => categories.data ?? [], [categories.data]);
 
   const categoryName = useCallback(
     (item: Content): string | null =>
@@ -89,7 +89,7 @@ export function LibraryDiscoverScreen({house = 'library', onOpenItem}: LibraryDi
     } else {
       void stores.catalogue.loadMore();
     }
-  }, [searching]);
+  }, [searching, stores.catalogue, stores.search]);
 
   const header = useMemo(
     () => (
@@ -172,7 +172,7 @@ export function LibraryDiscoverScreen({house = 'library', onOpenItem}: LibraryDi
         keyExtractor={item => String(item.id)}
         keyboardShouldPersistTaps="handled"
         ListHeaderComponent={header}
-        ListEmptyComponent={body}
+        ListEmptyComponent={body ?? undefined}
         columnWrapperStyle={{gap: spacing.md, paddingHorizontal: spacing.xl}}
         contentContainerStyle={{gap: spacing.lg, paddingTop: spacing.md, paddingBottom: spacing.xxxl}}
         renderItem={({item}) => (
@@ -190,7 +190,7 @@ export function LibraryDiscoverScreen({house = 'library', onOpenItem}: LibraryDi
               color={colors.bluePrimary}
               accessibilityLabel={t('content.loading')}
             />
-          ) : null
+          ) : undefined
         }
       />
     </View>

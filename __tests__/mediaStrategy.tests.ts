@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import {buildStrategy, planStrategy, MAX_TEXT_BYTES} from '@core/media/strategy';
 import {buildRangeHeader, planResume} from '@core/media/range';
 import {

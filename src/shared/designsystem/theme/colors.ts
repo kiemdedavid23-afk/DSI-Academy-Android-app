@@ -381,3 +381,6 @@ export const darkColors: ColorTokens = {
   errorTitle: '#FCA5A5',
   warningText: '#FCD34D',
 };
+
+/** Scène média (lecteur vidéo / YouTube) : fond noir et texte blanc, identiques en clair et en sombre. */
+export const mediaStageColors = {background: '#000000', text: '#FFFFFF'} as const;

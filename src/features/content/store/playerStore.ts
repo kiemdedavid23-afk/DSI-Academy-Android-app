@@ -14,11 +14,12 @@ import {
   SEEK_STEP_MS,
 } from '@core/media/playerNative';
 import type {MediaErrorKind} from '@core/media/types';
-import {isAllowedYoutubeNavigation, YOUTUBE_BASE_URL, youtubeEmbedHtml} from '@core/config/youtube';
+import {isAllowedYoutubeNavigation, YOUTUBE_BASE_URL, YOUTUBE_ORIGIN_WHITELIST, youtubeEmbedHtml} from '@core/config/youtube';
 import {continueStore, progressStore, storeRegistry} from '@shared/store';
 import {createSimpleStore} from './simpleStore';
+import type {PdfErrorKind} from './pdfReaderStore';
 
-export {isAllowedYoutubeNavigation, YOUTUBE_BASE_URL};
+export {isAllowedYoutubeNavigation, YOUTUBE_BASE_URL, YOUTUBE_ORIGIN_WHITELIST};
 
 export const POLL_MS = 500;
 export const SAVE_EVERY_MS = 5000;
@@ -41,7 +42,7 @@ export type PlayerStoreState = {
   durationMs: number;
   speed: number;
   fullscreen: boolean;
-  errorKind: MediaErrorKind | null;
+  errorKind: MediaErrorKind | PdfErrorKind | null;
   retryable: boolean;
 };
 

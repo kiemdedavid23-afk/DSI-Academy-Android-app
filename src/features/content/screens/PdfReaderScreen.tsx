@@ -4,7 +4,7 @@
  */
 
 import React, {useCallback, useEffect, useRef, useState, useSyncExternalStore} from 'react';
-import {FlatList, Image, PixelRatio, View, useWindowDimensions, type ViewToken} from 'react-native';
+import {FlatList, Image, PixelRatio, View, useWindowDimensions} from 'react-native';
 import {renderPdfPage} from '@core/media/pdfNative';
 import {readerErrorKey} from '@core/utils/readerFailure';
 import {ErrorState, LoadingState, Text, useTheme} from '@shared/designsystem';

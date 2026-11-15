@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import {http} from '@core/network';
 import {
   fetchAsset,

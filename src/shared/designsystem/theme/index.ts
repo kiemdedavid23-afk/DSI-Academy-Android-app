@@ -9,7 +9,7 @@ export {
 export type {Theme, ThemeMode} from './ThemeProvider';
 export {themePreferences, useThemePreferences} from './themePreferences';
 export type {ThemePreference, Preferences} from './themePreferences';
-export {lightColors, darkColors, withAlpha} from './colors';
+export {lightColors, darkColors, mediaStageColors, withAlpha} from './colors';
 export type {ColorTokens} from './colors';
 export {typography, ALLOWED_SIZES, MAX_FONT_SIZE_MULTIPLIER, lineHeightPx} from './typography';
 export type {TypographyVariant, TypographyRole} from './typography';

@@ -10,6 +10,9 @@ export function youtubeEmbedHtml(videoId: string): string {
 
 export const YOUTUBE_BASE_URL = EMBED_HOST;
 
+/** Origines autorisées dans la WebView (HTTPS uniquement). */
+export const YOUTUBE_ORIGIN_WHITELIST = ['https://*', 'about:blank'];
+
 export function isAllowedYoutubeNavigation(url: string): boolean {
   return (
     url === 'about:blank' ||

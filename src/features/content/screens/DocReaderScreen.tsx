@@ -1,7 +1,9 @@
 /** Lecteur EPUB / MOBI / DOCX natif : texte et titres, taille réglable, progression et reprise. */
 
 import React, {useEffect, useRef, useState, useSyncExternalStore} from 'react';
-import {FlatList, View, type ViewToken} from 'react-native';
+import {FlatList, View} from 'react-native';
+
+type ViewToken = {item: unknown; key: string; index: number | null; isViewable: boolean};
 import type {DocBlock, DocErrorKind} from '@core/media/docNative';
 import {readerErrorKey} from '@core/utils/readerFailure';
 import {Button, ErrorState, LoadingState, Text, useTheme} from '@shared/designsystem';

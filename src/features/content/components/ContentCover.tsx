@@ -59,6 +59,6 @@ export function ContentCover({
 
 const styles = StyleSheet.create({
   box: {aspectRatio: 2 / 3, overflow: 'hidden', width: '100%'},
-  fill: {...StyleSheet.absoluteFillObject},
+  fill: {...StyleSheet.absoluteFill},
   center: {alignItems: 'center', justifyContent: 'center'},
 });

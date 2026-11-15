@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import {probeSource} from '@core/network/sourceProbe';
 
 const URL_TEST = 'https://files.example.invalid/f';

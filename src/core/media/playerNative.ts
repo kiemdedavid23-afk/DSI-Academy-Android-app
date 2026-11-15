@@ -46,6 +46,9 @@ export function classifyPlayerError(code: string) {
 
 export function nextSpeed(current: number): number {
   const i = (SPEEDS as readonly number[]).indexOf(current);
+  if (i < 0) {
+    return SPEEDS[1];
+  }
   return SPEEDS[(i + 1) % SPEEDS.length];
 }
 

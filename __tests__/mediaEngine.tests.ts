@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import {openMedia} from '@core/media/engine';
 import {fetchDeliveryLink} from '@core/api/endpoints/content/delivery.api';
 import {probeSource, PROBE_TIMEOUT_MS} from '@core/network/sourceProbe';

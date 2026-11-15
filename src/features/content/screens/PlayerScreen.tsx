@@ -13,10 +13,10 @@ import {
 import {WebView} from 'react-native-webview';
 import {formatClock} from '@core/media/playerNative';
 import {readerErrorKey} from '@core/utils/readerFailure';
-import {Button, ErrorState, LoadingState, Text, useTheme} from '@shared/designsystem';
+import {Button, ErrorState, LoadingState, mediaStageColors, Text, useTheme} from '@shared/designsystem';
 import {useTranslation} from '@shared/i18n';
 import {ContentCover} from '../components/ContentCover';
-import {isAllowedYoutubeNavigation, playerStore, YOUTUBE_BASE_URL} from '../store/playerStore';
+import {isAllowedYoutubeNavigation, playerStore, YOUTUBE_BASE_URL, YOUTUBE_ORIGIN_WHITELIST} from '../store/playerStore';
 
 const NativeVideo = requireNativeComponent<ViewProps>('DsiVideoView');
 
@@ -79,18 +79,18 @@ export function PlayerScreen({id, title, thumbnailUrl}: PlayerScreenProps) {
 
   if (st.kind === 'youtube' && st.youtubeHtml) {
     return (
-      <View style={{flex: 1, backgroundColor: '#000'}} testID="screen-youtube">
+      <View style={{flex: 1, backgroundColor: mediaStageColors.background}} testID="screen-youtube">
         <View style={{width: '100%', aspectRatio: 16 / 9}}>
           <WebView
             source={{html: st.youtubeHtml, baseUrl: YOUTUBE_BASE_URL}}
-            originWhitelist={['https://*', 'about:blank']}
+            originWhitelist={YOUTUBE_ORIGIN_WHITELIST}
             onShouldStartLoadWithRequest={r => isAllowedYoutubeNavigation(r.url)}
             allowsFullscreenVideo
             mediaPlaybackRequiresUserAction={false}
             javaScriptEnabled
           />
         </View>
-        <Text variant="subtitle" style={{color: '#fff', padding: spacing.xl}}>
+        <Text variant="subtitle" style={{color: mediaStageColors.text, padding: spacing.xl}}>
           {st.title}
         </Text>
       </View>
@@ -131,8 +131,8 @@ export function PlayerScreen({id, title, thumbnailUrl}: PlayerScreenProps) {
 
   if (st.kind === 'video') {
     return (
-      <View style={{flex: 1, backgroundColor: st.fullscreen ? '#000' : colors.bgApp}} testID="screen-video">
-        <View style={st.fullscreen ? {flex: 1} : {width: '100%', aspectRatio: 16 / 9, backgroundColor: '#000'}}>
+      <View style={{flex: 1, backgroundColor: st.fullscreen ? mediaStageColors.background : colors.bgApp}} testID="screen-video">
+        <View style={st.fullscreen ? {flex: 1} : {width: '100%', aspectRatio: 16 / 9, backgroundColor: mediaStageColors.background}}>
           <NativeVideo style={{flex: 1}} />
         </View>
         {st.fullscreen ? null : (

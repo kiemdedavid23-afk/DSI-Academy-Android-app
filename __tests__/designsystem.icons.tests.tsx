@@ -13,7 +13,7 @@ async function render(ui: React.ReactElement, mode: 'light' | 'dark' = 'light') 
   return renderer;
 }
 
-describe('icônes (série complète, 31 icônes)', () => {
+describe('icônes (série complète, 36 icônes)', () => {
   it('la série contient exactement les icônes validées', () => {
     expect([...ICON_NAMES].sort()).toEqual(
       [
@@ -48,6 +48,11 @@ describe('icônes (série complète, 31 icônes)', () => {
         'ShieldIcon',
         'StoreIcon',
         'SunIcon',
+        'BookIcon',
+        'VideoIcon',
+        'GraduationIcon',
+        'HeadphonesIcon',
+        'PlayIcon',
       ].sort(),
     );
   });
