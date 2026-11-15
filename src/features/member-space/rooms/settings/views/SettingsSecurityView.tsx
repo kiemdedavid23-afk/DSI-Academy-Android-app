@@ -4,6 +4,7 @@ import {Text, useTheme} from '@shared/designsystem';
 import {useTranslation} from '@shared/i18n';
 import {memberProfileStore, memberSubscriptionStore} from '@shared/store';
 import {sessionStore} from '@core/session';
+import {formatShortDate, statusLabel} from '@core/utils/displayLabels';
 
 export function SettingsSecurityView({
   onBack,
@@ -12,7 +13,8 @@ export function SettingsSecurityView({
   onBack: () => void;
   onLogout: () => void;
 }) {
-  const {t} = useTranslation();
+  const {t, i18n} = useTranslation();
+  const lang = i18n.language?.startsWith('en') ? 'en' : 'fr';
   const {colors, radii, glass} = useTheme();
   const sessionActive = useSyncExternalStore(
     sessionStore.subscribe,
@@ -75,10 +77,10 @@ export function SettingsSecurityView({
       </View>
 
       <Text style={{color: colors.textSecondary}}>
-        {t('profile.accountStatus')}: {profile.data?.statut || '—'}
+        {t('profile.accountStatus')}: {statusLabel(t, profile.data?.statut)}
       </Text>
       <Text style={{color: colors.textSecondary}}>
-        {t('rooms.subscription')}: {sub.data?.statut || '—'} · {sub.data?.dateFin || '—'}
+        {t('rooms.subscription')}: {statusLabel(t, sub.data?.statut)} · {formatShortDate(sub.data?.dateFin, lang)}
       </Text>
 
       <Pressable

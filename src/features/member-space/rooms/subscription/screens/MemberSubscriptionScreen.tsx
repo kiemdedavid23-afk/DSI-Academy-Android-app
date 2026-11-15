@@ -21,6 +21,7 @@ import {
   getDisplayPricing,
 } from '@shared/store';
 import {computeSubscription} from '@core/utils/subscription';
+import {planLabel, statusLabel} from '@core/utils/displayLabels';
 import {validerChampPaiement} from '@core/utils/paymentFieldValidation';
 import {subscriptionRenewalStore} from '../store/subscriptionRenewalStore';
 
@@ -201,12 +202,12 @@ export function MemberSubscriptionScreen() {
               color: colors.textPrimary,
               flex: 1,
             }}>
-            {abonnement.formule}
+            {planLabel(t, abonnement.formule)}
           </Text>
           {abonnement.statut ? (
             <View style={[styles.pill, {backgroundColor: pillBg}]}>
               <Text style={{color: pillFg, fontWeight: '700', fontSize: 12}}>
-                {abonnement.statut}
+                {statusLabel(t, abonnement.statut)}
               </Text>
             </View>
           ) : null}
@@ -608,7 +609,7 @@ export function MemberSubscriptionScreen() {
                   {formatDate(item.date, locale)}
                 </Text>
                 <Text style={{color: colors.textSecondary}}>
-                  {item.statut || '—'}
+                  {statusLabel(t, item.statut)}
                 </Text>
               </View>
               <Text style={{color: colors.textSecondary, fontSize: 12, marginTop: 2}}>

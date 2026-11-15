@@ -1,5 +1,18 @@
 {
   "common": {
+    "status": {
+      "active": "Actif",
+      "inactive": "Inactif",
+      "expired": "Expiré",
+      "suspended": "Suspendu",
+      "pending": "En attente",
+      "en_attente": "En attente",
+      "pending_payment": "Paiement en attente",
+      "paid": "Payé",
+      "refunded": "Remboursé",
+      "failed": "Échoué",
+      "cancelled": "Annulé"
+    },
     "loading": "Chargement…",
     "error": "Une erreur est survenue",
     "save": "Enregistrer",
@@ -267,6 +280,10 @@
     "settings": "Paramètres"
   },
   "home": {
+    "recentActivity": "Activité récente",
+    "activityEmpty": "Aucune activité récente",
+    "favorites": "Favoris",
+    "favoritesEmpty": "Aucun favori pour le moment",
     "loading": "Chargement de votre espace académique...",
     "sessionExpired": "Votre session a expiré. Veuillez vous reconnecter.",
     "balanceTitle": "Solde DSI disponible",
@@ -477,6 +494,10 @@
     }
   },
   "subscription": {
+    "plans": {
+      "acces_initial": "Accès initial",
+      "renouvellement": "Renouvellement"
+    },
     "title": "Mon abonnement",
     "loading": "Chargement de votre abonnement...",
     "sessionExpired": "Votre session a expiré. Veuillez vous reconnecter.",

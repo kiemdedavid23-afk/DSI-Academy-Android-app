@@ -5,6 +5,7 @@ import {Text, useTheme} from '@shared/designsystem';
 import {useTranslation} from '@shared/i18n';
 import {memberProfileStore, memberSubscriptionStore} from '@shared/store';
 import {countryLabel} from '@core/data/countries';
+import {formatShortDate, statusLabel} from '@core/utils/displayLabels';
 
 export function SettingsAccountView({onBack}: {onBack: () => void}) {
   const {t, i18n} = useTranslation();
@@ -100,7 +101,7 @@ export function SettingsAccountView({onBack}: {onBack: () => void}) {
           {t('rooms.subscription')}
         </Text>
         <Text style={{color: colors.textSecondary}}>
-          {sub.data?.statut || '—'} · {sub.data?.dateFin || '—'}
+          {statusLabel(t, sub.data?.statut)} · {formatShortDate(sub.data?.dateFin, lang)}
         </Text>
         <Pressable onPress={() => navigation.navigate('MemberSubscription')}>
           <Text style={{color: colors.bluePrimary, fontWeight: '600'}}>
