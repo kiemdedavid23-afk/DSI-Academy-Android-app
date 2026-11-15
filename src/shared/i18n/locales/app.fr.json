@@ -1,5 +1,11 @@
 {
   "app": {
+    "notice": {
+      "error": "Erreur",
+      "success": "Succès",
+      "warning": "Attention",
+      "info": "Information"
+    },
     "register": {
       "title": "Inscription",
       "leaveTitle": "Quitter l'inscription ?",
