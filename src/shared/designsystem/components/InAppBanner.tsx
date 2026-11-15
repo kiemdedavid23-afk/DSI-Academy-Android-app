@@ -10,6 +10,7 @@ import {
   View,
   Pressable,
   Animated,
+  Image,
   StyleSheet,
   Platform,
   AccessibilityInfo,
@@ -18,6 +19,9 @@ import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {Text} from './Text';
 import {Icon} from '../icons';
 import {useTheme} from '../theme';
+
+const APP_ICON = require('@assets/images/app-icon.png');
+
 export type InAppBannerTone = 'warning' | 'success' | 'info' | 'error';
 
 export type InAppBannerData = {
@@ -72,16 +76,6 @@ function toneColors(
         icon: colors.info,
       };
   }
-}
-
-function iconName(tone: InAppBannerTone): 'WarningIcon' | 'CheckIcon' | 'BellIcon' {
-  if (tone === 'success') {
-    return 'CheckIcon';
-  }
-  if (tone === 'warning' || tone === 'error') {
-    return 'WarningIcon';
-  }
-  return 'BellIcon';
 }
 
 export function InAppBanner({
@@ -203,9 +197,12 @@ export function InAppBanner({
             }),
           },
         ]}>
-        <View style={[styles.iconCircle, {backgroundColor: tone.iconBg}]}>
-          <Icon name={iconName(banner.tone)} size={18} color={tone.icon} />
-        </View>
+        <Image
+          source={APP_ICON}
+          style={[styles.logo, {borderColor: tone.border}]}
+          accessibilityIgnoresInvertColors
+          testID="in-app-banner-logo"
+        />
         <View style={styles.textCol}>
           <Text
             style={{
@@ -223,7 +220,7 @@ export function InAppBanner({
               marginTop: 2,
               lineHeight: 17,
             }}
-            numberOfLines={2}>
+            numberOfLines={4}>
             {banner.message}
           </Text>
         </View>
@@ -261,12 +258,11 @@ const styles = StyleSheet.create({
     gap: 10,
     minHeight: 56,
   },
-  iconCircle: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    alignItems: 'center',
-    justifyContent: 'center',
+  logo: {
+    width: 38,
+    height: 38,
+    borderRadius: 19,
+    borderWidth: 2,
   },
   textCol: {
     flex: 1,
