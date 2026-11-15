@@ -40,7 +40,7 @@ class DsiDocModule(context: ReactApplicationContext) : ReactContextBaseJavaModul
       } catch (e: DocException) {
         promise.reject(e.code, e.message)
       } catch (e: IOException) {
-        promise.reject(if (calls[requestId]?.isCanceled == true) "ABORTED" else "NETWORK", e.message)
+        promise.reject(if (calls[requestId]?.isCanceled() == true) "ABORTED" else "NETWORK", e.message)
       } catch (e: Exception) {
         promise.reject("DOC_INVALID", e.message)
       } finally {
