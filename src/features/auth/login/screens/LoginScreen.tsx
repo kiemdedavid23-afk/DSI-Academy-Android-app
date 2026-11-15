@@ -23,6 +23,7 @@ import {
   useTheme,
 } from '@shared/designsystem';
 import {useTranslation} from '@shared/i18n';
+import {bannerStore} from '@shared/store';
 import {loginStore} from '../store/loginStore';
 import {lastLoginIdentifier, sessionEndReason} from '@core/session';
 import type {AuthStackParamList} from '@app/navigation/AuthStack';
@@ -68,6 +69,22 @@ export function LoginScreen() {
   }, []);
 
   const loading = state.status === 'loading';
+
+  // Erreurs de connexion (Worker, réseau, serveur) : bannière de l'application.
+  useEffect(() => {
+    if (state.status !== 'error' || !state.errorKind) {
+      return;
+    }
+    const message =
+      state.errorKind === 'network'
+        ? t('connexion.errorNetwork')
+        : state.errorKind === 'server'
+          ? t('connexion.errorServer')
+          : state.workerMessage
+            ? state.workerMessage
+            : t('connexion.errorGeneric');
+    bannerStore.notify({tone: 'error', type: 'login-error', message});
+  }, [state.status, state.errorKind, state.workerMessage, t]);
 
   const onSubmit = () => {
     const idPropre = identifiant.trim();
@@ -188,22 +205,6 @@ export function LoginScreen() {
             style={{marginTop: spacing.md}}
             testID="login-session-info">
             {sessionInfo}
-          </Text>
-        ) : null}
-
-        {state.status === 'error' && state.errorKind ? (
-          <Text
-            variant="bodySmall"
-            color="error"
-            style={{marginTop: spacing.md}}
-            testID="login-error">
-            {state.errorKind === 'network'
-              ? t('connexion.errorNetwork')
-              : state.errorKind === 'server'
-                ? t('connexion.errorServer')
-                : state.workerMessage
-                  ? state.workerMessage
-                  : t('connexion.errorGeneric')}
           </Text>
         ) : null}
 
