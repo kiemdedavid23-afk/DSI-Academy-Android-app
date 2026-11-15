@@ -26,8 +26,10 @@ export function ShellBanner({topOffset = 0}: Props) {
         ? {
             id: payload.id,
             tone: payload.tone,
-            title: t(payload.titleKey),
-            message: t(payload.messageKey),
+            title: payload.titleText ?? (payload.titleKey ? t(payload.titleKey) : ''),
+            message:
+              payload.messageText ??
+              (payload.messageKey ? t(payload.messageKey) : ''),
             dismissible: payload.dismissible,
             autoHideMs: payload.autoHideMs,
           }
