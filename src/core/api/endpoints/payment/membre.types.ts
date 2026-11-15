@@ -26,14 +26,20 @@ export type MemberBalance = {
   totalDsiGagnes: number;
 };
 
+/** Élément d'historique affiché (site : date, statut, modePaiement). Autres champs ignorés. */
+export type MemberRenewalItem = {
+  date: string | null;
+  statut: string | null;
+  modePaiement: string | null;
+};
+
 export type MemberSubscription = {
   formule: string | null;
   dateDebut: string | null;
   dateFin: string | null;
   statut: string | null;
   modePaiement: string | null;
-  /** Contrat ne détaille pas encore les éléments. */
-  renouvellements: unknown[];
+  renouvellements: MemberRenewalItem[];
 };
 
 export type WithdrawalStatus = 'en_attente' | 'traite' | string;

@@ -1,0 +1,1 @@
+{ "status": "pending_payment", "paymentMode": "hosted", "paymentUrl": "https://pay.example.test/checkout", "paymentTrackingToken": "ptt_test_renew_2" }

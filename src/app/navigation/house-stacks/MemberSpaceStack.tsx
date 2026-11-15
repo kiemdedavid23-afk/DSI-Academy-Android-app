@@ -7,6 +7,7 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {useTranslation} from '@shared/i18n';
 import {PlaceholderScreen} from '../PlaceholderScreen';
 import {MemberHomeScreen} from '@features/member-space/rooms/home/screens/MemberHomeScreen';
+import {MemberSubscriptionScreen} from '@features/member-space/rooms/subscription/screens/MemberSubscriptionScreen';
 import {MemberSpaceShell} from '@features/member-space/shell/components/MemberSpaceShell';
 
 export type MemberSpaceStackParamList = {
@@ -42,10 +43,10 @@ export function MemberSpaceStack() {
       <Stack.Screen name="MemberHome" component={Home} />
       <Stack.Screen
         name="MemberSubscription"
-        options={{headerShown: true, title: t('rooms.subscription')}}
+        options={{headerShown: false}}
         children={() => (
           <MemberSpaceShell>
-            <PlaceholderScreen titleKey="rooms.subscription" testID="screen-subscription" />
+            <MemberSubscriptionScreen />
           </MemberSpaceShell>
         )}
       />

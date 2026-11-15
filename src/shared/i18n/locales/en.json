@@ -479,7 +479,13 @@
       "checkAgain": "Check again",
       "retryPayment": "Try the payment again"
     },
-    "renewSuccessFcfa": "Payment confirmed: your subscription is renewed."
+    "renewSuccessFcfa": "Payment confirmed: your subscription is renewed.",
+    "paymentInProgress": "Payment in progress…",
+    "unavailable": "Service unavailable. Please try again later.",
+    "reopenPayment": "Reopen payment page",
+    "stillPending": "Payment still pending. You can check again or start over.",
+    "verifyNow": "Check now",
+    "restart": "Start over"
   },
   "layout": {
     "logout": "Log out",

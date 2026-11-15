@@ -1,0 +1,11 @@
+{
+  "mode": "direct",
+  "montant": 1050,
+  "prix": 1000,
+  "frais": 50,
+  "devise": "XOF",
+  "reseaux": [
+    { "code": "orange", "libelle": "Orange Money", "otpRequis": true, "instructionsOtp": "Composez #144*82# puis validez 1050 F" },
+    { "code": "moov", "libelle": "Moov Money", "otpRequis": false, "instructionsOtp": "" }
+  ]
+}

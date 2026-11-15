@@ -244,6 +244,37 @@ export const sessionStore = {
     }
   },
 
+
+  /**
+   * Met à jour le statut d'abonnement en session après un renouvellement réussi.
+   * Ne touche ni token, ni expiresAt, ni mode de stockage.
+   * Sans session présente : no-op.
+   */
+  async updateSubscription(input: {
+    subscriptionStatus: string | null;
+    dateFin: string | null;
+    subscriptionActive: boolean;
+  }): Promise<void> {
+    if (!memorySession) {
+      return;
+    }
+    const next = {
+      ...memorySession,
+      subscriptionStatus: input.subscriptionStatus,
+      dateFin: input.dateFin,
+      subscriptionActive: input.subscriptionActive,
+    };
+    memorySession = next;
+    emit();
+    if (rememberFlag) {
+      try {
+        await persistSecure(next);
+      } catch {
+        // toléré
+      }
+    }
+  },
+
   clearSession(): void {
     memorySession = null;
     rememberFlag = false;

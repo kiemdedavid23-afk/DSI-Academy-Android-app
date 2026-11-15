@@ -127,6 +127,19 @@ export function mapMemberBalance(
   return {kind: 'success', data};
 }
 
+
+function mapRenewalItem(raw: unknown): import('./membre.types').MemberRenewalItem | null {
+  const r = asRecord(raw);
+  if (!r) {
+    return null;
+  }
+  return {
+    date: asNullableString(r.date),
+    statut: asNullableString(r.statut),
+    modePaiement: asNullableString(r.modePaiement),
+  };
+}
+
 export function mapMemberSubscription(
   status: number,
   body: unknown,
@@ -154,6 +167,8 @@ export function mapMemberSubscription(
     modePaiement: asNullableString(payload.modePaiement),
     renouvellements: Array.isArray(payload.renouvellements)
       ? payload.renouvellements
+          .map(mapRenewalItem)
+          .filter((x): x is NonNullable<typeof x> => x != null)
       : [],
   };
   return {kind: 'success', data};

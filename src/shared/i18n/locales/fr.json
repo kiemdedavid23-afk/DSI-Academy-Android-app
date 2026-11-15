@@ -479,7 +479,13 @@
       "checkAgain": "Vérifier à nouveau",
       "retryPayment": "Réessayer le paiement"
     },
-    "renewSuccessFcfa": "Paiement confirmé : votre abonnement est renouvelé."
+    "renewSuccessFcfa": "Paiement confirmé : votre abonnement est renouvelé.",
+    "paymentInProgress": "Paiement en cours…",
+    "unavailable": "Service indisponible. Réessayez plus tard.",
+    "reopenPayment": "Rouvrir la page de paiement",
+    "stillPending": "Paiement toujours en attente. Vous pouvez vérifier ou recommencer.",
+    "verifyNow": "Vérifier maintenant",
+    "restart": "Recommencer"
   },
   "layout": {
     "logout": "Déconnexion",
