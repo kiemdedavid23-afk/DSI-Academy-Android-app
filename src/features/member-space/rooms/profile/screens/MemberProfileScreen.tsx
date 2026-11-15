@@ -405,6 +405,7 @@ export function MemberProfileScreen() {
         </Text>
         <CopyRow copiedKey={copied} label={t('profile.dsiId')} value={p.identifiantDsi} onCopy={onCopy} />
         <CopyRow
+          copiedKey={copied}
           label={t('profile.referralCode')}
           value={p.codeParrainagePersonnel || np}
           onCopy={onCopy}

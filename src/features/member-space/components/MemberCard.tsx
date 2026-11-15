@@ -124,7 +124,7 @@ const createStyles = (colors: ColorTokens) =>
       minHeight: 160,
       backgroundColor: colors.memberCardBgStart,
       // 0 12 40 -16 rgba(15,23,42,.55) : approché par elevation sur Android
-      shadowColor: '#0F172A',
+      shadowColor: colors.memberCardBgStart,
       elevation: 12,
     },
     halo: {position: 'absolute', right: -30, bottom: -40, width: 140, height: 140},

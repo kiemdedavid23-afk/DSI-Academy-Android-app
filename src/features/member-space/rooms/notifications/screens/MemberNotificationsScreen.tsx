@@ -75,7 +75,7 @@ function badgeMeta(
 
 export function MemberNotificationsScreen() {
   const {t, i18n} = useTranslation();
-  const {colors, glass} = useTheme();
+  const {colors, glass, elevation} = useTheme();
   const locale = i18n.language?.startsWith('en') ? 'en-US' : 'fr-FR';
   const online = useSyncExternalStore(
     connectivityStore.subscribe,
@@ -118,7 +118,7 @@ export function MemberNotificationsScreen() {
           paddingVertical: 20,
           paddingHorizontal: 24,
           gap: 12,
-          shadowColor: '#000000',
+          shadowColor: elevation.shadowColor,
           shadowOpacity: 0.05,
           shadowRadius: 3,
           shadowOffset: {width: 0, height: 1},

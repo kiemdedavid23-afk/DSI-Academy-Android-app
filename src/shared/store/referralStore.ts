@@ -25,6 +25,7 @@ async function loadReferral(): Promise<MemberReferral> {
 
 export const referralStore = createResourceStore<MemberReferral>({
   fetcher: loadReferral,
+  ttlMs: 60_000,
 });
 
 storeRegistry.register(referralStore);
