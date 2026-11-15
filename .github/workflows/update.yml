@@ -1,0 +1,52 @@
+name: Mettre à jour react-native-screens et gesture-handler
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: update-natives
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: '24'
+
+      - name: Versions disponibles et compatibilité déclarée
+        run: |
+          for p in react-native-screens react-native-gesture-handler; do
+            echo "== $p =="
+            npm view "$p" version peerDependencies --json
+          done
+
+      - name: Installer les dernières versions (versions exactes)
+        run: |
+          npm install --save-exact --package-lock-only --ignore-scripts --no-audit --no-fund \
+            react-native-screens@latest react-native-gesture-handler@latest
+
+      - name: Vérifier que tous les paquets viennent du registre officiel
+        run: |
+          if grep '"resolved"' package-lock.json | grep -v 'https://registry.npmjs.org/'; then
+            echo "Hôte inattendu dans le lockfile"
+            exit 1
+          fi
+
+      - name: Afficher les versions retenues
+        run: grep -E '"react-native-(screens|gesture-handler)"' package.json
+
+      - name: Commit sur main
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add package.json package-lock.json
+          git commit -m "chore: mettre à jour react-native-screens et gesture-handler" || echo "Aucun changement"
+          git push origin HEAD:main
