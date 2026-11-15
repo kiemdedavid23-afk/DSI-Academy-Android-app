@@ -13,7 +13,7 @@ import {
 } from 'react-native';
 import Clipboard from '@react-native-clipboard/clipboard';
 import {useNavigation} from '@react-navigation/native';
-import {Text, useTheme, Icon} from '@shared/designsystem';
+import {Text, useTheme, Icon, MemberAvatar} from '@shared/designsystem';
 import {useTranslation} from '@shared/i18n';
 import {
   memberProfileStore,
@@ -27,13 +27,17 @@ import {countryLabel} from '@core/data/countries';
 function CopyRow({
   label,
   value,
+  copiedKey,
   onCopy,
 }: {
   label: string;
   value: string;
-  onCopy: (v: string) => void;
+  copiedKey: string | null;
+  onCopy: (key: string, v: string) => void;
 }) {
+  const {t} = useTranslation();
   const {colors, radii} = useTheme();
+  const copied = copiedKey === label;
   return (
     <View
       style={{
@@ -51,8 +55,8 @@ function CopyRow({
         </Text>
       </View>
       <Pressable
-        onPress={() => onCopy(value)}
-        accessibilityLabel={`copy ${label}`}
+        onPress={() => onCopy(label, value)}
+        accessibilityLabel={`${copied ? t('profile.copied') : t('profile.copy')} : ${label}`}
         style={{
           width: 38,
           height: 38,
@@ -63,7 +67,11 @@ function CopyRow({
           alignItems: 'center',
           justifyContent: 'center',
         }}>
-        <Icon name="CopyIcon" size={18} color={colors.textSecondary} />
+        <Icon
+          name={copied ? 'CheckIcon' : 'CopyIcon'}
+          size={18}
+          color={copied ? colors.success : colors.textSecondary}
+        />
       </Pressable>
     </View>
   );
@@ -71,7 +79,7 @@ function CopyRow({
 
 export function MemberProfileScreen() {
   const {t, i18n} = useTranslation();
-  const {colors, radii, glass} = useTheme();
+  const {colors, radii, glass, elevation} = useTheme();
   const navigation = useNavigation<any>();
   const lang = i18n.language?.startsWith('en') ? 'en' : 'fr';
 
@@ -97,10 +105,10 @@ export function MemberProfileScreen() {
     void referralStore.load();
   }, []);
 
-  const onCopy = async (v: string) => {
+  const onCopy = async (key: string, v: string) => {
     try {
       Clipboard.setString(v);
-      setCopied(v);
+      setCopied(key);
       setCopyError(false);
       setTimeout(() => setCopied(null), 2000);
     } catch {
@@ -153,6 +161,7 @@ export function MemberProfileScreen() {
   const statusKey = `profile.status.${p.statut}`;
   const statusLabel = t(statusKey, {defaultValue: String(p.statut)});
   const np = t('profile.notProvided');
+  const initials = `${(p.prenom || 'M')[0]}${(p.nom || 'E')[0]}`.toUpperCase();
   const pays =
     p.pays && p.pays.length === 2
       ? countryLabel(p.pays, lang as 'fr' | 'en')
@@ -177,7 +186,13 @@ export function MemberProfileScreen() {
       <View
         style={[
           styles.card,
-          {backgroundColor: glass.bg, borderColor: glass.border, borderRadius: radii.lg},
+          {
+            backgroundColor: glass.bg,
+            borderColor: glass.border,
+            borderRadius: radii.lg,
+            paddingVertical: 20,
+            paddingHorizontal: 24,
+          },
         ]}>
         <View style={{flexDirection: 'row', gap: 16, alignItems: 'center'}}>
           <View
@@ -213,71 +228,81 @@ export function MemberProfileScreen() {
           borderRadius: radii.lg,
           paddingVertical: 20,
           paddingHorizontal: 24,
+          flexDirection: 'row',
+          alignItems: 'center',
           gap: 17.6,
+          shadowColor: elevation.shadowColor,
+          elevation: elevation.card,
         }}>
-        <Text
-          style={{
-            fontFamily: 'Fraunces-SemiBold',
-            fontSize: 25.6,
-            color: colors.textOnDark,
-            lineHeight: 29.4,
-          }}>
-          {`${p.prenom} ${p.nom}`.trim()}
-        </Text>
-        <View style={{flexDirection: 'row', flexWrap: 'wrap', gap: 8}}>
-          <View
+        <MemberAvatar initials={initials} size="lg" />
+        <View style={{flex: 1, gap: 9.6}}>
+          <Text
             style={{
-              paddingVertical: 5,
-              paddingHorizontal: 12,
-              borderRadius: 999,
-              backgroundColor: colors.goldHalo14,
-              borderWidth: 1,
-              borderColor: colors.goldBorder,
+              fontFamily: 'Fraunces-SemiBold',
+              fontSize: 25.6,
+              color: colors.textOnDark,
+              lineHeight: 29.4,
             }}>
-            <Text style={{color: colors.goldPrestige, fontSize: 13.1, letterSpacing: 0.4}}>
-              {p.identifiantDsi}
-            </Text>
-          </View>
-          <View
-            style={{
-              paddingVertical: 5,
-              paddingHorizontal: 12,
-              borderRadius: 999,
-              backgroundColor:
-                p.statut === 'active'
-                  ? colors.statusActiveOnDarkBg
-                  : colors.statusInactiveOnDarkBg,
-              borderWidth: 1,
-              borderColor:
-                p.statut === 'active'
-                  ? colors.statusActiveOnDarkBorder
-                  : colors.statusInactiveOnDarkBorder,
-              flexDirection: 'row',
-              alignItems: 'center',
-              gap: 6,
-            }}>
+            {`${p.prenom} ${p.nom}`.trim() || t('profile.memberDefault')}
+          </Text>
+          <View style={{flexDirection: 'row', flexWrap: 'wrap', gap: 8}}>
             <View
               style={{
-                width: 7,
-                height: 7,
-                borderRadius: 4,
+                paddingVertical: 5,
+                paddingHorizontal: 12,
+                borderRadius: 999,
+                backgroundColor: colors.goldHalo14,
+                borderWidth: 1,
+                borderColor: colors.goldBorder,
+              }}>
+              <Text style={{color: colors.goldPrestige, fontSize: 13.1, letterSpacing: 0.4}}>
+                {t('profile.identifier')}{' '}
+                <Text style={{color: colors.goldPrestige, fontSize: 13.1, fontWeight: '700', letterSpacing: 0.4}}>
+                  {p.identifiantDsi || t('profile.notAssigned')}
+                </Text>
+              </Text>
+            </View>
+            <View
+              style={{
+                paddingVertical: 5,
+                paddingHorizontal: 12,
+                borderRadius: 999,
                 backgroundColor:
                   p.statut === 'active'
-                    ? colors.statusActiveOnDarkText
-                    : colors.textOnDark,
-              }}
-            />
-            <Text
-              style={{
-                color:
+                    ? colors.statusActiveOnDarkBg
+                    : colors.statusInactiveOnDarkBg,
+                borderWidth: 1,
+                borderColor:
                   p.statut === 'active'
-                    ? colors.statusActiveOnDarkText
-                    : colors.textOnDark,
-                fontSize: 12.8,
-                fontWeight: '600',
+                    ? colors.statusActiveOnDarkBorder
+                    : colors.statusInactiveOnDarkBorder,
+                flexDirection: 'row',
+                alignItems: 'center',
+                gap: 6,
               }}>
-              {statusLabel}
-            </Text>
+              <View
+                style={{
+                  width: 7,
+                  height: 7,
+                  borderRadius: 4,
+                  backgroundColor:
+                    p.statut === 'active'
+                      ? colors.statusActiveOnDarkText
+                      : colors.textOnDark,
+                }}
+              />
+              <Text
+                style={{
+                  color:
+                    p.statut === 'active'
+                      ? colors.statusActiveOnDarkText
+                      : colors.textOnDark,
+                  fontSize: 12.8,
+                  fontWeight: '600',
+                }}>
+                {statusLabel}
+              </Text>
+            </View>
           </View>
         </View>
       </View>
@@ -294,18 +319,23 @@ export function MemberProfileScreen() {
         subscriptionActive={subActive}
       />
 
-      {/* Chiffre clé — niveau seul */}
+      {/* Chiffre clé — niveau seul : fond glass puis or 12 % par-dessus */}
       <View
         style={[
           styles.card,
           {
-            backgroundColor: colors.goldHalo12,
+            backgroundColor: glass.bg,
             borderColor: colors.goldBorder,
             borderRadius: radii.lg,
             minHeight: 80,
             padding: 16,
+            overflow: 'hidden',
           },
         ]}>
+        <View
+          pointerEvents="none"
+          style={[StyleSheet.absoluteFill, {backgroundColor: colors.goldHalo12}]}
+        />
         <Text style={{fontSize: 12, fontWeight: '500', color: colors.textMuted}}>
           {t('profile.level')}
         </Text>
@@ -320,6 +350,29 @@ export function MemberProfileScreen() {
         </Text>
       </View>
 
+      {/* Profil communautaire — grisé, bientôt disponible */}
+      <View
+        style={[
+          styles.card,
+          {
+            backgroundColor: glass.bg,
+            borderColor: glass.border,
+            borderRadius: radii.lg,
+            paddingHorizontal: 24,
+            paddingVertical: 20,
+            gap: 8,
+            opacity: 0.55,
+          },
+        ]}
+        testID="profile-community-soon">
+        <Text style={{fontWeight: '700', color: colors.textPrimary}}>
+          {t('communityProfile.title')}
+        </Text>
+        <Text style={{fontSize: 13.6, color: colors.textSecondary}}>
+          {t('common.comingSoon')}
+        </Text>
+      </View>
+
       {/* Identité */}
       <View
         style={[
@@ -329,10 +382,10 @@ export function MemberProfileScreen() {
         <Text style={{fontWeight: '700', marginBottom: 8, color: colors.textPrimary}}>
           {t('profile.personalTitle')}
         </Text>
-        <CopyRow label={t('profile.lastName')} value={p.nom || np} onCopy={onCopy} />
-        <CopyRow label={t('profile.firstName')} value={p.prenom || np} onCopy={onCopy} />
-        <CopyRow label={t('profile.email')} value={p.email || np} onCopy={onCopy} />
-        <CopyRow label={t('profile.whatsapp')} value={p.whatsapp || np} onCopy={onCopy} />
+        <CopyRow copiedKey={copied} label={t('profile.lastName')} value={p.nom || np} onCopy={onCopy} />
+        <CopyRow copiedKey={copied} label={t('profile.firstName')} value={p.prenom || np} onCopy={onCopy} />
+        <CopyRow copiedKey={copied} label={t('profile.email')} value={p.email || np} onCopy={onCopy} />
+        <CopyRow copiedKey={copied} label={t('profile.whatsapp')} value={p.whatsapp || np} onCopy={onCopy} />
         <View style={{paddingVertical: 12}}>
           <Text style={{fontSize: 12, color: colors.textMuted}}>{t('profile.country')}</Text>
           <Text style={{fontSize: 15.2, fontWeight: '600', color: colors.textPrimary}}>
@@ -350,7 +403,7 @@ export function MemberProfileScreen() {
         <Text style={{fontWeight: '700', marginBottom: 8, color: colors.textPrimary}}>
           {t('profile.dsiTitle')}
         </Text>
-        <CopyRow label={t('profile.dsiId')} value={p.identifiantDsi} onCopy={onCopy} />
+        <CopyRow copiedKey={copied} label={t('profile.dsiId')} value={p.identifiantDsi} onCopy={onCopy} />
         <CopyRow
           label={t('profile.referralCode')}
           value={p.codeParrainagePersonnel || np}
@@ -358,42 +411,44 @@ export function MemberProfileScreen() {
         />
       </View>
 
-      {copied ? (
-        <Text style={{color: colors.success, fontSize: 13}}>{t('profile.copy')}</Text>
-      ) : null}
       {copyError ? (
         <Text style={{color: colors.dangerText, fontSize: 13.1}}>{t('profile.copyError')}</Text>
       ) : null}
 
       {/* Raccourcis */}
-      {(
-        [
-          {label: t('rooms.referral'), screen: 'MemberReferral', icon: 'ReferralIcon' as const},
-          {label: t('rooms.subscription'), screen: 'MemberSubscription', icon: 'SubscriptionIcon' as const},
-          {label: t('rooms.settings'), screen: 'MemberSettings', icon: 'SettingsIcon' as const},
-        ] as const
-      ).map(item => (
-        <Pressable
-          key={item.screen}
-          onPress={() => navigation.navigate(item.screen)}
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            gap: 12,
-            paddingVertical: 12,
-            paddingHorizontal: 14.4,
-            borderRadius: radii.md,
-            backgroundColor: colors.bgSurfaceAlt,
-            borderWidth: 1,
-            borderColor: colors.borderLight,
-          }}>
-          <Icon name={item.icon} size={20} color={colors.textSecondary} />
-          <Text style={{flex: 1, fontSize: 14.4, fontWeight: '600', color: colors.textPrimary}}>
-            {item.label}
-          </Text>
-          <Icon name="ChevronRightIcon" size={18} color={colors.textMuted} />
-        </Pressable>
-      ))}
+      <View style={{gap: 8}}>
+        <Text style={{fontWeight: '700', color: colors.textPrimary}}>
+          {t('profile.shortcutsTitle')}
+        </Text>
+        {(
+          [
+            {label: t('rooms.referral'), screen: 'MemberReferral', icon: 'ReferralIcon' as const},
+            {label: t('rooms.subscription'), screen: 'MemberSubscription', icon: 'SubscriptionIcon' as const},
+            {label: t('rooms.settings'), screen: 'MemberSettings', icon: 'SettingsIcon' as const},
+          ] as const
+        ).map(item => (
+          <Pressable
+            key={item.screen}
+            onPress={() => navigation.navigate(item.screen)}
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              gap: 12,
+              paddingVertical: 12,
+              paddingHorizontal: 14.4,
+              borderRadius: radii.md,
+              backgroundColor: colors.bgSurfaceAlt,
+              borderWidth: 1,
+              borderColor: colors.borderLight,
+            }}>
+            <Icon name={item.icon} size={20} color={colors.textSecondary} />
+            <Text style={{flex: 1, fontSize: 14.4, fontWeight: '600', color: colors.textPrimary}}>
+              {item.label}
+            </Text>
+            <Icon name="ArrowRightIcon" size={18} color={colors.textMuted} />
+          </Pressable>
+        ))}
+      </View>
     </ScrollView>
   );
 }

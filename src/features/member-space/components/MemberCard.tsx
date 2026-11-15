@@ -39,14 +39,20 @@ export function MemberCard({profile, subscriptionActive}: MemberCardProps) {
             <Stop offset="45%" stopColor={colors.memberCardBgMid} />
             <Stop offset="100%" stopColor={colors.memberCardBgStart} />
           </LinearGradient>
-          <RadialGradient id="mcHalo" cx="85%" cy="90%" rx="45%" ry="45%">
-            <Stop offset="0%" stopColor={colors.memberCardHaloStart} />
-            <Stop offset="70%" stopColor={colors.memberCardHaloEnd} />
-          </RadialGradient>
         </Defs>
         <Rect x="0" y="0" width="100%" height="100%" rx={16} fill="url(#mcBg)" />
-        <Circle cx="100%" cy="100%" r={90} fill="url(#mcHalo)" />
       </Svg>
+      <View pointerEvents="none" style={styles.halo}>
+        <Svg width={140} height={140}>
+          <Defs>
+            <RadialGradient id="mcHalo" cx="50%" cy="50%" r="50%">
+              <Stop offset="0%" stopColor={colors.memberCardHaloStart} />
+              <Stop offset="70%" stopColor={colors.memberCardHaloEnd} />
+            </RadialGradient>
+          </Defs>
+          <Circle cx={70} cy={70} r={70} fill="url(#mcHalo)" />
+        </Svg>
+      </View>
       <View style={styles.inner}>
         <View style={styles.top}>
           <Text style={styles.brand}>DSI ACADEMY</Text>
@@ -69,13 +75,13 @@ export function MemberCard({profile, subscriptionActive}: MemberCardProps) {
             </Text>
             {profile.levelLabel ? (
               <Text style={styles.meta}>
-                {t('profile.level')}{' '}
+                {t('profile.level')}:{' '}
                 <Text style={styles.metaVal}>{profile.levelLabel}</Text>
               </Text>
             ) : null}
             {profile.codeParrainage ? (
               <Text style={styles.meta}>
-                {t('profile.referralCode')}{' '}
+                {t('dashboard.referralCode')}:{' '}
                 <Text style={styles.metaVal}>{profile.codeParrainage}</Text>
               </Text>
             ) : null}
@@ -116,7 +122,12 @@ const createStyles = (colors: ColorTokens) =>
       borderWidth: 1,
       borderColor: colors.memberCardBorder,
       minHeight: 160,
+      backgroundColor: colors.memberCardBgStart,
+      // 0 12 40 -16 rgba(15,23,42,.55) : approché par elevation sur Android
+      shadowColor: '#0F172A',
+      elevation: 12,
     },
+    halo: {position: 'absolute', right: -30, bottom: -40, width: 140, height: 140},
     inner: {paddingVertical: 21.6, paddingHorizontal: 22.4},
     top: {
       flexDirection: 'row',
@@ -128,7 +139,7 @@ const createStyles = (colors: ColorTokens) =>
       color: colors.memberCardAccent,
       fontSize: 11.5,
       fontWeight: '800',
-      letterSpacing: 2.24,
+      letterSpacing: 1.61,
     },
     chip: {
       paddingVertical: 4,
@@ -142,7 +153,7 @@ const createStyles = (colors: ColorTokens) =>
       color: colors.memberCardText,
       fontSize: 10.9,
       fontWeight: '700',
-      letterSpacing: 0.96,
+      letterSpacing: 0.65,
       textTransform: 'uppercase',
     },
     body: {flexDirection: 'row', gap: 16, alignItems: 'center'},
@@ -193,6 +204,6 @@ const createStyles = (colors: ColorTokens) =>
       color: colors.memberCardAccent,
       fontSize: 12,
       fontWeight: '700',
-      letterSpacing: 1.28,
+      letterSpacing: 0.96,
     },
   });

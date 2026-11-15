@@ -74,16 +74,16 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: -4,
     right: -4,
-    minWidth: 18,
+    width: 18,
     height: 18,
-    paddingHorizontal: 4,
+    paddingHorizontal: 0,
     borderRadius: 9,
     borderWidth: 2,
     alignItems: 'center',
     justifyContent: 'center',
   },
   badgeText: {
-    fontSize: 10.9, // 0.68rem
+    fontSize: 10.88, // 0.68rem
     fontWeight: '700',
     lineHeight: 14,
     textAlign: 'center',

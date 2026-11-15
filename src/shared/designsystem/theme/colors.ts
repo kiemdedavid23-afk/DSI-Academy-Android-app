@@ -107,6 +107,12 @@ export type ColorTokens = {
   dangerPanelTitle: string;
   dangerPanelText: string;
   dangerRipple: string;
+  // Notifications / erreurs (CORRECTIF VISUEL)
+  notifBlue: string;
+  textSlate500: string;
+  textSlate700: string;
+  errorTitle: string;
+  warningText: string;
   // Pastille d'état active
   /** Pastille active sur surface. */
   statusActiveBg: string;
@@ -214,6 +220,12 @@ const FEATURE_TOKENS = {
   dangerPanelTitle: '#991B1B',
   dangerPanelText: '#B91C1C',
   dangerRipple: withAlpha('#DC2626', 0.08),
+
+  notifBlue: '#2563EB',
+  textSlate500: '#64748B',
+  textSlate700: '#334155',
+  errorTitle: '#991B1B',
+  warningText: '#92400E',
 
   statusActiveBg: withAlpha('#22C55E', 0.14),
   statusActiveBorder: withAlpha('#22C55E', 0.3),
@@ -362,4 +374,10 @@ export const darkColors: ColorTokens = {
   skeletonShineOnDark: withAlpha('#F5D778', 0.45),
 
   ...FEATURE_TOKENS,
+
+  // Sombre : mêmes teintes, éclaircies pour rester lisibles sur fond sombre.
+  textSlate500: '#94A3B8',
+  textSlate700: '#CBD5E1',
+  errorTitle: '#FCA5A5',
+  warningText: '#FCD34D',
 };

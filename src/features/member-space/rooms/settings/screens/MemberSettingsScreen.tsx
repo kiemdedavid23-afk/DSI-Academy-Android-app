@@ -11,7 +11,7 @@ import {
   Alert,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
-import {Text, useTheme, Icon} from '@shared/designsystem';
+import {Text, useTheme, Icon, MemberAvatar} from '@shared/designsystem';
 import {useTranslation} from '@shared/i18n';
 import {memberProfileStore} from '@shared/store';
 import {sessionStore} from '@core/session';
@@ -138,19 +138,10 @@ export function MemberSettingsScreen() {
           alignItems: 'center',
           gap: 14.4,
         }}>
-        <View
-          style={{
-            width: 40,
-            height: 40,
-            borderRadius: 20,
-            backgroundColor: colors.onDarkVeil10,
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}>
-          <Text style={{color: colors.goldPrestige, fontWeight: '700'}}>
-            {(p?.prenom?.[0] || 'D').toUpperCase()}
-          </Text>
-        </View>
+        <MemberAvatar
+          initials={`${p?.prenom?.[0] || 'D'}${p?.nom?.[0] || ''}`.toUpperCase()}
+          size="md"
+        />
         <View style={{flex: 1}}>
           <Text
             style={{
@@ -217,7 +208,19 @@ export function MemberSettingsScreen() {
             {!row.disabled ? (
               <Icon name="ChevronRightIcon" size={18} color={colors.textMuted} />
             ) : (
-              <Text style={{fontSize: 11, color: colors.textMuted}}>{t('common.comingSoon')}</Text>
+              <View
+                style={{
+                  paddingVertical: 4,
+                  paddingHorizontal: 10,
+                  borderRadius: 999,
+                  backgroundColor: colors.bgSurfaceAlt,
+                  borderWidth: 1,
+                  borderColor: colors.borderLight,
+                }}>
+                <Text style={{fontSize: 12.5, fontWeight: '600', color: colors.textMuted}}>
+                  {t('common.comingSoon')}
+                </Text>
+              </View>
             )}
           </Pressable>
         ))}
@@ -239,6 +242,7 @@ export function MemberSettingsScreen() {
           minHeight: 44,
         }}
         testID="settings-logout">
+        <Icon name="LogoutIcon" size={20} color={colors.dangerText} />
         <Text style={{color: colors.dangerText, fontSize: 15.2, fontWeight: '700'}}>
           {t('settings.logout')}
         </Text>

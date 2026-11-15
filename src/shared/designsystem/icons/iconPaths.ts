@@ -35,6 +35,8 @@ export const iconShapes = {
   XIcon: [{type: 'path', d: 'M6 6l12 12M18 6L6 18'}],
   ChevronLeftIcon: [{type: 'path', d: 'M14.5 6l-6 6 6 6'}],
   ChevronRightIcon: [{type: 'path', d: 'M9.5 6l6 6-6 6'}],
+  /** Flèche droite — ArrowRightIcon (site) */
+  ArrowRightIcon: [{type: 'path', d: 'M5 12h14M13.5 6.5 19 12l-5.5 5.5'}],
   ChevronDownIcon: [{type: 'path', d: 'M6 9.5l6 6 6-6'}],
   CheckIcon: [{type: 'path', d: 'M5 12.5l4.5 4.5L19 7.5'}],
   SearchIcon: [

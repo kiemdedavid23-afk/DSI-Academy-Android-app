@@ -41,35 +41,35 @@ function badgeMeta(
   if (type === 'maintenance') {
     return {
       labelKey: 'notifications.badge.maintenance',
-      bg: colors.notifBadgeMaintenanceBg,
-      fg: colors.notifBadgeMaintenanceText,
+      bg: colors.warningBg,
+      fg: colors.warningText,
     };
   }
   if (type === 'urgent' || type === 'alerte') {
     return {
       labelKey: 'notifications.badge.urgent',
-      bg: colors.notifBadgeUrgentBg,
-      fg: colors.notifBadgeUrgentText,
+      bg: colors.errorBg,
+      fg: colors.errorTitle,
     };
   }
   if (n.origin === 'admin') {
     return {
       labelKey: 'notifications.badge.announce',
-      bg: colors.notifBadgeInfoBg,
-      fg: colors.notifBadgeInfoText,
+      bg: colors.infoBg,
+      fg: colors.info,
     };
   }
   if (n.origin === 'event') {
     return {
       labelKey: 'notifications.badge.activity',
-      bg: colors.notifBadgeInfoBg,
-      fg: colors.notifBadgeInfoText,
+      bg: colors.infoBg,
+      fg: colors.info,
     };
   }
   return {
     labelKey: 'notifications.badge.default',
-    bg: colors.notifBadgeDefaultBg,
-    fg: colors.notifBadgeDefaultText,
+    bg: colors.bgSurfaceAlt,
+    fg: colors.textSecondary,
   };
 }
 
@@ -111,13 +111,18 @@ export function MemberNotificationsScreen() {
         style={{
           backgroundColor: glass.bg,
           borderWidth: 1,
-          borderColor: glass.border,
+          borderColor: colors.borderLight,
           borderLeftWidth: 4,
-          borderLeftColor: unread ? colors.goldPrestige : colors.bluePrimary,
+          borderLeftColor: unread ? colors.goldPrestige : colors.notifBlue,
           borderRadius: 12,
           paddingVertical: 20,
           paddingHorizontal: 24,
           gap: 12,
+          shadowColor: '#000000',
+          shadowOpacity: 0.05,
+          shadowRadius: 3,
+          shadowOffset: {width: 0, height: 1},
+          elevation: 1,
         }}
         testID={`notif-${item.id}`}>
         <View style={{flexDirection: 'row', alignItems: 'center', gap: 12}}>
@@ -139,7 +144,7 @@ export function MemberNotificationsScreen() {
               {t(badge.labelKey)}
             </Text>
           </View>
-          <Text style={{fontSize: 12, fontWeight: '500', color: colors.textSecondary}}>
+          <Text style={{fontSize: 12, fontWeight: '500', color: colors.textSlate500}}>
             {formatNotifDate(item.createdAt, locale)}
           </Text>
           {unread ? (
@@ -161,7 +166,7 @@ export function MemberNotificationsScreen() {
           <Text
             style={{
               fontSize: 14,
-              color: colors.textSecondary,
+              color: colors.textSlate700,
               lineHeight: 22.4,
             }}>
             {item.body}
@@ -174,7 +179,7 @@ export function MemberNotificationsScreen() {
   if (st.status === 'loading' && st.items.length === 0) {
     return (
       <View style={[styles.center, {padding: 40}]} testID="notifications-loading">
-        <ActivityIndicator size="large" color={colors.bluePrimary} />
+        <ActivityIndicator size="large" color={colors.notifBlue} />
         <Text style={{marginTop: 12, color: colors.textSecondary}}>
           {t('notifications.loading')}
         </Text>
@@ -193,14 +198,14 @@ export function MemberNotificationsScreen() {
           paddingVertical: 40,
           paddingHorizontal: 20,
           borderRadius: 12,
-          backgroundColor: colors.dangerBg,
+          backgroundColor: colors.errorBg,
           borderWidth: 1,
-          borderColor: colors.dangerPanelBorder,
+          borderColor: colors.errorBorder,
           alignItems: 'center',
           gap: 12,
         }}
         testID="notifications-error">
-        <Text style={{fontSize: 18, fontWeight: '700', color: colors.dangerPanelTitle}}>
+        <Text style={{fontSize: 18, fontWeight: '700', color: colors.errorTitle}}>
           {t('notifications.errorTitle')}
         </Text>
         <Text
@@ -217,7 +222,7 @@ export function MemberNotificationsScreen() {
           onPress={refresh}
           style={{
             marginTop: 8,
-            backgroundColor: colors.bluePrimary,
+            backgroundColor: colors.notifBlue,
             paddingVertical: 10,
             paddingHorizontal: 20,
             borderRadius: 8,
@@ -245,10 +250,16 @@ export function MemberNotificationsScreen() {
             paddingBottom: 16,
             marginBottom: 8,
           }}>
-          <Text style={{fontSize: 24, fontWeight: '700', color: colors.textPrimary}}>
+          <Text
+            style={{
+              fontSize: 24,
+              fontWeight: '700',
+              color: colors.textPrimary,
+              marginBottom: 8,
+            }}>
             {t('notifications.title')}
           </Text>
-          <Text style={{fontSize: 14, color: colors.textSecondary, marginTop: 4}}>
+          <Text style={{fontSize: 14, color: colors.textSlate500, marginTop: 0}}>
             {t('notifications.subtitle')}
           </Text>
         </View>

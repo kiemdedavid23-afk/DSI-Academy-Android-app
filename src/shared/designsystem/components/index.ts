@@ -1,5 +1,7 @@
 export {Text} from './Text';
 export type {TextProps, TextColor} from './Text';
+export {MemberAvatar} from './MemberAvatar';
+export type {MemberAvatarProps, MemberAvatarSize} from './MemberAvatar';
 export {Button} from './Button';
 export type {ButtonProps, ButtonVariant} from './Button';
 export {Card} from './Card';
