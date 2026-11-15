@@ -25,7 +25,8 @@ src/
 │  ├─ config/                     ← serviceRegistry.ts, buildConfig.generated.ts (généré, ignoré), featureFlags.ts
 │  ├─ api/endpoints/<service>/    ← payment, content, shop, marketplace, community, admin
 │  │                                (<domaine>.api.ts, <domaine>.types.ts, <domaine>.mapper.ts)
-│  ├─ network/                    ← client HTTP, erreurs typées, rateLimitGate, temps réel
+│  ├─ network/                    ← client HTTP, erreurs typées, rateLimitGate, temps réel, sondage des sources de fichiers (sourceProbe)
+│  ├─ media/                      ← moteur de livraison de contenu : lien du Worker, stratégie de lecture, erreurs (sans écran)
 │  ├─ session/
 │  ├─ storage/
 │  ├─ platform/                   ← liens profonds, navigateur intégré, notifications, accessibilité système
