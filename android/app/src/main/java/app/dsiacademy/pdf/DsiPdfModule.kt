@@ -121,7 +121,7 @@ class DsiPdfModule(context: ReactApplicationContext) : ReactContextBaseJavaModul
         promise.resolve(map)
       } catch (e: IOException) {
         file.delete()
-        promise.reject(if (pendingCalls[requestId]?.isCanceled == true) "ABORTED" else "NETWORK", e.message)
+        promise.reject(if (pendingCalls[requestId]?.isCanceled() == true) "ABORTED" else "NETWORK", e.message)
       } catch (e: Exception) {
         file.delete()
         promise.reject("NETWORK", e.message)
