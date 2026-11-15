@@ -9,13 +9,16 @@ import {useTranslation} from '@shared/i18n';
 import {AcademyHubScreen} from '@features/academy/screens/AcademyHubScreen';
 import {LibraryDiscoverScreen} from '@features/content/screens/LibraryDiscoverScreen';
 import {TextReaderScreen} from '@features/content/screens/TextReaderScreen';
+import {PlayerScreen} from '@features/content/screens/PlayerScreen';
+import type {DiscoverHouse} from '@features/content/store/houseStores';
 import {ContentDetailScreen} from '@features/content/screens/ContentDetailScreen';
 
 export type AcademyStackParamList = {
   AcademyHub: undefined;
-  LibraryDiscover: undefined;
+  LibraryDiscover: {house?: DiscoverHouse} | undefined;
   ContentDetail: {id: number};
   Reader: {id: number; title: string};
+  Player: {id: number; title: string; thumbnailUrl: string | null};
 };
 
 const Stack = createNativeStackNavigator<AcademyStackParamList>();
@@ -30,8 +33,8 @@ export function AcademyStack() {
         {({navigation}) => (
           <AcademyHubScreen
             onOpenHouse={house => {
-              if (house === 'library') {
-                navigation.navigate('LibraryDiscover');
+              if (house === 'library' || house === 'audio' || house === 'videos') {
+                navigation.navigate('LibraryDiscover', {house});
               }
             }}
             onContinue={id => navigation.navigate('ContentDetail', {id})}
@@ -40,9 +43,12 @@ export function AcademyStack() {
       </Stack.Screen>
       <Stack.Screen
         name="LibraryDiscover"
-        options={{title: t('houses.library')}}>
-        {({navigation}) => (
+        options={({route}) => ({
+          title: t(`houses.${route.params?.house ?? 'library'}`),
+        })}>
+        {({route, navigation}) => (
           <LibraryDiscoverScreen
+            house={route.params?.house}
             onOpenItem={item => navigation.navigate('ContentDetail', {id: item.id})}
           />
         )}
@@ -53,7 +59,11 @@ export function AcademyStack() {
         {({route, navigation}) => (
           <ContentDetailScreen
             id={route.params.id}
-            onRead={(id, title) => navigation.navigate('Reader', {id, title})}
+            onRead={(id, title, type, thumbnailUrl) =>
+              type === 'audio' || type === 'video'
+                ? navigation.navigate('Player', {id, title, thumbnailUrl: thumbnailUrl ?? null})
+                : navigation.navigate('Reader', {id, title})
+            }
           />
         )}
       </Stack.Screen>
@@ -62,6 +72,17 @@ export function AcademyStack() {
         options={({route}) => ({title: route.params.title})}>
         {({route}) => (
           <TextReaderScreen id={route.params.id} title={route.params.title} />
+        )}
+      </Stack.Screen>
+      <Stack.Screen
+        name="Player"
+        options={({route}) => ({title: route.params.title})}>
+        {({route}) => (
+          <PlayerScreen
+            id={route.params.id}
+            title={route.params.title}
+            thumbnailUrl={route.params.thumbnailUrl}
+          />
         )}
       </Stack.Screen>
     </Stack.Navigator>

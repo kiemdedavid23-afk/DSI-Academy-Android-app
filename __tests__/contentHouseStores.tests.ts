@@ -172,10 +172,10 @@ describe('detailStore', () => {
 });
 
 describe('logique hub', () => {
-  it('reprise : seulement un contenu Bibliothèque à id numérique', () => {
+  it('reprise : seulement un contenu à id numérique (Bibliothèque, Audio, Vidéos)', () => {
     expect(continueContentId({id: '12', house: 'library'})).toBe(12);
     expect(continueContentId({id: 'abc', house: 'library'})).toBeNull();
-    expect(continueContentId({id: '12', house: 'audio'})).toBeNull();
+    expect(continueContentId({id: '12', house: 'formations'})).toBeNull();
     expect(continueContentId(null)).toBeNull();
   });
   it('clés d\'erreur', () => {

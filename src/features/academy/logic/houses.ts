@@ -38,7 +38,7 @@ export const HOUSES: Record<HouseId, HouseDef> = {
     taglineKey: 'content.taglines.videos',
     icon: 'VideoIcon',
     image: require('@assets/images/academy/house-videos.webp'),
-    available: false,
+    available: true,
   },
   formations: {
     id: 'formations',
@@ -54,7 +54,7 @@ export const HOUSES: Record<HouseId, HouseDef> = {
     taglineKey: 'content.taglines.audio',
     icon: 'HeadphonesIcon',
     image: require('@assets/images/academy/house-audio.webp'),
-    available: false,
+    available: true,
   },
 };
 
@@ -62,7 +62,7 @@ export const HERO_IMAGE = require('@assets/images/academy/hub-hero.webp');
 
 /** Le « reprendre » ne mène à une fiche que si l'entrée est un contenu du Worker. */
 export function continueContentId(entry: {id: string; house: string} | null): number | null {
-  if (!entry || entry.house !== 'library') {
+  if (!entry || !['library', 'audio', 'videos'].includes(entry.house)) {
     return null;
   }
   return /^\d+$/.test(entry.id) && Number(entry.id) > 0 ? Number(entry.id) : null;

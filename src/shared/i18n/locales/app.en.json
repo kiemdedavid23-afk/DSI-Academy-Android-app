@@ -66,6 +66,21 @@
       "docInvalid": "This file is unreadable or damaged.",
       "docEncrypted": "This book is DRM-protected and can't be read here.",
       "docUnsupportedMobi": "This MOBI variant isn't supported."
+    },
+    "player": {
+      "listen": "Listen",
+      "watch": "Watch",
+      "play": "Play",
+      "pause": "Pause",
+      "back15": "−15 s",
+      "forward15": "+15 s",
+      "fullscreen": "Fullscreen",
+      "exitFullscreen": "Exit fullscreen",
+      "buffering": "Loading…",
+      "searchAudio": "Search audio",
+      "searchVideo": "Search videos",
+      "audioEmpty": "No audio available yet.",
+      "videoEmpty": "No videos available yet."
     }
   }
 }

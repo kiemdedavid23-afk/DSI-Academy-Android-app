@@ -66,6 +66,21 @@
       "docInvalid": "Ce fichier est illisible ou endommagé.",
       "docEncrypted": "Ce livre est protégé (DRM) et ne peut pas être lu ici.",
       "docUnsupportedMobi": "Cette variante du format MOBI n'est pas prise en charge."
+    },
+    "player": {
+      "listen": "Écouter",
+      "watch": "Regarder",
+      "play": "Lecture",
+      "pause": "Pause",
+      "back15": "−15 s",
+      "forward15": "+15 s",
+      "fullscreen": "Plein écran",
+      "exitFullscreen": "Quitter le plein écran",
+      "buffering": "Chargement…",
+      "searchAudio": "Rechercher un audio",
+      "searchVideo": "Rechercher une vidéo",
+      "audioEmpty": "Aucun audio disponible pour le moment.",
+      "videoEmpty": "Aucune vidéo disponible pour le moment."
     }
   }
 }

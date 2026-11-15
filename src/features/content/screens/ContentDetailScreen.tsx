@@ -5,6 +5,7 @@
 
 import React, {useEffect, useState, useSyncExternalStore} from 'react';
 import {ScrollView, View} from 'react-native';
+import type {ContentType} from '@core/utils/contentDisplay';
 import {contentAuthor, formatDuration, levelKey} from '@core/utils/contentDisplay';
 import {
   Button,
@@ -22,7 +23,12 @@ import {contentDetailStore} from '../store/detailStore';
 
 export type ContentDetailScreenProps = {
   id: number;
-  onRead: (id: number, title: string) => void;
+  onRead: (
+    id: number,
+    title: string,
+    type?: ContentType,
+    thumbnailUrl?: string | null,
+  ) => void;
 };
 
 export function ContentDetailScreen({id, onRead}: ContentDetailScreenProps) {
@@ -138,8 +144,14 @@ export function ContentDetailScreen({id, onRead}: ContentDetailScreenProps) {
         </View>
       ) : null}
       <Button
-        label={t('app.reader.read')}
-        onPress={() => onRead(item.id, item.title)}
+        label={
+          item.type === 'audio'
+            ? t('app.player.listen')
+            : item.type === 'video'
+            ? t('app.player.watch')
+            : t('app.reader.read')
+        }
+        onPress={() => onRead(item.id, item.title, item.type, item.thumbnailUrl)}
         testID="detail-open"
       />
       <Button
@@ -147,7 +159,13 @@ export function ContentDetailScreen({id, onRead}: ContentDetailScreenProps) {
         variant="secondary"
         onPress={() =>
           void favoritesStore
-            .toggle({id: String(item.id), house: 'library', title: item.title, path: ''})
+            .toggle({
+              id: String(item.id),
+              house:
+                item.type === 'audio' ? 'audio' : item.type === 'video' ? 'videos' : 'library',
+              title: item.title,
+              path: '',
+            })
             .then(setFavorite)
         }
         testID="detail-favorite"

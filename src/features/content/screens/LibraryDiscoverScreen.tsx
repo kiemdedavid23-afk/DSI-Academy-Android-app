@@ -18,49 +18,50 @@ import {useTranslation} from '@shared/i18n';
 import {CategoryChips} from '../components/CategoryChips';
 import {ContentCard} from '../components/ContentCard';
 import {contentErrorKey} from '../logic/errorKey';
-import {libraryCatalogueStore} from '../store/catalogueStore';
-import {libraryCategoriesStore} from '../store/categoriesStore';
+import {HOUSE_STORES, type DiscoverHouse} from '../store/houseStores';
 import {contentDetailStore} from '../store/detailStore';
-import {librarySearchStore} from '../store/searchStore';
 
 const SEARCH_DEBOUNCE_MS = 350;
 const COLUMNS = 2;
 
 export type LibraryDiscoverScreenProps = {
+  /** Maison affichée (défaut : Bibliothèque). */
+  house?: DiscoverHouse;
   onOpenItem: (item: Content) => void;
 };
 
-export function LibraryDiscoverScreen({onOpenItem}: LibraryDiscoverScreenProps) {
+export function LibraryDiscoverScreen({house = 'library', onOpenItem}: LibraryDiscoverScreenProps) {
+  const stores = HOUSE_STORES[house];
   const {t} = useTranslation();
   const {colors, spacing} = useTheme();
   const [text, setText] = useState('');
 
   const cat = useSyncExternalStore(
-    libraryCatalogueStore.subscribe,
-    libraryCatalogueStore.getState,
+    stores.catalogue.subscribe,
+    stores.catalogue.getState,
   );
   const search = useSyncExternalStore(
-    librarySearchStore.subscribe,
-    librarySearchStore.getState,
+    stores.search.subscribe,
+    stores.search.getState,
   );
   const categories = useSyncExternalStore(
-    cb => libraryCategoriesStore.subscribe(() => cb()),
-    () => libraryCategoriesStore.getState(),
+    cb => stores.categories.subscribe(() => cb()),
+    () => stores.categories.getState(),
   );
 
   useEffect(() => {
-    void libraryCatalogueStore.load();
-    void libraryCategoriesStore.load();
-  }, []);
+    void stores.catalogue.load();
+    void stores.categories.load();
+  }, [stores]);
 
   // Recherche différée : un appel par pause de saisie, jamais à chaque lettre.
   useEffect(() => {
     const id = setTimeout(
-      () => void librarySearchStore.setQuery(text),
+      () => void stores.search.setQuery(text),
       SEARCH_DEBOUNCE_MS,
     );
     return () => clearTimeout(id);
-  }, [text]);
+  }, [stores, text]);
 
   const searching = text.trim() !== '';
   const list = searching ? search : cat;
@@ -84,9 +85,9 @@ export function LibraryDiscoverScreen({onOpenItem}: LibraryDiscoverScreenProps) 
 
   const onEnd = useCallback(() => {
     if (searching) {
-      void librarySearchStore.loadMore();
+      void stores.search.loadMore();
     } else {
-      void libraryCatalogueStore.loadMore();
+      void stores.catalogue.loadMore();
     }
   }, [searching]);
 
@@ -98,7 +99,13 @@ export function LibraryDiscoverScreen({onOpenItem}: LibraryDiscoverScreenProps) 
             label={t('app.catalogue.searchLabel')}
             value={text}
             onChangeText={setText}
-            placeholder={t('library.searchPlaceholder')}
+            placeholder={
+              house === 'audio'
+                ? t('app.player.searchAudio')
+                : house === 'videos'
+                ? t('app.player.searchVideo')
+                : t('library.searchPlaceholder')
+            }
             testID="library-search"
           />
         </View>
@@ -106,7 +113,7 @@ export function LibraryDiscoverScreen({onOpenItem}: LibraryDiscoverScreenProps) 
           <CategoryChips
             categories={categoryList}
             selectedId={cat.categoryId}
-            onSelect={id => void libraryCatalogueStore.setCategory(id)}
+            onSelect={id => void stores.catalogue.setCategory(id)}
           />
         ) : null}
         {searching && list.status === 'success' && items.length > 0 ? (
@@ -133,8 +140,8 @@ export function LibraryDiscoverScreen({onOpenItem}: LibraryDiscoverScreenProps) 
         retryLabel={t('common.retry')}
         onRetry={() =>
           searching
-            ? void librarySearchStore.setQuery(text)
-            : void libraryCatalogueStore.load({force: true})
+            ? void stores.search.setQuery(text)
+            : void stores.catalogue.load({force: true})
         }
         testID="library-error"
       />
@@ -144,6 +151,10 @@ export function LibraryDiscoverScreen({onOpenItem}: LibraryDiscoverScreenProps) 
       ? t('app.catalogue.noResults')
       : cat.categoryId !== null
       ? t('content.categoryEmpty')
+      : house === 'audio'
+      ? t('app.player.audioEmpty')
+      : house === 'videos'
+      ? t('app.player.videoEmpty')
       : t('app.catalogue.libraryEmpty');
     body = <EmptyState message={message} testID="library-empty" />;
   }
