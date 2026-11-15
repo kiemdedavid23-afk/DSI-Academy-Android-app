@@ -15,6 +15,8 @@ import {
 } from 'react-native';
 import {Text, useTheme, Icon} from '@shared/designsystem';
 import {useTranslation} from '@shared/i18n';
+import {bannerStore} from '@shared/store';
+import {ShellBanner} from '../../../shell/components/ShellBanner';
 import {giftCodeStore} from '../store/giftCodeStore';
 
 type Props = {
@@ -42,6 +44,16 @@ export function GiftCodeOverlay({visible, onClose}: Props) {
     const timer = setTimeout(() => inputRef.current?.focus(), 300);
     return () => clearTimeout(timer);
   }, [visible]);
+
+  // Seule la saisie vide reste sous le champ ; le reste (Worker, réseau) va en bannière.
+  const emptyError = errorKey === 'dsi.gift.errors.empty';
+  useEffect(() => {
+    if (errorMessage) {
+      bannerStore.notify({tone: 'error', type: 'gift-error', message: errorMessage});
+    } else if (errorKey && errorKey !== 'dsi.gift.errors.empty') {
+      bannerStore.notify({tone: 'error', type: 'gift-error', message: t(errorKey)});
+    }
+  }, [errorMessage, errorKey, t]);
 
   const submit = () => {
     void giftCodeStore.submit(code);
@@ -102,9 +114,9 @@ export function GiftCodeOverlay({visible, onClose}: Props) {
                 }}
                 testID="gift-code-input"
               />
-              {errorMessage || errorKey ? (
+              {emptyError ? (
                 <Text style={{color: colors.error}} accessibilityRole="alert">
-                  {errorMessage ?? t(errorKey ?? '')}
+                  {t('dsi.gift.errors.empty')}
                 </Text>
               ) : null}
               <Pressable
@@ -129,6 +141,7 @@ export function GiftCodeOverlay({visible, onClose}: Props) {
             </>
           )}
         </View>
+        <ShellBanner />
       </KeyboardAvoidingView>
     </Modal>
   );
