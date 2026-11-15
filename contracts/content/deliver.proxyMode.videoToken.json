@@ -1,0 +1,7 @@
+{
+  "status": "OK",
+  "type": "video_playback_token",
+  "content_id": 30,
+  "playback_url": "https://worker.example.invalid/play/TOKEN_TEST",
+  "expires_at": "2026-11-15T12:00:00Z"
+}

@@ -1,0 +1,13 @@
+{
+  "status": "OK",
+  "type": "link",
+  "content_id": 30,
+  "content_type": "video",
+  "asset_id": 50,
+  "provider_id": "youtube",
+  "format": "youtube_url",
+  "delivery": {
+    "status": "OK",
+    "url": "https://video.example.invalid/watch?v=REF_TEST"
+  }
+}

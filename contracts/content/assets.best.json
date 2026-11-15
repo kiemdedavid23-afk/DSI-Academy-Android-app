@@ -1,0 +1,15 @@
+{
+  "id": 34,
+  "content_id": 12,
+  "format": "pdf",
+  "mime_type": null,
+  "size_bytes": null,
+  "duration_seconds": null,
+  "quality": null,
+  "language": "fr",
+  "downloadable": false,
+  "status": "active",
+  "priority": 100,
+  "created_at": "2026-11-01T10:00:00Z",
+  "updated_at": "2026-11-01T10:00:00Z"
+}

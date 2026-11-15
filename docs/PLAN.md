@@ -116,3 +116,20 @@ Flou : sans flou sur Android 11 et moins, fond semi-opaque seul.
 React Native CLI sans Expo, version figée à l'étape 0.
 « Se souvenir de moi » : comme décrit dans l'architecture (R-SEC-6).
 Valides-tu ces valeurs par défaut ? Si oui, j'enchaîne avec le DESIGN-TOKENS v1.1 pour React Native et les fiches de l'étape 0 pour Grok.
+## Étape 4 révisée (15/11/2026) : moteur de lecture d'abord
+
+Décision : le Worker Contenu fonctionne en mode LIEN unique (docs du Worker, PROVIDERS.md). Il ne relaie aucun fichier (trafic trop élevé sur le VPS). L'app demande un lien à `/content/:id/deliver`, puis va chercher le fichier chez la source et le lit en flux, sans le sauvegarder et sans rediriger vers la page de la source. Aucun téléchargement hors ligne. Cette étape remplace les lots L4a à L4c du tableau ci-dessus ; les étapes 5, 6 et 7 sont fusionnées dans les lots L5 et L6 ci-dessous.
+
+| Lot | Contenu | Critère de sortie |
+|---|---|---|
+| L4a | Fondations contenu : endpoints, types, mappers, fixtures et tests du Worker Contenu (catalogue, recherche, catégories, assets, composition, livraison) | CI verte |
+| L4b | Moteur de livraison : demande du lien, stratégie de lecture par provider et par format, requêtes Range, reprise, expiration du lien, erreurs réseau. Rien n'est enregistré durablement | Tests du moteur ; essai sur Drive, Internet Archive et Catbox |
+| L4c | Écran de preuve technique : lit un vrai PDF, un MP3 et un MP4 via le moteur. APK de test | Lecture réelle validée sur téléphone, avant toute maison |
+| L4d | Hub Académie et Bibliothèque (découverte) : hub, catalogue, catégories, recherche, fiche détail | Parcours de découverte conforme au site |
+| L4e | Lecteurs de livres : PDF, texte, puis EPUB et autres formats ; progression et favoris | Lecture d'un livre de bout en bout |
+| L5 | Audio (arrière-plan, écran verrouillé, reprise) et vidéo (plein écran, reprise, YouTube intégré) | Lecture fiable sur réseau faible |
+| L6 | Formations : arbre de composants, un appel de livraison par module (jamais avec l'id de la formation), progression | Parcours d'une formation complet |
+
+Ensuite : Boutique, Marketplace, Communauté et stabilisation, dans l'ordre du plan initial.
+
+Prérequis côté Worker Contenu (modification faite par son concepteur) : passer le Worker déployé en mode LIEN conforme au contrat. Tant que ce n'est pas fait, `/deliver` répond en flux ou en jeton de lecture ; l'app le détecte et renvoie l'échec `unsupportedMode`.

@@ -1,0 +1,15 @@
+{
+  "status": "OK",
+  "type": "link",
+  "content_id": 12,
+  "content_type": "book",
+  "asset_id": 34,
+  "provider_id": "google_drive",
+  "format": "pdf",
+  "delivery": {
+    "status": "OK",
+    "url": "https://files.example.invalid/drive/FILE_ID_TEST",
+    "mime_type": "application/pdf",
+    "size_bytes": "2048000"
+  }
+}

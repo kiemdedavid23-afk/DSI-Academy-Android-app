@@ -1,0 +1,27 @@
+{
+  "query": "finance",
+  "items": [
+    {
+      "id": 12,
+      "uid": "01JTEST00000000000000000012",
+      "type": "book",
+      "slug": "contenu-12",
+      "title": "Contenu test 12",
+      "description": null,
+      "language": "fr",
+      "category_id": 3,
+      "editorial_status": "published",
+      "moderation_status": "active",
+      "metadata": {},
+      "level": null,
+      "duration_seconds": null,
+      "view_count": 0,
+      "thumbnail_url": null,
+      "created_at": "2026-11-01T10:00:00Z",
+      "updated_at": "2026-11-01T10:00:00Z",
+      "relevance": -1.2
+    }
+  ],
+  "limit": 20,
+  "offset": 0
+}
