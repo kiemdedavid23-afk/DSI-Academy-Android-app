@@ -47,7 +47,7 @@ export function SettingsAccountView({onBack}: {onBack: () => void}) {
         </Text>
       </Pressable>
       <Text style={{fontSize: 19.2, fontWeight: '800', color: colors.textPrimary}}>
-        {t('settings.account')}
+        {t('settings.account.title')}
       </Text>
       <Text style={{fontSize: 13.1, color: colors.textSecondary}}>
         {t('common.readOnly')}

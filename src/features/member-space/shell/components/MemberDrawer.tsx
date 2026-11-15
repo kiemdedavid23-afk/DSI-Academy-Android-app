@@ -149,7 +149,9 @@ export function MemberDrawer({open, onClose, activeRoom, onNavigateRoom}: Props)
   const profile = profileState.data;
   const prenom = profile?.prenom ?? '';
   const nom = profile?.nom ?? '';
-  const fullName = `${prenom} ${nom}`.trim() || t('drawer.member');
+  const fullName = `${prenom} ${nom}`.trim() || t('drawer.member', {
+      defaultValue: i18n.language?.startsWith('en') ? 'Member' : 'Membre',
+    });
 
   const sub = computeSubscription(subState.data);
   const subViewState: 'active' | 'expired' | 'none' | 'loading' =
@@ -483,9 +485,11 @@ export function MemberDrawer({open, onClose, activeRoom, onNavigateRoom}: Props)
               </View>
               <View style={styles.subFoot}>
                 <Text style={[styles.subFootText, {color: colors.drawerSubFoot}]}>
-                  {subDays != null
-                    ? t('drawer.daysLeft', {count: subDays})
-                    : ''}
+                  {subDays == null
+                    ? ''
+                    : subDays === 1
+                      ? t('drawer.daysLeftOne')
+                      : t('drawer.daysLeftMany', {days: subDays})}
                 </Text>
                 <Pressable
                   onPress={() => onItem('subscription')}
@@ -499,7 +503,9 @@ export function MemberDrawer({open, onClose, activeRoom, onNavigateRoom}: Props)
                     }}>
                     {subViewState === 'none'
                       ? t('drawer.subscribe')
-                      : t('drawer.manage')}
+                      : subViewState === 'expired'
+                        ? t('drawer.renew')
+                        : t('drawer.view')}
                   </Text>
                 </Pressable>
               </View>

@@ -44,7 +44,7 @@ export function SettingsHelpView({onBack}: {onBack: () => void}) {
         }}>
         <Text style={{fontWeight: '600'}}>← {t('settings.back')}</Text>
       </Pressable>
-      <Text style={{fontSize: 19.2, fontWeight: '800'}}>{t('settings.help')}</Text>
+      <Text style={{fontSize: 19.2, fontWeight: '800'}}>{t('settings.help.title')}</Text>
 
       <Text style={{opacity: 0.55, color: colors.textMuted}}>
         {t('settings.contactSupport', {defaultValue: 'Contacter le support'})} —{' '}

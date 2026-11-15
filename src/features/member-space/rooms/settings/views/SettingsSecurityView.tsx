@@ -44,7 +44,7 @@ export function SettingsSecurityView({
         }}>
         <Text style={{fontWeight: '600'}}>← {t('settings.back')}</Text>
       </Pressable>
-      <Text style={{fontSize: 19.2, fontWeight: '800'}}>{t('settings.security')}</Text>
+      <Text style={{fontSize: 19.2, fontWeight: '800'}}>{t('settings.security.title')}</Text>
 
       <View
         style={{

@@ -85,7 +85,7 @@ export function SettingsPreferencesView({onBack}: {onBack: () => void}) {
         }}>
         <Text style={{fontWeight: '600'}}>← {t('settings.back')}</Text>
       </Pressable>
-      <Text style={{fontSize: 19.2, fontWeight: '800'}}>{t('settings.preferences')}</Text>
+      <Text style={{fontSize: 19.2, fontWeight: '800'}}>{t('settings.preferences.title')}</Text>
 
       <Text style={{fontSize: 12.5, fontWeight: '700', letterSpacing: 0.4, color: colors.textSecondary}}>
         {t('settings.language', {defaultValue: 'LANGUE'})}

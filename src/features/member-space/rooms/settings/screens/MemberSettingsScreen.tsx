@@ -71,33 +71,33 @@ export function MemberSettingsScreen() {
   }[] = [
     {
       id: 'account',
-      title: t('settings.sections.account', {defaultValue: t('settings.account')}),
-      desc: t('settings.accountDesc', {defaultValue: 'Identité et abonnement'}),
+      title: t('settings.sections.account.title'),
+      desc: t('settings.sections.account.desc'),
       icon: 'UserIcon',
     },
     {
       id: 'preferences',
-      title: t('settings.sections.preferences', {defaultValue: t('settings.preferences')}),
-      desc: t('settings.preferencesDesc', {defaultValue: 'Langue, thème, animations'}),
+      title: t('settings.sections.preferences.title'),
+      desc: t('settings.sections.preferences.desc'),
       icon: 'SettingsIcon',
     },
     {
       id: 'notifications',
-      title: t('settings.sections.notifications', {defaultValue: t('settings.notifications')}),
+      title: t('settings.sections.notifications.title'),
       desc: t('common.comingSoon'),
       icon: 'BellIcon',
       disabled: true,
     },
     {
       id: 'security',
-      title: t('settings.sections.security', {defaultValue: t('settings.security')}),
-      desc: t('settings.securityDesc', {defaultValue: 'Session et compte'}),
+      title: t('settings.sections.security.title'),
+      desc: t('settings.sections.security.desc'),
       icon: 'ShieldIcon',
     },
     {
       id: 'help',
-      title: t('settings.sections.help', {defaultValue: t('settings.help')}),
-      desc: t('settings.helpDesc', {defaultValue: 'Liens et à propos'}),
+      title: t('settings.sections.help.title'),
+      desc: t('settings.sections.help.desc'),
       icon: 'HelpIcon',
     },
   ];
