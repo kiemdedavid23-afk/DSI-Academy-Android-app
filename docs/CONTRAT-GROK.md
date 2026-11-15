@@ -149,3 +149,15 @@ L'utilisateur lance la CI et envoie les résultats à Claude, qui répond par **
 - **Registre** : `core/config/serviceRegistry.ts`, seul endroit qui connaît les adresses.
 - **Contrat de Worker** : ce que l'API garantit (`docs/contrats/`), prime sur ce que le site laisse supposer.
 - **Architecte** : Claude.
+
+## Erratum 2026-11-15 (réponses du concepteur du Worker)
+
+- §1.4 : chaque élément de `reseaux` contient aussi `instructionsOtp` (string, vide si aucun OTP, montant total inclus).
+  `mode` (direct | hosted) est lisible via cette route publique, sans rien créer : à utiliser AVANT /api/abonnement/renouveler.
+- §2.8 : le renouvellement FCFA se fait en un ou deux temps selon le mode :
+  • direct : un seul POST { modePaiement: 'fcfa', paiement: {...} } ;
+  • hosted : un seul POST { modePaiement: 'fcfa' } qui renvoie paymentUrl.
+  Chaque POST compte dans la limite de 8 / 15 min. La sonde { modePaiement: 'fcfa' } seule n'est pas à utiliser en direct :
+  en hosted elle crée un vrai paiement.
+- §2.3 : le contenu de `renouvellements[]` n'est pas capturé ; seuls date, statut et modePaiement sont lus par l'app.
+- Après un renouvellement réussi, l'app recharge /api/membre/abonnement et met à jour la session locale.
