@@ -1,0 +1,24 @@
+{
+  "codeParrainagePersonnel": "DSI-XYZ999",
+  "filleulsDirectsTotal": 12,
+  "filleulsDirectsActifs": 10,
+  "recompensesNiveau1Dsi": 10000,
+  "recompensesNiveau2Dsi": 2500,
+  "totalDsiParrainage": 12500,
+  "historiqueLimite": 50,
+  "historiqueHasMore": false,
+  "historique": [
+    {
+      "type": "gain_parrainage_n1",
+      "montant": 500,
+      "identifiantDsiFilleul": "DSI-F001",
+      "date": "2026-09-01T10:00:00.000Z"
+    },
+    {
+      "type": "gain_parrainage_n2",
+      "montant": 120,
+      "identifiantDsiFilleul": "DSI-F002",
+      "date": "2026-09-15T10:00:00.000Z"
+    }
+  ]
+}

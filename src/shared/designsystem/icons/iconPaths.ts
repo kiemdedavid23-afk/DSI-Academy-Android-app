@@ -119,6 +119,18 @@ export const iconShapes = {
     {type: 'path', d: 'M10 4.5H6.5a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2H10'},
     {type: 'path', d: 'M15 8l4 4-4 4M19 12H9.5'},
   ],
+  /** Copier — Icons CopyIcon (site) */
+  CopyIcon: [
+    {type: 'path', d: 'M8 8V6.5A1.5 1.5 0 0 1 9.5 5h8A1.5 1.5 0 0 1 19 6.5v8a1.5 1.5 0 0 1-1.5 1.5H16'},
+    {type: 'path', d: 'M14.5 9H6.5A1.5 1.5 0 0 0 5 10.5v8A1.5 1.5 0 0 0 6.5 20h8a1.5 1.5 0 0 0 1.5-1.5v-8A1.5 1.5 0 0 0 14.5 9z'},
+  ],
+  /** Partager — Icons ShareIcon (site) */
+  ShareIcon: [
+    {type: 'circle', cx: 18, cy: 5, r: 2.5},
+    {type: 'circle', cx: 6, cy: 12, r: 2.5},
+    {type: 'circle', cx: 18, cy: 19, r: 2.5},
+    {type: 'path', d: 'M8.2 13.3l7.5 4.3M15.7 6.4l-7.5 4.3'},
+  ],
 } as const satisfies Record<string, readonly IconShape[]>;
 
 export type IconName = keyof typeof iconShapes;

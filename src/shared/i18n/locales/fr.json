@@ -519,7 +519,8 @@
     "statPage": "Page",
     "pageOf": "{{page}} / {{totalPages}}",
     "listTitle": "Transactions",
-    "paginationLabel": "Pagination des paiements"
+    "paginationLabel": "Pagination des paiements",
+    "accountNotFound": "Compte introuvable."
   },
   "referral": {
     "title": "Programme de Parrainage",
@@ -563,7 +564,8 @@
     "typeLevel2": "Parrainage niveau 2",
     "emptyHistory": "Aucun filleul enregistré pour le moment. Partagez votre lien pour commencer à gagner des DSI.",
     "historyMore": "Des opérations plus anciennes existent : seules les plus récentes sont affichées ici.",
-    "errorLoad": "Impossible de récupérer vos données de parrainage."
+    "errorLoad": "Impossible de récupérer vos données de parrainage.",
+    "accountNotFound": "Compte introuvable."
   },
   "accueil": {
     "eyebrow": "Plateforme numérique DSI Academy",

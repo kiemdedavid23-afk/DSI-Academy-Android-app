@@ -1,0 +1,41 @@
+{
+  "paiements": [
+    {
+      "idTransaction": "tx_1",
+      "referenceExterne": "REF-001",
+      "typePaiement": "renouvellement",
+      "plateforme": "orange",
+      "montant": 1050,
+      "devise": "XOF",
+      "statut": "paid",
+      "dateConfirmation": "2026-11-01T10:00:00.000Z",
+      "dateCreation": "2026-11-01T09:55:00.000Z"
+    },
+    {
+      "idTransaction": "tx_2",
+      "referenceExterne": null,
+      "typePaiement": "inscription",
+      "plateforme": "moov",
+      "montant": "2100",
+      "devise": "XOF",
+      "statut": "pending",
+      "dateConfirmation": null,
+      "dateCreation": "2026-11-10T12:00:00.000Z"
+    },
+    {
+      "idTransaction": "tx_3",
+      "referenceExterne": "REF-003",
+      "typePaiement": "autre",
+      "plateforme": null,
+      "montant": 500,
+      "devise": "XOF",
+      "statut": "refunded",
+      "dateConfirmation": "2026-10-01T00:00:00.000Z",
+      "dateCreation": "2026-10-01T00:00:00.000Z"
+    }
+  ],
+  "page": 1,
+  "limit": 20,
+  "total": 3,
+  "totalPages": 1
+}

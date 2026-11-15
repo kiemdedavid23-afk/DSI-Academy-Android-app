@@ -8,6 +8,8 @@ import {useTranslation} from '@shared/i18n';
 import {PlaceholderScreen} from '../PlaceholderScreen';
 import {MemberHomeScreen} from '@features/member-space/rooms/home/screens/MemberHomeScreen';
 import {MemberSubscriptionScreen} from '@features/member-space/rooms/subscription/screens/MemberSubscriptionScreen';
+import {MemberPaymentHistoryScreen} from '@features/member-space/rooms/payments/screens/MemberPaymentHistoryScreen';
+import {MemberReferralScreen} from '@features/member-space/rooms/referral/screens/MemberReferralScreen';
 import {MemberSpaceShell} from '@features/member-space/shell/components/MemberSpaceShell';
 
 export type MemberSpaceStackParamList = {
@@ -70,19 +72,19 @@ export function MemberSpaceStack() {
       />
       <Stack.Screen
         name="MemberPayments"
-        options={{headerShown: true, title: t('rooms.payments')}}
+        options={{headerShown: false}}
         children={() => (
           <MemberSpaceShell>
-            <PlaceholderScreen titleKey="rooms.payments" testID="screen-payments" />
+            <MemberPaymentHistoryScreen />
           </MemberSpaceShell>
         )}
       />
       <Stack.Screen
         name="MemberReferral"
-        options={{headerShown: true, title: t('rooms.referral')}}
+        options={{headerShown: false}}
         children={() => (
           <MemberSpaceShell>
-            <PlaceholderScreen titleKey="rooms.referral" testID="screen-referral" />
+            <MemberReferralScreen />
           </MemberSpaceShell>
         )}
       />

@@ -519,7 +519,8 @@
     "statPage": "Page",
     "pageOf": "{{page}} / {{totalPages}}",
     "listTitle": "Transactions",
-    "paginationLabel": "Payments pagination"
+    "paginationLabel": "Payments pagination",
+    "accountNotFound": "Account not found."
   },
   "referral": {
     "title": "Referral Program",
@@ -563,7 +564,8 @@
     "typeLevel2": "Level 2 referral",
     "emptyHistory": "No referral registered yet. Share your link to start earning DSI.",
     "historyMore": "Older operations exist: only the most recent ones are shown here.",
-    "errorLoad": "Unable to retrieve your referral data."
+    "errorLoad": "Unable to retrieve your referral data.",
+    "accountNotFound": "Account not found."
   },
   "accueil": {
     "eyebrow": "DSI Academy digital platform",
