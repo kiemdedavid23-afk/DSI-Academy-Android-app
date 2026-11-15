@@ -632,13 +632,13 @@ export function MemberHomeScreen() {
                         style={{
                           fontWeight: '700',
                           color:
-                            w.statut === 'traite' || w.status === 'processed'
+                            w.statut === 'payee'
                               ? colors.success
                               : colors.textPrimary,
                           fontSize: 13.6,
                         }}>
                         {w.montant ?? w.amount ?? ''}{' '}
-                        {w.statut === 'traite' || w.status === 'processed'
+                        {w.statut === 'payee'
                           ? '✓'
                           : ''}
                       </Text>

@@ -42,7 +42,13 @@ export type MemberSubscription = {
   renouvellements: MemberRenewalItem[];
 };
 
-export type WithdrawalStatus = 'en_attente' | 'traite' | string;
+export type WithdrawalStatus =
+  | 'demande'
+  | 'validee'
+  | 'envoyee'
+  | 'payee'
+  | 'rejetee'
+  | string;
 
 export type MemberWithdrawal = {
   idRetrait: string;

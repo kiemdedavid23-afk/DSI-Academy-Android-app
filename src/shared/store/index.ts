@@ -22,3 +22,5 @@ export {connectivityStore} from './connectivityStore';
 export type {ConnectivityStatus} from './connectivityStore';
 
 export {referralStore, buildReferralInviteLink, getReferralInviteLinkFromStore} from './referralStore';
+
+export {withdrawalsStore} from './withdrawalsStore';

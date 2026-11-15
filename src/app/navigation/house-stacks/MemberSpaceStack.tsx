@@ -10,6 +10,8 @@ import {MemberHomeScreen} from '@features/member-space/rooms/home/screens/Member
 import {MemberSubscriptionScreen} from '@features/member-space/rooms/subscription/screens/MemberSubscriptionScreen';
 import {MemberPaymentHistoryScreen} from '@features/member-space/rooms/payments/screens/MemberPaymentHistoryScreen';
 import {MemberReferralScreen} from '@features/member-space/rooms/referral/screens/MemberReferralScreen';
+import {MemberWithdrawalsScreen} from '@features/member-space/rooms/withdrawals/screens/MemberWithdrawalsScreen';
+import {MemberDsiHoldingsScreen} from '@features/member-space/rooms/dsi-holdings/screens/MemberDsiHoldingsScreen';
 import {MemberSpaceShell} from '@features/member-space/shell/components/MemberSpaceShell';
 
 export type MemberSpaceStackParamList = {
@@ -54,19 +56,19 @@ export function MemberSpaceStack() {
       />
       <Stack.Screen
         name="MemberDsiHoldings"
-        options={{headerShown: true, title: t('rooms.dsiHoldings')}}
+        options={{headerShown: false}}
         children={() => (
           <MemberSpaceShell>
-            <PlaceholderScreen titleKey="rooms.dsiHoldings" testID="screen-dsi" />
+            <MemberDsiHoldingsScreen />
           </MemberSpaceShell>
         )}
       />
       <Stack.Screen
         name="MemberWithdrawals"
-        options={{headerShown: true, title: t('rooms.withdrawals')}}
+        options={{headerShown: false}}
         children={() => (
           <MemberSpaceShell>
-            <PlaceholderScreen titleKey="rooms.withdrawals" testID="screen-withdrawals" />
+            <MemberWithdrawalsScreen />
           </MemberSpaceShell>
         )}
       />

@@ -278,8 +278,11 @@
       "approved": "Approved",
       "rejected": "Rejected",
       "paid": "Paid",
-      "en_attente": "Pending",
-      "traite": "Processed"
+      "demande": "Received",
+      "validee": "Approved",
+      "envoyee": "Sent",
+      "payee": "Paid",
+      "rejetee": "Rejected"
     }
   },
   "connexion": {
@@ -416,25 +419,26 @@
     "historySoon": "This feature will be available soon.",
     "gift": {
       "eyebrow": "REWARD CODE",
-      "title": "You received a gift",
+      "title": "Gift code",
       "intro": "Enter the code you were given to claim your reward.",
-      "label": "Your code",
+      "label": "Enter your code",
       "placeholder": "Enter your code",
-      "submit": "Validate my code",
+      "submit": "Redeem code",
       "submitting": "Checking…",
       "close": "Close",
       "note": "The code is verified by the Academy.",
-      "successTitle": "Gift claimed",
-      "successAmount": "{{amount}} DSI have been added to your balance.",
-      "successDefault": "Your reward has been recorded.",
+      "successTitle": "Code accepted",
+      "successAmount": "+{{amount}} DSI credited.",
+      "successDefault": "Your DSI were credited.",
       "done": "Done",
       "errors": {
-        "empty": "Enter your code to continue.",
+        "empty": "Enter a code.",
         "invalid": "This code is invalid or has expired.",
         "session": "Your session has expired. Please log in again.",
-        "unavailable": "Unable to verify this code at the moment.",
-        "alreadyUsed": "You have already used this code."
-      }
+        "unavailable": "Service unavailable. Try again later.",
+        "alreadyUsed": "This code has already been used."
+      },
+      "tooManyAttempts": "Too many attempts. Try again in a few minutes."
     }
   },
   "subscription": {
@@ -680,7 +684,11 @@
     "successDefault": "Withdrawal request recorded.",
     "errors": {
       "incomplete": "Please fill in the payment method, the amount and the payment number.",
-      "unexpected": "Unexpected response from the payment service."
+      "unexpected": "Unexpected response from the payment service.",
+      "required": "Please fill in all fields.",
+      "unavailable": "Service unavailable. Try again later.",
+      "generic": "Request failed. Please try again.",
+      "refused": "Request refused."
     },
     "field": {
       "card": {
@@ -702,7 +710,8 @@
       "default": {
         "label": "Payment number / identifier",
         "placeholder": "Select a payment method first"
-      }
+      },
+      "numero": "Payment number"
     },
     "colId": "Withdrawal ID",
     "colRequested": "DSI requested",
@@ -719,7 +728,7 @@
       "rejetee": "Rejected"
     },
     "detailTitle": "Withdrawal #{{id}} details",
-    "rejectedMessage": "This withdrawal request was rejected.",
+    "rejectedMessage": "This request was rejected. DSI were returned to your balance.",
     "step": {
       "demande": "Request created",
       "validee": "Approval",
@@ -728,7 +737,15 @@
     },
     "rulesTitle": "Rules applied",
     "journalTitle": "Event log",
-    "journalEmpty": "No events recorded yet."
+    "journalEmpty": "No events recorded yet.",
+    "infoWindow": "Withdrawals are processed every day between {{start}}:00 and {{end}}:00 (Burkina / UTC time).",
+    "infoOncePerDay": "Only one withdrawal request per day.",
+    "infoFees": "Fees: {{fixed}} FCFA + {{rate}}% of the amount, deducted from the total.",
+    "uncertainResult": "We do not know if your request was recorded. Check your history.",
+    "amountTooLow": "The amount is too low to cover withdrawal fees.",
+    "estimateBrut": "Gross (estimate)",
+    "estimateFees": "Fees (estimate)",
+    "estimateNet": "Net received (estimate)"
   },
   "inscription": {
     "back": "Back",

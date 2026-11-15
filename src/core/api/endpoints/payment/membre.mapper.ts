@@ -189,7 +189,7 @@ function mapOneWithdrawal(raw: unknown): MemberWithdrawal | null {
     contributionStabiliteDsi: asNumber(r.contributionStabiliteDsi, 0),
     montantDsiNet: asNumber(r.montantDsiNet, 0),
     montantFcfa: asNumber(r.montantFcfa, 0),
-    statut: asString(r.statut) ?? 'en_attente',
+    statut: asString(r.statut) ?? 'demande',
     dateDemande: asNullableString(r.dateDemande),
     dateTraitement: asNullableString(r.dateTraitement),
     moyenPaiement: asNullableString(r.moyenPaiement),

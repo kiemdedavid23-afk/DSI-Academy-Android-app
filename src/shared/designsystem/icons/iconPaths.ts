@@ -131,6 +131,24 @@ export const iconShapes = {
     {type: 'circle', cx: 18, cy: 19, r: 2.5},
     {type: 'path', d: 'M8.2 13.3l7.5 4.3M15.7 6.4l-7.5 4.3'},
   ],
+  CloseIcon: [
+    {type: 'path', d: 'M6 6l12 12M18 6L6 18'},
+  ],
+  GiftIcon: [
+    {type: 'path', d: 'M12 8v13M5 12h14'},
+    {type: 'path', d: 'M5 12v9h14v-9'},
+    {type: 'path', d: 'M12 8c-2-4-6-3-6 0 0 2 3 3 6 3'},
+    {type: 'path', d: 'M12 8c2-4 6-3 6 0 0 2-3 3-6 3'},
+  ],
+  BagIcon: [
+    {type: 'path', d: 'M6 9h12l-1 11H7L6 9z'},
+    {type: 'path', d: 'M9 9V7a3 3 0 0 1 6 0v2'},
+  ],
+  StoreIcon: [
+    {type: 'path', d: 'M3 10l2-5h14l2 5'},
+    {type: 'path', d: 'M4 10v9h16v-9'},
+    {type: 'path', d: 'M10 19v-5h4v5'},
+  ],
 } as const satisfies Record<string, readonly IconShape[]>;
 
 export type IconName = keyof typeof iconShapes;

@@ -1,21 +1,17 @@
 /**
  * Tableau de bord accueil : solde + retraits (best-effort).
  * Profil / abonnement via stores transverses shared.
+ * Retraits : withdrawalsStore partagé (L3c).
  */
 
-import {
-  fetchMemberBalance,
-  fetchMemberWithdrawals,
-} from '@core/api/endpoints/payment/membre.api';
-import type {
-  MemberBalance,
-  MemberWithdrawalsPage,
-} from '@core/api/endpoints/payment/membre.types';
+import {fetchMemberBalance} from '@core/api/endpoints/payment/membre.api';
+import type {MemberBalance} from '@core/api/endpoints/payment/membre.types';
 import {
   createResourceStore,
   memberProfileStore,
   memberSubscriptionStore,
   storeRegistry,
+  withdrawalsStore,
 } from '@shared/store';
 
 const TTL_MS = 60_000;
@@ -28,32 +24,23 @@ async function loadBalance(): Promise<MemberBalance> {
   return result.data;
 }
 
-async function loadWithdrawals(): Promise<MemberWithdrawalsPage> {
-  const result = await fetchMemberWithdrawals();
-  if (result.kind !== 'success') {
-    throw new Error(result.message ?? result.errorKind);
-  }
-  return result.data;
-}
-
 export const memberBalanceStore = createResourceStore<MemberBalance>({
   ttlMs: TTL_MS,
   fetcher: loadBalance,
 });
 
-export const memberWithdrawalsStore = createResourceStore<MemberWithdrawalsPage>({
-  ttlMs: TTL_MS,
-  fetcher: loadWithdrawals,
-});
+/** Alias stable pour l'accueil (même instance que shared withdrawalsStore). */
+export const memberWithdrawalsStore = withdrawalsStore;
 
 storeRegistry.register(memberBalanceStore);
-storeRegistry.register(memberWithdrawalsStore);
 
-export async function loadHomeDashboard(options?: {force?: boolean}): Promise<void> {
+export async function loadHomeDashboard(options?: {
+  force?: boolean;
+}): Promise<void> {
   await Promise.all([
     memberProfileStore.load(options),
     memberSubscriptionStore.load(options),
     memberBalanceStore.load(options),
-    memberWithdrawalsStore.load(options),
+    withdrawalsStore.load(options),
   ]);
 }

@@ -278,8 +278,11 @@
       "approved": "Approuvé",
       "rejected": "Rejeté",
       "paid": "Payé",
-      "en_attente": "En attente",
-      "traite": "Traité"
+      "demande": "Demande reçue",
+      "validee": "Validée",
+      "envoyee": "Envoyée",
+      "payee": "Payée",
+      "rejetee": "Rejetée"
     }
   },
   "connexion": {
@@ -416,25 +419,26 @@
     "historySoon": "Cette fonctionnalité sera bientôt disponible.",
     "gift": {
       "eyebrow": "CODE DE RÉCOMPENSE",
-      "title": "Vous avez reçu un cadeau",
+      "title": "Code cadeau",
       "intro": "Entrez le code qui vous a été remis pour récupérer votre récompense.",
-      "label": "Votre code",
+      "label": "Saisissez votre code",
       "placeholder": "Saisissez votre code",
-      "submit": "Valider mon code",
+      "submit": "Valider le code",
       "submitting": "Vérification…",
       "close": "Fermer",
       "note": "La validité du code est vérifiée par l'Académie.",
-      "successTitle": "Cadeau récupéré",
-      "successAmount": "{{amount}} DSI ont été ajoutés à votre solde.",
-      "successDefault": "Votre récompense a bien été prise en compte.",
+      "successTitle": "Code accepté",
+      "successAmount": "+{{amount}} DSI crédités.",
+      "successDefault": "Vos DSI ont été crédités.",
       "done": "Terminer",
       "errors": {
-        "empty": "Saisissez votre code pour continuer.",
+        "empty": "Saisissez un code.",
         "invalid": "Ce code est invalide ou a expiré.",
         "session": "Votre session a expiré. Veuillez vous reconnecter.",
-        "unavailable": "Impossible de vérifier ce code pour le moment.",
-        "alreadyUsed": "Vous avez déjà utilisé ce code."
-      }
+        "unavailable": "Service indisponible. Réessayez plus tard.",
+        "alreadyUsed": "Ce code a déjà été utilisé."
+      },
+      "tooManyAttempts": "Trop d’essais. Réessayez dans quelques minutes."
     }
   },
   "subscription": {
@@ -680,7 +684,11 @@
     "successDefault": "Demande de retrait enregistrée.",
     "errors": {
       "incomplete": "Merci de compléter le moyen de paiement, le montant et le numéro de paiement.",
-      "unexpected": "Réponse inattendue du service de paiement."
+      "unexpected": "Réponse inattendue du service de paiement.",
+      "required": "Veuillez remplir tous les champs.",
+      "unavailable": "Service indisponible. Réessayez plus tard.",
+      "generic": "La demande a échoué. Réessayez.",
+      "refused": "Demande refusée."
     },
     "field": {
       "card": {
@@ -702,7 +710,8 @@
       "default": {
         "label": "Numéro de paiement / identifiant",
         "placeholder": "Sélectionnez d'abord un moyen de paiement"
-      }
+      },
+      "numero": "Numéro de paiement"
     },
     "colId": "ID retrait",
     "colRequested": "DSI demandé",
@@ -719,7 +728,7 @@
       "rejetee": "Rejetée"
     },
     "detailTitle": "Détail du retrait #{{id}}",
-    "rejectedMessage": "Cette demande de retrait a été rejetée.",
+    "rejectedMessage": "Cette demande a été rejetée. Les DSI ont été restitués.",
     "step": {
       "demande": "Demande créée",
       "validee": "Validation",
@@ -728,7 +737,15 @@
     },
     "rulesTitle": "Règles appliquées",
     "journalTitle": "Journal des évènements",
-    "journalEmpty": "Aucun évènement enregistré pour le moment."
+    "journalEmpty": "Aucun évènement enregistré pour le moment.",
+    "infoWindow": "Les retraits sont traités tous les jours entre {{start}} h et {{end}} h (heure du Burkina / UTC).",
+    "infoOncePerDay": "Une seule demande de retrait par jour.",
+    "infoFees": "Frais : {{fixed}} FCFA + {{rate}} % du montant, déduits du total.",
+    "uncertainResult": "Nous ne savons pas si votre demande a été enregistrée. Vérifiez votre historique.",
+    "amountTooLow": "Le montant est trop faible pour couvrir les frais de retrait.",
+    "estimateBrut": "Brut (estimation)",
+    "estimateFees": "Frais (estimation)",
+    "estimateNet": "Net reçu (estimation)"
   },
   "inscription": {
     "back": "Retour",
