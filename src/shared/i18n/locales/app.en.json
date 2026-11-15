@@ -22,6 +22,31 @@
       "offlineMessage": "Showing the last saved data.",
       "onlineTitle": "Back online",
       "onlineMessage": "Refreshing your data…"
+    },
+    "catalogue": {
+      "searchLabel": "Search",
+      "allCategories": "All",
+      "categoriesTitle": "Categories",
+      "resultsTitle": "Results",
+      "noResults": "No results for this search.",
+      "libraryEmpty": "The library is empty for now.",
+      "loadMore": "Load more",
+      "errorNetwork": "Can't connect. Check your network and try again.",
+      "errorServer": "The service is temporarily unavailable. Try again in a moment.",
+      "errorGeneric": "Unable to load this content right now.",
+      "detailTitle": "Details",
+      "about": "About",
+      "author": "Author",
+      "category": "Category",
+      "level": "Level",
+      "language": "Language",
+      "duration": "Duration",
+      "readerSoon": "Reader coming soon",
+      "clearSearch": "Clear search",
+      "openItem": "Open {{title}}",
+      "openHouse": "Open {{name}}",
+      "filterCategory": "Filter by category {{name}}",
+      "comingSoonHouse": "{{name}}: coming soon"
     }
   }
 }

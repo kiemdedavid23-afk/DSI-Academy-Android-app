@@ -159,6 +159,25 @@ export const iconShapes = {
     {type: 'path', d: 'M9.1 9a3 3 0 1 1 4.4 2.7c-.7.4-1.5 1-1.5 2.3'},
     {type: 'path', d: 'M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18z'},
   ],
+  BookIcon: [
+    {type: 'path', d: 'M4.5 5.5c0-1.1.9-2 2-2H19v15H6.5a2 2 0 0 0-2 2v-15z'},
+    {type: 'path', d: 'M8.5 7.5h6'},
+  ],
+  VideoIcon: [
+    {type: 'rect', x: 3, y: 6, width: 13, height: 12, rx: 2.5},
+    {type: 'path', d: 'M16 10.5l5-3v9l-5-3'},
+  ],
+  GraduationIcon: [
+    {type: 'path', d: 'M2.5 9.5L12 5l9.5 4.5L12 14 2.5 9.5z'},
+    {type: 'path', d: 'M6.5 11.8V16c0 1.2 2.5 2.5 5.5 2.5s5.5-1.3 5.5-2.5v-4.2'},
+    {type: 'path', d: 'M21.5 9.5v5'},
+  ],
+  HeadphonesIcon: [
+    {type: 'path', d: 'M4.5 14v-2a7.5 7.5 0 0 1 15 0v2'},
+    {type: 'rect', x: 3.5, y: 14, width: 4, height: 6, rx: 1.5},
+    {type: 'rect', x: 16.5, y: 14, width: 4, height: 6, rx: 1.5},
+  ],
+  PlayIcon: [{type: 'path', d: 'M8 5.5v13l10.5-6.5z'}],
 } as const satisfies Record<string, readonly IconShape[]>;
 
 export type IconName = keyof typeof iconShapes;
