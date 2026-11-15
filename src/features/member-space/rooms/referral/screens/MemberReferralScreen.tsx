@@ -25,7 +25,7 @@ import {
 import {referralLevel} from '@core/utils/referralLevel';
 import {dsiToFcfa} from '@core/utils/dsi';
 import {usePreferences} from '@shared/preferences';
-import {getDisplayPricing} from '@shared/store';
+import {bannerStore, getDisplayPricing} from '@shared/store';
 
 if (
   Platform.OS === 'android' &&
@@ -64,6 +64,12 @@ export function MemberReferralScreen() {
   useEffect(() => {
     void referralStore.load();
   }, []);
+
+  useEffect(() => {
+    if (copyError) {
+      bannerStore.notify({tone: 'error', type: 'referral-copy', message: copyError});
+    }
+  }, [copyError]);
 
   useEffect(() => {
     if (!copied) return;
@@ -272,11 +278,6 @@ export function MemberReferralScreen() {
             </Text>
           </Pressable>
         </View>
-        {copyError ? (
-          <Text style={{color: colors.error, fontSize: 13}} accessibilityLiveRegion="polite">
-            {copyError}
-          </Text>
-        ) : null}
       </View>
 
       {/* Progression */}
