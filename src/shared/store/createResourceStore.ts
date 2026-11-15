@@ -68,6 +68,30 @@ export function createResourceStore<T>(
   // (déconnexion) est ignorée et ne remet jamais les données de l'ancienne session.
   let generation = 0;
 
+  // Instantané public mis en cache : useSyncExternalStore exige que getState()
+  // renvoie la MÊME référence tant que rien n'a changé. Un objet neuf à chaque
+  // appel provoque « Maximum update depth exceeded ».
+  let lastInternal: InternalState<T> | null = null;
+  let lastPublic: ResourceState<T> | null = null;
+  const snapshot = (internal: InternalState<T>): ResourceState<T> => {
+    if (internal === lastInternal && lastPublic) {
+      return lastPublic;
+    }
+    lastInternal = internal;
+    const next = toPublic(internal);
+    if (
+      lastPublic &&
+      lastPublic.data === next.data &&
+      lastPublic.status === next.status &&
+      lastPublic.error === next.error &&
+      lastPublic.updatedAt === next.updatedAt
+    ) {
+      return lastPublic;
+    }
+    lastPublic = next;
+    return next;
+  };
+
   const api = createStore<InternalState<T>>((set, get) => {
     const isFresh = (): boolean => {
       const {updatedAt, data} = get();
@@ -157,9 +181,9 @@ export function createResourceStore<T>(
   });
 
   const store: ResourceStore<T> = {
-    getState: () => toPublic(api.getState()),
+    getState: () => snapshot(api.getState()),
     subscribe: listener =>
-      api.subscribe((state, prev) => listener(toPublic(state), toPublic(prev))),
+      api.subscribe((state, prev) => listener(snapshot(state), toPublic(prev))),
     load: opts => api.getState().load(opts),
     invalidate: () => api.getState().invalidate(),
     reset: () => api.getState().reset(),
