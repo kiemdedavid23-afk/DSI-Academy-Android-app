@@ -31,8 +31,16 @@ jobs:
           fi
           npm ci --no-audit --no-fund
 
-      - name: Generate build config (fixture)
-        run: node scripts/generate-build-config.js --fixture
+      - name: Generate build config (secret or fixture)
+        env:
+          DSI_REGISTRY_JSON: ${{ secrets.DSI_REGISTRY_JSON }}
+        run: |
+          if [ -n "$DSI_REGISTRY_JSON" ]; then
+            node scripts/generate-build-config.js
+          else
+            echo "::warning::Secret DSI_REGISTRY_JSON absent : APK en mode fixture, aucun Worker joignable."
+            node scripts/generate-build-config.js --fixture
+          fi
 
       - name: Copy fonts
         run: node scripts/copy-fonts.js
