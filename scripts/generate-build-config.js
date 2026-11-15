@@ -21,6 +21,7 @@ const SERVICE_IDS = [
   'marketplace',
   'community',
   'admin',
+  'notifications',
 ];
 
 const OUTPUT_PATH = path.join(
@@ -112,6 +113,7 @@ function buildFixtureConfig() {
       marketplace: 'https://marketplace.example.invalid',
       community: 'https://community.example.invalid',
       admin: 'https://admin.example.invalid',
+      notifications: 'https://notifications.example.invalid',
     },
     web: 'https://web.example.invalid',
   };

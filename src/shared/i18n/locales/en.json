@@ -134,7 +134,27 @@
       "aboutTitle": "About",
       "aboutName": "DSI Academy",
       "aboutValue": "DSI management and training platform"
-    }
+    },
+    "accountDesc": "Identity and subscription",
+    "preferencesDesc": "Language, theme, motion",
+    "securityDesc": "Session and account",
+    "helpDesc": "Links and about",
+    "manageSubscription": "Manage subscription",
+    "contactSupport": "Contact support",
+    "deleteAccount": "Delete my account",
+    "language": "LANGUAGE",
+    "theme": "THEME",
+    "themeLight": "Light",
+    "themeDark": "Dark",
+    "themeSystem": "System",
+    "reduceMotion": "Reduce motion",
+    "sessionActive": "Session active",
+    "sessionInactive": "Session inactive",
+    "about": "About",
+    "checkUpdate": "Check for updates",
+    "upToDate": "You have the latest version",
+    "updateAvailable": "Version {{version}} available",
+    "updateError": "Could not check for updates"
   },
   "drawer": {
     "subtitle": "Your member access",
@@ -344,6 +364,16 @@
       "info": "Information",
       "urgent": "Alert",
       "default": "General"
+    },
+    "loadMore": "Load more",
+    "networkError": "Network unavailable",
+    "unavailable": "Notifications unavailable",
+    "badge": {
+      "announce": "Announcement",
+      "activity": "Activity",
+      "maintenance": "Maintenance",
+      "urgent": "Urgent",
+      "default": "Info"
     }
   },
   "profile": {
@@ -373,12 +403,18 @@
     "subtitle": "Your personal information and your member card.",
     "copy": "Copy",
     "copied": "Copied",
-    "copyError": "Automatic copy failed.",
+    "copyError": "Could not copy",
     "avatarAlt": "Profile photo of {{name}}",
     "shortcutsTitle": "Shortcuts",
     "goReferral": "My referral",
     "goSubscription": "My subscription",
-    "goSettings": "Settings"
+    "goSettings": "Settings",
+    "status": {
+      "active": "Active",
+      "suspended": "Suspended",
+      "pending_payment": "Payment pending",
+      "expired": "Expired"
+    }
   },
   "dsi": {
     "title": "My DSI",
@@ -1250,7 +1286,9 @@
     "notifHousesTitle": "DSI Houses",
     "notifHousesBody": "Library, Courses, Videos and other houses are available from navigation.",
     "notificationsLocalHint": "Local inbox (notifications Worker unavailable or empty).",
-    "markAllRead": "Mark all as read"
+    "markAllRead": "Mark all as read",
+    "active": "Active",
+    "inactive": "Inactive"
   },
   "content": {
     "taglines": {

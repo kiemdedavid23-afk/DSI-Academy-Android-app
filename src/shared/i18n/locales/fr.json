@@ -134,7 +134,27 @@
       "aboutTitle": "À propos",
       "aboutName": "DSI Academy",
       "aboutValue": "Plateforme de gestion et formation DSI"
-    }
+    },
+    "accountDesc": "Identité et abonnement",
+    "preferencesDesc": "Langue, thème, animations",
+    "securityDesc": "Session et compte",
+    "helpDesc": "Liens et à propos",
+    "manageSubscription": "Gérer mon abonnement",
+    "contactSupport": "Contacter le support",
+    "deleteAccount": "Supprimer mon compte",
+    "language": "LANGUE",
+    "theme": "THÈME",
+    "themeLight": "Clair",
+    "themeDark": "Sombre",
+    "themeSystem": "Système",
+    "reduceMotion": "Réduire les animations",
+    "sessionActive": "Session active",
+    "sessionInactive": "Session inactive",
+    "about": "À propos",
+    "checkUpdate": "Vérifier les mises à jour",
+    "upToDate": "Vous avez la dernière version",
+    "updateAvailable": "Version {{version}} disponible",
+    "updateError": "Impossible de vérifier"
   },
   "drawer": {
     "subtitle": "Votre accès membre",
@@ -344,6 +364,16 @@
       "info": "Information",
       "urgent": "Alerte",
       "default": "Général"
+    },
+    "loadMore": "Charger plus",
+    "networkError": "Réseau indisponible",
+    "unavailable": "Notifications indisponibles",
+    "badge": {
+      "announce": "Annonce",
+      "activity": "Activité",
+      "maintenance": "Maintenance",
+      "urgent": "Urgent",
+      "default": "Info"
     }
   },
   "profile": {
@@ -373,12 +403,18 @@
     "subtitle": "Vos informations personnelles et votre carte membre.",
     "copy": "Copier",
     "copied": "Copié",
-    "copyError": "Impossible de copier automatiquement.",
+    "copyError": "Impossible de copier",
     "avatarAlt": "Photo de profil de {{name}}",
     "shortcutsTitle": "Raccourcis",
     "goReferral": "Mon parrainage",
     "goSubscription": "Mon abonnement",
-    "goSettings": "Paramètres"
+    "goSettings": "Paramètres",
+    "status": {
+      "active": "Actif",
+      "suspended": "Suspendu",
+      "pending_payment": "Paiement en attente",
+      "expired": "Expiré"
+    }
   },
   "dsi": {
     "title": "Mes DSI",
@@ -1250,7 +1286,9 @@
     "notifHousesTitle": "Maisons DSI",
     "notifHousesBody": "Bibliothèque, Formations, Vidéos et les autres maisons sont accessibles depuis la navigation.",
     "notificationsLocalHint": "Inbox locale (Worker notifications indisponible ou vide).",
-    "markAllRead": "Tout marquer comme lu"
+    "markAllRead": "Tout marquer comme lu",
+    "active": "Actif",
+    "inactive": "Inactif"
   },
   "content": {
     "taglines": {

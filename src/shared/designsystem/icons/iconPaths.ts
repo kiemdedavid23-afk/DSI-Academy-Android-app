@@ -149,6 +149,14 @@ export const iconShapes = {
     {type: 'path', d: 'M4 10v9h16v-9'},
     {type: 'path', d: 'M10 19v-5h4v5'},
   ],
+  ShieldIcon: [
+    {type: 'path', d: 'M12 3l8 3v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6l8-3z'},
+  ],
+  HelpIcon: [
+    {type: 'path', d: 'M12 18h.01'},
+    {type: 'path', d: 'M9.1 9a3 3 0 1 1 4.4 2.7c-.7.4-1.5 1-1.5 2.3'},
+    {type: 'path', d: 'M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18z'},
+  ],
 } as const satisfies Record<string, readonly IconShape[]>;
 
 export type IconName = keyof typeof iconShapes;

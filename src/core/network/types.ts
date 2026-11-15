@@ -64,4 +64,5 @@ export type ServiceId =
   | 'shop'
   | 'marketplace'
   | 'community'
-  | 'admin';
+  | 'admin'
+  | 'notifications';

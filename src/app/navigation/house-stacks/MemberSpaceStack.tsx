@@ -12,6 +12,9 @@ import {MemberPaymentHistoryScreen} from '@features/member-space/rooms/payments/
 import {MemberReferralScreen} from '@features/member-space/rooms/referral/screens/MemberReferralScreen';
 import {MemberWithdrawalsScreen} from '@features/member-space/rooms/withdrawals/screens/MemberWithdrawalsScreen';
 import {MemberDsiHoldingsScreen} from '@features/member-space/rooms/dsi-holdings/screens/MemberDsiHoldingsScreen';
+import {MemberProfileScreen} from '@features/member-space/rooms/profile/screens/MemberProfileScreen';
+import {MemberNotificationsScreen} from '@features/member-space/rooms/notifications/screens/MemberNotificationsScreen';
+import {MemberSettingsScreen} from '@features/member-space/rooms/settings/screens/MemberSettingsScreen';
 import {MemberSpaceShell} from '@features/member-space/shell/components/MemberSpaceShell';
 
 export type MemberSpaceStackParamList = {
@@ -95,7 +98,7 @@ export function MemberSpaceStack() {
         options={{headerShown: true, title: t('rooms.notifications')}}
         children={() => (
           <MemberSpaceShell>
-            <PlaceholderScreen titleKey="rooms.notifications" testID="screen-notifications" />
+            <MemberNotificationsScreen />
           </MemberSpaceShell>
         )}
       />
@@ -104,7 +107,7 @@ export function MemberSpaceStack() {
         options={{headerShown: true, title: t('rooms.profile')}}
         children={() => (
           <MemberSpaceShell>
-            <PlaceholderScreen titleKey="rooms.profile" testID="screen-profile" />
+            <MemberProfileScreen />
           </MemberSpaceShell>
         )}
       />
@@ -113,7 +116,7 @@ export function MemberSpaceStack() {
         options={{headerShown: true, title: t('rooms.settings')}}
         children={() => (
           <MemberSpaceShell>
-            <PlaceholderScreen titleKey="rooms.settings" testID="screen-settings" />
+            <MemberSettingsScreen />
           </MemberSpaceShell>
         )}
       />

@@ -8,7 +8,8 @@ export type ServiceId =
   | 'shop'
   | 'marketplace'
   | 'community'
-  | 'admin';
+  | 'admin'
+  | 'notifications';
 
 const SERVICE_IDS: ServiceId[] = [
   'payment',
@@ -17,6 +18,7 @@ const SERVICE_IDS: ServiceId[] = [
   'marketplace',
   'community',
   'admin',
+  'notifications',
 ];
 
 type PerServiceConfig = {

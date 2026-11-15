@@ -4,11 +4,11 @@
  */
 
 import React, {useCallback, useEffect, useMemo, useState} from 'react';
-import {View, Image, StyleSheet, useWindowDimensions} from 'react-native';
+import {View, Image, StyleSheet, useWindowDimensions, AppState} from 'react-native';
 import {useNavigation, useNavigationState} from '@react-navigation/native';
 import type {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {useTheme, InAppBanner} from '@shared/designsystem';
-import {connectivityStore} from '@shared/store';
+import {connectivityStore, notificationsStore} from '@shared/store';
 import {loadHomeDashboard} from '../../rooms/home/store/homeDashboardStore';
 import {MemberHeader} from './MemberHeader';
 import {MemberDrawer, type MemberRoomId} from './MemberDrawer';
@@ -60,6 +60,15 @@ function coverFocal(
 }
 
 export function MemberSpaceShell({children}: Props) {
+
+  useEffect(() => {
+    void notificationsStore.refresh();
+    const sub = AppState.addEventListener('change', s => {
+      if (s === 'active') void notificationsStore.refresh();
+    });
+    return () => sub.remove();
+  }, []);
+
   const {colors, isDark} = useTheme();
   const navigation = useNavigation<Nav>();
   const {width: screenW, height: screenH} = useWindowDimensions();

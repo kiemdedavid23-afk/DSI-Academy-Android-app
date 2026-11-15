@@ -12,6 +12,7 @@ const DEFAULT_AUTH: Record<ServiceId, AuthMode> = {
   marketplace: 'none',
   community: 'accessProof',
   admin: 'none',
+  notifications: 'accessProof',
 };
 
 export function getDefaultAuth(service: ServiceId): AuthMode {

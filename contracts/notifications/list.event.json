@@ -1,0 +1,1 @@
+{"success":true,"error":null,"code":null,"data":[{"id":"n2","origin":"event","eventId":"evt_1","source":"worker_paiement","type":"paiement_confirme","title":"Paiement confirmé","body":null,"data":{"amount":5000},"status":"unread","createdAt":"2026-11-15T01:00:00.000Z","readAt":null}]}
