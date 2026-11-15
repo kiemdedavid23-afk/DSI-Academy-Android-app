@@ -44,7 +44,6 @@ export function LoginScreen() {
   const prefill = route.params?.prefillIdentifiant ?? '';
   const [identifiant, setIdentifiant] = useState(prefill);
   const [motDePasse, setMotDePasse] = useState('');
-  const [souvenir, setSouvenir] = useState(false);
   const [idError, setIdError] = useState(false);
   const [mdpError, setMdpError] = useState(false);
   const [sessionInfo, setSessionInfo] = useState<string | null>(null);
@@ -80,11 +79,9 @@ export function LoginScreen() {
       return;
     }
     lastLoginIdentifier.set(idPropre);
-    void loginStore.submit(
-      idPropre,
-      motDePasse,
-      souvenir,
-    );
+    // La session est toujours conservée sur l'appareil (Keystore) ; elle ne
+    // prend fin que si le serveur la refuse ou si elle expire.
+    void loginStore.submit(idPropre, motDePasse, true);
   };
 
   if (state.status === 'pendingPayment') {
@@ -176,33 +173,6 @@ export function LoginScreen() {
 
         <View style={{height: spacing.md}} />
 
-        <Pressable
-          testID="login-remember"
-          onPress={() => setSouvenir(v => !v)}
-          disabled={loading}
-          accessibilityRole="checkbox"
-          accessibilityState={{checked: souvenir}}
-          accessibilityLabel={t('connexion.rememberMe')}
-          style={[
-            styles.rememberRow,
-            {minHeight: touch.min, gap: spacing.sm},
-          ]}>
-          <View
-            style={[
-              styles.checkbox,
-              {
-                borderColor: colors.borderLight,
-                backgroundColor: souvenir
-                  ? colors.bluePrimary
-                  : colors.bgSurface,
-              },
-            ]}
-          />
-          <Text variant="bodySmall">{t('connexion.rememberMe')}</Text>
-        </Pressable>
-
-        <View style={{height: spacing.md}} />
-
         <Button
           label={loading ? t('connexion.submitting') : t('connexion.submit')}
           onPress={onSubmit}
@@ -267,16 +237,6 @@ export function LoginScreen() {
 const styles = StyleSheet.create({
   flex: {flex: 1},
   scroll: {flexGrow: 1},
-  rememberRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  checkbox: {
-    width: 22,
-    height: 22,
-    borderWidth: 1.5,
-    borderRadius: 4,
-  },
   footerRow: {
     flexDirection: 'row',
     flexWrap: 'wrap',
