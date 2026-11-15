@@ -49,6 +49,25 @@ export const favoritesStore = {
       .sort((a, b) => (b.savedAt || 0) - (a.savedAt || 0));
   },
 
+  async has(id: string): Promise<boolean> {
+    const current = await this.list();
+    return current.some(x => x.id === id);
+  },
+
+  /** Ajoute ou retire un favori. Renvoie true si le contenu est maintenant favori. */
+  async toggle(item: Omit<FavoriteItem, 'savedAt'>): Promise<boolean> {
+    const current = await this.list();
+    if (current.some(x => x.id === item.id)) {
+      await storageSet(
+        KEY,
+        current.filter(x => x.id !== item.id),
+      );
+      return false;
+    }
+    await storageSet(KEY, [{...item, savedAt: Date.now()}, ...current]);
+    return true;
+  },
+
   async remove(id: string): Promise<FavoriteItem[]> {
     const current = await this.list();
     const next = current.filter(x => x.id !== id);

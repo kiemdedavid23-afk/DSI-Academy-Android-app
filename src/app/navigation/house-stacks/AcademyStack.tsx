@@ -8,12 +8,14 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {useTranslation} from '@shared/i18n';
 import {AcademyHubScreen} from '@features/academy/screens/AcademyHubScreen';
 import {LibraryDiscoverScreen} from '@features/content/screens/LibraryDiscoverScreen';
+import {TextReaderScreen} from '@features/content/screens/TextReaderScreen';
 import {ContentDetailScreen} from '@features/content/screens/ContentDetailScreen';
 
 export type AcademyStackParamList = {
   AcademyHub: undefined;
   LibraryDiscover: undefined;
   ContentDetail: {id: number};
+  Reader: {id: number; title: string};
 };
 
 const Stack = createNativeStackNavigator<AcademyStackParamList>();
@@ -48,7 +50,19 @@ export function AcademyStack() {
       <Stack.Screen
         name="ContentDetail"
         options={{title: t('app.catalogue.detailTitle')}}>
-        {({route}) => <ContentDetailScreen id={route.params.id} />}
+        {({route, navigation}) => (
+          <ContentDetailScreen
+            id={route.params.id}
+            onRead={(id, title) => navigation.navigate('Reader', {id, title})}
+          />
+        )}
+      </Stack.Screen>
+      <Stack.Screen
+        name="Reader"
+        options={({route}) => ({title: route.params.title})}>
+        {({route}) => (
+          <TextReaderScreen id={route.params.id} title={route.params.title} />
+        )}
       </Stack.Screen>
     </Stack.Navigator>
   );

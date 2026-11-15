@@ -14,6 +14,7 @@ export {notificationsStore, useUnreadNotifications} from './notificationsStore';
 export type {AppNotification} from './notificationsStore';
 export {continueStore} from './continueStore';
 export type {ContinueEntry} from './continueStore';
+export {progressStore} from './progressStore';
 export {favoritesStore} from './favoritesStore';
 export type {FavoriteItem} from './favoritesStore';
 

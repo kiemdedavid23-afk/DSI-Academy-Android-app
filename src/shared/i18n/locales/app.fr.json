@@ -47,6 +47,19 @@
       "openHouse": "Ouvrir {{name}}",
       "filterCategory": "Filtrer par catégorie {{name}}",
       "comingSoonHouse": "{{name}} : bientôt disponible"
+    },
+    "reader": {
+      "read": "Lire",
+      "addFavorite": "Ajouter aux favoris",
+      "removeFavorite": "Retirer des favoris",
+      "smaller": "A−",
+      "larger": "A+",
+      "resumed": "Reprise à {{percent}} %",
+      "startOver": "Recommencer",
+      "tooLarge": "Ce texte est trop volumineux pour être lu ici.",
+      "unsupported": "Ce contenu ne peut pas être lu dans l'app pour le moment.",
+      "formatSoon": "Ce format (PDF, EPUB…) sera disponible dans une prochaine mise à jour.",
+      "rateLimited": "La source limite temporairement les accès. Réessayez dans quelques minutes."
     }
   }
 }

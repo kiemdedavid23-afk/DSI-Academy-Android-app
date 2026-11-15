@@ -3,7 +3,7 @@
  * Le bouton de lecture arrive avec les lecteurs (L4e) : ici il est désactivé.
  */
 
-import React, {useEffect, useSyncExternalStore} from 'react';
+import React, {useEffect, useState, useSyncExternalStore} from 'react';
 import {ScrollView, View} from 'react-native';
 import {contentAuthor, formatDuration, levelKey} from '@core/utils/contentDisplay';
 import {
@@ -14,14 +14,18 @@ import {
   useTheme,
 } from '@shared/designsystem';
 import {useTranslation} from '@shared/i18n';
+import {favoritesStore} from '@shared/store';
 import {ContentCover} from '../components/ContentCover';
 import {contentErrorKey} from '../logic/errorKey';
 import {libraryCategoriesStore} from '../store/categoriesStore';
 import {contentDetailStore} from '../store/detailStore';
 
-export type ContentDetailScreenProps = {id: number};
+export type ContentDetailScreenProps = {
+  id: number;
+  onRead: (id: number, title: string) => void;
+};
 
-export function ContentDetailScreen({id}: ContentDetailScreenProps) {
+export function ContentDetailScreen({id, onRead}: ContentDetailScreenProps) {
   const {t} = useTranslation();
   const {colors, spacing, radii} = useTheme();
   const st = useSyncExternalStore(
@@ -32,6 +36,20 @@ export function ContentDetailScreen({id}: ContentDetailScreenProps) {
     cb => libraryCategoriesStore.subscribe(() => cb()),
     () => libraryCategoriesStore.getState(),
   );
+
+  const [favorite, setFavorite] = useState(false);
+
+  useEffect(() => {
+    let alive = true;
+    void favoritesStore.has(String(id)).then(v => {
+      if (alive) {
+        setFavorite(v);
+      }
+    });
+    return () => {
+      alive = false;
+    };
+  }, [id]);
 
   useEffect(() => {
     void contentDetailStore.load(id);
@@ -120,9 +138,19 @@ export function ContentDetailScreen({id}: ContentDetailScreenProps) {
         </View>
       ) : null}
       <Button
-        label={t('app.catalogue.readerSoon')}
-        disabled
+        label={t('app.reader.read')}
+        onPress={() => onRead(item.id, item.title)}
         testID="detail-open"
+      />
+      <Button
+        label={favorite ? t('app.reader.removeFavorite') : t('app.reader.addFavorite')}
+        variant="secondary"
+        onPress={() =>
+          void favoritesStore
+            .toggle({id: String(item.id), house: 'library', title: item.title, path: ''})
+            .then(setFavorite)
+        }
+        testID="detail-favorite"
       />
     </ScrollView>
   );
