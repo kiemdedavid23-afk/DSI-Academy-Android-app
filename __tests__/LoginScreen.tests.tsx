@@ -43,7 +43,7 @@ describe('LoginScreen', () => {
     expect(tree.root.findByProps({testID: 'login-identifier'})).toBeTruthy();
     expect(tree.root.findByProps({testID: 'login-password'})).toBeTruthy();
     expect(tree.root.findByProps({testID: 'login-submit'})).toBeTruthy();
-    expect(tree.root.findByProps({testID: 'login-remember'})).toBeTruthy();
+    expect(tree.root.findAllByProps({testID: 'login-remember'})).toHaveLength(0);
     expect(
       tree.root.findByProps({testID: 'login-create-account'}),
     ).toBeTruthy();
