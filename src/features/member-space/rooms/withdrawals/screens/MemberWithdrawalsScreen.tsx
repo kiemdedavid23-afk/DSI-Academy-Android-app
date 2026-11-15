@@ -17,6 +17,7 @@ import {
 } from 'react-native';
 import {Text, useTheme, Icon} from '@shared/designsystem';
 import {useTranslation} from '@shared/i18n';
+import {bannerStore} from '@shared/store';
 import {
   withdrawalsStore,
   memberProfileStore,
@@ -94,6 +95,39 @@ export function MemberWithdrawalsScreen() {
     void memberProfileStore.load();
     return () => withdrawalRequestStore.leaveScreen();
   }, []);
+
+  // Messages du Worker : bannière. Seule la saisie incomplète reste sous le formulaire.
+  useEffect(() => {
+    const m = form.errorMessage;
+    if (!m || m === 'withdrawals.errors.required') {
+      return;
+    }
+    bannerStore.notify({
+      tone: 'error',
+      type: 'withdrawal-error',
+      message: m.includes('.') ? t(m) : m,
+    });
+  }, [form.errorMessage, t]);
+
+  useEffect(() => {
+    if (form.uncertain) {
+      bannerStore.notify({
+        tone: 'warning',
+        type: 'withdrawal-uncertain',
+        message: t('withdrawals.uncertainResult'),
+      });
+    }
+  }, [form.uncertain, t]);
+
+  useEffect(() => {
+    if (form.success) {
+      bannerStore.notify({
+        tone: 'success',
+        type: 'withdrawal-success',
+        message: form.success.message || t('withdrawals.successDefault'),
+      });
+    }
+  }, [form.success, t]);
 
   useEffect(() => {
     if (form.pays) {
@@ -380,26 +414,16 @@ export function MemberWithdrawalsScreen() {
               testID="withdraw-numero"
             />
 
-            {form.errorMessage ? (
+            {form.errorMessage === 'withdrawals.errors.required' ? (
               <Text style={{color: colors.error}} accessibilityRole="alert">
-                {form.errorMessage.includes('.')
-                  ? t(form.errorMessage)
-                  : form.errorMessage}
-              </Text>
-            ) : null}
-            {form.uncertain ? (
-              <Text style={{color: colors.warning}} accessibilityRole="alert">
-                {t('withdrawals.uncertainResult')}
+                {t('withdrawals.errors.required')}
               </Text>
             ) : null}
             {form.success ? (
               <View
                 style={{backgroundColor: colors.successBg, padding: 12, borderRadius: radii.md}}
                 accessibilityRole="summary">
-                <Text style={{color: colors.success, fontWeight: '700'}}>
-                  {form.success.message || t('withdrawals.successDefault')}
-                </Text>
-                <Text style={{color: colors.textPrimary, marginTop: 6, fontSize: 13}}>
+                <Text style={{color: colors.textPrimary, fontSize: 13}}>
                   {fmt(form.success.montantDsiDemande, locale)} DSI →{' '}
                   {fmt(form.success.montantFcfaDemande, locale)} FCFA brut, frais{' '}
                   {fmt(form.success.fraisRetraitFcfa, locale)}, net{' '}
