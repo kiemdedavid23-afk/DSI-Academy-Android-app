@@ -67,7 +67,7 @@ export function PdfReaderScreen({id, title}: PdfReaderScreenProps) {
     };
   }, [id, title]);
 
-  const onViewable = useRef(({viewableItems}: {viewableItems: ViewToken[]}) => {
+  const onViewable = useRef(({viewableItems}: {viewableItems: Array<{index?: number | null}>}) => {
     const first = viewableItems[0]?.index;
     if (typeof first === 'number') {
       setCurrent(first + 1);

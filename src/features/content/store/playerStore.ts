@@ -17,7 +17,6 @@ import type {MediaErrorKind} from '@core/media/types';
 import {isAllowedYoutubeNavigation, YOUTUBE_BASE_URL, YOUTUBE_ORIGIN_WHITELIST, youtubeEmbedHtml} from '@core/config/youtube';
 import {continueStore, progressStore, storeRegistry} from '@shared/store';
 import {createSimpleStore} from './simpleStore';
-import type {PdfErrorKind} from './pdfReaderStore';
 
 export {isAllowedYoutubeNavigation, YOUTUBE_BASE_URL, YOUTUBE_ORIGIN_WHITELIST};
 
@@ -42,7 +41,7 @@ export type PlayerStoreState = {
   durationMs: number;
   speed: number;
   fullscreen: boolean;
-  errorKind: MediaErrorKind | PdfErrorKind | null;
+  errorKind: MediaErrorKind | null;
   retryable: boolean;
 };
 
@@ -158,7 +157,8 @@ export function createPlayerStore() {
           return;
         }
         stopPoll();
-        store.setState({status: 'error', errorKind: c.errorKind, retryable: c.retryable, playing: false});
+        const kind = c.errorKind === 'pdfProtected' || c.errorKind === 'pdfInvalid' ? 'server' : c.errorKind;
+        store.setState({status: 'error', errorKind: kind, retryable: c.retryable, playing: false});
         return;
       }
       const prev = store.getState();

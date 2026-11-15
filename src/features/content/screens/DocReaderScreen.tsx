@@ -3,7 +3,7 @@
 import React, {useEffect, useRef, useState, useSyncExternalStore} from 'react';
 import {FlatList, View} from 'react-native';
 
-type ViewToken = {item: unknown; key: string; index: number | null; isViewable: boolean};
+type ViewToken = {index?: number | null};
 import type {DocBlock, DocErrorKind} from '@core/media/docNative';
 import {readerErrorKey} from '@core/utils/readerFailure';
 import {Button, ErrorState, LoadingState, Text, useTheme} from '@shared/designsystem';
