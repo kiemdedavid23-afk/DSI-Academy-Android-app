@@ -2,21 +2,20 @@
  * Fenêtre code cadeau (site GiftCodeOverlay).
  */
 
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useEffect, useRef, useState, useSyncExternalStore} from 'react';
+import type {ComponentRef} from 'react';
 import {
   Modal,
   View,
   TextInput,
   Pressable,
-  StyleSheet,
   ActivityIndicator,
   KeyboardAvoidingView,
   Platform,
 } from 'react-native';
 import {Text, useTheme, Icon} from '@shared/designsystem';
 import {useTranslation} from '@shared/i18n';
-import {redeemGiftCode} from '@core/api/endpoints/payment/codeCadeau.api';
-import {memberBalanceStore} from '../../home/store/homeDashboardStore';
+import {giftCodeStore} from '../store/giftCodeStore';
 
 type Props = {
   visible: boolean;
@@ -28,58 +27,24 @@ export function GiftCodeOverlay({visible, onClose}: Props) {
   const {colors, radii} = useTheme();
   const locale = i18n.language?.startsWith('en') ? 'en-US' : 'fr-FR';
   const [code, setCode] = useState('');
-  const [submitting, setSubmitting] = useState(false);
-  const [errorKey, setErrorKey] = useState<string | null>(null);
-  const [successAmount, setSuccessAmount] = useState<number | null>(null);
-  const inputRef = useRef<TextInput>(null);
-  const lock = useRef(false);
+  const {submitting, errorKey, errorMessage, successAmount} = useSyncExternalStore(
+    giftCodeStore.subscribe,
+    giftCodeStore.getState,
+  );
+  const inputRef = useRef<ComponentRef<typeof TextInput>>(null);
 
   useEffect(() => {
-    if (visible) {
-      setCode('');
-      setErrorKey(null);
-      setSuccessAmount(null);
-      setSubmitting(false);
-      lock.current = false;
-      setTimeout(() => inputRef.current?.focus(), 300);
+    if (!visible) {
+      return undefined;
     }
+    setCode('');
+    giftCodeStore.reset();
+    const timer = setTimeout(() => inputRef.current?.focus(), 300);
+    return () => clearTimeout(timer);
   }, [visible]);
 
-  const submit = async () => {
-    if (lock.current || submitting) return;
-    const valeur = code.trim();
-    if (!valeur) {
-      setErrorKey('dsi.gift.errors.empty');
-      return;
-    }
-    lock.current = true;
-    setSubmitting(true);
-    setErrorKey(null);
-    const res = await redeemGiftCode(valeur);
-    setSubmitting(false);
-    if (res.kind === 'failure') {
-      lock.current = false;
-      if (res.errorKind === 'tooMany') {
-        setErrorKey('dsi.gift.tooManyAttempts');
-      } else if (res.reason === 'empty') {
-        setErrorKey('dsi.gift.errors.empty');
-      } else {
-        setErrorKey('dsi.gift.errors.unavailable');
-      }
-      return;
-    }
-    if (res.status === 'refuse') {
-      lock.current = false;
-      setErrorKey(
-        res.reason === 'alreadyUsed'
-          ? 'dsi.gift.errors.alreadyUsed'
-          : 'dsi.gift.errors.invalid',
-      );
-      return;
-    }
-    setSuccessAmount(res.montantDsi);
-    void memberBalanceStore.load({force: true});
-    // keep lock until close
+  const submit = () => {
+    void giftCodeStore.submit(code);
   };
 
   return (
@@ -137,13 +102,13 @@ export function GiftCodeOverlay({visible, onClose}: Props) {
                 }}
                 testID="gift-code-input"
               />
-              {errorKey ? (
+              {errorMessage || errorKey ? (
                 <Text style={{color: colors.error}} accessibilityRole="alert">
-                  {t(errorKey)}
+                  {errorMessage ?? t(errorKey ?? '')}
                 </Text>
               ) : null}
               <Pressable
-                onPress={() => void submit()}
+                onPress={submit}
                 disabled={submitting}
                 style={{
                   backgroundColor: colors.bgDarkPremium,

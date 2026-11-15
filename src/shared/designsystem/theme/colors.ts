@@ -61,6 +61,90 @@ export type ColorTokens = {
   info: string;
   infoBg: string;
   infoBorder: string;
+  // --- L3 correctif : tokens des anciennes couleurs en dur de `features` ---
+  // Carte membre : palette fixe, identique en clair et sombre (MemberCard.css du site)
+  /** Début et fin du dégradé de la carte. */
+  memberCardBgStart: string;
+  /** Milieu du dégradé de la carte. */
+  memberCardBgMid: string;
+  /** Halo or, centre. */
+  memberCardHaloStart: string;
+  /** Halo or, bord (transparent). */
+  memberCardHaloEnd: string;
+  memberCardBorder: string;
+  /** Marque « DSI ACADEMY » et langue. */
+  memberCardAccent: string;
+  memberCardChipBg: string;
+  memberCardChipBorder: string;
+  /** Texte clair crème : puce, initiales, valeurs. */
+  memberCardText: string;
+  memberCardName: string;
+  memberCardMeta: string;
+  memberCardAvatarBorder: string;
+  memberCardAvatarBg: string;
+  memberCardDivider: string;
+  memberCardStatusOnBg: string;
+  memberCardStatusOnBorder: string;
+  memberCardStatusOnText: string;
+  memberCardStatusOffBg: string;
+  memberCardStatusOffBorder: string;
+  memberCardStatusOffText: string;
+  // Badges de notification (NotificationsPage.css)
+  notifBadgeMaintenanceBg: string;
+  notifBadgeMaintenanceText: string;
+  notifBadgeUrgentBg: string;
+  notifBadgeUrgentText: string;
+  notifBadgeInfoBg: string;
+  notifBadgeInfoText: string;
+  notifBadgeDefaultBg: string;
+  notifBadgeDefaultText: string;
+  // Danger : texte, bordure, fond
+  dangerText: string;
+  dangerBorder: string;
+  dangerBg: string;
+  /** Bordure du panneau d'erreur plein écran. */
+  dangerPanelBorder: string;
+  dangerPanelTitle: string;
+  dangerPanelText: string;
+  dangerRipple: string;
+  // Pastille d'état active
+  /** Pastille active sur surface. */
+  statusActiveBg: string;
+  statusActiveBorder: string;
+  statusActiveText: string;
+  /** Pastille active sur fond sombre (bandeau profil). */
+  statusActiveOnDarkBg: string;
+  statusActiveOnDarkBorder: string;
+  statusActiveOnDarkText: string;
+  statusInactiveOnDarkBg: string;
+  statusInactiveOnDarkBorder: string;
+  // Interrupteur actif
+  /** Pastille de l'interrupteur. */
+  switchKnob: string;
+  // Or : halos et bordures
+  goldHalo12: string;
+  goldHalo14: string;
+  goldHalo18: string;
+  goldHalo22: string;
+  // Divers
+  /** Texte sur fond bleu / bouton plein. */
+  textOnPrimary: string;
+  blueBorderSoft: string;
+  /** Voile blanc 10 % sur fond sombre. */
+  onDarkVeil10: string;
+  /** Voile noir 20 % sur l'image de fond du shell. */
+  shellScrim: string;
+  /** Titre de la carte abonnement du tiroir, sur bleu. */
+  drawerSubTitle: string;
+  drawerSubFoot: string;
+  drawerBarTrack: string;
+  badgeActiveOnDarkText: string;
+  badgeExpiredOnDarkBg: string;
+  badgeExpiredOnDarkText: string;
+  /** Fond de l'icône de pièce active, thème sombre. */
+  drawerActiveIconBgDark: string;
+  /** Texte du bouton or de la carte abonnement du tiroir. */
+  drawerSubBtnText: string;
   // Squelettes (Skeleton.css du site)
   skeletonBase: string;
   skeletonShine: string;
@@ -85,6 +169,81 @@ export function withAlpha(hex: string, alpha: number): string {
 /** Fond (16 %) et bordure (35 %) d'une couleur sémantique sombre, sur la surface. */
 const SEMANTIC_BG_ALPHA = 0.16;
 const SEMANTIC_BORDER_ALPHA = 0.35;
+
+/**
+ * Valeurs reprises telles quelles des couleurs qui étaient en dur dans
+ * `features` (elles viennent du site). Identiques en clair et en sombre.
+ */
+const GOLD = '#D4AF37';
+const CREAM = '#FDF6E2';
+const FEATURE_TOKENS = {
+  memberCardBgStart: '#0F172A',
+  memberCardBgMid: '#1E293B',
+  memberCardHaloStart: withAlpha(GOLD, 0.2),
+  memberCardHaloEnd: withAlpha(GOLD, 0),
+  memberCardBorder: withAlpha(GOLD, 0.35),
+  memberCardAccent: GOLD,
+  memberCardChipBg: withAlpha(GOLD, 0.15),
+  memberCardChipBorder: withAlpha(GOLD, 0.35),
+  memberCardText: CREAM,
+  memberCardName: '#F8FAFC',
+  memberCardMeta: withAlpha('#F8FAFC', 0.75),
+  memberCardAvatarBorder: withAlpha(CREAM, 0.4),
+  memberCardAvatarBg: withAlpha('#FFFFFF', 0.06),
+  memberCardDivider: withAlpha('#FFFFFF', 0.1),
+  memberCardStatusOnBg: withAlpha('#10B981', 0.2),
+  memberCardStatusOnBorder: withAlpha('#10B981', 0.35),
+  memberCardStatusOnText: '#6EE7B7',
+  memberCardStatusOffBg: withAlpha('#94A3B8', 0.15),
+  memberCardStatusOffBorder: withAlpha('#94A3B8', 0.3),
+  memberCardStatusOffText: '#CBD5E1',
+
+  notifBadgeMaintenanceBg: '#FEF3C7',
+  notifBadgeMaintenanceText: '#92400E',
+  notifBadgeUrgentBg: '#FEE2E2',
+  notifBadgeUrgentText: '#991B1B',
+  notifBadgeInfoBg: '#DBEAFE',
+  notifBadgeInfoText: '#1E40AF',
+  notifBadgeDefaultBg: '#F1F5F9',
+  notifBadgeDefaultText: '#475569',
+
+  dangerText: '#B91C1C',
+  dangerBorder: withAlpha('#DC2626', 0.35),
+  dangerBg: '#FEF2F2',
+  dangerPanelBorder: '#FCA5A5',
+  dangerPanelTitle: '#991B1B',
+  dangerPanelText: '#B91C1C',
+  dangerRipple: withAlpha('#DC2626', 0.08),
+
+  statusActiveBg: withAlpha('#22C55E', 0.14),
+  statusActiveBorder: withAlpha('#22C55E', 0.3),
+  statusActiveText: '#15803D',
+  statusActiveOnDarkBg: withAlpha('#22C55E', 0.18),
+  statusActiveOnDarkBorder: withAlpha('#22C55E', 0.4),
+  statusActiveOnDarkText: '#86EFAC',
+  statusInactiveOnDarkBg: withAlpha('#FFFFFF', 0.12),
+  statusInactiveOnDarkBorder: withAlpha('#FFFFFF', 0.2),
+
+  switchKnob: '#FFFFFF',
+
+  goldHalo12: withAlpha(GOLD, 0.12),
+  goldHalo14: withAlpha(GOLD, 0.14),
+  goldHalo18: withAlpha(GOLD, 0.18),
+  goldHalo22: withAlpha(GOLD, 0.22),
+
+  textOnPrimary: '#FFFFFF',
+  blueBorderSoft: withAlpha('#2563EB', 0.15),
+  onDarkVeil10: withAlpha('#FFFFFF', 0.1),
+  shellScrim: withAlpha('#000000', 0.2),
+  drawerSubTitle: withAlpha('#FFFFFF', 0.9),
+  drawerSubFoot: withAlpha('#FFFFFF', 0.78),
+  drawerBarTrack: withAlpha('#FFFFFF', 0.22),
+  badgeActiveOnDarkText: '#F5D778',
+  badgeExpiredOnDarkBg: withAlpha('#F87171', 0.22),
+  badgeExpiredOnDarkText: '#FCA5A5',
+  drawerActiveIconBgDark: '#2563EB',
+  drawerSubBtnText: '#0F172A',
+};
 
 export const lightColors: ColorTokens = {
   bgApp: '#F8FAFC',
@@ -141,6 +300,8 @@ export const lightColors: ColorTokens = {
   skeletonShine: withAlpha('#D4AF37', 0.32),
   skeletonBaseOnDark: withAlpha('#FFFFFF', 0.2),
   skeletonShineOnDark: withAlpha('#F5D778', 0.45),
+
+  ...FEATURE_TOKENS,
 };
 
 export const darkColors: ColorTokens = {
@@ -199,4 +360,6 @@ export const darkColors: ColorTokens = {
   skeletonShine: withAlpha('#D4AF37', 0.26),
   skeletonBaseOnDark: withAlpha('#FFFFFF', 0.2),
   skeletonShineOnDark: withAlpha('#F5D778', 0.45),
+
+  ...FEATURE_TOKENS,
 };

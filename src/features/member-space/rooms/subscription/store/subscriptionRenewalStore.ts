@@ -19,7 +19,7 @@ import {
   memberProfileStore,
   memberSubscriptionStore,
 } from '@shared/store';
-import {memberBalanceStore, loadHomeDashboard} from '../../home/store/homeDashboardStore';
+import {loadHomeDashboard} from '../../home/store/homeDashboardStore';
 
 const POLL_MS = 4000;
 const MAX_POLL_MS = 5 * 60 * 1000;

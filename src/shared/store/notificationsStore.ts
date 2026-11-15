@@ -12,6 +12,9 @@ import {
 import type {AppNotification} from '@core/api/endpoints/notifications/notifications.types';
 import {storeRegistry} from './storeRegistry';
 
+/** Ré-export : les écrans lisent ce type ici, jamais depuis core/api (R-LAY-6). */
+export type {AppNotification};
+
 type Status = 'idle' | 'loading' | 'ready' | 'error' | 'unavailable';
 
 type State = {

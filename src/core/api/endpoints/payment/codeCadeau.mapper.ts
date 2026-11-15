@@ -13,8 +13,9 @@ function asNumber(v: unknown, fallback = 0): number {
 }
 
 /**
- * Détection « déjà utilisé » : le site teste /déjà utilisé/i sur le message Worker.
- * Commentaire conservé pour la revue.
+ * Contrat Paiement §2.7 : le refus d'un code cadeau est un message unique
+ * qui ne révèle pas la raison. L'app n'en déduit aucune (pas de « déjà utilisé »)
+ * et affiche le message serveur tel quel.
  */
 export function mapRedeemCode(
   status: number,
@@ -53,14 +54,10 @@ export function mapRedeemCode(
       message: asString(payload.message),
     };
   }
-  // refus ou autre
-  const texte = String(payload.message || payload.erreur || '');
-  // Site : /déjà utilisé/i → alreadyUsed ; sinon invalid générique
-  const already = /déjà utilisé/i.test(texte);
+  // Refus (ou statut inconnu) : message serveur tel quel, sans raison déduite.
   return {
     kind: 'success',
     status: 'refuse',
-    reason: already ? 'alreadyUsed' : 'invalid',
-    message: asString(payload.message),
+    message: asString(payload.message) ?? asString(payload.erreur),
   };
 }

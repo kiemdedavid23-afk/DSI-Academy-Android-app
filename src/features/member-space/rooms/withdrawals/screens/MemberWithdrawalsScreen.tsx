@@ -3,6 +3,7 @@
  */
 
 import React, {useEffect, useRef, useState, useSyncExternalStore} from 'react';
+import type {ComponentRef} from 'react';
 import {
   View,
   ScrollView,
@@ -16,30 +17,21 @@ import {
 } from 'react-native';
 import {Text, useTheme, Icon} from '@shared/designsystem';
 import {useTranslation} from '@shared/i18n';
-import {withdrawalsStore, memberProfileStore} from '@shared/store';
+import {
+  withdrawalsStore,
+  memberProfileStore,
+  connectivityStore,
+  getDisplayPricing,
+} from '@shared/store';
 import {memberBalanceStore} from '../../home/store/homeDashboardStore';
 import {withdrawalRequestStore} from '../store/withdrawalRequestStore';
-import {
-  dsiToFcfa,
-  withdrawalNet,
-} from '@core/utils/dsi';
+import {withdrawalNet} from '@core/utils/dsi';
 import {withdrawalStatusMeta} from '@core/utils/withdrawalStatusMeta';
 import {
   COUNTRIES,
   countryLabel,
   isKnownCountry,
 } from '@core/data/countries';
-import {
-  WITHDRAWAL_FEE_FIXED_FCFA,
-  WITHDRAWAL_FEE_RATE_NUM,
-  WITHDRAWAL_FEE_RATE_DEN,
-  WITHDRAWAL_WINDOW_START_HOUR,
-  WITHDRAWAL_WINDOW_END_HOUR,
-} from '@core/config/pricing';
-import {fetchWithdrawalDetail} from '@core/api/endpoints/payment/retraits.api';
-import type {WithdrawalEvent} from '@core/api/endpoints/payment/retraits.types';
-import {connectivityStore} from '@shared/store';
-import {preferencesStore} from '@shared/preferences';
 
 function fmt(n: number, locale: string) {
   return new Intl.NumberFormat(locale).format(n);
@@ -91,11 +83,9 @@ export function MemberWithdrawalsScreen() {
 
   const [formOpen, setFormOpen] = useState(false);
   const [countryPicker, setCountryPicker] = useState(false);
-  const [detailId, setDetailId] = useState<string | null>(null);
-  const [detailEvents, setDetailEvents] = useState<WithdrawalEvent[]>([]);
-  const [detailLoading, setDetailLoading] = useState(false);
-  const detailReq = useRef(0);
-  const scrollRef = useRef<ScrollView>(null);
+  const {detailId, detailEvents, detailLoading} = form;
+  const pricing = getDisplayPricing();
+  const scrollRef = useRef<ComponentRef<typeof ScrollView>>(null);
   const formY = useRef(0);
 
   useEffect(() => {
@@ -106,15 +96,14 @@ export function MemberWithdrawalsScreen() {
   }, []);
 
   useEffect(() => {
-    const pays = profile.data?.pays;
-    if (pays && isKnownCountry(pays) && !form.pays) {
-      withdrawalRequestStore.setPays(pays);
-      void withdrawalRequestStore.loadMoyens(pays);
-    } else if (!form.pays) {
-      withdrawalRequestStore.setPays('BF');
-      void withdrawalRequestStore.loadMoyens('BF');
+    if (form.pays) {
+      return;
     }
-  }, [profile.data?.pays]);
+    const pays = profile.data?.pays;
+    const target = pays && isKnownCountry(pays) ? pays : 'BF';
+    withdrawalRequestStore.setPays(target);
+    void withdrawalRequestStore.loadMoyens(target);
+  }, [profile.data?.pays, form.pays]);
 
   const solde = bal.data?.soldeDsiActuel ?? 0;
   const totalGagne = bal.data?.totalDsiGagnes ?? 0;
@@ -129,24 +118,6 @@ export function MemberWithdrawalsScreen() {
     Number.isFinite(montantNum) && montantNum > 0
       ? withdrawalNet(montantNum)
       : null;
-  const ratePct = (WITHDRAWAL_FEE_RATE_NUM / WITHDRAWAL_FEE_RATE_DEN) * 100;
-
-  const openDetail = async (id: string) => {
-    const req = ++detailReq.current;
-    setDetailId(id);
-    setDetailLoading(true);
-    setDetailEvents([]);
-    const res = await fetchWithdrawalDetail(id);
-    if (req !== detailReq.current) return;
-    setDetailLoading(false);
-    if (res.kind === 'success') {
-      setDetailEvents(res.data.evenements);
-      const last = res.data.evenements[res.data.evenements.length - 1];
-      if (last?.nouvelleValeur === 'rejetee') {
-        void memberBalanceStore.load({force: true});
-      }
-    }
-  };
 
   const loading = bal.status === 'loading' && !bal.data;
 
@@ -297,8 +268,8 @@ export function MemberWithdrawalsScreen() {
             }}>
             <Text style={{fontSize: 12, color: colors.textMuted}}>
               {t('withdrawals.infoWindow', {
-                start: WITHDRAWAL_WINDOW_START_HOUR,
-                end: WITHDRAWAL_WINDOW_END_HOUR,
+                start: pricing.withdrawalWindowStartHour,
+                end: pricing.withdrawalWindowEndHour,
               })}
             </Text>
             <Text style={{fontSize: 12, color: colors.textMuted}}>
@@ -306,8 +277,8 @@ export function MemberWithdrawalsScreen() {
             </Text>
             <Text style={{fontSize: 12, color: colors.textMuted}}>
               {t('withdrawals.infoFees', {
-                fixed: WITHDRAWAL_FEE_FIXED_FCFA,
-                rate: ratePct,
+                fixed: pricing.withdrawalFeeFixedFcfa,
+                rate: pricing.withdrawalFeeRatePct,
               })}
             </Text>
 
@@ -478,7 +449,7 @@ export function MemberWithdrawalsScreen() {
               return (
                 <Pressable
                   key={item.idRetrait}
-                  onPress={() => void openDetail(item.idRetrait)}
+                  onPress={() => void withdrawalRequestStore.openDetail(item.idRetrait)}
                   style={{
                     padding: 12,
                     borderRadius: radii.md,
@@ -630,10 +601,7 @@ export function MemberWithdrawalsScreen() {
               </>
             )}
             <Pressable
-              onPress={() => {
-                setDetailId(null);
-                detailReq.current += 1;
-              }}
+              onPress={() => withdrawalRequestStore.closeDetail()}
               style={[styles.btn, {backgroundColor: colors.bgDarkPremium}]}>
               <Text style={{color: colors.goldPrestige, fontWeight: '700'}}>
                 {t('common.close')}

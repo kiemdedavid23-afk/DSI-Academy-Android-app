@@ -44,19 +44,19 @@ describe('bannerStore', () => {
     bannerStore.show({
       type: 't',
       tone: 'info',
-      title: 'A',
-      message: 'm',
+      titleKey: 'A',
+      messageKey: 'm',
       dismissible: true,
     });
-    expect(bannerStore.get()?.title).toBe('A');
+    expect(bannerStore.get()?.titleKey).toBe('A');
     bannerStore.show({
       type: 't',
       tone: 'info',
-      title: 'B',
-      message: 'm2',
+      titleKey: 'B',
+      messageKey: 'm2',
       dismissible: true,
     });
-    expect(bannerStore.get()?.title).toBe('B');
+    expect(bannerStore.get()?.titleKey).toBe('B');
   });
 
   it('dismiss par id', () => {
@@ -64,8 +64,8 @@ describe('bannerStore', () => {
       id: 'x1',
       type: 't',
       tone: 'info',
-      title: 'A',
-      message: 'm',
+      titleKey: 'A',
+      messageKey: 'm',
       dismissible: true,
     });
     bannerStore.dismiss('other');

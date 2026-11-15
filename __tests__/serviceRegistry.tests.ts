@@ -17,6 +17,7 @@ jest.mock('@core/config/buildConfig.generated', () => ({
         marketplace: 'https://marketplace.example.invalid',
         community: 'https://community.example.invalid',
         admin: 'https://admin.example.invalid',
+        notifications: 'https://notifications.example.invalid',
       },
       web: 'https://web.example.invalid/',
     },
@@ -82,6 +83,7 @@ describe('serviceRegistry (mode gateway)', () => {
             marketplace: '/marketplace',
             community: '/community',
             admin: '/admin',
+            notifications: '/notifications',
           },
           web: 'https://web.example.invalid',
         },
@@ -124,6 +126,7 @@ describe('assertRegistry (échecs)', () => {
             marketplace: 'https://marketplace.example.invalid',
             community: 'https://community.example.invalid',
             admin: 'https://admin.example.invalid',
+            notifications: 'https://notifications.example.invalid',
           },
           web: 'http://not-https.example.invalid',
         },
@@ -146,6 +149,7 @@ describe('assertRegistry (échecs)', () => {
             marketplace: 'https://marketplace.example.invalid',
             community: 'https://community.example.invalid',
             admin: 'https://admin.example.invalid',
+            notifications: 'https://notifications.example.invalid',
           },
           web: 'https://web.example.invalid',
         },
@@ -153,5 +157,50 @@ describe('assertRegistry (échecs)', () => {
     }));
     const {assertRegistry: assert} = require('@core/config/serviceRegistry');
     expect(() => assert()).toThrow(/adresse invalide/);
+  });
+
+  it('échoue avec une erreur claire si la clé notifications est absente (perService)', () => {
+    jest.resetModules();
+    jest.doMock('@core/config/buildConfig.generated', () => ({
+      BUILD_CONFIG: {
+        registry: {
+          mode: 'perService',
+          urls: {
+            payment: 'https://payment.example.invalid',
+            content: 'https://content.example.invalid',
+            shop: 'https://shop.example.invalid',
+            marketplace: 'https://marketplace.example.invalid',
+            community: 'https://community.example.invalid',
+            admin: 'https://admin.example.invalid',
+          },
+          web: 'https://web.example.invalid',
+        },
+      },
+    }));
+    const {assertRegistry: assert} = require('@core/config/serviceRegistry');
+    expect(() => assert()).toThrow(/adresse invalide pour "notifications"/);
+  });
+
+  it('échoue avec une erreur claire si la clé notifications est absente (gateway)', () => {
+    jest.resetModules();
+    jest.doMock('@core/config/buildConfig.generated', () => ({
+      BUILD_CONFIG: {
+        registry: {
+          mode: 'gateway',
+          baseUrl: 'https://gateway.example.invalid',
+          prefixes: {
+            payment: '/payment',
+            content: '/content',
+            shop: '/shop',
+            marketplace: '/marketplace',
+            community: '/community',
+            admin: '/admin',
+          },
+          web: 'https://web.example.invalid',
+        },
+      },
+    }));
+    const {assertRegistry: assert} = require('@core/config/serviceRegistry');
+    expect(() => assert()).toThrow(/préfixe manquant pour "notifications"/);
   });
 });

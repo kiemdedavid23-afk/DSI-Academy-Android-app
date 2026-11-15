@@ -1,17 +1,16 @@
 /**
- * Pile Espace membre : Accueil réel + 8 pièces placeholder, enveloppée par le shell.
+ * Pile Espace membre : Accueil et pièces réelles, enveloppées par le shell.
  */
 
 import React from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {useTranslation} from '@shared/i18n';
-import {PlaceholderScreen} from '../PlaceholderScreen';
 import {MemberHomeScreen} from '@features/member-space/rooms/home/screens/MemberHomeScreen';
 import {MemberSubscriptionScreen} from '@features/member-space/rooms/subscription/screens/MemberSubscriptionScreen';
-import {MemberPaymentHistoryScreen} from '@features/member-space/rooms/payments/screens/MemberPaymentHistoryScreen';
+import {MemberPaymentHistoryScreen} from '@features/member-space/rooms/payment-history/screens/MemberPaymentHistoryScreen';
 import {MemberReferralScreen} from '@features/member-space/rooms/referral/screens/MemberReferralScreen';
 import {MemberWithdrawalsScreen} from '@features/member-space/rooms/withdrawals/screens/MemberWithdrawalsScreen';
-import {MemberDsiHoldingsScreen} from '@features/member-space/rooms/dsi-holdings/screens/MemberDsiHoldingsScreen';
+import {MemberDsiHoldingsScreen} from '@features/member-space/rooms/dsi/screens/MemberDsiHoldingsScreen';
 import {MemberProfileScreen} from '@features/member-space/rooms/profile/screens/MemberProfileScreen';
 import {MemberNotificationsScreen} from '@features/member-space/rooms/notifications/screens/MemberNotificationsScreen';
 import {MemberSettingsScreen} from '@features/member-space/rooms/settings/screens/MemberSettingsScreen';

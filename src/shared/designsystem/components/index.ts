@@ -16,3 +16,4 @@ export type {EmptyStateProps} from './EmptyState';
 export {ErrorState} from './ErrorState';
 export type {ErrorStateProps} from './ErrorState';
 export {InAppBanner} from './InAppBanner';
+export type {InAppBannerData, InAppBannerTone} from './InAppBanner';

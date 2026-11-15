@@ -7,7 +7,6 @@
 
 import NetInfo, {type NetInfoState} from '@react-native-community/netinfo';
 import {bannerStore} from './bannerStore';
-import {i18n} from '@shared/i18n';
 
 export type ConnectivityStatus = 'online' | 'offline' | 'unknown';
 
@@ -27,14 +26,6 @@ const onOnlineCallbacks = new Set<() => void>();
 
 function emit(): void {
   listeners.forEach(l => l());
-}
-
-function t(key: string, fallback: string): string {
-  try {
-    return i18n.t(key, {defaultValue: fallback});
-  } catch {
-    return fallback;
-  }
 }
 
 function isReachable(state: NetInfoState): boolean {
@@ -57,11 +48,8 @@ function announceOffline(): void {
   bannerStore.show({
     type: 'connectivity-offline',
     tone: 'warning',
-    title: t('app.connectivity.offlineTitle', 'Vous êtes hors connexion'),
-    message: t(
-      'app.connectivity.offlineMessage',
-      'Les dernières données enregistrées sont affichées.',
-    ),
+    titleKey: 'app.connectivity.offlineTitle',
+    messageKey: 'app.connectivity.offlineMessage',
     dismissible: false,
   });
 }
@@ -78,11 +66,8 @@ function announceOnline(fromOffline: boolean): void {
     bannerStore.show({
       type: 'connectivity-online',
       tone: 'success',
-      title: t('app.connectivity.onlineTitle', 'Connexion rétablie'),
-      message: t(
-        'app.connectivity.onlineMessage',
-        'Mise à jour des données en cours…',
-      ),
+      titleKey: 'app.connectivity.onlineTitle',
+      messageKey: 'app.connectivity.onlineMessage',
       dismissible: true,
       autoHideMs: RECONNECTED_HIDE_MS,
     });

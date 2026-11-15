@@ -1,41 +1,34 @@
-import React, {useRef, useState} from 'react';
+import React, {useEffect, useSyncExternalStore} from 'react';
 import {View, ScrollView, Pressable, Linking} from 'react-native';
 import {Text, useTheme} from '@shared/designsystem';
 import {useTranslation} from '@shared/i18n';
 import {SOCIAL_LINKS} from '@core/config/socialLinks';
 import {APPLICATION_ID, APP_VERSION} from '@core/config/appInfo';
-import {checkAppRelease} from '@core/api/endpoints/notifications/notifications.api';
+import {updateCheckStore} from '../store/updateCheckStore';
 
 export function SettingsHelpView({onBack}: {onBack: () => void}) {
   const {t} = useTranslation();
   const {colors, radii, glass} = useTheme();
-  const [checking, setChecking] = useState(false);
-  const [msg, setMsg] = useState<string | null>(null);
-  const lock = useRef(false);
+  const {checking, outcome} = useSyncExternalStore(
+    updateCheckStore.subscribe,
+    updateCheckStore.getState,
+  );
 
-  const checkUpdate = async () => {
-    if (lock.current || checking) return;
-    lock.current = true;
-    setChecking(true);
-    setMsg(null);
-    const res = await checkAppRelease();
-    setChecking(false);
-    lock.current = false;
-    if (res.kind === 'failure') {
-      setMsg(t('settings.updateError', {defaultValue: 'Impossible de vérifier'}));
-      return;
-    }
-    if (res.updateAvailable) {
-      setMsg(
-        t('settings.updateAvailable', {
-          defaultValue: 'Version {{version}} disponible',
-          version: res.version || res.latestVersion || '',
-        }),
-      );
-    } else {
-      setMsg(t('settings.upToDate', {defaultValue: 'Vous avez la dernière version'}));
-    }
-  };
+  useEffect(() => () => updateCheckStore.reset(), []);
+
+  const msg =
+    outcome == null
+      ? null
+      : outcome.kind === 'error'
+        ? t('settings.updateError', {defaultValue: 'Impossible de vérifier'})
+        : outcome.kind === 'available'
+          ? t('settings.updateAvailable', {
+              defaultValue: 'Version {{version}} disponible',
+              version: outcome.version,
+            })
+          : t('settings.upToDate', {
+              defaultValue: 'Vous avez la dernière version',
+            });
 
   return (
     <ScrollView contentContainerStyle={{padding: 16, gap: 16}}>
@@ -100,7 +93,7 @@ export function SettingsHelpView({onBack}: {onBack: () => void}) {
           {APPLICATION_ID} · v{APP_VERSION}
         </Text>
         <Pressable
-          onPress={() => void checkUpdate()}
+          onPress={() => void updateCheckStore.check()}
           disabled={checking}
           style={{
             marginTop: 8,
@@ -110,7 +103,7 @@ export function SettingsHelpView({onBack}: {onBack: () => void}) {
             alignItems: 'center',
             opacity: checking ? 0.6 : 1,
           }}>
-          <Text style={{color: '#fff', fontWeight: '600'}}>
+          <Text style={{color: colors.textOnPrimary, fontWeight: '600'}}>
             {t('settings.checkUpdate', {defaultValue: 'Vérifier les mises à jour'})}
           </Text>
         </Pressable>

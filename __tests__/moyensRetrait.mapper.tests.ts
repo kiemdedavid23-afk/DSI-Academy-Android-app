@@ -1,6 +1,5 @@
 import {mapMoyensRetrait} from '../src/core/api/endpoints/payment/moyensRetrait.mapper';
 import {mapWithdrawRequest} from '../src/core/api/endpoints/payment/retraits.mapper';
-import {mapRedeemCode} from '../src/core/api/endpoints/payment/codeCadeau.mapper';
 
 describe('mapMoyensRetrait', () => {
   it('strict strings', () => {
@@ -40,23 +39,5 @@ describe('mapWithdrawRequest', () => {
     const r = mapWithdrawRequest(200, {status: 'refuse', message: 'Hors horaires'});
     expect(r.kind).toBe('success');
     if (r.kind === 'success') expect(r.status).toBe('refuse');
-  });
-});
-
-describe('mapRedeemCode', () => {
-  it('already used', () => {
-    const r = mapRedeemCode(200, {
-      status: 'refuse',
-      message: 'Ce code a déjà été utilisé.',
-    });
-    expect(r.kind).toBe('success');
-    if (r.kind === 'success' && r.status === 'refuse') {
-      expect(r.reason).toBe('alreadyUsed');
-    }
-  });
-  it('429', () => {
-    const r = mapRedeemCode(429, {});
-    expect(r.kind).toBe('failure');
-    if (r.kind === 'failure') expect(r.errorKind).toBe('tooMany');
   });
 });

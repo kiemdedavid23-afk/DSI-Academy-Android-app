@@ -13,7 +13,7 @@ async function render(ui: React.ReactElement, mode: 'light' | 'dark' = 'light') 
   return renderer;
 }
 
-describe('icônes (première série)', () => {
+describe('icônes (série complète, 30 icônes)', () => {
   it('la série contient exactement les icônes validées', () => {
     expect([...ICON_NAMES].sort()).toEqual(
       [
@@ -36,6 +36,17 @@ describe('icônes (première série)', () => {
         'PaymentsIcon',
         'ReferralIcon',
         'SettingsIcon',
+        'BagIcon',
+        'CloseIcon',
+        'CopyIcon',
+        'GiftIcon',
+        'HelpIcon',
+        'LogoutIcon',
+        'MoonIcon',
+        'ShareIcon',
+        'ShieldIcon',
+        'StoreIcon',
+        'SunIcon',
       ].sort(),
     );
   });

@@ -1,7 +1,7 @@
 import React, {useEffect, useSyncExternalStore} from 'react';
 import {View, ScrollView, Pressable, StyleSheet} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
-import {Text, useTheme, Icon} from '@shared/designsystem';
+import {Text, useTheme} from '@shared/designsystem';
 import {useTranslation} from '@shared/i18n';
 import {memberProfileStore, memberSubscriptionStore} from '@shared/store';
 import {countryLabel} from '@core/data/countries';
@@ -110,7 +110,7 @@ export function SettingsAccountView({onBack}: {onBack: () => void}) {
       </View>
       <View style={{opacity: 0.55, gap: 8}}>
         <Text style={{color: colors.textMuted}}>{t('settings.contactSupport', {defaultValue: 'Contacter le support'})} — {t('common.comingSoon')}</Text>
-        <Text style={{color: '#B91C1C'}}>
+        <Text style={{color: colors.dangerText}}>
           {t('settings.deleteAccount', {defaultValue: 'Supprimer mon compte'})} — {t('common.comingSoon')}
         </Text>
       </View>

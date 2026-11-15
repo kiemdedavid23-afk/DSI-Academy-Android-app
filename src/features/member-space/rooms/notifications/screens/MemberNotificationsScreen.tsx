@@ -14,9 +14,12 @@ import {
 } from 'react-native';
 import {Text, useTheme} from '@shared/designsystem';
 import {useTranslation} from '@shared/i18n';
-import {notificationsStore} from '@shared/store';
-import type {AppNotification} from '@core/api/endpoints/notifications/notifications.types';
-import {connectivityStore} from '@shared/store';
+import {
+  notificationsStore,
+  connectivityStore,
+  type AppNotification,
+} from '@shared/store';
+import type {ColorTokens} from '@shared/designsystem';
 
 function formatNotifDate(iso: string, locale: string): string {
   try {
@@ -32,47 +35,47 @@ function formatNotifDate(iso: string, locale: string): string {
 
 function badgeMeta(
   n: AppNotification,
-  t: (k: string, o?: object) => string,
-): {label: string; bg: string; fg: string} {
+  colors: ColorTokens,
+): {labelKey: string; bg: string; fg: string} {
   const type = (n.type || '').toLowerCase();
   if (type === 'maintenance') {
     return {
-      label: t('notifications.badge.maintenance'),
-      bg: '#fef3c7',
-      fg: '#92400e',
+      labelKey: 'notifications.badge.maintenance',
+      bg: colors.notifBadgeMaintenanceBg,
+      fg: colors.notifBadgeMaintenanceText,
     };
   }
   if (type === 'urgent' || type === 'alerte') {
     return {
-      label: t('notifications.badge.urgent'),
-      bg: '#fee2e2',
-      fg: '#991b1b',
+      labelKey: 'notifications.badge.urgent',
+      bg: colors.notifBadgeUrgentBg,
+      fg: colors.notifBadgeUrgentText,
     };
   }
   if (n.origin === 'admin') {
     return {
-      label: t('notifications.badge.announce'),
-      bg: '#dbeafe',
-      fg: '#1e40af',
+      labelKey: 'notifications.badge.announce',
+      bg: colors.notifBadgeInfoBg,
+      fg: colors.notifBadgeInfoText,
     };
   }
   if (n.origin === 'event') {
     return {
-      label: t('notifications.badge.activity'),
-      bg: '#dbeafe',
-      fg: '#1e40af',
+      labelKey: 'notifications.badge.activity',
+      bg: colors.notifBadgeInfoBg,
+      fg: colors.notifBadgeInfoText,
     };
   }
   return {
-    label: t('notifications.badge.default'),
-    bg: '#f1f5f9',
-    fg: '#475569',
+    labelKey: 'notifications.badge.default',
+    bg: colors.notifBadgeDefaultBg,
+    fg: colors.notifBadgeDefaultText,
   };
 }
 
 export function MemberNotificationsScreen() {
   const {t, i18n} = useTranslation();
-  const {colors, radii, glass} = useTheme();
+  const {colors, glass} = useTheme();
   const locale = i18n.language?.startsWith('en') ? 'en-US' : 'fr-FR';
   const online = useSyncExternalStore(
     connectivityStore.subscribe,
@@ -98,7 +101,7 @@ export function MemberNotificationsScreen() {
 
   const renderItem = ({item}: {item: AppNotification}) => {
     const unread = item.status !== 'read';
-    const badge = badgeMeta(item, t as any);
+    const badge = badgeMeta(item, colors);
     return (
       <Pressable
         onPress={() => {
@@ -133,7 +136,7 @@ export function MemberNotificationsScreen() {
                 letterSpacing: 0.5,
                 textTransform: 'uppercase',
               }}>
-              {badge.label}
+              {t(badge.labelKey)}
             </Text>
           </View>
           <Text style={{fontSize: 12, fontWeight: '500', color: colors.textSecondary}}>
@@ -190,20 +193,20 @@ export function MemberNotificationsScreen() {
           paddingVertical: 40,
           paddingHorizontal: 20,
           borderRadius: 12,
-          backgroundColor: '#fef2f2',
+          backgroundColor: colors.dangerBg,
           borderWidth: 1,
-          borderColor: '#fca5a5',
+          borderColor: colors.dangerPanelBorder,
           alignItems: 'center',
           gap: 12,
         }}
         testID="notifications-error">
-        <Text style={{fontSize: 18, fontWeight: '700', color: '#991b1b'}}>
+        <Text style={{fontSize: 18, fontWeight: '700', color: colors.dangerPanelTitle}}>
           {t('notifications.errorTitle')}
         </Text>
         <Text
           style={{
             fontSize: 14,
-            color: '#b91c1c',
+            color: colors.dangerPanelText,
             lineHeight: 21,
             textAlign: 'center',
             maxWidth: 500,
@@ -219,7 +222,7 @@ export function MemberNotificationsScreen() {
             paddingHorizontal: 20,
             borderRadius: 8,
           }}>
-          <Text style={{color: '#fff', fontWeight: '600', fontSize: 14}}>
+          <Text style={{color: colors.textOnPrimary, fontWeight: '600', fontSize: 14}}>
             {t('common.retry')}
           </Text>
         </Pressable>
@@ -285,7 +288,7 @@ export function MemberNotificationsScreen() {
               {t('notifications.loadMore', {defaultValue: 'Charger plus'})}
             </Text>
           </Pressable>
-        ) : null
+        ) : undefined
       }
       refreshControl={
         <RefreshControl refreshing={st.status === 'loading'} onRefresh={refresh} />

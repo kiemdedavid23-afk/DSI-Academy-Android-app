@@ -27,6 +27,7 @@ import {
   type FavoriteItem,
 } from '@shared/store';
 import {computeSubscription} from '@core/utils/subscription';
+import {withdrawalStatusMeta} from '@core/utils/withdrawalStatusMeta';
 import {useSyncExternalStore} from 'react';
 import {
   loadHomeDashboard,
@@ -103,7 +104,7 @@ function HomeSkeleton({colors, glass}: {colors: any; glass: any}) {
 
 export function MemberHomeScreen() {
   const {t, i18n} = useTranslation();
-  const {colors, spacing, radii, glass, elevation} = useTheme();
+  const {colors, radii, glass, elevation} = useTheme();
   const navigation = useNavigation<Nav>();
   const {height: screenH} = useWindowDimensions();
   const [continueEntry, setContinueEntry] = useState<ContinueEntry | null>(null);
@@ -172,14 +173,6 @@ export function MemberHomeScreen() {
       ? profile.error ?? balance.error ?? t('common.error')
       : null;
 
-  // Offline banner: si les stores ont des données en cache et un statut error réseau
-  // (pas de NetInfo dans ce lot — détection via statut d'erreur + données présentes)
-  const showOfflineBanner =
-    !!error &&
-    !!(profile.data || balance.data) &&
-    typeof error === 'string' &&
-    /réseau|network|offline|connexion/i.test(String(error));
-
   const prenom =
     profile.data?.prenom ||
     profile.data?.nom ||
@@ -191,7 +184,6 @@ export function MemberHomeScreen() {
     sub.state === 'active' || sub.state === 'expired'
       ? sub.fin.toISOString()
       : null;
-  const subPercent = sub.state === 'active' ? sub.percent : 0;
 
   const formatDate = (iso?: string | null) => {
     if (!iso) {
@@ -240,7 +232,7 @@ export function MemberHomeScreen() {
     }
   };
 
-  const recent = (withdrawals.data ?? []).slice(0, 5);
+  const recent = (withdrawals.data?.retraits ?? []).slice(0, 5);
 
   if (loading) {
     return <HomeSkeleton colors={colors} glass={glass} />;
@@ -607,43 +599,46 @@ export function MemberHomeScreen() {
                     })}
                   </Text>
                 ) : (
-                  recent.map((w: any, idx: number) => (
-                    <View
-                      key={w.id ?? idx}
-                      style={{
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        gap: 12,
-                        marginBottom: 10,
-                      }}>
-                      <Text
-                        style={{flex: 1, color: colors.textPrimary, fontSize: 13.6}}
-                        numberOfLines={1}>
-                        {w.libelle || w.label || t('rooms.withdrawals')}
-                      </Text>
-                      <Text
+                  recent.map(w => {
+                    const meta = withdrawalStatusMeta(w.statut);
+                    return (
+                      <View
+                        key={w.idRetrait}
                         style={{
-                          color: colors.textSecondary,
-                          fontSize: 12,
+                          flexDirection: 'row',
+                          alignItems: 'center',
+                          gap: 12,
+                          marginBottom: 10,
                         }}>
-                        {formatDate(w.date || w.createdAt) ?? ''}
-                      </Text>
-                      <Text
-                        style={{
-                          fontWeight: '700',
-                          color:
-                            w.statut === 'payee'
-                              ? colors.success
-                              : colors.textPrimary,
-                          fontSize: 13.6,
-                        }}>
-                        {w.montant ?? w.amount ?? ''}{' '}
-                        {w.statut === 'payee'
-                          ? '✓'
-                          : ''}
-                      </Text>
-                    </View>
-                  ))
+                        <Text
+                          style={{flex: 1, color: colors.textPrimary, fontSize: 13.6}}
+                          numberOfLines={1}>
+                          {`${t('rooms.withdrawals')} · ${new Intl.NumberFormat(
+                            i18n.language?.startsWith('en') ? 'en-US' : 'fr-FR',
+                          ).format(w.montantDsiDemande)} DSI`}
+                        </Text>
+                        <Text
+                          style={{
+                            color: colors.textSecondary,
+                            fontSize: 12,
+                          }}>
+                          {formatDate(w.dateDemande) ?? ''}
+                        </Text>
+                        <Text
+                          style={{
+                            fontWeight: '700',
+                            color: meta.isRejected
+                              ? colors.error
+                              : meta.isTerminal
+                                ? colors.success
+                                : colors.textPrimary,
+                            fontSize: 13.6,
+                          }}>
+                          {meta.labelKey ? t(meta.labelKey) : meta.status}
+                        </Text>
+                      </View>
+                    );
+                  })
                 )}
               </View>
 
@@ -692,13 +687,6 @@ export function MemberHomeScreen() {
                         numberOfLines={1}>
                         {f.title}
                       </Text>
-                      {f.subtitle ? (
-                        <Text
-                          style={{color: colors.textSecondary, fontSize: 12.5}}
-                          numberOfLines={1}>
-                          {f.subtitle}
-                        </Text>
-                      ) : null}
                     </View>
                   ))
                 )}

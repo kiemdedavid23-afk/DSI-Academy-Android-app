@@ -13,7 +13,7 @@ import {
 import {useNavigation} from '@react-navigation/native';
 import {Text, useTheme, Icon} from '@shared/designsystem';
 import {useTranslation} from '@shared/i18n';
-import {memberProfileStore, memberSubscriptionStore} from '@shared/store';
+import {memberProfileStore} from '@shared/store';
 import {sessionStore} from '@core/session';
 import {SettingsAccountView} from '../views/SettingsAccountView';
 import {SettingsPreferencesView} from '../views/SettingsPreferencesView';
@@ -143,7 +143,7 @@ export function MemberSettingsScreen() {
             width: 40,
             height: 40,
             borderRadius: 20,
-            backgroundColor: 'rgba(255,255,255,0.1)',
+            backgroundColor: colors.onDarkVeil10,
             alignItems: 'center',
             justifyContent: 'center',
           }}>
@@ -231,7 +231,7 @@ export function MemberSettingsScreen() {
           borderRadius: radii.lg,
           backgroundColor: glass.bg,
           borderWidth: 1,
-          borderColor: 'rgba(220,38,38,0.35)',
+          borderColor: colors.dangerBorder,
           flexDirection: 'row',
           alignItems: 'center',
           justifyContent: 'center',
@@ -239,7 +239,7 @@ export function MemberSettingsScreen() {
           minHeight: 44,
         }}
         testID="settings-logout">
-        <Text style={{color: '#B91C1C', fontSize: 15.2, fontWeight: '700'}}>
+        <Text style={{color: colors.dangerText, fontSize: 15.2, fontWeight: '700'}}>
           {t('settings.logout')}
         </Text>
       </Pressable>

@@ -127,7 +127,7 @@ export function MemberPaymentHistoryScreen() {
             fontSize: 12,
             fontWeight: '700',
             color: colors.goldPrestige,
-            backgroundColor: 'rgba(212,175,55,0.14)',
+            backgroundColor: colors.goldHalo14,
             alignSelf: 'flex-start',
             paddingHorizontal: 10,
             paddingVertical: 4,

@@ -2,11 +2,20 @@
  * Formulaire de demande de retrait — un seul POST à la fois.
  */
 
-import {requestWithdrawal} from '@core/api/endpoints/payment/retraits.api';
+import {
+  requestWithdrawal,
+  fetchWithdrawalDetail,
+} from '@core/api/endpoints/payment/retraits.api';
 import {fetchMoyensRetrait} from '@core/api/endpoints/payment/moyensRetrait.api';
-import type {WithdrawRequestResult} from '@core/api/endpoints/payment/retraits.types';
+import type {
+  WithdrawRequestResult,
+  WithdrawalEvent,
+} from '@core/api/endpoints/payment/retraits.types';
 import {memberBalanceStore} from '../../home/store/homeDashboardStore';
 import {withdrawalsStore} from '@shared/store';
+
+/** Ré-export : l'écran lit ce type ici, jamais depuis core/api (R-LAY-6). */
+export type {WithdrawalEvent};
 
 type Listener = () => void;
 
@@ -25,6 +34,10 @@ export type WithdrawalFormState = {
   > | null;
   errorMessage: string | null;
   uncertain: boolean;
+  /** Détail d'un retrait (feuille d'historique). */
+  detailId: string | null;
+  detailEvents: WithdrawalEvent[];
+  detailLoading: boolean;
 };
 
 const initial: WithdrawalFormState = {
@@ -39,8 +52,12 @@ const initial: WithdrawalFormState = {
   success: null,
   errorMessage: null,
   uncertain: false,
+  detailId: null,
+  detailEvents: [],
+  detailLoading: false,
 };
 
+let detailReq = 0;
 let state: WithdrawalFormState = {...initial};
 const listeners = new Set<Listener>();
 
@@ -66,11 +83,15 @@ export const withdrawalRequestStore = {
       ...initial,
       pays: state.pays,
       moyens: state.moyens,
+      detailId: state.detailId,
+      detailEvents: state.detailEvents,
+      detailLoading: state.detailLoading,
     };
     emit();
   },
 
   leaveScreen() {
+    detailReq += 1;
     state = {...initial};
     emit();
   },
@@ -94,6 +115,29 @@ export const withdrawalRequestStore = {
 
   setNumero(v: string) {
     set({numeroPaiement: v});
+  },
+
+  /** Ouvre la feuille de détail et charge l'historique des événements. */
+  async openDetail(id: string): Promise<void> {
+    const req = ++detailReq;
+    set({detailId: id, detailLoading: true, detailEvents: []});
+    const res = await fetchWithdrawalDetail(id);
+    if (req !== detailReq) return;
+    if (res.kind === 'success') {
+      const events = res.data.evenements;
+      set({detailLoading: false, detailEvents: events});
+      const last = events[events.length - 1];
+      if (last?.nouvelleValeur === 'rejetee') {
+        void memberBalanceStore.load({force: true});
+      }
+      return;
+    }
+    set({detailLoading: false});
+  },
+
+  closeDetail() {
+    detailReq += 1;
+    set({detailId: null, detailLoading: false, detailEvents: []});
   },
 
   async loadMoyens(pays: string): Promise<void> {

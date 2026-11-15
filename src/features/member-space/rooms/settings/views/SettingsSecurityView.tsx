@@ -57,15 +57,15 @@ export function SettingsSecurityView({
             paddingVertical: 4,
             paddingHorizontal: 10,
             borderRadius: 999,
-            backgroundColor: active ? 'rgba(34,197,94,0.14)' : colors.bgSurfaceAlt,
+            backgroundColor: active ? colors.statusActiveBg : colors.bgSurfaceAlt,
             borderWidth: 1,
-            borderColor: active ? 'rgba(34,197,94,0.3)' : colors.borderLight,
+            borderColor: active ? colors.statusActiveBorder : colors.borderLight,
           }}>
           <Text
             style={{
               fontSize: 12.5,
               fontWeight: '600',
-              color: active ? '#15803D' : colors.textSecondary,
+              color: active ? colors.statusActiveText : colors.textSecondary,
             }}>
             {active
               ? t('settings.sessionActive', {defaultValue: 'Session active'})
@@ -87,10 +87,10 @@ export function SettingsSecurityView({
           padding: 14,
           borderRadius: radii.lg,
           borderWidth: 1,
-          borderColor: 'rgba(220,38,38,0.35)',
+          borderColor: colors.dangerBorder,
           alignItems: 'center',
         }}>
-        <Text style={{color: '#B91C1C', fontWeight: '700'}}>{t('settings.logout')}</Text>
+        <Text style={{color: colors.dangerText, fontWeight: '700'}}>{t('settings.logout')}</Text>
       </Pressable>
     </ScrollView>
   );

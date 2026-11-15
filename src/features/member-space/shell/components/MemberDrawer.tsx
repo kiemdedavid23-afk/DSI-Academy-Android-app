@@ -303,11 +303,12 @@ export function MemberDrawer({open, onClose, activeRoom, onNavigateRoom}: Props)
                   styles.avatar,
                   {
                     borderColor: colors.goldBorder,
+                    backgroundColor: colors.bluePrimary,
                   },
                 ]}>
                 <Text
                   style={{
-                    color: '#FFFFFF',
+                    color: colors.textOnPrimary,
                     fontWeight: '700',
                     fontSize: 14.4,
                     fontFamily: 'Manrope-Bold',
@@ -343,7 +344,7 @@ export function MemberDrawer({open, onClose, activeRoom, onNavigateRoom}: Props)
               {ROOMS.map(room => {
                 const active = activeRoom === room.id;
                 const iconColor = active
-                  ? '#FFFFFF'
+                  ? colors.textOnPrimary
                   : colors.textSecondary;
                 const labelColor = active
                   ? isDarkMode
@@ -369,7 +370,7 @@ export function MemberDrawer({open, onClose, activeRoom, onNavigateRoom}: Props)
                         styles.ico,
                         active && {
                           backgroundColor: isDarkMode
-                            ? '#2563eb'
+                            ? colors.drawerActiveIconBgDark
                             : colors.bluePrimary,
                         },
                       ]}>
@@ -409,7 +410,7 @@ export function MemberDrawer({open, onClose, activeRoom, onNavigateRoom}: Props)
                 accessibilityRole="button"
                 accessibilityLabel={t('drawer.logout')}
                 testID="drawer-logout"
-                android_ripple={{color: 'rgba(220,38,38,0.08)'}}>
+                android_ripple={{color: colors.dangerRipple}}>
                 <View style={styles.ico}>
                   <Icon
                     name="LogoutIcon"
@@ -431,21 +432,23 @@ export function MemberDrawer({open, onClose, activeRoom, onNavigateRoom}: Props)
             </View>
 
             {/* Carte abonnement */}
-            <View style={styles.subCard}>
+            <View style={[styles.subCard, {backgroundColor: colors.bluePrimary}]}>
               <View style={styles.subTop}>
-                <Text style={styles.subTitle}>{t('drawer.subscription')}</Text>
+                <Text style={[styles.subTitle, {color: colors.drawerSubTitle}]}>{t('drawer.subscription')}</Text>
                 {subViewState !== 'loading' && subViewState !== 'none' ? (
                   <View
                     style={[
                       styles.subBadge,
                       subViewState === 'active'
-                        ? {backgroundColor: 'rgba(212,175,55,0.22)'}
-                        : {backgroundColor: 'rgba(248,113,113,0.22)'},
+                        ? {backgroundColor: colors.goldHalo22}
+                        : {backgroundColor: colors.badgeExpiredOnDarkBg},
                     ]}>
                     <Text
                       style={{
                         color:
-                          subViewState === 'active' ? '#f5d778' : '#fca5a5',
+                          subViewState === 'active'
+                            ? colors.badgeActiveOnDarkText
+                            : colors.badgeExpiredOnDarkText,
                         fontSize: 10.6,
                         fontWeight: '700',
                       }}>
@@ -456,7 +459,7 @@ export function MemberDrawer({open, onClose, activeRoom, onNavigateRoom}: Props)
                   </View>
                 ) : null}
               </View>
-              <Text style={styles.subLine}>
+              <Text style={[styles.subLine, {color: colors.textOnPrimary}]}>
                 {subViewState === 'loading'
                   ? '…'
                   : subViewState === 'none'
@@ -467,29 +470,30 @@ export function MemberDrawer({open, onClose, activeRoom, onNavigateRoom}: Props)
                         })
                       : t('drawer.subscription')}
               </Text>
-              <View style={styles.barTrack}>
+              <View style={[styles.barTrack, {backgroundColor: colors.drawerBarTrack}]}>
                 <View
                   style={[
                     styles.barFill,
                     {
+                      backgroundColor: colors.goldPrestige,
                       width: `${Math.min(100, Math.max(0, subPercent))}%`,
                     },
                   ]}
                 />
               </View>
               <View style={styles.subFoot}>
-                <Text style={styles.subFootText}>
+                <Text style={[styles.subFootText, {color: colors.drawerSubFoot}]}>
                   {subDays != null
                     ? t('drawer.daysLeft', {count: subDays})
                     : ''}
                 </Text>
                 <Pressable
                   onPress={() => onItem('subscription')}
-                  style={styles.subBtn}
+                  style={[styles.subBtn, {backgroundColor: colors.goldPrestige}]}
                   accessibilityRole="button">
                   <Text
                     style={{
-                      color: '#0f172a',
+                      color: colors.drawerSubBtnText,
                       fontSize: 11.5,
                       fontWeight: '700',
                     }}>
@@ -610,7 +614,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   backdrop: {
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.absoluteFill,
   },
   panel: {
     height: '100%',
@@ -670,8 +674,7 @@ const styles = StyleSheet.create({
     borderRadius: 22,
     alignItems: 'center',
     justifyContent: 'center',
-    // gradient fallback = blue-primary solid
-    backgroundColor: '#1E40AF',
+    // fond = blue-primary (appliqué au rendu via le thème)
     borderWidth: 2,
   },
   userText: {
@@ -713,7 +716,6 @@ const styles = StyleSheet.create({
   subCard: {
     padding: 14.4,
     borderRadius: 16,
-    backgroundColor: '#1E40AF', // gradient fallback
   },
   subTop: {
     flexDirection: 'row',
@@ -724,7 +726,6 @@ const styles = StyleSheet.create({
   subTitle: {
     fontSize: 12.5,
     fontWeight: '700',
-    color: 'rgba(255,255,255,0.9)',
   },
   subBadge: {
     paddingVertical: 2,
@@ -736,18 +737,15 @@ const styles = StyleSheet.create({
     marginBottom: 8.8,
     fontSize: 15.2,
     fontWeight: '700',
-    color: '#FFFFFF',
   },
   barTrack: {
     height: 8,
     borderRadius: 9999,
-    backgroundColor: 'rgba(255,255,255,0.22)',
     overflow: 'hidden',
   },
   barFill: {
     height: '100%',
     borderRadius: 9999,
-    backgroundColor: '#D4AF37',
   },
   subFoot: {
     flexDirection: 'row',
@@ -758,7 +756,6 @@ const styles = StyleSheet.create({
   },
   subFootText: {
     fontSize: 11.2,
-    color: 'rgba(255,255,255,0.78)',
     flex: 1,
   },
   subBtn: {
@@ -766,7 +763,6 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
     paddingHorizontal: 12,
     borderRadius: 9999,
-    backgroundColor: '#D4AF37',
   },
   social: {
     flexDirection: 'row',

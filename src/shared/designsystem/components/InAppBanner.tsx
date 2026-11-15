@@ -1,5 +1,7 @@
 /**
- * Bannière in-app générique (overlay, une à la fois via bannerStore).
+ * Bannière in-app générique (overlay). Composant PUR : il reçoit la bannière
+ * et le rappel de fermeture en props, sans dépendre d'aucun store (R-LAY-3).
+ * Le branchement sur bannerStore se fait dans le shell.
  * Glisse depuis le haut + fondu ; respect reduceMotion.
  */
 
@@ -13,19 +15,35 @@ import {
   AccessibilityInfo,
 } from 'react-native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import {useSyncExternalStore} from 'react';
 import {Text} from './Text';
 import {Icon} from '../icons';
 import {useTheme} from '../theme';
-import {bannerStore, type BannerPayload, type BannerTone} from '@shared/store';
+export type InAppBannerTone = 'warning' | 'success' | 'info' | 'error';
+
+export type InAppBannerData = {
+  id: string;
+  tone: InAppBannerTone;
+  /** Texte déjà traduit. */
+  title: string;
+  /** Texte déjà traduit. */
+  message: string;
+  dismissible: boolean;
+  /** ms ; absent = jusqu'à fermeture manuelle. */
+  autoHideMs?: number;
+};
 
 type Props = {
+  /** Bannière à afficher, ou null. */
+  banner: InAppBannerData | null;
+  onDismiss: (id: string) => void;
+  /** Libellé accessible du bouton de fermeture (déjà traduit). */
+  dismissLabel: string;
   /** Décalage sous l'en-tête (ex. 64 + safe). 0 = sous barre d'état. */
   topOffset?: number;
 };
 
 function toneColors(
-  tone: BannerTone,
+  tone: InAppBannerTone,
   colors: ReturnType<typeof useTheme>['colors'],
 ): {border: string; iconBg: string; icon: string} {
   switch (tone) {
@@ -56,7 +74,7 @@ function toneColors(
   }
 }
 
-function iconName(tone: BannerTone): 'WarningIcon' | 'CheckIcon' | 'BellIcon' {
+function iconName(tone: InAppBannerTone): 'WarningIcon' | 'CheckIcon' | 'BellIcon' {
   if (tone === 'success') {
     return 'CheckIcon';
   }
@@ -66,14 +84,14 @@ function iconName(tone: BannerTone): 'WarningIcon' | 'CheckIcon' | 'BellIcon' {
   return 'BellIcon';
 }
 
-export function InAppBanner({topOffset = 0}: Props) {
+export function InAppBanner({
+  banner,
+  onDismiss,
+  dismissLabel,
+  topOffset = 0,
+}: Props) {
   const {colors, elevation, radii, reduceMotion} = useTheme();
   const insets = useSafeAreaInsets();
-  const banner = useSyncExternalStore(
-    bannerStore.subscribe,
-    bannerStore.get,
-    bannerStore.get,
-  );
 
   const translateY = useRef(new Animated.Value(-80)).current;
   const opacity = useRef(new Animated.Value(0)).current;
@@ -135,7 +153,7 @@ export function InAppBanner({topOffset = 0}: Props) {
 
     if (banner.autoHideMs && banner.autoHideMs > 0) {
       hideTimer.current = setTimeout(() => {
-        bannerStore.dismiss(banner.id);
+        onDismiss(banner.id);
       }, banner.autoHideMs);
     }
 
@@ -144,7 +162,7 @@ export function InAppBanner({topOffset = 0}: Props) {
         clearTimeout(hideTimer.current);
       }
     };
-  }, [banner, reduceMotion, translateY, opacity]);
+  }, [banner, onDismiss, reduceMotion, translateY, opacity]);
 
   if (!banner) {
     return null;
@@ -211,9 +229,9 @@ export function InAppBanner({topOffset = 0}: Props) {
         </View>
         {banner.dismissible ? (
           <Pressable
-            onPress={() => bannerStore.dismiss(banner.id)}
+            onPress={() => onDismiss(banner.id)}
             accessibilityRole="button"
-            accessibilityLabel="Fermer"
+            accessibilityLabel={dismissLabel}
             hitSlop={8}
             style={styles.close}
             testID="in-app-banner-dismiss">

@@ -105,6 +105,50 @@ describe('couleurs : thème sombre (§2, §3, §5)', () => {
   });
 });
 
+describe('couleurs : tokens des anciennes couleurs en dur de features (L3 correctif)', () => {
+  it.each([
+    ['memberCardBgStart', '#0F172A'],
+    ['memberCardBgMid', '#1E293B'],
+    ['memberCardHaloStart', 'rgba(212, 175, 55, 0.2)'],
+    ['memberCardHaloEnd', 'rgba(212, 175, 55, 0)'],
+    ['memberCardBorder', 'rgba(212, 175, 55, 0.35)'],
+    ['memberCardText', '#FDF6E2'],
+    ['memberCardMeta', 'rgba(248, 250, 252, 0.75)'],
+    ['memberCardStatusOnText', '#6EE7B7'],
+    ['memberCardStatusOnBg', 'rgba(16, 185, 129, 0.2)'],
+    ['memberCardStatusOffBg', 'rgba(148, 163, 184, 0.15)'],
+    ['notifBadgeMaintenanceBg', '#FEF3C7'],
+    ['notifBadgeMaintenanceText', '#92400E'],
+    ['notifBadgeUrgentBg', '#FEE2E2'],
+    ['notifBadgeUrgentText', '#991B1B'],
+    ['notifBadgeInfoBg', '#DBEAFE'],
+    ['notifBadgeInfoText', '#1E40AF'],
+    ['notifBadgeDefaultBg', '#F1F5F9'],
+    ['notifBadgeDefaultText', '#475569'],
+    ['dangerText', '#B91C1C'],
+    ['dangerBorder', 'rgba(220, 38, 38, 0.35)'],
+    ['dangerBg', '#FEF2F2'],
+    ['dangerPanelBorder', '#FCA5A5'],
+    ['statusActiveBg', 'rgba(34, 197, 94, 0.14)'],
+    ['statusActiveBorder', 'rgba(34, 197, 94, 0.3)'],
+    ['statusActiveText', '#15803D'],
+    ['statusActiveOnDarkBg', 'rgba(34, 197, 94, 0.18)'],
+    ['statusActiveOnDarkBorder', 'rgba(34, 197, 94, 0.4)'],
+    ['statusActiveOnDarkText', '#86EFAC'],
+    ['switchKnob', '#FFFFFF'],
+    ['goldHalo12', 'rgba(212, 175, 55, 0.12)'],
+    ['goldHalo14', 'rgba(212, 175, 55, 0.14)'],
+    ['goldHalo18', 'rgba(212, 175, 55, 0.18)'],
+    ['goldHalo22', 'rgba(212, 175, 55, 0.22)'],
+    ['textOnPrimary', '#FFFFFF'],
+    ['shellScrim', 'rgba(0, 0, 0, 0.2)'],
+    ['drawerActiveIconBgDark', '#2563EB'],
+  ] as [keyof ColorTokens, string][])('%s = %s (clair et sombre)', (key, expected) => {
+    expect(lightColors[key]).toBe(expected);
+    expect(darkColors[key]).toBe(expected);
+  });
+});
+
 describe('couleurs : cohérence', () => {
   it('les deux jeux ont exactement les mêmes clés', () => {
     expect(Object.keys(darkColors).sort()).toEqual(Object.keys(lightColors).sort());

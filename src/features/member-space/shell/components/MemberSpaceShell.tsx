@@ -7,7 +7,8 @@ import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import {View, Image, StyleSheet, useWindowDimensions, AppState} from 'react-native';
 import {useNavigation, useNavigationState} from '@react-navigation/native';
 import type {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {useTheme, InAppBanner} from '@shared/designsystem';
+import {useTheme} from '@shared/designsystem';
+import {ShellBanner} from './ShellBanner';
 import {connectivityStore, notificationsStore} from '@shared/store';
 import {loadHomeDashboard} from '../../rooms/home/store/homeDashboardStore';
 import {MemberHeader} from './MemberHeader';
@@ -139,7 +140,7 @@ export function MemberSpaceShell({children}: Props) {
       />
       {isDark ? (
         <View
-          style={[styles.bgOverlay, {backgroundColor: 'rgba(0,0,0,0.20)'}]}
+          style={[styles.bgOverlay, {backgroundColor: colors.shellScrim}]}
           pointerEvents="none"
         />
       ) : null}
@@ -153,7 +154,7 @@ export function MemberSpaceShell({children}: Props) {
         <View style={[styles.fill, {backgroundColor: 'transparent'}]}>
           {children}
         </View>
-        <InAppBanner topOffset={64} />
+        <ShellBanner topOffset={64} />
       </View>
 
       <MemberDrawer
@@ -173,7 +174,7 @@ const styles = StyleSheet.create({
     zIndex: 0,
   },
   bgOverlay: {
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.absoluteFill,
     zIndex: 0,
   },
   content: {

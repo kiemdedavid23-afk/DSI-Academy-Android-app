@@ -471,8 +471,7 @@
         "empty": "Enter a code.",
         "invalid": "This code is invalid or has expired.",
         "session": "Your session has expired. Please log in again.",
-        "unavailable": "Service unavailable. Try again later.",
-        "alreadyUsed": "This code has already been used."
+        "unavailable": "Service unavailable. Try again later."
       },
       "tooManyAttempts": "Too many attempts. Try again in a few minutes."
     }

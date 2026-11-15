@@ -13,11 +13,14 @@ import {
   StyleSheet,
   ActivityIndicator,
 } from 'react-native';
-import {Text, useTheme, Icon} from '@shared/designsystem';
+import {Text, useTheme} from '@shared/designsystem';
 import {useTranslation} from '@shared/i18n';
-import {memberSubscriptionStore, connectivityStore} from '@shared/store';
+import {
+  memberSubscriptionStore,
+  connectivityStore,
+  getDisplayPricing,
+} from '@shared/store';
 import {computeSubscription} from '@core/utils/subscription';
-import {RENEWAL_PRICE_DSI} from '@core/config/pricing';
 import {validerChampPaiement} from '@core/utils/paymentFieldValidation';
 import {subscriptionRenewalStore} from '../store/subscriptionRenewalStore';
 
@@ -54,9 +57,9 @@ function modeLabel(
 
 export function MemberSubscriptionScreen() {
   const {t, i18n} = useTranslation();
-  const {colors, radii, glass, spacing} = useTheme();
+  const {colors, radii, glass} = useTheme();
   const locale = i18n.language?.startsWith('en') ? 'en-US' : 'fr-FR';
-  const amountDsi = new Intl.NumberFormat(locale).format(RENEWAL_PRICE_DSI);
+  const amountDsi = new Intl.NumberFormat(locale).format(getDisplayPricing().renewalPriceDsi);
 
   const subState = useSyncExternalStore(
     cb => memberSubscriptionStore.subscribe(() => cb()),

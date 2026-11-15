@@ -51,7 +51,7 @@ export function SettingsPreferencesView({onBack}: {onBack: () => void}) {
               paddingVertical: 8.8,
               paddingHorizontal: 8,
               borderRadius: Math.max(radii.md - 2, 4),
-              backgroundColor: active ? 'rgba(212,175,55,0.18)' : 'transparent',
+              backgroundColor: active ? colors.goldHalo18 : 'transparent',
               borderWidth: active ? 1 : 0,
               borderColor: colors.goldBorder,
               alignItems: 'center',
@@ -144,7 +144,7 @@ export function SettingsPreferencesView({onBack}: {onBack: () => void}) {
               width: 20,
               height: 20,
               borderRadius: 10,
-              backgroundColor: '#fff',
+              backgroundColor: colors.switchKnob,
               alignSelf: prefs.reduceMotion ? 'flex-end' : 'flex-start',
             }}
           />

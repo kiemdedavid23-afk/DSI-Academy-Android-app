@@ -471,8 +471,7 @@
         "empty": "Saisissez un code.",
         "invalid": "Ce code est invalide ou a expiré.",
         "session": "Votre session a expiré. Veuillez vous reconnecter.",
-        "unavailable": "Service indisponible. Réessayez plus tard.",
-        "alreadyUsed": "Ce code a déjà été utilisé."
+        "unavailable": "Service indisponible. Réessayez plus tard."
       },
       "tooManyAttempts": "Trop d’essais. Réessayez dans quelques minutes."
     }

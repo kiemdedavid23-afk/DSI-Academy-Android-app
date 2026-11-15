@@ -20,10 +20,9 @@ import {
   memberSubscriptionStore,
   referralStore,
 } from '@shared/store';
-import {MemberCard} from '@features/member-space/components/MemberCard';
+import {MemberCard} from '../../../components/MemberCard';
 import {referralLevel} from '@core/utils/referralLevel';
 import {countryLabel} from '@core/data/countries';
-import {preferencesStore} from '@shared/preferences';
 
 function CopyRow({
   label,
@@ -130,7 +129,7 @@ export function MemberProfileScreen() {
         <Pressable
           onPress={() => void memberProfileStore.load({force: true})}
           style={[styles.btn, {backgroundColor: colors.bluePrimary, marginTop: 12}]}>
-          <Text style={{color: '#fff', fontWeight: '600'}}>{t('common.retry')}</Text>
+          <Text style={{color: colors.textOnPrimary, fontWeight: '600'}}>{t('common.retry')}</Text>
         </Pressable>
       </View>
     );
@@ -188,7 +187,7 @@ export function MemberProfileScreen() {
               borderRadius: radii.md,
               backgroundColor: colors.blueLight,
               borderWidth: 1,
-              borderColor: 'rgba(37,99,235,0.15)',
+              borderColor: colors.blueBorderSoft,
               alignItems: 'center',
               justifyContent: 'center',
             }}>
@@ -231,7 +230,7 @@ export function MemberProfileScreen() {
               paddingVertical: 5,
               paddingHorizontal: 12,
               borderRadius: 999,
-              backgroundColor: 'rgba(212,175,55,0.14)',
+              backgroundColor: colors.goldHalo14,
               borderWidth: 1,
               borderColor: colors.goldBorder,
             }}>
@@ -246,13 +245,13 @@ export function MemberProfileScreen() {
               borderRadius: 999,
               backgroundColor:
                 p.statut === 'active'
-                  ? 'rgba(34,197,94,0.18)'
-                  : 'rgba(255,255,255,0.12)',
+                  ? colors.statusActiveOnDarkBg
+                  : colors.statusInactiveOnDarkBg,
               borderWidth: 1,
               borderColor:
                 p.statut === 'active'
-                  ? 'rgba(34,197,94,0.4)'
-                  : 'rgba(255,255,255,0.2)',
+                  ? colors.statusActiveOnDarkBorder
+                  : colors.statusInactiveOnDarkBorder,
               flexDirection: 'row',
               alignItems: 'center',
               gap: 6,
@@ -263,12 +262,17 @@ export function MemberProfileScreen() {
                 height: 7,
                 borderRadius: 4,
                 backgroundColor:
-                  p.statut === 'active' ? '#86EFAC' : colors.textOnDark,
+                  p.statut === 'active'
+                    ? colors.statusActiveOnDarkText
+                    : colors.textOnDark,
               }}
             />
             <Text
               style={{
-                color: p.statut === 'active' ? '#86EFAC' : colors.textOnDark,
+                color:
+                  p.statut === 'active'
+                    ? colors.statusActiveOnDarkText
+                    : colors.textOnDark,
                 fontSize: 12.8,
                 fontWeight: '600',
               }}>
@@ -295,7 +299,7 @@ export function MemberProfileScreen() {
         style={[
           styles.card,
           {
-            backgroundColor: 'rgba(212,175,55,0.12)',
+            backgroundColor: colors.goldHalo12,
             borderColor: colors.goldBorder,
             borderRadius: radii.lg,
             minHeight: 80,
@@ -358,7 +362,7 @@ export function MemberProfileScreen() {
         <Text style={{color: colors.success, fontSize: 13}}>{t('profile.copy')}</Text>
       ) : null}
       {copyError ? (
-        <Text style={{color: '#B91C1C', fontSize: 13.1}}>{t('profile.copyError')}</Text>
+        <Text style={{color: colors.dangerText, fontSize: 13.1}}>{t('profile.copyError')}</Text>
       ) : null}
 
       {/* Raccourcis */}

@@ -24,7 +24,6 @@ async function loadReferral(): Promise<MemberReferral> {
 }
 
 export const referralStore = createResourceStore<MemberReferral>({
-  name: 'referral',
   fetcher: loadReferral,
 });
 

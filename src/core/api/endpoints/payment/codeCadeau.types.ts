@@ -8,7 +8,6 @@ export type RedeemCodeResult =
   | {
       kind: 'success';
       status: 'refuse';
-      reason: 'invalid' | 'alreadyUsed';
       message: string | null;
     }
   | {

@@ -23,12 +23,9 @@ import {
   buildReferralInviteLink,
 } from '@shared/store/referralStore';
 import {referralLevel} from '@core/utils/referralLevel';
-import {
-  REFERRAL_REWARD_N1_DSI,
-  REFERRAL_REWARD_N2_DSI,
-} from '@core/config/pricing';
 import {dsiToFcfa} from '@core/utils/dsi';
-import {preferencesStore} from '@shared/preferences';
+import {usePreferences} from '@shared/preferences';
+import {getDisplayPricing} from '@shared/store';
 
 if (
   Platform.OS === 'android' &&
@@ -57,11 +54,8 @@ export function MemberReferralScreen() {
     () => referralStore.getState(),
     () => referralStore.getState(),
   );
-  const reduceMotion = useSyncExternalStore(
-    preferencesStore.subscribe,
-    () => preferencesStore.getState().reduceMotion,
-    () => false,
-  );
+  const {reduceMotion} = usePreferences();
+  const pricing = getDisplayPricing();
 
   const [rulesOpen, setRulesOpen] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -418,10 +412,10 @@ export function MemberReferralScreen() {
                 {t('referral.level1')}
               </Text>
               <Text style={{fontFamily: 'Fraunces-Bold', fontSize: 22, color: colors.homeGold}}>
-                {fmt(REFERRAL_REWARD_N1_DSI)} DSI
+                {fmt(pricing.referralRewardN1Dsi)} DSI
                 <Text style={{fontSize: 14, color: colors.textSecondary}}>
                   {' '}
-                  ({fmt(dsiToFcfa(REFERRAL_REWARD_N1_DSI))} FCFA)
+                  ({fmt(dsiToFcfa(pricing.referralRewardN1Dsi))} FCFA)
                 </Text>
               </Text>
               <Text style={{color: colors.textSecondary, fontSize: 13}}>
@@ -433,10 +427,10 @@ export function MemberReferralScreen() {
                 {t('referral.level2')}
               </Text>
               <Text style={{fontFamily: 'Fraunces-Bold', fontSize: 22, color: colors.homeGold}}>
-                {fmt(REFERRAL_REWARD_N2_DSI)} DSI
+                {fmt(pricing.referralRewardN2Dsi)} DSI
                 <Text style={{fontSize: 14, color: colors.textSecondary}}>
                   {' '}
-                  ({fmt(dsiToFcfa(REFERRAL_REWARD_N2_DSI))} FCFA)
+                  ({fmt(dsiToFcfa(pricing.referralRewardN2Dsi))} FCFA)
                 </Text>
               </Text>
               <Text style={{color: colors.textSecondary, fontSize: 13}}>

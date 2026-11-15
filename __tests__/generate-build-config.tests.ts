@@ -25,6 +25,7 @@ describe('validateRegistryConfig', () => {
         marketplace: 'https://marketplace.example.invalid',
         community: 'https://community.example.invalid',
         admin: 'https://admin.example.invalid',
+        notifications: 'https://notifications.example.invalid',
       },
       web: 'https://web.example.invalid',
     };
@@ -43,6 +44,7 @@ describe('validateRegistryConfig', () => {
         marketplace: '/marketplace',
         community: '/community',
         admin: '/admin',
+        notifications: '/notifications',
       },
       web: 'https://web.example.invalid',
     };
@@ -74,6 +76,7 @@ describe('validateRegistryConfig', () => {
         marketplace: 'https://marketplace.example.invalid',
         community: 'https://community.example.invalid',
         admin: 'https://admin.example.invalid',
+        notifications: 'https://notifications.example.invalid',
       },
       web: 'https://web.example.invalid',
     };
@@ -91,6 +94,7 @@ describe('validateRegistryConfig', () => {
         marketplace: 'https://marketplace.example.invalid',
         community: 'https://community.example.invalid',
         admin: 'https://admin.example.invalid',
+        notifications: 'https://notifications.example.invalid',
       },
       web: 'https://web.example.invalid',
     };
@@ -109,11 +113,41 @@ describe('validateRegistryConfig', () => {
         marketplace: '/marketplace',
         community: '/community',
         admin: '/admin',
+        notifications: '/notifications',
       },
       web: 'https://web.example.invalid',
     };
     const result = validateRegistryConfig(raw);
     expect(result.ok).toBe(false);
+  });
+
+  it('refuse la clé notifications absente (perService) avec une erreur claire', () => {
+    const urls = Object.fromEntries(
+      SERVICE_IDS.map((id: string) => [id, `https://${id}.example.invalid`]),
+    );
+    delete urls.notifications;
+    const result = validateRegistryConfig({
+      mode: 'perService',
+      urls,
+      web: 'https://web.example.invalid',
+    });
+    expect(result.ok).toBe(false);
+    expect(result.error).toContain('urls.notifications');
+  });
+
+  it('refuse la clé notifications absente (gateway) avec une erreur claire', () => {
+    const prefixes = Object.fromEntries(
+      SERVICE_IDS.map((id: string) => [id, `/${id}`]),
+    );
+    delete prefixes.notifications;
+    const result = validateRegistryConfig({
+      mode: 'gateway',
+      baseUrl: 'https://gateway.example.invalid',
+      prefixes,
+      web: 'https://web.example.invalid',
+    });
+    expect(result.ok).toBe(false);
+    expect(result.error).toContain('prefixes.notifications');
   });
 
   it('refuse un web non-https', () => {
