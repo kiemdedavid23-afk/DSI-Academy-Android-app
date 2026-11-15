@@ -16,6 +16,7 @@ import {
 import {Text, useTheme} from '@shared/designsystem';
 import {useTranslation} from '@shared/i18n';
 import {
+  bannerStore,
   memberSubscriptionStore,
   connectivityStore,
   getDisplayPricing,
@@ -95,15 +96,18 @@ export function MemberSubscriptionScreen() {
   const computed = computeSubscription(abonnement);
   const etat = computed.state; // active | expired | none
 
-  const msgKeyOrText = (m: string | null) => {
-    if (!m) {
-      return '';
+  // Résultat du renouvellement (message du Worker ou clé i18n) : bannière.
+  useEffect(() => {
+    const m = renewal.message;
+    if (!m || (renewal.phase !== 'success' && renewal.phase !== 'error')) {
+      return;
     }
-    if (m.includes('.')) {
-      return t(m);
-    }
-    return m;
-  };
+    bannerStore.notify({
+      tone: renewal.phase === 'success' ? 'success' : 'error',
+      type: 'renewal-result',
+      message: m.includes('.') ? t(m) : m,
+    });
+  }, [renewal.phase, renewal.message, t]);
 
   if (loading) {
     return (
@@ -258,26 +262,6 @@ export function MemberSubscriptionScreen() {
           </View>
         ))}
       </View>
-
-      {/* Message succès / erreur renouvellement */}
-      {renewal.phase === 'success' && renewal.message ? (
-        <View
-          style={[styles.banner, {backgroundColor: colors.successBg}]}
-          accessibilityLiveRegion="polite">
-          <Text style={{color: colors.success, fontWeight: '600'}}>
-            {msgKeyOrText(renewal.message)}
-          </Text>
-        </View>
-      ) : null}
-      {renewal.phase === 'error' && renewal.message ? (
-        <View
-          style={[styles.banner, {backgroundColor: colors.errorBg}]}
-          accessibilityLiveRegion="polite">
-          <Text style={{color: colors.error, fontWeight: '600'}}>
-            {msgKeyOrText(renewal.message)}
-          </Text>
-        </View>
-      ) : null}
 
       {/* Action renouveler */}
       <View
@@ -636,10 +620,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     borderRadius: 10,
     alignItems: 'center',
-  },
-  banner: {
-    padding: 12,
-    borderRadius: 10,
   },
   input: {
     borderWidth: 1,
