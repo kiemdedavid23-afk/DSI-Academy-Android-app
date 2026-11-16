@@ -1,35 +1,47 @@
 /**
- * Média d'un contenu : vignette du Worker (https), sinon illustration sombre de
- * la maison + icône. Format 2:3 pour un livre (ContentCard.jsx du site).
+ * Média d'un contenu (site : ContentCover dans ContentCard.jsx) : vignette du
+ * Worker (https), sinon illustration sombre de la maison avec son icône dans
+ * une pastille. Format selon la maison : livre 2:3, vidéo et formation 16:9,
+ * audio carré. Les enfants (pastilles, bouton de lecture) se superposent.
  */
 
 import React, {useState} from 'react';
-import {Image, StyleSheet, View} from 'react-native';
-import {Icon, useTheme, withAlpha, type IconName} from '@shared/designsystem';
+import {Image, StyleSheet, View, type StyleProp, type ViewStyle} from 'react-native';
+import {Icon, useTheme, withAlpha} from '@shared/designsystem';
+import {HOUSE_VISUALS, type HouseId} from '@shared/houses/houseVisuals';
 
-const FALLBACK_BOOK = require('@assets/images/academy/house-library.webp');
+const ASPECT = {book: 2 / 3, video: 16 / 9, course: 16 / 9, audio: 1} as const;
+const FALLBACK_BADGE = 44;
 
 export type ContentCoverProps = {
   thumbnailUrl: string | null;
-  /** Icône de la maison quand il n'y a pas d'image. */
-  icon?: IconName;
-  style?: object;
+  /** Maison du contenu (défaut : Bibliothèque). */
+  houseId?: HouseId;
+  style?: StyleProp<ViewStyle>;
+  children?: React.ReactNode;
 };
 
 export function ContentCover({
   thumbnailUrl,
-  icon = 'BookIcon',
+  houseId = 'library',
   style,
+  children,
 }: ContentCoverProps) {
-  const {colors, radii} = useTheme();
+  const {colors, radii, glass} = useTheme();
   const [failed, setFailed] = useState(false);
+  const visual = HOUSE_VISUALS[houseId];
   const hasImage = Boolean(thumbnailUrl) && !failed;
 
   return (
     <View
       style={[
         styles.box,
-        {backgroundColor: colors.bgDarkPremium, borderRadius: radii.md},
+        {
+          aspectRatio: ASPECT[visual.kind],
+          backgroundColor: colors.bgDarkPremium,
+          borderColor: glass.border,
+          borderRadius: radii.md,
+        },
         style,
       ]}>
       {hasImage ? (
@@ -42,23 +54,42 @@ export function ContentCover({
         />
       ) : (
         <>
-          <Image source={FALLBACK_BOOK} style={styles.fill} resizeMode="cover" />
+          <Image source={visual.image} style={styles.fill} resizeMode="cover" />
           <View
             style={[
               styles.fill,
-              styles.center,
-              {backgroundColor: withAlpha(colors.bgDarkPremium, 0.55)},
-            ]}>
-            <Icon name={icon} size={32} color={colors.goldPrestige} />
+              {backgroundColor: withAlpha(colors.bgDarkPremium, 0.3)},
+            ]}
+          />
+          <View style={[styles.fill, styles.center]}>
+            <View
+              style={[
+                styles.badge,
+                {
+                  backgroundColor: withAlpha(colors.bgDarkPremium, 0.55),
+                  borderColor: withAlpha(colors.textOnDark, 0.25),
+                },
+              ]}>
+              <Icon name={visual.icon} size={24} color={colors.textOnDark} />
+            </View>
           </View>
         </>
       )}
+      {children}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  box: {aspectRatio: 2 / 3, overflow: 'hidden', width: '100%'},
-  fill: {...StyleSheet.absoluteFill},
+  box: {borderWidth: 1, overflow: 'hidden', width: '100%'},
+  fill: {...StyleSheet.absoluteFillObject},
   center: {alignItems: 'center', justifyContent: 'center'},
+  badge: {
+    alignItems: 'center',
+    borderRadius: 9999,
+    borderWidth: 1,
+    height: FALLBACK_BADGE,
+    justifyContent: 'center',
+    width: FALLBACK_BADGE,
+  },
 });

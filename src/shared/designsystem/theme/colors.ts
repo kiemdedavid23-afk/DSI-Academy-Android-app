@@ -384,3 +384,11 @@ export const darkColors: ColorTokens = {
 
 /** Scène média (lecteur vidéo / YouTube) : fond noir et texte blanc, identiques en clair et en sombre. */
 export const mediaStageColors = {background: '#000000', text: '#FFFFFF'} as const;
+
+/** Thèmes de lecture (texte et livres), identiques en clair et en sombre (site : TxtViewer.css). */
+export const readingThemes = {
+  light: {background: '#FFFFFF', text: '#1F2937'},
+  sepia: {background: '#F4ECD8', text: '#433422'},
+  night: {background: '#0F1218', text: '#D6D3CB'},
+} as const;
+export type ReadingThemeId = keyof typeof readingThemes;

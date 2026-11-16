@@ -178,6 +178,11 @@ export const iconShapes = {
     {type: 'rect', x: 16.5, y: 14, width: 4, height: 6, rx: 1.5},
   ],
   PlayIcon: [{type: 'path', d: 'M8 5.5v13l10.5-6.5z'}],
+  /** Favori — BookmarkIcon (site) */
+  BookmarkIcon: [{type: 'path', d: 'M7 4.5h10a1 1 0 0 1 1 1V20l-6-4-6 4V5.5a1 1 0 0 1 1-1z'}],
+  /** Plus (ajouter à la liste) — PlusIcon (site) */
+  PlusIcon: [{type: 'path', d: 'M12 5v14M5 12h14'}],
+
 } as const satisfies Record<string, readonly IconShape[]>;
 
 export type IconName = keyof typeof iconShapes;

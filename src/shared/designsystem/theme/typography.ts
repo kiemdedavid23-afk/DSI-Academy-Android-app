@@ -47,6 +47,9 @@ export const typography = {
   greeting: role('royal', 24, '600', 1.3), // salutation (.dsi-home-hello)
   heading: role('royal', 22, '600', 1.3),
   subtitle: role('royal', 18, '600', 1.35),
+  readingSerif: role('royal', 17, '400', 1.65), // lecteur de texte, police avec empattement
+  readingSans: role('sans', 17, '400', 1.65), // lecteur de texte, police sans empattement
+  cardTitle: role('royal', 16, '600', 1.25), // titres de cartes de contenu (.dsi-cc-title)
   // Manrope : tout le reste
   body: role('sans', 16, '400', BODY_LINE_RATIO),
   bodyStrong: role('sans', 16, '600', BODY_LINE_RATIO),

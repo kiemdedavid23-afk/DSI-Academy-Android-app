@@ -1,8 +1,11 @@
 package app.dsiacademy.player
 
+import android.app.PictureInPictureParams
 import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.net.Uri
+import android.os.Build
+import android.util.Rational
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
@@ -61,6 +64,8 @@ class DsiPlayerModule(private val ctx: ReactApplicationContext) : ReactContextBa
         })
       }
       lastError = null
+      p.repeatMode = Player.REPEAT_MODE_OFF
+      p.volume = 1f
       val meta = MediaMetadata.Builder().setTitle(title).setArtist(artist)
         .setArtworkUri(artwork?.let { Uri.parse(it) }).build()
       p.setMediaItem(MediaItem.Builder().setUri(url).setMediaMetadata(meta).build(), startMs.toLong())
@@ -77,6 +82,35 @@ class DsiPlayerModule(private val ctx: ReactApplicationContext) : ReactContextBa
   @ReactMethod fun pause() = ui { PlayerHolder.get(ctx).pause() }
   @ReactMethod fun seekTo(ms: Double) = ui { PlayerHolder.get(ctx).seekTo(ms.toLong()) }
   @ReactMethod fun setSpeed(speed: Double) = ui { PlayerHolder.get(ctx).setPlaybackSpeed(speed.toFloat()) }
+
+  /** Lecture en boucle du contenu en cours. */
+  @ReactMethod
+  fun setLoop(enabled: Boolean) = ui {
+    PlayerHolder.get(ctx).repeatMode = if (enabled) Player.REPEAT_MODE_ONE else Player.REPEAT_MODE_OFF
+  }
+
+  /** Volume du lecteur, de 0 (muet) à 1. */
+  @ReactMethod
+  fun setVolume(volume: Double) = ui {
+    PlayerHolder.get(ctx).volume = volume.toFloat().coerceIn(0f, 1f)
+  }
+
+  /** Image dans l'image (Android 8 et plus), format 16:9. */
+  @ReactMethod
+  fun enterPip() {
+    ui {
+      val activity = ctx.currentActivity ?: return@ui
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        try {
+          activity.enterPictureInPictureMode(
+            PictureInPictureParams.Builder().setAspectRatio(Rational(16, 9)).build(),
+          )
+        } catch (_: IllegalStateException) {
+          // Image dans l'image refusée par le système : on reste en lecture normale.
+        }
+      }
+    }
+  }
 
   @ReactMethod
   fun getState(promise: Promise) {

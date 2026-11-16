@@ -9,8 +9,8 @@ export {
 export type {Theme, ThemeMode} from './ThemeProvider';
 export {themePreferences, useThemePreferences} from './themePreferences';
 export type {ThemePreference, Preferences} from './themePreferences';
-export {lightColors, darkColors, mediaStageColors, withAlpha} from './colors';
-export type {ColorTokens} from './colors';
+export {lightColors, darkColors, mediaStageColors, readingThemes, withAlpha} from './colors';
+export type {ColorTokens, ReadingThemeId} from './colors';
 export {typography, ALLOWED_SIZES, MAX_FONT_SIZE_MULTIPLIER, lineHeightPx} from './typography';
 export type {TypographyVariant, TypographyRole} from './typography';
 export {fontFamily, EXPECTED_FONT_FILES} from './fonts';

@@ -41,6 +41,15 @@ export type PlayerStoreState = {
   durationMs: number;
   speed: number;
   fullscreen: boolean;
+  /** Lecture en boucle. */
+  loop: boolean;
+  /** Volume de 0 à 1 (conservé pendant le mode muet). */
+  volume: number;
+  muted: boolean;
+  /** Minuteur de sommeil armé, en minutes, ou null. */
+  sleepMinutes: number | null;
+  /** Image dans l'image demandée. */
+  pip: boolean;
   errorKind: MediaErrorKind | null;
   retryable: boolean;
 };
@@ -59,6 +68,11 @@ const INITIAL: PlayerStoreState = {
   durationMs: 0,
   speed: 1,
   fullscreen: false,
+  loop: false,
+  volume: 1,
+  muted: false,
+  sleepMinutes: null,
+  pip: false,
   errorKind: null,
   retryable: false,
 };
@@ -68,6 +82,14 @@ export function createPlayerStore() {
   let generation = 0;
   let poll: ReturnType<typeof setInterval> | null = null;
   let lastSave = 0;
+  let sleepTimer: ReturnType<typeof setTimeout> | null = null;
+
+  function clearSleep(): void {
+    if (sleepTimer) {
+      clearTimeout(sleepTimer);
+      sleepTimer = null;
+    }
+  }
   let resumePercent: number | null = null;
   let reResolves = 0;
   let busy = false;
@@ -187,6 +209,7 @@ export function createPlayerStore() {
     generation += 1;
     const mine = generation;
     stopPoll();
+    clearSleep();
     playerControls.release();
     reResolves = 0;
     lastSave = 0;
@@ -232,6 +255,43 @@ export function createPlayerStore() {
       playerControls.setSpeed(next);
       store.setState({speed: next});
     },
+    setSpeed: (speed: number) => {
+      playerControls.setSpeed(speed);
+      store.setState({speed});
+    },
+    toggleLoop: () => {
+      const loop = !store.getState().loop;
+      playerControls.setLoop(loop);
+      store.setState({loop});
+    },
+    setVolume: (v: number) => {
+      const volume = Math.max(0, Math.min(1, v));
+      playerControls.setVolume(volume);
+      store.setState({volume, muted: volume === 0});
+    },
+    toggleMute: () => {
+      const s = store.getState();
+      const muted = !s.muted;
+      playerControls.setVolume(muted ? 0 : s.volume > 0 ? s.volume : 1);
+      store.setState({muted});
+    },
+    /** Arme (ou coupe, avec null) l'arrêt automatique après N minutes. */
+    setSleep: (minutes: number | null) => {
+      clearSleep();
+      store.setState({sleepMinutes: minutes});
+      if (minutes !== null) {
+        sleepTimer = setTimeout(() => {
+          sleepTimer = null;
+          playerControls.pause();
+          store.setState({sleepMinutes: null});
+        }, minutes * 60_000);
+      }
+    },
+    enterPip: () => {
+      store.setState({pip: true});
+      playerControls.enterPip();
+    },
+    setPip: (on: boolean) => store.setState({pip: on}),
     setFullscreen: (on: boolean) => {
       playerControls.setFullscreen(on);
       store.setState({fullscreen: on});
@@ -239,6 +299,7 @@ export function createPlayerStore() {
     close: async () => {
       generation += 1;
       stopPoll();
+      clearSleep();
       if (store.getState().fullscreen) {
         playerControls.setFullscreen(false);
       }
@@ -249,6 +310,7 @@ export function createPlayerStore() {
     reset: () => {
       generation += 1;
       stopPoll();
+      clearSleep();
       playerControls.release();
       store.replace(INITIAL);
     },

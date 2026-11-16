@@ -17,6 +17,9 @@ export type {ContinueEntry} from './continueStore';
 export {progressStore} from './progressStore';
 export {favoritesStore} from './favoritesStore';
 export type {FavoriteItem} from './favoritesStore';
+export {bookmarksStore} from './bookmarksStore';
+export {selectionsStore} from './selectionsStore';
+export type {SelectionItem} from './selectionsStore';
 
 export {bannerStore} from './bannerStore';
 export type {BannerPayload, BannerTone} from './bannerStore';

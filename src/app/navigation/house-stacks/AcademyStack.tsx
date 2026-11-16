@@ -62,8 +62,11 @@ export function AcademyStack() {
         })}>
         {({route, navigation}) => (
           <LibraryDiscoverScreen
+            key={route.params?.house ?? 'library'}
             house={route.params?.house}
             onOpenItem={item => navigation.navigate('ContentDetail', {id: item.id})}
+            onOpenId={id => navigation.navigate('ContentDetail', {id})}
+            onSwitchHouse={house => navigation.replace('LibraryDiscover', {house})}
           />
         )}
       </Stack.Screen>
@@ -73,6 +76,7 @@ export function AcademyStack() {
         {({route, navigation}) => (
           <ContentDetailScreen
             id={route.params.id}
+            onOpenItem={item => navigation.replace('ContentDetail', {id: item.id})}
             onRead={(id, title, type, thumbnailUrl) =>
               type === 'training'
                 ? navigation.navigate('Formation', {id, title})

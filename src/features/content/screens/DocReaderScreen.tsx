@@ -1,15 +1,16 @@
 /** Lecteur EPUB / MOBI / DOCX natif : texte et titres, taille réglable, progression et reprise. */
 
-import React, {useEffect, useRef, useState, useSyncExternalStore} from 'react';
+import React, {useEffect, useRef, useSyncExternalStore} from 'react';
 import {FlatList, View} from 'react-native';
 
 type ViewToken = {index?: number | null};
 import type {DocBlock, DocErrorKind} from '@core/media/docNative';
 import {readerErrorKey} from '@core/utils/readerFailure';
-import {Button, ErrorState, LoadingState, Text, useTheme} from '@shared/designsystem';
+import {ErrorState, LoadingState, readingThemes, Text, useTheme} from '@shared/designsystem';
 import {useTranslation} from '@shared/i18n';
+import {ReadingSettings} from '../components/ReadingSettings';
 import {docReaderStore} from '../store/docReaderStore';
-import {FONT_SCALES} from '../store/textReaderStore';
+import {readerLookStore} from '../store/readerLookStore';
 
 const BASE = 17;
 
@@ -31,11 +32,16 @@ export function docErrorKey(kind: DocErrorKind | null): string {
 
 export function DocReaderScreen({id, title}: {id: number; title: string}) {
   const {t} = useTranslation();
-  const {colors, spacing} = useTheme();
+  const {spacing} = useTheme();
   const st = useSyncExternalStore(docReaderStore.subscribe, docReaderStore.getState);
-  const [scale, setScale] = useState(1);
+  const look = useSyncExternalStore(readerLookStore.subscribe, readerLookStore.getState);
+  const palette = readingThemes[look.theme];
   const listRef = useRef<FlatList<DocBlock>>(null);
   const resumed = useRef(false);
+
+  useEffect(() => {
+    void readerLookStore.load();
+  }, []);
 
   useEffect(() => {
     resumed.current = false;
@@ -73,25 +79,22 @@ export function DocReaderScreen({id, title}: {id: number; title: string}) {
     );
   }
 
-  const size = BASE * scale;
-  const idx = FONT_SCALES.indexOf(scale as (typeof FONT_SCALES)[number]);
+  const size = Math.round((BASE * look.fontPercent) / 100);
+  const bodyVariant = look.family === 'serif' ? 'readingSerif' : 'readingSans';
   return (
-    <View style={{flex: 1, backgroundColor: colors.bgApp}} testID="screen-doc-reader">
-      <View style={{flexDirection: 'row', justifyContent: 'flex-end', gap: spacing.sm, paddingHorizontal: spacing.xl, paddingVertical: spacing.sm}}>
-        <Button label={t('app.reader.smaller')} variant="secondary" disabled={idx <= 0} onPress={() => setScale(FONT_SCALES[Math.max(0, idx - 1)])} />
-        <Button label={t('app.reader.larger')} variant="secondary" disabled={idx >= FONT_SCALES.length - 1} onPress={() => setScale(FONT_SCALES[Math.min(FONT_SCALES.length - 1, idx + 1)])} />
-      </View>
+    <View style={{flex: 1, backgroundColor: palette.background}} testID="screen-doc-reader">
+      <ReadingSettings />
       <FlatList
         ref={listRef}
         data={st.blocks}
         keyExtractor={(_, i) => String(i)}
         renderItem={({item}) =>
           item.k === 'h' ? (
-            <Text variant="title" selectable style={{fontSize: size * (item.l === 1 ? 1.5 : item.l === 2 ? 1.3 : 1.15), marginTop: spacing.lg}}>
+            <Text variant="title" selectable style={{color: palette.text, fontSize: Math.round(size * (item.l === 1 ? 1.5 : item.l === 2 ? 1.3 : 1.15)), marginTop: spacing.lg}}>
               {item.x}
             </Text>
           ) : (
-            <Text selectable style={{fontSize: size, lineHeight: size * 1.55}}>{item.x}</Text>
+            <Text variant={bodyVariant} selectable style={{color: palette.text, fontSize: size, lineHeight: size * 1.55}}>{item.x}</Text>
           )
         }
         contentContainerStyle={{padding: spacing.xl, gap: spacing.md, paddingBottom: spacing.xxxl}}

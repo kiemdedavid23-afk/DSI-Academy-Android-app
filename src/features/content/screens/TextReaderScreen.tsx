@@ -11,6 +11,7 @@ import {
   EmptyState,
   ErrorState,
   LoadingState,
+  readingThemes,
   Text,
   useTheme,
 } from '@shared/designsystem';
@@ -18,7 +19,9 @@ import {useTranslation} from '@shared/i18n';
 import {isDocFormat} from '@core/media/docNative';
 import {DocReaderScreen} from './DocReaderScreen';
 import {PdfReaderScreen} from './PdfReaderScreen';
-import {FONT_SCALES, textReaderStore} from '../store/textReaderStore';
+import {ReadingSettings} from '../components/ReadingSettings';
+import {readerLookStore} from '../store/readerLookStore';
+import {textReaderStore} from '../store/textReaderStore';
 
 export type TextReaderScreenProps = {id: number; title: string};
 
@@ -32,9 +35,18 @@ export function TextReaderScreen({id, title}: TextReaderScreenProps) {
     textReaderStore.subscribe,
     textReaderStore.getState,
   );
+  const look = useSyncExternalStore(
+    readerLookStore.subscribe,
+    readerLookStore.getState,
+  );
+  const palette = readingThemes[look.theme];
   const listRef = useRef<FlatList<string>>(null);
   const sizes = useRef({content: 0, layout: 0});
   const resumed = useRef(false);
+
+  useEffect(() => {
+    void readerLookStore.load();
+  }, []);
 
   useEffect(() => {
     resumed.current = false;
@@ -95,35 +107,11 @@ export function TextReaderScreen({id, title}: TextReaderScreenProps) {
     );
   }
 
-  const size = BASE_SIZE * FONT_SCALES[st.scaleIndex];
-  const lastScale = FONT_SCALES.length - 1;
+  const size = Math.round((BASE_SIZE * look.fontPercent) / 100);
 
   return (
-    <View style={{flex: 1, backgroundColor: colors.bgApp}} testID="screen-text-reader">
-      <View
-        style={{
-          flexDirection: 'row',
-          alignItems: 'center',
-          justifyContent: 'flex-end',
-          gap: spacing.sm,
-          paddingHorizontal: spacing.xl,
-          paddingVertical: spacing.sm,
-        }}>
-        <Button
-          label={t('app.reader.smaller')}
-          variant="secondary"
-          disabled={st.scaleIndex === 0}
-          onPress={() => textReaderStore.setScaleIndex(st.scaleIndex - 1)}
-          testID="reader-smaller"
-        />
-        <Button
-          label={t('app.reader.larger')}
-          variant="secondary"
-          disabled={st.scaleIndex === lastScale}
-          onPress={() => textReaderStore.setScaleIndex(st.scaleIndex + 1)}
-          testID="reader-larger"
-        />
-      </View>
+    <View style={{flex: 1, backgroundColor: palette.background}} testID="screen-text-reader">
+      <ReadingSettings />
 
       {st.resumePercent !== null ? (
         <View
@@ -162,8 +150,9 @@ export function TextReaderScreen({id, title}: TextReaderScreenProps) {
         keyExtractor={(_, i) => String(i)}
         renderItem={({item}) => (
           <Text
+            variant={look.family === 'serif' ? 'readingSerif' : 'readingSans'}
             selectable
-            style={{fontSize: size, lineHeight: size * LINE_RATIO}}>
+            style={{color: palette.text, fontSize: size, lineHeight: size * LINE_RATIO}}>
             {item}
           </Text>
         )}

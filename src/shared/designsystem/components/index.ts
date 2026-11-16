@@ -19,3 +19,5 @@ export {ErrorState} from './ErrorState';
 export type {ErrorStateProps} from './ErrorState';
 export {InAppBanner} from './InAppBanner';
 export type {InAppBannerData, InAppBannerTone} from './InAppBanner';
+export {Scrim} from './Scrim';
+export type {ScrimProps} from './Scrim';
