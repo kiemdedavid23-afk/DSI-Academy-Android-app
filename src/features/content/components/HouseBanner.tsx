@@ -15,7 +15,7 @@ import {HOUSE_ORDER, HOUSE_VISUALS, type HouseId} from '@shared/houses/houseVisu
 const ICON_BOX = 47.5;
 const PAD = 13.5;
 /** Illustration recadrée (16:9) : le site la montre carrée, trop haute sur mobile. */
-const IMAGE_RATIO = 16 / 9;
+const IMAGE_RATIO = 1;
 
 export type HouseSection = 'discover' | 'explore';
 
