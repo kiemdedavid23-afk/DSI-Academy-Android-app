@@ -6,13 +6,12 @@
  */
 
 import React, {useCallback, useEffect, useRef, useState, useSyncExternalStore} from 'react';
-import {FlatList, Image, PixelRatio, ScrollView, View, useWindowDimensions} from 'react-native';
+import {FlatList, Image, PixelRatio, Pressable, ScrollView, View, useWindowDimensions} from 'react-native';
 import {renderPdfPage} from '@core/media/pdfNative';
 import {readerErrorKey} from '@core/utils/readerFailure';
-import {Button, ErrorState, LoadingState, Text, TextField, useTheme} from '@shared/designsystem';
+import {Button, ErrorState, LoadingState, Text, TextField, useTheme, withAlpha} from '@shared/designsystem';
 import {useTranslation} from '@shared/i18n';
 import {bookmarksStore} from '@shared/store';
-import {ReaderChip} from '../components/ReaderChip';
 import {pdfReaderStore, type PdfErrorKind} from '../store/pdfReaderStore';
 
 export type PdfReaderScreenProps = {id: number; title: string};
@@ -23,7 +22,6 @@ const ZOOM_MAX = 3;
 const ZOOM_STEP = 0.25;
 /** Au-delà, le rendu devient trop lourd pour la mémoire : l'image est simplement agrandie. */
 const MAX_RENDER_PX = 2400;
-const BADGE_RADIUS = 16;
 
 export function pdfErrorKey(kind: PdfErrorKind | null): string {
   if (kind === 'pdfProtected') {
@@ -64,7 +62,7 @@ function PdfPage({handle, index, width, height}: {handle: string; index: number;
 
 export function PdfReaderScreen({id, title}: PdfReaderScreenProps) {
   const {t} = useTranslation();
-  const {colors, spacing, radii, glass} = useTheme();
+  const {colors, spacing, radii} = useTheme();
   const {width} = useWindowDimensions();
   const st = useSyncExternalStore(pdfReaderStore.subscribe, pdfReaderStore.getState);
   const [current, setCurrent] = useState(1);
@@ -148,60 +146,67 @@ export function PdfReaderScreen({id, title}: PdfReaderScreenProps) {
   };
   const togglePanel = (p: 'goto' | 'bookmarks') => setPanel(v => (v === p ? null : p));
 
+  const Action = ({label, active, onPress, testID}: {label: string; active?: boolean; onPress: () => void; testID: string}) => (
+    <Pressable
+      onPress={onPress}
+      accessibilityRole="button"
+      accessibilityState={{selected: !!active}}
+      testID={testID}
+      style={{
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+        minHeight: 44,
+        borderRadius: radii.md,
+        paddingHorizontal: spacing.sm,
+        backgroundColor: active ? withAlpha(colors.goldPrestige, 0.18) : 'transparent',
+      }}>
+      <Text variant="bodySmallStrong" color={active ? 'primary' : 'secondary'} numberOfLines={1}>
+        {label}
+      </Text>
+    </Pressable>
+  );
+  const panelStyle = {
+    backgroundColor: colors.bgSurface,
+    borderColor: colors.borderLight,
+    borderRadius: radii.lg,
+    borderWidth: 1,
+    padding: spacing.md,
+  };
+  const sep = <View style={{width: 1, alignSelf: 'stretch', backgroundColor: colors.borderLight, marginVertical: 6}} />;
+
   return (
     <View style={{flex: 1, backgroundColor: colors.bgApp}} testID="screen-pdf-reader">
-      <View style={{gap: spacing.sm, paddingHorizontal: spacing.xl, paddingVertical: spacing.sm}}>
-        <View style={{flexDirection: 'row', alignItems: 'center', flexWrap: 'wrap', gap: spacing.sm}}>
-          <Button
-            label="−"
-            accessibilityLabel={t('app.reader.zoomOut')}
-            variant="secondary"
-            disabled={zoom <= ZOOM_MIN}
-            onPress={() => setZoom(z => Math.max(ZOOM_MIN, z - ZOOM_STEP))}
-            testID="pdf-zoom-out"
-          />
-          <Text variant="bodySmallStrong" accessibilityLabel={t('app.reader.zoomValue', {percent: Math.round(zoom * 100)})}>
-            {Math.round(zoom * 100)} %
-          </Text>
-          <Button
-            label="+"
-            accessibilityLabel={t('app.reader.zoomIn')}
-            variant="secondary"
-            disabled={zoom >= ZOOM_MAX}
-            onPress={() => setZoom(z => Math.min(ZOOM_MAX, z + ZOOM_STEP))}
-            testID="pdf-zoom-in"
-          />
-          {zoom !== ZOOM_MIN ? (
-            <Button label="100 %" accessibilityLabel={t('app.reader.zoomReset')} variant="ghost" onPress={() => setZoom(ZOOM_MIN)} testID="pdf-zoom-reset" />
-          ) : null}
-        </View>
-        <View style={{flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm}}>
-          <ReaderChip label={t('app.reader.goToPage')} active={panel === 'goto'} onPress={() => togglePanel('goto')} testID="pdf-goto" />
-          <ReaderChip
-            label={marked ? t('app.reader.bookmarkRemove') : t('app.reader.bookmarkAdd')}
-            active={marked}
-            onPress={() => void bookmarksStore.toggle(id, current).then(setBookmarks)}
-            testID="pdf-bookmark-toggle"
-          />
-          <ReaderChip
-            label={`${t('app.reader.bookmarks')} (${bookmarks.length})`}
-            active={panel === 'bookmarks'}
-            onPress={() => togglePanel('bookmarks')}
-            testID="pdf-bookmarks"
-          />
-        </View>
+      <ScrollView
+        horizontal
+        bounces={false}
+        showsHorizontalScrollIndicator={zoom > ZOOM_MIN}
+        contentContainerStyle={{width: pageWidth}}
+        style={{flex: 1}}>
+        <FlatList
+          ref={listRef}
+          data={Array.from({length: st.pageCount}, (_, i) => i)}
+          keyExtractor={i => String(i)}
+          renderItem={renderItem}
+          style={{width: pageWidth}}
+          getItemLayout={(_, i) => ({length: pageHeight, offset: pageHeight * i, index: i})}
+          initialScrollIndex={st.startPage}
+          initialNumToRender={2}
+          windowSize={5}
+          maxToRenderPerBatch={2}
+          removeClippedSubviews
+          onViewableItemsChanged={onViewable}
+          viewabilityConfig={{itemVisiblePercentThreshold: 50}}
+          onScrollToIndexFailed={info => {
+            setTimeout(() => listRef.current?.scrollToOffset({offset: pageHeight * info.index, animated: false}), 100);
+          }}
+          testID="pdf-list"
+        />
+      </ScrollView>
+
+      <View style={{gap: spacing.sm, paddingHorizontal: spacing.lg, paddingBottom: spacing.lg, paddingTop: spacing.sm}}>
         {panel === 'goto' ? (
-          <View
-            style={{
-              backgroundColor: glass.bg,
-              borderColor: glass.border,
-              borderRadius: radii.lg,
-              borderWidth: 1,
-              flexDirection: 'row',
-              alignItems: 'flex-end',
-              gap: spacing.md,
-              padding: spacing.md,
-            }}>
+          <View style={[panelStyle, {flexDirection: 'row', alignItems: 'flex-end', gap: spacing.md}]}>
             <View style={{flex: 1}}>
               <TextField
                 label={t('app.reader.pageNumber')}
@@ -216,15 +221,7 @@ export function PdfReaderScreen({id, title}: PdfReaderScreenProps) {
           </View>
         ) : null}
         {panel === 'bookmarks' ? (
-          <View
-            style={{
-              backgroundColor: glass.bg,
-              borderColor: glass.border,
-              borderRadius: radii.lg,
-              borderWidth: 1,
-              gap: spacing.sm,
-              padding: spacing.md,
-            }}>
+          <View style={[panelStyle, {gap: spacing.sm}]}>
             {bookmarks.length === 0 ? (
               <Text variant="bodySmall" color="muted">
                 {t('app.reader.bookmarksEmpty')}
@@ -252,38 +249,69 @@ export function PdfReaderScreen({id, title}: PdfReaderScreenProps) {
             )}
           </View>
         ) : null}
-      </View>
 
-      <ScrollView
-        horizontal
-        bounces={false}
-        showsHorizontalScrollIndicator={zoom > ZOOM_MIN}
-        contentContainerStyle={{width: pageWidth}}
-        style={{flex: 1}}>
-        <FlatList
-          ref={listRef}
-          data={Array.from({length: st.pageCount}, (_, i) => i)}
-          keyExtractor={i => String(i)}
-          renderItem={renderItem}
-          style={{width: pageWidth}}
-          getItemLayout={(_, i) => ({length: pageHeight, offset: pageHeight * i, index: i})}
-          initialScrollIndex={st.startPage}
-          initialNumToRender={2}
-          windowSize={5}
-          maxToRenderPerBatch={2}
-          removeClippedSubviews
-          onViewableItemsChanged={onViewable}
-          viewabilityConfig={{itemVisiblePercentThreshold: 50}}
-          onScrollToIndexFailed={info => {
-            setTimeout(() => listRef.current?.scrollToOffset({offset: pageHeight * info.index, animated: false}), 100);
+        <View
+          style={{
+            backgroundColor: colors.bgSurface,
+            borderColor: colors.goldBorder,
+            borderRadius: radii.lg,
+            borderWidth: 1,
+            gap: spacing.xs,
+            padding: spacing.sm,
           }}
-          testID="pdf-list"
-        />
-      </ScrollView>
-      <View
-        pointerEvents="none"
-        style={{position: 'absolute', bottom: spacing.lg, alignSelf: 'center', paddingHorizontal: spacing.md, paddingVertical: spacing.xs, borderRadius: BADGE_RADIUS, backgroundColor: colors.bgApp, opacity: 0.9}}>
-        <Text variant="bodySmall">{t('app.reader.pageOf', {current, total: st.pageCount})}</Text>
+          testID="pdf-toolbar">
+          <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: spacing.xs}}>
+            <View style={{flexDirection: 'row', alignItems: 'center', gap: spacing.xs}}>
+              <Button
+                label="−"
+                accessibilityLabel={t('app.reader.zoomOut')}
+                variant="secondary"
+                disabled={zoom <= ZOOM_MIN}
+                onPress={() => setZoom(z => Math.max(ZOOM_MIN, z - ZOOM_STEP))}
+                testID="pdf-zoom-out"
+              />
+              <Pressable
+                onPress={() => setZoom(ZOOM_MIN)}
+                accessibilityRole="button"
+                accessibilityLabel={t('app.reader.zoomReset')}
+                testID="pdf-zoom-reset"
+                style={{minWidth: 56, alignItems: 'center'}}>
+                <Text variant="bodySmallStrong" accessibilityLabel={t('app.reader.zoomValue', {percent: Math.round(zoom * 100)})}>
+                  {Math.round(zoom * 100)} %
+                </Text>
+              </Pressable>
+              <Button
+                label="+"
+                accessibilityLabel={t('app.reader.zoomIn')}
+                variant="secondary"
+                disabled={zoom >= ZOOM_MAX}
+                onPress={() => setZoom(z => Math.min(ZOOM_MAX, z + ZOOM_STEP))}
+                testID="pdf-zoom-in"
+              />
+            </View>
+            <Text variant="bodySmallStrong" color="secondary">
+              {t('app.reader.pageOf', {current, total: st.pageCount})}
+            </Text>
+          </View>
+          <View style={{height: 1, backgroundColor: colors.borderLight}} />
+          <View style={{flexDirection: 'row', alignItems: 'center'}}>
+            <Action label={t('app.reader.goToPage')} active={panel === 'goto'} onPress={() => togglePanel('goto')} testID="pdf-goto" />
+            {sep}
+            <Action
+              label={marked ? t('app.reader.bookmarkRemove') : t('app.reader.bookmarkAdd')}
+              active={marked}
+              onPress={() => void bookmarksStore.toggle(id, current).then(setBookmarks)}
+              testID="pdf-bookmark-toggle"
+            />
+            {sep}
+            <Action
+              label={`${t('app.reader.bookmarks')} (${bookmarks.length})`}
+              active={panel === 'bookmarks'}
+              onPress={() => togglePanel('bookmarks')}
+              testID="pdf-bookmarks"
+            />
+          </View>
+        </View>
       </View>
     </View>
   );
