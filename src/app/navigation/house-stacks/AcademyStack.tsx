@@ -76,6 +76,7 @@ export function AcademyStack() {
         {({route, navigation}) => (
           <ContentDetailScreen
             id={route.params.id}
+            onBack={() => navigation.goBack()}
             onOpenItem={item => navigation.replace('ContentDetail', {id: item.id})}
             onRead={(id, title, type, thumbnailUrl) =>
               type === 'training'

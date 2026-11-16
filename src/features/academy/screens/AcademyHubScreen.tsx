@@ -55,7 +55,12 @@ export function AcademyHubScreen({onOpenHouse, onContinue}: AcademyHubScreenProp
   return (
     <ScrollView
       style={{flex: 1, backgroundColor: colors.bgApp}}
-      contentContainerStyle={{padding: spacing.xl, gap: spacing.xxl}}
+      contentContainerStyle={{
+        gap: spacing.xxl,
+        paddingBottom: spacing.xl,
+        paddingHorizontal: spacing.xl,
+        paddingTop: 24.5,
+      }}
       testID="screen-academy">
       <View
         style={[
@@ -78,13 +83,20 @@ export function AcademyHubScreen({onOpenHouse, onContinue}: AcademyHubScreenProp
               paddingHorizontal: spacing.md,
               paddingVertical: spacing.xs,
             }}>
-            <Text variant="captionStrong" color="gold" style={{textTransform: 'uppercase'}}>
+            <Text
+              variant="captionStrong"
+              color="gold"
+              style={{letterSpacing: 0.6, textTransform: 'uppercase'}}>
               {resumeId !== null ? t('academy.continueEyebrow') : t('academy.heroEyebrow')}
             </Text>
           </View>
           {resumeId !== null && entry ? (
             <>
-              <Text variant="title" color="onDark" accessibilityRole="header">
+              <Text
+                variant="title"
+                color="onDark"
+                accessibilityRole="header"
+                style={{lineHeight: 31}}>
                 {entry.title}
               </Text>
               {entryVisual ? (
@@ -123,7 +135,7 @@ export function AcademyHubScreen({onOpenHouse, onContinue}: AcademyHubScreenProp
                   minHeight: touch.min,
                   paddingHorizontal: spacing.xl,
                 }}>
-                <Text variant="button" style={{color: colors.bgDarkPremium}}>
+                <Text variant="button" style={{color: colors.bgDarkPremium, fontSize: 15}}>
                   {t('academy.continueCta')}
                 </Text>
                 <Icon name="ArrowRightIcon" size={18} color={colors.bgDarkPremium} />
@@ -131,7 +143,11 @@ export function AcademyHubScreen({onOpenHouse, onContinue}: AcademyHubScreenProp
             </>
           ) : (
             <>
-              <Text variant="title" color="onDark" accessibilityRole="header">
+              <Text
+                variant="title"
+                color="onDark"
+                accessibilityRole="header"
+                style={{lineHeight: 31}}>
                 {t('academy.heroTitle')}
               </Text>
               <Text variant="bodySmall" color="onDark" style={{opacity: 0.85}}>
@@ -147,7 +163,12 @@ export function AcademyHubScreen({onOpenHouse, onContinue}: AcademyHubScreenProp
           variant="captionStrong"
           color="secondary"
           accessibilityRole="header"
-          style={{textTransform: 'uppercase', marginHorizontal: spacing.xs, marginBottom: spacing.md}}>
+          style={{
+            letterSpacing: 0.6,
+            marginBottom: 13,
+            marginHorizontal: spacing.xs,
+            textTransform: 'uppercase',
+          }}>
           {t('academy.housesTitle')}
         </Text>
         <View style={styles.grid}>
@@ -173,7 +194,7 @@ export function AcademyHubScreen({onOpenHouse, onContinue}: AcademyHubScreenProp
                     backgroundColor: colors.bgDarkPremium,
                     borderColor: glass.border,
                     borderRadius: radii.lg,
-                    marginBottom: spacing.md,
+                    marginBottom: 14.5,
                     opacity: h.available ? 1 : 0.6,
                     padding: spacing.lg,
                   },
@@ -186,8 +207,8 @@ export function AcademyHubScreen({onOpenHouse, onContinue}: AcademyHubScreenProp
                     {
                       backgroundColor: dark,
                       borderColor: withAlpha(colors.textOnDark, 0.25),
-                      left: spacing.md,
-                      top: spacing.md,
+                      left: 14,
+                      top: 15,
                     },
                   ]}>
                   <Icon name={h.icon} size={22} color={colors.textOnDark} />
@@ -196,7 +217,7 @@ export function AcademyHubScreen({onOpenHouse, onContinue}: AcademyHubScreenProp
                   <Text variant="subtitle" color="onDark">
                     {name}
                   </Text>
-                  <Text variant="caption" color="onDark" style={{opacity: 0.85}}>
+                  <Text variant="caption" color="onDark" style={{fontSize: 13, opacity: 0.85}}>
                     {h.available ? t(h.taglineKey) : t('houses.badgeSoon')}
                   </Text>
                 </View>
@@ -222,6 +243,6 @@ const styles = StyleSheet.create({
   fill: {...StyleSheet.absoluteFillObject},
   grid: {flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between'},
   hero: {borderWidth: 1, justifyContent: 'flex-end', minHeight: 240, overflow: 'hidden'},
-  house: {borderWidth: 1, justifyContent: 'flex-end', minHeight: 190, overflow: 'hidden', width: '48%'},
+  house: {borderWidth: 1, justifyContent: 'flex-end', minHeight: 189, overflow: 'hidden', width: '47.65625%'},
   track: {height: 6, maxWidth: 320, overflow: 'hidden', width: '100%'},
 });

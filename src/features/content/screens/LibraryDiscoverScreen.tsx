@@ -272,7 +272,7 @@ export function LibraryDiscoverScreen({
     return (
       <ScrollView
         style={{flex: 1, backgroundColor: colors.bgApp}}
-        contentContainerStyle={{gap: spacing.xxl, paddingBottom: spacing.xxxl, paddingTop: spacing.xxl}}
+        contentContainerStyle={{gap: spacing.xxl, paddingBottom: spacing.xxxl, paddingTop: 24.5}}
         testID="screen-library">
         {banner}
         {body}
@@ -366,7 +366,7 @@ export function LibraryDiscoverScreen({
         columnWrapperStyle={
           columns > 1 ? {gap: spacing.md, paddingHorizontal: spacing.xl} : undefined
         }
-        contentContainerStyle={{gap: spacing.lg, paddingTop: spacing.xxl, paddingBottom: spacing.xxxl}}
+        contentContainerStyle={{gap: spacing.lg, paddingTop: 24.5, paddingBottom: spacing.xxxl}}
         renderItem={({item}) => (
           <View style={columns > 1 ? {flex: 1} : {paddingHorizontal: spacing.xl}}>
             <ContentCard

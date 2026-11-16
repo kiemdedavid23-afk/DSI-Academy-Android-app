@@ -101,7 +101,7 @@ export function HouseBanner({houseId, section, onSwitchHouse, onSection}: HouseB
                   paddingVertical: 6,
                 }}>
                 <Icon name={v.icon} size={18} color={colors.textOnDark} />
-                <Text variant="bodySmallStrong" color="onDark">
+                <Text variant="bodySmallStrong" color="onDark" style={{fontSize: 13}}>
                   {t(v.nameKey)}
                 </Text>
               </Pressable>
@@ -126,7 +126,7 @@ export function HouseBanner({houseId, section, onSwitchHouse, onSection}: HouseB
             <Text
               variant="overline"
               color="gold"
-              style={{letterSpacing: 0.8, textTransform: 'uppercase'}}>
+              style={{fontSize: 11, letterSpacing: 0.95, textTransform: 'uppercase'}}>
               {t('houses.eyebrow')}
             </Text>
             <Text variant="title" color="onDark" accessibilityRole="header">

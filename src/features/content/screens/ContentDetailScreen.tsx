@@ -1,8 +1,8 @@
 /**
  * Fiche détail d'un contenu (site : ContentDetail.jsx + ContentDetail.css).
- * Héros : la vignette occupe toute la carte, les textes se lisent dessus
- * (dégradé sombre). Conservé de l'app : tableau d'informations (auteur,
- * catégorie, niveau, langue, durée).
+ * Héros (mesuré sur les captures du site, 720 px = 360 dp) : carte pleine largeur,
+ * l'image du contenu occupe TOUTE la carte (dégradé sombre dessus), bouton
+ * « Retour » en haut à gauche, puis pastille, titre et boutons centrés.
  */
 
 import React, {useEffect, useState, useSyncExternalStore} from 'react';
@@ -25,13 +25,12 @@ import {HOUSE_VISUALS, houseOfType} from '@shared/houses/houseVisuals';
 import {ContentRail} from '../components/ContentRail';
 import {contentErrorKey} from '../logic/errorKey';
 import {isRecent} from '../logic/recent';
-import {libraryCategoriesStore} from '../store/categoriesStore';
 import {contentDetailStore} from '../store/detailStore';
 import {contentSimilarStore} from '../store/similarStore';
 
 /** Hauteur minimale du héros selon le format (site : .dsi-cd-hero). */
-const HERO_MIN = {book: 440, video: 340, course: 340, audio: 400} as const;
-const ROUND = 48;
+const HERO_MIN = {book: 602, video: 340, course: 340, audio: 400} as const;
+const ROUND = 45;
 const LONG_TEXT = 220;
 const PRIMARY_ICON: Record<ContentType, IconName> = {
   book: 'BookIcon',
@@ -50,18 +49,16 @@ export type ContentDetailScreenProps = {
   ) => void;
   /** Ouvre la fiche d'un contenu de la rangée « Dans la même catégorie ». */
   onOpenItem?: (item: Content) => void;
+  /** Bouton « Retour » du héros. */
+  onBack?: () => void;
 };
 
-export function ContentDetailScreen({id, onRead, onOpenItem}: ContentDetailScreenProps) {
+export function ContentDetailScreen({id, onRead, onOpenItem, onBack}: ContentDetailScreenProps) {
   const {t} = useTranslation();
-  const {colors, spacing, radii, glass} = useTheme();
+  const {colors, spacing, radii} = useTheme();
   const st = useSyncExternalStore(
     contentDetailStore.subscribe,
     contentDetailStore.getState,
-  );
-  const categories = useSyncExternalStore(
-    cb => libraryCategoriesStore.subscribe(() => cb()),
-    () => libraryCategoriesStore.getState(),
   );
   const similar = useSyncExternalStore(
     contentSimilarStore.subscribe,
@@ -94,7 +91,6 @@ export function ContentDetailScreen({id, onRead, onOpenItem}: ContentDetailScree
 
   useEffect(() => {
     void contentDetailStore.load(id);
-    void libraryCategoriesStore.load();
   }, [id]);
 
   const loaded = st.id === id && st.status === 'success' ? st.item : null;
@@ -124,8 +120,6 @@ export function ContentDetailScreen({id, onRead, onOpenItem}: ContentDetailScree
   const author = contentAuthor(item);
   const duration = formatDuration(item.durationSeconds);
   const lk = levelKey(item.level);
-  const categoryName =
-    categories.data?.find(c => c.id === item.categoryId)?.name ?? null;
   const description = item.description ?? '';
   const longText = description.length > LONG_TEXT;
   const heroImage =
@@ -141,23 +135,6 @@ export function ContentDetailScreen({id, onRead, onOpenItem}: ContentDetailScree
   }
   if (duration) {
     chips.push(duration);
-  }
-
-  const facts: Array<[string, string]> = [];
-  if (author) {
-    facts.push([t('app.catalogue.author'), author]);
-  }
-  if (categoryName) {
-    facts.push([t('app.catalogue.category'), categoryName]);
-  }
-  if (lk) {
-    facts.push([t('app.catalogue.level'), t(`houses.filters.${lk}`)]);
-  }
-  if (item.language) {
-    facts.push([t('app.catalogue.language'), item.language.toUpperCase()]);
-  }
-  if (duration) {
-    facts.push([t('app.catalogue.duration'), duration]);
   }
 
   const entry = {
@@ -204,30 +181,30 @@ export function ContentDetailScreen({id, onRead, onOpenItem}: ContentDetailScree
   );
 
   const card = {
-    backgroundColor: glass.bg,
-    borderColor: glass.border,
+    backgroundColor: colors.bgSurface,
     borderRadius: radii.lg,
-    borderWidth: 1,
-    gap: spacing.sm,
-    marginHorizontal: spacing.xl,
-    padding: spacing.lg,
+    gap: 11,
+    paddingBottom: 21.5,
+    paddingHorizontal: 25,
+    paddingTop: 23,
   } as const;
 
   return (
     <ScrollView
       style={{flex: 1, backgroundColor: colors.bgApp}}
-      contentContainerStyle={{gap: spacing.xxl, paddingBottom: spacing.xxxl, paddingTop: spacing.xl}}
+      contentContainerStyle={{gap: spacing.xxl, paddingBottom: spacing.xxxl, paddingTop: 28.5}}
       testID="screen-content-detail">
       <View
         style={[
           styles.hero,
           {
-            backgroundColor: colors.bgDarkPremium,
+            backgroundColor: colors.houseBannerBg,
             borderColor: colors.goldBorder,
             borderRadius: radii.lg,
-            marginHorizontal: spacing.xl,
             minHeight: HERO_MIN[visual.kind],
-            padding: spacing.xl,
+            paddingBottom: 48,
+            paddingHorizontal: spacing.xl,
+            paddingTop: 17,
           },
         ]}>
         <Image
@@ -237,10 +214,37 @@ export function ContentDetailScreen({id, onRead, onOpenItem}: ContentDetailScree
           onError={() => setImageFailed(true)}
           accessible={false}
         />
-        <Scrim from={0.3} to={0.92} />
-        <View style={{gap: spacing.md, alignItems: 'flex-start'}}>
+        <Scrim from={0.2} to={0.92} />
+        <View style={{alignItems: 'flex-start'}}>
+          {onBack ? (
+            <Pressable
+              onPress={onBack}
+              accessibilityRole="button"
+              accessibilityLabel={t('common.back')}
+              testID="detail-back"
+              style={{
+                alignItems: 'center',
+                backgroundColor: withAlpha(colors.bgDarkPremium, 0.8),
+                borderRadius: radii.pill,
+                height: 33,
+                justifyContent: 'center',
+                paddingHorizontal: 13.5,
+              }}>
+              <Text variant="bodySmallStrong" color="onDark">
+                {t('common.back')}
+              </Text>
+            </Pressable>
+          ) : null}
+        </View>
+        <View style={{alignItems: 'center', gap: 14}}>
           {chips.length > 0 ? (
-            <View style={{flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm}}>
+            <View
+              style={{
+                flexDirection: 'row',
+                flexWrap: 'wrap',
+                gap: spacing.sm,
+                justifyContent: 'center',
+              }}>
               {chips.map(chip => (
                 <View
                   key={chip}
@@ -249,25 +253,40 @@ export function ContentDetailScreen({id, onRead, onOpenItem}: ContentDetailScree
                     borderColor: colors.goldBorder,
                     borderRadius: radii.pill,
                     borderWidth: 1,
-                    paddingHorizontal: spacing.md,
-                    paddingVertical: spacing.xs,
+                    paddingHorizontal: 11,
+                    paddingVertical: 3,
                   }}>
-                  <Text variant="captionStrong" color="onDark">
+                  <Text variant="bodySmallStrong" color="onDark" style={{fontSize: 13}}>
                     {chip}
                   </Text>
                 </View>
               ))}
             </View>
           ) : null}
-          <Text variant="title" color="onDark" accessibilityRole="header">
+          <Text
+            variant="title"
+            color="onDark"
+            accessibilityRole="header"
+            style={{textAlign: 'center'}}>
             {item.title}
           </Text>
           {author ? (
-            <Text variant="bodyMedium" color="onDark" style={{opacity: 0.88}}>
+            <Text
+              variant="bodyMedium"
+              color="onDark"
+              style={{opacity: 0.88, textAlign: 'center'}}>
               {author}
             </Text>
           ) : null}
-          <View style={{alignItems: 'center', flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm, marginTop: spacing.xs}}>
+          <View
+            style={{
+              alignItems: 'center',
+              flexDirection: 'row',
+              flexWrap: 'wrap',
+              gap: 10,
+              justifyContent: 'center',
+              marginTop: 7,
+            }}>
             <Pressable
               onPress={() => onRead(item.id, item.title, item.type, item.thumbnailUrl)}
               accessibilityRole="button"
@@ -280,12 +299,12 @@ export function ContentDetailScreen({id, onRead, onOpenItem}: ContentDetailScree
                 flexDirection: 'row',
                 gap: spacing.sm,
                 justifyContent: 'center',
-                minHeight: ROUND,
+                minHeight: 51.5,
                 minWidth: 170,
                 paddingHorizontal: spacing.xl,
               }}>
               <Icon name={PRIMARY_ICON[item.type]} size={20} color={colors.bgDarkPremium} />
-              <Text variant="button" style={{color: colors.bgDarkPremium}}>
+              <Text variant="bodyStrong" style={{color: colors.bgDarkPremium}}>
                 {primaryLabel}
               </Text>
             </Pressable>
@@ -315,13 +334,16 @@ export function ContentDetailScreen({id, onRead, onOpenItem}: ContentDetailScree
           </View>
         </View>
       </View>
-
       {description ? (
         <View style={card}>
           <Text variant="subtitle" accessibilityRole="header">
             {t('content.detail.aboutTitle')}
           </Text>
-          <Text variant="bodyMedium" numberOfLines={expanded || !longText ? undefined : 4}>
+          <Text
+            variant="bodyMedium"
+            color="secondary"
+            style={{lineHeight: 24}}
+            numberOfLines={expanded || !longText ? undefined : 4}>
             {description}
           </Text>
           {longText ? (
@@ -335,23 +357,6 @@ export function ContentDetailScreen({id, onRead, onOpenItem}: ContentDetailScree
               </Text>
             </Pressable>
           ) : null}
-        </View>
-      ) : null}
-
-      {facts.length > 0 ? (
-        <View style={card}>
-          {facts.map(([label, value]) => (
-            <View
-              key={label}
-              style={{flexDirection: 'row', justifyContent: 'space-between', gap: spacing.md}}>
-              <Text variant="bodySmall" color="muted">
-                {label}
-              </Text>
-              <Text variant="bodySmallStrong" style={{flexShrink: 1, textAlign: 'right'}}>
-                {value}
-              </Text>
-            </View>
-          ))}
         </View>
       ) : null}
 
@@ -373,5 +378,5 @@ export function ContentDetailScreen({id, onRead, onOpenItem}: ContentDetailScree
 
 const styles = StyleSheet.create({
   fill: {...StyleSheet.absoluteFillObject},
-  hero: {borderWidth: 1, justifyContent: 'flex-end', overflow: 'hidden'},
+  hero: {borderWidth: 1, justifyContent: 'space-between', overflow: 'hidden'},
 });

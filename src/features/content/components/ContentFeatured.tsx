@@ -58,7 +58,7 @@ export function ContentFeatured({item, eyebrow, ctaLabel, onPress}: ContentFeatu
               paddingHorizontal: spacing.sm,
               paddingVertical: spacing.xs,
             }}>
-            <Text variant="overline" color="gold" style={{letterSpacing: 0.8, textTransform: 'uppercase'}}>
+            <Text variant="overline" color="gold" style={{fontSize: 11, letterSpacing: 0.95, textTransform: 'uppercase'}}>
               {eyebrow}
             </Text>
           </View>
