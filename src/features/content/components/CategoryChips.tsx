@@ -50,7 +50,7 @@ export function CategoryChips({
     <ScrollView
       horizontal
       showsHorizontalScrollIndicator={false}
-      contentContainerStyle={{gap: spacing.sm, paddingHorizontal: spacing.xl}}>
+      contentContainerStyle={{gap: 7, paddingHorizontal: 1.5}}>
       {chip(null, t('app.catalogue.allCategories'), t('app.catalogue.allCategories'))}
       {categories.map(c =>
         chip(c.id, c.name, t('app.catalogue.filterCategory', {name: c.name})),

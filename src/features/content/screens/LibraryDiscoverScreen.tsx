@@ -167,30 +167,29 @@ export function LibraryDiscoverScreen({
     } else {
       body = (
         <>
-          <View style={{paddingHorizontal: spacing.xl}}>
-            <ContentFeatured
-              item={featured}
-              eyebrow={t('content.discoverTitle')}
-              ctaLabel={t('content.discoverCta')}
-              onPress={open}
-            />
-          </View>
+          <ContentFeatured
+            item={featured}
+            eyebrow={t('content.discoverTitle')}
+            ctaLabel={t('content.discoverCta')}
+            onPress={open}
+          />
 
           {resumeId !== null && entry && onOpenId ? (
-            <View style={{paddingHorizontal: spacing.xl}}>
+            <View>
               <Pressable
                 onPress={() => onOpenId(resumeId)}
                 accessibilityRole="button"
                 testID="library-resume"
                 style={{
                   alignItems: 'center',
-                  backgroundColor: glass.bg,
+                  backgroundColor: colors.bgSurface,
                   borderColor: colors.goldBorder,
                   borderRadius: radii.lg,
                   borderWidth: 1,
                   flexDirection: 'row',
                   gap: spacing.md,
-                  padding: spacing.md,
+                  paddingHorizontal: 15.5,
+                  paddingVertical: 13.5,
                 }}>
                 <View
                   style={{
@@ -213,7 +212,6 @@ export function LibraryDiscoverScreen({
                     {entry.title}
                   </Text>
                 </View>
-                <Icon name="ArrowRightIcon" size={18} color={colors.textMuted} />
               </Pressable>
             </View>
           ) : null}
@@ -225,6 +223,10 @@ export function LibraryDiscoverScreen({
               items={newRail}
               categoryName={categoryName}
               onOpen={open}
+              onSeeAll={() => {
+                void stores.catalogue.setCategory(null);
+                setSection('explore');
+              }}
               testID="rail-new"
             />
           ) : null}
@@ -234,7 +236,7 @@ export function LibraryDiscoverScreen({
               <Text
                 variant="subtitle"
                 accessibilityRole="header"
-                style={{paddingHorizontal: spacing.xl}}>
+                style={{paddingHorizontal: 2.5}}>
                 {t('content.browseByCategory')}
               </Text>
               <CategoryChips
@@ -256,6 +258,10 @@ export function LibraryDiscoverScreen({
               items={r.items}
               categoryName={categoryName}
               onOpen={open}
+              onSeeAll={() => {
+                void stores.catalogue.setCategory(r.categoryId);
+                setSection('explore');
+              }}
               testID={`rail-category-${r.categoryId}`}
             />
           ))}
@@ -266,9 +272,9 @@ export function LibraryDiscoverScreen({
     return (
       <ScrollView
         style={{flex: 1, backgroundColor: colors.bgApp}}
-        contentContainerStyle={{gap: spacing.xxl, paddingBottom: spacing.xxxl, paddingTop: spacing.xl}}
+        contentContainerStyle={{gap: spacing.xxl, paddingBottom: spacing.xxxl, paddingTop: spacing.xxl}}
         testID="screen-library">
-        <View style={{paddingHorizontal: spacing.xl}}>{banner}</View>
+        {banner}
         {body}
       </ScrollView>
     );
@@ -280,7 +286,7 @@ export function LibraryDiscoverScreen({
 
   const header = (
     <View style={{gap: spacing.md, paddingBottom: spacing.md}}>
-      <View style={{paddingHorizontal: spacing.xl}}>{banner}</View>
+      {banner}
       <View style={{paddingHorizontal: spacing.xl}}>
         <TextField
           label={t('app.catalogue.searchLabel')}
@@ -360,7 +366,7 @@ export function LibraryDiscoverScreen({
         columnWrapperStyle={
           columns > 1 ? {gap: spacing.md, paddingHorizontal: spacing.xl} : undefined
         }
-        contentContainerStyle={{gap: spacing.lg, paddingTop: spacing.xl, paddingBottom: spacing.xxxl}}
+        contentContainerStyle={{gap: spacing.lg, paddingTop: spacing.xxl, paddingBottom: spacing.xxxl}}
         renderItem={({item}) => (
           <View style={columns > 1 ? {flex: 1} : {paddingHorizontal: spacing.xl}}>
             <ContentCard

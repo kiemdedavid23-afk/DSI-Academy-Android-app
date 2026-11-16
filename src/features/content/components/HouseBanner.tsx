@@ -1,16 +1,19 @@
 /**
- * Bandeau d'une maison (site : ContentHouseLayout.jsx + HouseShell.css) :
- * illustration, sélecteur des quatre maisons, icône, titre et accroche,
- * puis les pastilles de sections.
+ * Bandeau d'une maison (site : ContentHouseLayout.jsx + HouseShell.css).
+ * Mesuré sur les captures du site (720 px = 360 dp) :
+ *  · carte sombre pleine largeur, bordure or, marge intérieure 13,5 dp ;
+ *  · illustration carrée en haut (331 dp), puis sélecteur des quatre maisons,
+ *    puis icône + « GRANDE MAISON DSI » + titre + accroche ;
+ *  · sous la carte : pastilles de sections, collées au bord gauche.
  */
-
-import React from 'react';
-import {Image, Pressable, ScrollView, StyleSheet, View} from 'react-native';
-import {Icon, Scrim, Text, useTheme, withAlpha} from '@shared/designsystem';
+import React, {useCallback, useRef} from 'react';
+import {Image, Pressable, ScrollView, View} from 'react-native';
+import {Icon, Text, useTheme, withAlpha} from '@shared/designsystem';
 import {useTranslation} from '@shared/i18n';
 import {HOUSE_ORDER, HOUSE_VISUALS, type HouseId} from '@shared/houses/houseVisuals';
 
-const ICON_BOX = 48;
+const ICON_BOX = 47.5;
+const PAD = 13.5;
 
 export type HouseSection = 'discover' | 'explore';
 
@@ -23,37 +26,53 @@ export type HouseBannerProps = {
 
 export function HouseBanner({houseId, section, onSwitchHouse, onSection}: HouseBannerProps) {
   const {t} = useTranslation();
-  const {colors, spacing, radii, glass} = useTheme();
+  const {colors, spacing, radii} = useTheme();
   const visual = HOUSE_VISUALS[houseId];
   const sections: HouseSection[] = ['discover', 'explore'];
+  const scroller = useRef<ScrollView>(null);
+  const xs = useRef<Partial<Record<HouseId, number>>>({});
+
+  // Le site fait défiler le sélecteur pour montrer la maison précédente à gauche.
+  const reveal = useCallback(() => {
+    const idx = HOUSE_ORDER.indexOf(houseId);
+    const target = HOUSE_ORDER[Math.max(0, Math.min(idx, 2) - 1)];
+    const x = xs.current[target];
+    if (typeof x === 'number') {
+      scroller.current?.scrollTo({x: Math.max(0, x - 5), animated: false});
+    }
+  }, [houseId]);
 
   return (
-    <View style={{gap: spacing.md}}>
+    <View style={{gap: 16.5}}>
       <View
-        style={[
-          styles.banner,
-          {
-            backgroundColor: colors.bgDarkPremium,
-            borderColor: colors.goldBorder,
-            borderRadius: radii.lg,
-            gap: spacing.xxl,
-            padding: spacing.md,
-          },
-        ]}>
-        <Image source={visual.image} style={styles.fill} resizeMode="cover" />
-        <Scrim from={0.35} to={0.9} />
-
+        style={{
+          backgroundColor: colors.houseBannerBg,
+          borderColor: colors.goldBorder,
+          borderRadius: radii.lg,
+          borderWidth: 1,
+          overflow: 'hidden',
+          padding: PAD,
+        }}>
+        <Image
+          source={visual.image}
+          style={{aspectRatio: 1, width: '100%'}}
+          resizeMode="cover"
+          accessible={false}
+        />
         <ScrollView
+          ref={scroller}
           horizontal
           showsHorizontalScrollIndicator={false}
-          style={[
-            styles.switcher,
-            {
-              backgroundColor: withAlpha(colors.bgDarkPremium, 0.55),
-              borderColor: withAlpha(colors.textOnDark, 0.18),
-              borderRadius: radii.pill,
-            },
-          ]}
+          onContentSizeChange={reveal}
+          style={{
+            alignSelf: 'stretch',
+            backgroundColor: withAlpha(colors.houseBannerBg, 0.55),
+            borderColor: withAlpha(colors.textOnDark, 0.18),
+            borderRadius: radii.pill,
+            borderWidth: 1,
+            flexGrow: 0,
+            marginTop: 24.5,
+          }}
           contentContainerStyle={{gap: spacing.xs, padding: spacing.xs}}
           accessibilityLabel={t('content.nav.switcherLabel')}>
           {HOUSE_ORDER.map(id => {
@@ -62,6 +81,9 @@ export function HouseBanner({houseId, section, onSwitchHouse, onSection}: HouseB
             return (
               <Pressable
                 key={id}
+                onLayout={e => {
+                  xs.current[id] = e.nativeEvent.layout.x;
+                }}
                 onPress={() => (active ? undefined : onSwitchHouse?.(id))}
                 accessibilityRole="button"
                 accessibilityState={{selected: active}}
@@ -69,14 +91,14 @@ export function HouseBanner({houseId, section, onSwitchHouse, onSection}: HouseB
                 style={{
                   alignItems: 'center',
                   backgroundColor: active ? withAlpha(colors.goldPrestige, 0.25) : 'transparent',
-                  borderColor: active ? colors.goldBorder : 'transparent',
+                  borderColor: active ? withAlpha(colors.goldPrestige, 0.5) : 'transparent',
                   borderRadius: radii.pill,
                   borderWidth: 1,
                   flexDirection: 'row',
                   gap: spacing.sm,
                   opacity: active ? 1 : 0.8,
-                  paddingHorizontal: spacing.md,
-                  paddingVertical: spacing.sm,
+                  paddingHorizontal: 14,
+                  paddingVertical: 6,
                 }}>
                 <Icon name={v.icon} size={18} color={colors.textOnDark} />
                 <Text variant="bodySmallStrong" color="onDark">
@@ -86,21 +108,25 @@ export function HouseBanner({houseId, section, onSwitchHouse, onSection}: HouseB
             );
           })}
         </ScrollView>
-
-        <View style={{alignItems: 'flex-end', flexDirection: 'row', gap: spacing.md}}>
+        <View style={{alignItems: 'flex-end', flexDirection: 'row', gap: 14, marginTop: 30.5}}>
           <View
-            style={[
-              styles.iconBox,
-              {
-                backgroundColor: withAlpha(colors.bgDarkPremium, 0.55),
-                borderColor: withAlpha(colors.textOnDark, 0.25),
-                borderRadius: radii.md,
-              },
-            ]}>
+            style={{
+              alignItems: 'center',
+              backgroundColor: withAlpha(colors.houseBannerBg, 0.55),
+              borderColor: withAlpha(colors.textOnDark, 0.25),
+              borderRadius: radii.md,
+              borderWidth: 1,
+              height: ICON_BOX,
+              justifyContent: 'center',
+              width: ICON_BOX,
+            }}>
             <Icon name={visual.icon} size={26} color={colors.textOnDark} />
           </View>
           <View style={{flex: 1}}>
-            <Text variant="overline" color="gold" style={{textTransform: 'uppercase'}}>
+            <Text
+              variant="overline"
+              color="gold"
+              style={{letterSpacing: 0.8, textTransform: 'uppercase'}}>
               {t('houses.eyebrow')}
             </Text>
             <Text variant="title" color="onDark" accessibilityRole="header">
@@ -112,10 +138,11 @@ export function HouseBanner({houseId, section, onSwitchHouse, onSection}: HouseB
           </View>
         </View>
       </View>
-
-      <View
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
         accessibilityLabel={t('content.nav.sectionsLabel')}
-        style={{flexDirection: 'row', gap: spacing.sm}}>
+        contentContainerStyle={{gap: spacing.sm}}>
         {sections.map(id => {
           const active = id === section;
           return (
@@ -127,35 +154,21 @@ export function HouseBanner({houseId, section, onSwitchHouse, onSection}: HouseB
               testID={`house-section-${id}`}
               style={{
                 alignItems: 'center',
-                backgroundColor: active ? withAlpha(colors.goldPrestige, 0.18) : glass.bg,
-                borderColor: active ? colors.goldBorder : glass.border,
+                backgroundColor: active ? colors.pillActiveBg : colors.bgSurface,
+                borderColor: active ? colors.goldBorder : 'transparent',
                 borderRadius: radii.pill,
                 borderWidth: 1,
-                flex: 1,
+                height: 42,
                 justifyContent: 'center',
-                minHeight: 44,
-                paddingHorizontal: spacing.lg,
+                paddingHorizontal: 18,
               }}>
-              <Text variant="bodySmallStrong" color={active ? 'primary' : 'secondary'}>
+              <Text variant="bodySmall" color={active ? 'primary' : 'secondary'}>
                 {t(`content.nav.${id}`)}
               </Text>
             </Pressable>
           );
         })}
-      </View>
+      </ScrollView>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  banner: {borderWidth: 1, justifyContent: 'space-between', minHeight: 200, overflow: 'hidden'},
-  fill: {...StyleSheet.absoluteFillObject},
-  iconBox: {
-    alignItems: 'center',
-    borderWidth: 1,
-    height: ICON_BOX,
-    justifyContent: 'center',
-    width: ICON_BOX,
-  },
-  switcher: {alignSelf: 'flex-start', borderWidth: 1, maxWidth: '100%'},
-});

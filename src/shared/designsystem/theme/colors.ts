@@ -22,6 +22,10 @@ export type ColorTokens = {
   goldGradientEnd: string;
   /** Texte doré des phrases d'accueil / tags (MemberSpaceLayout --dsi-gold-text). */
   goldText: string;
+  /** Fond de la carte des maisons (captures du site : #050C1C). */
+  houseBannerBg: string;
+  /** Pastille de section active (Découvrir…), crème sur le site. */
+  pillActiveBg: string;
   /** Or d'accueil membre (--home-gold). */
   homeGold: string;
   // Bleu
@@ -274,6 +278,8 @@ export const lightColors: ColorTokens = {
   goldBorder: withAlpha('#D4AF37', 0.35),
   goldGradientEnd: '#E8C77E',
   goldText: '#8c6a12',
+  houseBannerBg: '#050C1C',
+  pillActiveBg: '#F7EFDB',
   homeGold: '#8c6a12',
 
   bluePrimary: '#1E40AF',
@@ -334,6 +340,8 @@ export const darkColors: ColorTokens = {
   goldBorder: withAlpha('#D4AF37', 0.35),
   goldGradientEnd: '#E8C77E',
   goldText: '#D4AF37',
+  houseBannerBg: '#050C1C',
+  pillActiveBg: withAlpha('#D4AF37', 0.16),
   homeGold: '#D4AF37',
 
   bluePrimary: '#1E40AF',

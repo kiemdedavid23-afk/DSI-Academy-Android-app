@@ -44,7 +44,7 @@ export function ContentFeatured({item, eyebrow, ctaLabel, onPress}: ContentFeatu
       ]}>
       <Image source={bg} style={styles.fill} resizeMode="cover" blurRadius={BLUR} />
       <Scrim from={0.35} to={0.8} />
-      <View style={{flexDirection: 'row', alignItems: 'center', gap: spacing.lg, padding: spacing.lg}}>
+      <View style={{flexDirection: 'row', alignItems: 'center', gap: 18.5, padding: spacing.xl}}>
         <View style={{width: wide ? '46%' : '38%', maxWidth: wide ? 280 : 190}}>
           <ContentCover thumbnailUrl={item.thumbnailUrl} houseId={houseId} />
         </View>
@@ -58,11 +58,11 @@ export function ContentFeatured({item, eyebrow, ctaLabel, onPress}: ContentFeatu
               paddingHorizontal: spacing.sm,
               paddingVertical: spacing.xs,
             }}>
-            <Text variant="overline" color="gold" style={{textTransform: 'uppercase'}}>
+            <Text variant="overline" color="gold" style={{letterSpacing: 0.8, textTransform: 'uppercase'}}>
               {eyebrow}
             </Text>
           </View>
-          <Text variant="heading" color="onDark" numberOfLines={3}>
+          <Text variant="heading" color="onDark" numberOfLines={3} style={{lineHeight: 26}}>
             {item.title}
           </Text>
           {author ? (
@@ -78,7 +78,7 @@ export function ContentFeatured({item, eyebrow, ctaLabel, onPress}: ContentFeatu
               flexDirection: 'row',
               gap: spacing.sm,
               marginTop: spacing.xs,
-              paddingHorizontal: spacing.lg,
+              paddingHorizontal: 17.5,
               paddingVertical: spacing.md,
             }}>
             <Text variant="button" style={{color: colors.bgDarkPremium}}>
