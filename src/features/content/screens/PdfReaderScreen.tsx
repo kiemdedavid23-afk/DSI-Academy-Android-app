@@ -7,6 +7,7 @@
 
 import React, {useCallback, useEffect, useRef, useState, useSyncExternalStore} from 'react';
 import {FlatList, Image, PixelRatio, Pressable, ScrollView, View, useWindowDimensions} from 'react-native';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {renderPdfPage} from '@core/media/pdfNative';
 import {readerErrorKey} from '@core/utils/readerFailure';
 import {Button, ErrorState, LoadingState, Text, TextField, useTheme, withAlpha} from '@shared/designsystem';
@@ -64,6 +65,7 @@ export function PdfReaderScreen({id, title}: PdfReaderScreenProps) {
   const {t} = useTranslation();
   const {colors, spacing, radii} = useTheme();
   const {width} = useWindowDimensions();
+  const insets = useSafeAreaInsets();
   const st = useSyncExternalStore(pdfReaderStore.subscribe, pdfReaderStore.getState);
   const [current, setCurrent] = useState(1);
   const [zoom, setZoom] = useState(ZOOM_MIN);
@@ -161,7 +163,7 @@ export function PdfReaderScreen({id, title}: PdfReaderScreenProps) {
         paddingHorizontal: spacing.sm,
         backgroundColor: active ? withAlpha(colors.goldPrestige, 0.18) : 'transparent',
       }}>
-      <Text variant="bodySmallStrong" color={active ? 'primary' : 'secondary'} numberOfLines={1}>
+      <Text variant="bodySmallStrong" color={active ? 'primary' : 'secondary'} numberOfLines={2} style={{fontSize: 13, textAlign: 'center'}}>
         {label}
       </Text>
     </Pressable>
@@ -204,7 +206,7 @@ export function PdfReaderScreen({id, title}: PdfReaderScreenProps) {
         />
       </ScrollView>
 
-      <View style={{gap: spacing.sm, paddingHorizontal: spacing.lg, paddingBottom: spacing.lg, paddingTop: spacing.sm}}>
+      <View style={{gap: spacing.sm, paddingHorizontal: spacing.lg, paddingBottom: spacing.md + insets.bottom, paddingTop: spacing.sm}}>
         {panel === 'goto' ? (
           <View style={[panelStyle, {flexDirection: 'row', alignItems: 'flex-end', gap: spacing.md}]}>
             <View style={{flex: 1}}>
