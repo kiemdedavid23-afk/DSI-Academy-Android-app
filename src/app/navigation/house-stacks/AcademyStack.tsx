@@ -10,6 +10,7 @@ import {useTranslation} from '@shared/i18n';
 import {MemberHeader} from '@features/member-space/shell/components/MemberHeader';
 import {AcademyHubScreen} from '@features/academy/screens/AcademyHubScreen';
 import {LibraryDiscoverScreen} from '@features/content/screens/LibraryDiscoverScreen';
+import {ReaderFrame} from '@features/content/components/ReaderFrame';
 import {TextReaderScreen} from '@features/content/screens/TextReaderScreen';
 import {FormationScreen} from '@features/content/screens/FormationScreen';
 import {formationStore} from '@features/content/store/formationStore';
@@ -113,9 +114,11 @@ export function AcademyStack() {
       </Stack.Screen>
       <Stack.Screen
         name="Reader"
-        options={({route}) => ({title: route.params.title})}>
-        {({route}) => (
-          <TextReaderScreen id={route.params.id} title={route.params.title} />
+        options={({route}) => ({title: route.params.title, headerShown: false})}>
+        {({route, navigation}) => (
+          <ReaderFrame title={route.params.title} onBack={() => navigation.goBack()}>
+            <TextReaderScreen id={route.params.id} title={route.params.title} />
+          </ReaderFrame>
         )}
       </Stack.Screen>
       <Stack.Screen
