@@ -19,6 +19,8 @@ type Props = {
   onOpenDrawer: () => void;
   onOpenNotifications: () => void;
   welcomeKey?: string;
+  /** Cloche avant l'horloge (maquette Academia). */
+  bellFirst?: boolean;
 };
 
 export function MemberHeader({
@@ -26,6 +28,7 @@ export function MemberHeader({
   onOpenDrawer,
   onOpenNotifications,
   welcomeKey = 'houses.welcome.memberSpace',
+  bellFirst = false,
 }: Props) {
   const {t} = useTranslation();
   const {colors, elevation, isDark} = useTheme();
@@ -116,9 +119,19 @@ export function MemberHeader({
         </View>
 
         <View style={styles.right}>
-          <MemberClock />
-          <View style={{width: 6}} />
-          <MemberBell onPress={onOpenNotifications} />
+          {bellFirst ? (
+            <>
+              <MemberBell onPress={onOpenNotifications} />
+              <View style={{width: 6}} />
+              <MemberClock />
+            </>
+          ) : (
+            <>
+              <MemberClock />
+              <View style={{width: 6}} />
+              <MemberBell onPress={onOpenNotifications} />
+            </>
+          )}
         </View>
       </View>
     </View>
