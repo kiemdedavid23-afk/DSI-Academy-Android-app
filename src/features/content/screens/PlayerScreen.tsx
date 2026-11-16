@@ -10,19 +10,16 @@ import {
   PermissionsAndroid,
   Platform,
   Pressable,
-  ScrollView,
   StyleSheet,
   View,
   requireNativeComponent,
   type ViewProps,
 } from 'react-native';
 import {WebView} from 'react-native-webview';
-import {formatClock, SLEEP_OPTIONS, SPEED_OPTIONS} from '@core/media/playerNative';
 import {readerErrorKey} from '@core/utils/readerFailure';
-import {Button, ErrorState, LoadingState, mediaStageColors, Text, useTheme, withAlpha} from '@shared/designsystem';
+import {ErrorState, LoadingState, mediaStageColors, Text, useTheme, withAlpha} from '@shared/designsystem';
 import {useTranslation} from '@shared/i18n';
-import {ContentCover} from '../components/ContentCover';
-import {ReaderChip} from '../components/ReaderChip';
+import {AudioStage} from '../components/AudioStage';
 import {ReaderFrame} from '../components/ReaderFrame';
 import {VideoStage} from '../components/VideoStage';
 import {isAllowedYoutubeNavigation, playerStore, YOUTUBE_BASE_URL, YOUTUBE_ORIGIN_WHITELIST} from '../store/playerStore';
@@ -36,36 +33,6 @@ const HOLD_MS = 400;
 const HOLD_SPEED = 2;
 const HINT_MS = 700;
 const SKIP_MS = 10_000;
-const PIP_MIN_API = 26;
-
-function ProgressBar({
-  fraction,
-  onSeek,
-  testID = 'player-progress',
-  label,
-}: {
-  fraction: number;
-  onSeek: (f: number) => void;
-  testID?: string;
-  label?: string;
-}) {
-  const {colors} = useTheme();
-  const [w, setW] = useState(1);
-  return (
-    <Pressable
-      accessibilityRole="adjustable"
-      accessibilityLabel={label}
-      accessibilityValue={{min: 0, max: 100, now: Math.round(fraction * 100)}}
-      onLayout={e => setW(Math.max(1, e.nativeEvent.layout.width))}
-      onPress={e => onSeek(e.nativeEvent.locationX / w)}
-      style={{height: 28, justifyContent: 'center'}}
-      testID={testID}>
-      <View style={{height: 6, borderRadius: 3, backgroundColor: colors.borderLight}}>
-        <View style={{width: `${Math.round(fraction * 100)}%`, height: 6, borderRadius: 3, backgroundColor: colors.goldBorder}} />
-      </View>
-    </Pressable>
-  );
-}
 
 /**
  * Gestes sur la vidéo : un appui = lecture / pause, double appui à gauche ou à droite = ∓15 s,
@@ -192,10 +159,8 @@ function VideoGestures({enabled, onSingleTap}: {enabled: boolean; onSingleTap: (
 
 export function PlayerScreen({id, title, thumbnailUrl, onBack}: PlayerScreenProps) {
   const {t} = useTranslation();
-  const {colors, spacing} = useTheme();
+  const {spacing} = useTheme();
   const st = useSyncExternalStore(playerStore.subscribe, playerStore.getState);
-  const [sleepOpen, setSleepOpen] = useState(false);
-  const pipAvailable = Platform.OS === 'android' && Number(Platform.Version) >= PIP_MIN_API;
 
   useEffect(() => {
     if (Platform.OS === 'android' && Number(Platform.Version) >= 33) {
@@ -273,108 +238,6 @@ export function PlayerScreen({id, title, thumbnailUrl, onBack}: PlayerScreenProp
     );
   }
 
-  const fraction = st.durationMs > 0 ? st.positionMs / st.durationMs : 0;
-  const controls = (
-    <View style={{gap: spacing.md, padding: spacing.xl}}>
-      <ProgressBar fraction={fraction} onSeek={playerStore.seekToFraction} />
-      <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-        <Text variant="bodySmall" color="muted">{formatClock(st.positionMs)}</Text>
-        <Text variant="bodySmall" color="muted">{formatClock(st.durationMs)}</Text>
-      </View>
-      <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: spacing.md}}>
-        <Button label={t('app.player.back15')} variant="secondary" onPress={playerStore.seekBack} testID="player-back" />
-        <Button
-          label={st.playing ? t('app.player.pause') : t('app.player.play')}
-          onPress={playerStore.togglePlay}
-          testID="player-toggle"
-        />
-        <Button label={t('app.player.forward15')} variant="secondary" onPress={playerStore.seekForward} testID="player-forward" />
-      </View>
-
-      <View style={{gap: spacing.sm}}>
-        <Text variant="captionStrong" color="secondary" style={{textTransform: 'uppercase'}}>
-          {t('app.player.speedLabel')}
-        </Text>
-        <View style={{flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm}} testID="player-speed">
-          {SPEED_OPTIONS.map(s => (
-            <ReaderChip
-              key={s}
-              label={`${s}×`}
-              active={st.speed === s}
-              onPress={() => playerStore.setSpeed(s)}
-              testID={`player-speed-${s}`}
-            />
-          ))}
-        </View>
-      </View>
-
-      <View style={{gap: spacing.sm}}>
-        <Text variant="captionStrong" color="secondary" style={{textTransform: 'uppercase'}}>
-          {t('app.player.volume')}
-        </Text>
-        <ProgressBar
-          fraction={st.muted ? 0 : st.volume}
-          onSeek={playerStore.setVolume}
-          testID="player-volume"
-          label={t('app.player.volume')}
-        />
-      </View>
-
-      <View style={{flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm}}>
-        <ReaderChip label={t('app.player.loop')} active={st.loop} onPress={playerStore.toggleLoop} testID="player-loop" />
-        <ReaderChip
-          label={st.muted ? t('app.player.unmute') : t('app.player.mute')}
-          active={st.muted}
-          onPress={playerStore.toggleMute}
-          testID="player-mute"
-        />
-        <ReaderChip
-          label={st.sleepMinutes !== null ? t('app.player.sleepActive', {minutes: st.sleepMinutes}) : t('app.player.sleep')}
-          active={st.sleepMinutes !== null || sleepOpen}
-          onPress={() => setSleepOpen(v => !v)}
-          testID="player-sleep"
-        />
-        {st.kind === 'video' ? (
-          <ReaderChip
-            label={st.fullscreen ? t('app.player.exitFullscreen') : t('app.player.fullscreen')}
-            onPress={() => playerStore.setFullscreen(!st.fullscreen)}
-            testID="player-fullscreen"
-          />
-        ) : null}
-        {st.kind === 'video' && pipAvailable ? (
-          <ReaderChip label={t('app.player.pip')} onPress={playerStore.enterPip} testID="player-pip" />
-        ) : null}
-      </View>
-
-      {sleepOpen ? (
-        <View style={{flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm}} testID="player-sleep-options">
-          <ReaderChip
-            label={t('app.player.sleepOff')}
-            active={st.sleepMinutes === null}
-            onPress={() => {
-              playerStore.setSleep(null);
-              setSleepOpen(false);
-            }}
-            testID="player-sleep-off"
-          />
-          {SLEEP_OPTIONS.map(m => (
-            <ReaderChip
-              key={m}
-              label={t('app.player.sleepMinutes', {minutes: m})}
-              active={st.sleepMinutes === m}
-              onPress={() => {
-                playerStore.setSleep(m);
-                setSleepOpen(false);
-              }}
-              testID={`player-sleep-${m}`}
-            />
-          ))}
-        </View>
-      ) : null}
-      {st.buffering ? <Text variant="bodySmall" color="muted" style={{textAlign: 'center'}}>{t('app.player.buffering')}</Text> : null}
-    </View>
-  );
-
   if (st.kind === 'video') {
     return (
       <VideoStage
@@ -391,16 +254,19 @@ export function PlayerScreen({id, title, thumbnailUrl, onBack}: PlayerScreenProp
     );
   }
 
-  return frame(
-    <ScrollView
-      style={{flex: 1, backgroundColor: colors.bgApp}}
-      contentContainerStyle={{paddingBottom: spacing.xxxl}}
-      testID="screen-audio">
-      <View style={{width: '60%', alignSelf: 'center', marginTop: spacing.xl}}>
-        <ContentCover thumbnailUrl={thumbnailUrl} houseId="audio" />
-      </View>
-      <Text variant="heading" style={{textAlign: 'center', padding: spacing.xl}}>{st.title}</Text>
-      {controls}
-    </ScrollView>,
+  return (
+    <AudioStage
+      title={st.title}
+      thumbnailUrl={thumbnailUrl}
+      playing={st.playing}
+      positionMs={st.positionMs}
+      durationMs={st.durationMs}
+      speed={st.speed}
+      loop={st.loop}
+      muted={st.muted}
+      sleepMinutes={st.sleepMinutes}
+      buffering={st.buffering}
+      onBack={onBack}
+    />
   );
 }
