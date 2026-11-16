@@ -10,7 +10,7 @@ import com.facebook.react.uimanager.ThemedReactContext
 /** Surface vidéo : PlayerView Media3 branché sur le lecteur partagé. */
 class DsiVideoView(context: Context) : FrameLayout(context) {
   private val playerView = PlayerView(context).apply {
-    useController = true
+    useController = false
     layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
   }
 

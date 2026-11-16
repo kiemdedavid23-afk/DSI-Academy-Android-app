@@ -11,6 +11,7 @@ import {
   Platform,
   Pressable,
   ScrollView,
+  StyleSheet,
   View,
   requireNativeComponent,
   type ViewProps,
@@ -22,18 +23,19 @@ import {Button, ErrorState, LoadingState, mediaStageColors, Text, useTheme, with
 import {useTranslation} from '@shared/i18n';
 import {ContentCover} from '../components/ContentCover';
 import {ReaderChip} from '../components/ReaderChip';
+import {ReaderFrame} from '../components/ReaderFrame';
+import {VideoStage} from '../components/VideoStage';
 import {isAllowedYoutubeNavigation, playerStore, YOUTUBE_BASE_URL, YOUTUBE_ORIGIN_WHITELIST} from '../store/playerStore';
 
 const NativeVideo = requireNativeComponent<ViewProps>('DsiVideoView');
 
-export type PlayerScreenProps = {id: number; title: string; thumbnailUrl: string | null};
+export type PlayerScreenProps = {id: number; title: string; thumbnailUrl: string | null; onBack: () => void};
 
 const TAP_WINDOW_MS = 300;
 const HOLD_MS = 400;
 const HOLD_SPEED = 2;
 const HINT_MS = 700;
-/** Bande basse laissée libre pour la barre native de la vidéo. */
-const BOTTOM_FREE = 56;
+const SKIP_MS = 10_000;
 const PIP_MIN_API = 26;
 
 function ProgressBar({
@@ -69,7 +71,7 @@ function ProgressBar({
  * Gestes sur la vidéo : un appui = lecture / pause, double appui à gauche ou à droite = ∓15 s,
  * appui long = 2× tant que le doigt reste posé.
  */
-function VideoGestures() {
+function VideoGestures({enabled, onSingleTap}: {enabled: boolean; onSingleTap: () => void}) {
   const {t} = useTranslation();
   const {spacing, colors, radii} = useTheme();
   const lastTap = useRef<{side: 'left' | 'right'; at: number} | null>(null);
@@ -113,11 +115,11 @@ function VideoGestures() {
       cancelSingle();
       lastTap.current = null;
       if (side === 'left') {
-        playerStore.seekBack();
-        flash(t('app.player.back15'));
+        playerStore.seekBy(-SKIP_MS);
+        flash('−10 s');
       } else {
-        playerStore.seekForward();
-        flash(t('app.player.forward15'));
+        playerStore.seekBy(SKIP_MS);
+        flash('+10 s');
       }
       return;
     }
@@ -126,7 +128,7 @@ function VideoGestures() {
     singleTimer.current = setTimeout(() => {
       lastTap.current = null;
       singleTimer.current = null;
-      playerStore.togglePlay();
+      onSingleTap();
     }, TAP_WINDOW_MS);
   };
 
@@ -159,8 +161,12 @@ function VideoGestures() {
     />
   );
 
+  if (!enabled) {
+    return <Pressable accessible={false} style={StyleSheet.absoluteFill} onPress={onSingleTap} testID="video-locked-zone" />;
+  }
+
   return (
-    <View style={{position: 'absolute', top: 0, left: 0, right: 0, bottom: BOTTOM_FREE, flexDirection: 'row'}}>
+    <View style={{position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, flexDirection: 'row'}}>
       {zone('left')}
       {zone('right')}
       {hint ? (
@@ -184,7 +190,7 @@ function VideoGestures() {
   );
 }
 
-export function PlayerScreen({id, title, thumbnailUrl}: PlayerScreenProps) {
+export function PlayerScreen({id, title, thumbnailUrl, onBack}: PlayerScreenProps) {
   const {t} = useTranslation();
   const {colors, spacing} = useTheme();
   const st = useSyncExternalStore(playerStore.subscribe, playerStore.getState);
@@ -218,22 +224,28 @@ export function PlayerScreen({id, title, thumbnailUrl}: PlayerScreenProps) {
     return () => sub.remove();
   }, []);
 
+  const frame = (node: React.ReactNode) => (
+    <ReaderFrame title={title} onBack={onBack}>
+      {node}
+    </ReaderFrame>
+  );
+
   if (st.status === 'loading' || st.status === 'idle') {
-    return <LoadingState fill accessibilityLabel={t('content.loading')} />;
+    return frame(<LoadingState fill accessibilityLabel={t('content.loading')} />);
   }
   if (st.status === 'error') {
-    return (
+    return frame(
       <ErrorState
         message={t(readerErrorKey(st.errorKind))}
         retryLabel={st.retryable ? t('common.retry') : undefined}
         onRetry={st.retryable ? () => void playerStore.open(id, title, thumbnailUrl) : undefined}
         testID="player-error"
-      />
+      />,
     );
   }
 
   if (st.kind === 'youtube' && st.youtubeHtml) {
-    return (
+    return frame(
       <View style={{flex: 1, backgroundColor: mediaStageColors.background}} testID="screen-youtube">
         <View style={{width: '100%', aspectRatio: 16 / 9}}>
           <WebView
@@ -248,7 +260,7 @@ export function PlayerScreen({id, title, thumbnailUrl}: PlayerScreenProps) {
         <Text variant="subtitle" style={{color: mediaStageColors.text, padding: spacing.xl}}>
           {st.title}
         </Text>
-      </View>
+      </View>,
     );
   }
 
@@ -365,27 +377,21 @@ export function PlayerScreen({id, title, thumbnailUrl}: PlayerScreenProps) {
 
   if (st.kind === 'video') {
     return (
-      <View style={{flex: 1, backgroundColor: st.fullscreen ? mediaStageColors.background : colors.bgApp}} testID="screen-video">
-        <View style={st.fullscreen ? {flex: 1} : {width: '100%', aspectRatio: 16 / 9, backgroundColor: mediaStageColors.background}}>
-          <NativeVideo style={{flex: 1}} />
-          <VideoGestures />
-        </View>
-        {st.fullscreen ? null : (
-          <ScrollView style={{flex: 1}} contentContainerStyle={{paddingBottom: spacing.xxxl}}>
-            <Text variant="heading" style={{paddingHorizontal: spacing.xl, paddingTop: spacing.lg}}>{st.title}</Text>
-            {controls}
-          </ScrollView>
-        )}
-        {st.fullscreen ? (
-          <View style={{position: 'absolute', top: spacing.md, right: spacing.md}}>
-            <Button label={t('app.player.exitFullscreen')} variant="secondary" onPress={() => playerStore.setFullscreen(false)} />
-          </View>
-        ) : null}
-      </View>
+      <VideoStage
+        title={st.title}
+        fullscreen={st.fullscreen}
+        playing={st.playing}
+        positionMs={st.positionMs}
+        durationMs={st.durationMs}
+        speed={st.speed}
+        video={<NativeVideo style={{flex: 1}} />}
+        gestures={g => <VideoGestures enabled={g.enabled} onSingleTap={g.onSingleTap} />}
+        onBack={onBack}
+      />
     );
   }
 
-  return (
+  return frame(
     <ScrollView
       style={{flex: 1, backgroundColor: colors.bgApp}}
       contentContainerStyle={{paddingBottom: spacing.xxxl}}
@@ -395,6 +401,6 @@ export function PlayerScreen({id, title, thumbnailUrl}: PlayerScreenProps) {
       </View>
       <Text variant="heading" style={{textAlign: 'center', padding: spacing.xl}}>{st.title}</Text>
       {controls}
-    </ScrollView>
+    </ScrollView>,
   );
 }

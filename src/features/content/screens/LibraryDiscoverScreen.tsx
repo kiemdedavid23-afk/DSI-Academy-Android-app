@@ -60,7 +60,7 @@ export function LibraryDiscoverScreen({
   const railsStore = HOUSE_RAILS[house];
   const visual = HOUSE_VISUALS[house];
   const {t} = useTranslation();
-  const {colors, spacing, radii, glass} = useTheme();
+  const {colors, spacing, radii} = useTheme();
   const [text, setText] = useState('');
   const [section, setSection] = useState<HouseSection>('discover');
   const [entry, setEntry] = useState<ContinueEntry | null>(null);

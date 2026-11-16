@@ -80,6 +80,7 @@ export function ReaderFrame({title, onBack, children}: Props) {
               {
                 backgroundColor: colors.bgSurface,
                 borderColor: colors.borderLight,
+                shadowColor: elevation.shadowColor,
                 top: insets.top + 8 + BTN + 6,
               },
             ]}
@@ -141,7 +142,6 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
     position: 'absolute',
     right: 12,
-    shadowColor: '#000',
     shadowOffset: {width: 0, height: 4},
     shadowOpacity: 0.12,
     shadowRadius: 12,

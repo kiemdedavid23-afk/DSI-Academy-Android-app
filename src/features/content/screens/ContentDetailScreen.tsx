@@ -377,6 +377,6 @@ export function ContentDetailScreen({id, onRead, onOpenItem, onBack}: ContentDet
 }
 
 const styles = StyleSheet.create({
-  fill: {...StyleSheet.absoluteFillObject},
+  fill: {...StyleSheet.absoluteFill},
   hero: {borderWidth: 1, justifyContent: 'space-between', overflow: 'hidden'},
 });

@@ -240,7 +240,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     width: CHIP,
   },
-  fill: {...StyleSheet.absoluteFillObject},
+  fill: {...StyleSheet.absoluteFill},
   grid: {flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between'},
   hero: {borderWidth: 1, justifyContent: 'flex-end', minHeight: 240, overflow: 'hidden'},
   house: {borderWidth: 1, justifyContent: 'flex-end', minHeight: 189, overflow: 'hidden', width: '47.65625%'},

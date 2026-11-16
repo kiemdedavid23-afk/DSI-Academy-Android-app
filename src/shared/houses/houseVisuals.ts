@@ -4,7 +4,7 @@
  */
 
 import type {ContentType} from '@core/utils/contentDisplay';
-import type {IconName} from '@shared/designsystem';
+import type {IconName} from '../designsystem';
 
 export type HouseId = 'library' | 'videos' | 'formations' | 'audio';
 

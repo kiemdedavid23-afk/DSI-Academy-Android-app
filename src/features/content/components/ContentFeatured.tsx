@@ -94,5 +94,5 @@ export function ContentFeatured({item, eyebrow, ctaLabel, onPress}: ContentFeatu
 
 const styles = StyleSheet.create({
   box: {borderWidth: 1, overflow: 'hidden'},
-  fill: {...StyleSheet.absoluteFillObject},
+  fill: {...StyleSheet.absoluteFill},
 });

@@ -87,6 +87,9 @@ const SAMPLE_TEXT: Record<TypographyVariant, string> = {
   micro: 'Micro 11',
   overline: 'SURTITRE 10',
   mono: 'CODE-1234',
+  readingSerif: 'Texte de lecture avec empattements.',
+  readingSans: 'Texte de lecture sans empattements.',
+  cardTitle: 'Titre de carte de contenu',
 };
 
 export function ThemeGalleryScreen() {

@@ -138,12 +138,13 @@ export function AcademyStack() {
       </Stack.Screen>
       <Stack.Screen
         name="Player"
-        options={({route}) => ({title: route.params.title})}>
-        {({route}) => (
+        options={({route}) => ({title: route.params.title, headerShown: false})}>
+        {({route, navigation}) => (
           <PlayerScreen
             id={route.params.id}
             title={route.params.title}
             thumbnailUrl={route.params.thumbnailUrl}
+            onBack={() => navigation.goBack()}
           />
         )}
       </Stack.Screen>
