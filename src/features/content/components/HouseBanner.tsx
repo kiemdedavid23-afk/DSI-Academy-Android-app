@@ -14,6 +14,8 @@ import {HOUSE_ORDER, HOUSE_VISUALS, type HouseId} from '@shared/houses/houseVisu
 
 const ICON_BOX = 47.5;
 const PAD = 13.5;
+/** Illustration recadrée (16:9) : le site la montre carrée, trop haute sur mobile. */
+const IMAGE_RATIO = 16 / 9;
 
 export type HouseSection = 'discover' | 'explore';
 
@@ -56,7 +58,7 @@ export function HouseBanner({houseId, section, onSwitchHouse, onSection}: HouseB
         }}>
         <Image
           source={visual.image}
-          style={{aspectRatio: 1, width: '100%'}}
+          style={{aspectRatio: IMAGE_RATIO, width: '100%'}}
           resizeMode="cover"
           accessible={false}
         />
