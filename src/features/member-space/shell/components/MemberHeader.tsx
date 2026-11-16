@@ -12,7 +12,7 @@ import {useTranslation} from '@shared/i18n';
 import {MemberClock} from './MemberClock';
 import {MemberBell} from './MemberBell';
 
-const APP_ICON = require('@assets/images/app-icon.png');
+const APP_ICON = require('@assets/images/app-icon.webp');
 
 type Props = {
   showMenu: boolean;

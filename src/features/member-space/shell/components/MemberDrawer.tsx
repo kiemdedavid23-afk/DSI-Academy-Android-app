@@ -30,7 +30,7 @@ import {computeSubscription} from '@core/utils/subscription';
 import {socialLinksStore} from '../store/socialLinksStore';
 import {useSyncExternalStore} from 'react';
 
-const APP_ICON = require('@assets/images/app-icon.png');
+const APP_ICON = require('@assets/images/app-icon.webp');
 
 export type MemberRoomId =
   | 'home'

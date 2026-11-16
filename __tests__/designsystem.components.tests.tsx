@@ -390,9 +390,9 @@ describe('BrandLoader', () => {
     const light = await render(<BrandLoader testID="bl" />);
     const lightSources = sources(light);
     const dark = await render(<BrandLoader testID="bl" />, {mode: 'dark'});
-    expect(lightSources).toContain('logo-word.png');
-    expect(lightSources).not.toContain('logo-word-dark.png');
-    expect(sources(dark)).toContain('logo-word-dark.png');
+    expect(lightSources).toContain('logo-word.webp');
+    expect(lightSources).not.toContain('logo-word-dark.webp');
+    expect(sources(dark)).toContain('logo-word-dark.webp');
   });
 });
 

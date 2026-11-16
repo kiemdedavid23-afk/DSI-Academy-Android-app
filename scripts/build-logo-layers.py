@@ -29,6 +29,6 @@ tot=np.zeros(a.shape,int)
 for k,m in layers.items():
     tot+=m
     out=arr.copy(); out[~m]=0
-    Image.fromarray(out).crop((x0,y0,x1,y1)).save(f'{OUT}/logo-{k}.png',optimize=True)
+    Image.fromarray(out).crop((x0,y0,x1,y1)).save(f'{OUT}/logo-{k}.webp',lossless=True,quality=100,method=6)
     print(k,int(m.sum()))
 print('overlap/uncovered',int((tot>1).sum()),int(((tot==0)&(a>0)).sum()))

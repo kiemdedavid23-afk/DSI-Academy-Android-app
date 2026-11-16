@@ -20,7 +20,7 @@ import {Text} from './Text';
 import {Icon} from '../icons';
 import {useTheme} from '../theme';
 
-const APP_ICON = require('@assets/images/app-icon.png');
+const APP_ICON = require('@assets/images/app-icon.webp');
 
 export type InAppBannerTone = 'warning' | 'success' | 'info' | 'error';
 

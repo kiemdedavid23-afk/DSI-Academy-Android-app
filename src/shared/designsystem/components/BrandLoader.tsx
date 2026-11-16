@@ -23,12 +23,12 @@ const LAYER_RATIO = 784 / 484;
 const DIM_OPACITY = 0.15;
 
 const LAYERS: Record<LetterKey | 'ring' | 'word' | 'wordDark', ImageSourcePropType> = {
-  d: require('../../../assets/images/logo/logo-d.png'),
-  s: require('../../../assets/images/logo/logo-s.png'),
-  i: require('../../../assets/images/logo/logo-i.png'),
-  ring: require('../../../assets/images/logo/logo-ring.png'),
-  word: require('../../../assets/images/logo/logo-word.png'),
-  wordDark: require('../../../assets/images/logo/logo-word-dark.png'),
+  d: require('../../../assets/images/logo/logo-d.webp'),
+  s: require('../../../assets/images/logo/logo-s.webp'),
+  i: require('../../../assets/images/logo/logo-i.webp'),
+  ring: require('../../../assets/images/logo/logo-ring.webp'),
+  word: require('../../../assets/images/logo/logo-word.webp'),
+  wordDark: require('../../../assets/images/logo/logo-word-dark.webp'),
 };
 
 export type BrandLoaderProps = {

@@ -35,7 +35,7 @@ export type MemberTabParamList = {
 };
 
 const Tab = createBottomTabNavigator<MemberTabParamList>();
-const MEMBER_IMG = require('@assets/images/espace-membre.png');
+const MEMBER_IMG = require('@assets/images/espace-membre.webp');
 
 type HouseTab = {
   name: keyof MemberTabParamList;
