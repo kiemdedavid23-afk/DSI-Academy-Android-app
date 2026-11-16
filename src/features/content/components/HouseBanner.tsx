@@ -29,7 +29,8 @@ export function HouseBanner({houseId, section, onSwitchHouse, onSection}: HouseB
   const {colors, spacing, radii} = useTheme();
   const visual = HOUSE_VISUALS[houseId];
   const sections: HouseSection[] = ['discover', 'explore'];
-  const scroller = useRef<any>(null) // eslint-disable-line @typescript-eslint/no-explicit-any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const scroller = useRef<any>(null);
   const xs = useRef<Partial<Record<HouseId, number>>>({});
 
   // Le site fait défiler le sélecteur pour montrer la maison précédente à gauche.
