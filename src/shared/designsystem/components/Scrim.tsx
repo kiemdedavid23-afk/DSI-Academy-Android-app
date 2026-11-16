@@ -1,5 +1,5 @@
-import React, {useId} from 'react';
-import {StyleSheet} from 'react-native';
+import React, {useId, useState} from 'react';
+import {StyleSheet, View} from 'react-native';
 import Svg, {Defs, LinearGradient, Rect, Stop} from 'react-native-svg';
 import {useTheme} from '../theme/ThemeProvider';
 
@@ -13,24 +13,29 @@ export type ScrimProps = {
 /**
  * Dégradé sombre posé sur une image (site : linear-gradient(180deg, …) des
  * héros et cartes). Remplit le parent, ne capte aucun appui.
+ * La taille du dessin est mesurée (onLayout) : les « 100 % » du SVG ne
+ * suivent pas toujours le parent et laissaient une bande sans dégradé.
  */
 export function Scrim({from = 0.15, to = 0.9}: ScrimProps) {
   const {colors} = useTheme();
   const id = `scrim${useId().replace(/[^a-zA-Z0-9]/g, '')}`;
+  const [size, setSize] = useState({width: 0, height: 0});
   return (
-    <Svg
+    <View
       style={StyleSheet.absoluteFill}
-      width="100%"
-      height="100%"
-      preserveAspectRatio="none"
-      pointerEvents="none">
-      <Defs>
-        <LinearGradient id={id} x1="0" y1="0" x2="0" y2="1">
-          <Stop offset="0" stopColor={colors.bgDarkPremium} stopOpacity={from} />
-          <Stop offset="1" stopColor={colors.bgDarkPremium} stopOpacity={to} />
-        </LinearGradient>
-      </Defs>
-      <Rect x="0" y="0" width="100%" height="100%" fill={`url(#${id})`} />
-    </Svg>
+      pointerEvents="none"
+      onLayout={e => setSize(e.nativeEvent.layout)}>
+      {size.width > 0 && size.height > 0 ? (
+        <Svg width={size.width} height={size.height}>
+          <Defs>
+            <LinearGradient id={id} x1="0" y1="0" x2="0" y2="1">
+              <Stop offset="0" stopColor={colors.bgDarkPremium} stopOpacity={from} />
+              <Stop offset="1" stopColor={colors.bgDarkPremium} stopOpacity={to} />
+            </LinearGradient>
+          </Defs>
+          <Rect x="0" y="0" width={size.width} height={size.height} fill={`url(#${id})`} />
+        </Svg>
+      ) : null}
+    </View>
   );
 }

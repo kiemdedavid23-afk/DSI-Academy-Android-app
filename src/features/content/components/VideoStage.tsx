@@ -325,7 +325,7 @@ const styles = StyleSheet.create({
   thumb: {borderRadius: 7, height: 14, marginLeft: -7, position: 'absolute', width: 14},
   actions: {alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between', marginTop: 8},
   speedBtn: {alignItems: 'center', flexDirection: 'row', gap: 6},
-  center: {...StyleSheet.absoluteFill, alignItems: 'center', justifyContent: 'center'},
+  center: {position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, alignItems: 'center', justifyContent: 'center'},
   pill: {alignItems: 'center', borderRadius: 24, flexDirection: 'row', gap: 10, paddingHorizontal: 20, paddingVertical: 12},
   pillText: {color: WHITE, fontSize: 18},
   sheet: {borderTopLeftRadius: 24, borderTopRightRadius: 24, bottom: 0, left: 0, paddingTop: 10, position: 'absolute', right: 0},

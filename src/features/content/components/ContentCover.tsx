@@ -82,7 +82,7 @@ export function ContentCover({
 
 const styles = StyleSheet.create({
   box: {borderWidth: 1, overflow: 'hidden', width: '100%'},
-  fill: {...StyleSheet.absoluteFill},
+  fill: {position: 'absolute', top: 0, left: 0, right: 0, bottom: 0},
   center: {alignItems: 'center', justifyContent: 'center'},
   badge: {
     alignItems: 'center',

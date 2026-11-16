@@ -22,6 +22,7 @@ import {
 import {useTranslation} from '@shared/i18n';
 import {favoritesStore, selectionsStore} from '@shared/store';
 import {HOUSE_VISUALS, houseOfType} from '@shared/houses/houseVisuals';
+import {ContentCover} from '../components/ContentCover';
 import {ContentRail} from '../components/ContentRail';
 import {contentErrorKey} from '../logic/errorKey';
 import {isRecent} from '../logic/recent';
@@ -236,6 +237,16 @@ export function ContentDetailScreen({id, onRead, onOpenItem, onBack}: ContentDet
             </Pressable>
           ) : null}
         </View>
+        <ContentCover
+          thumbnailUrl={item.thumbnailUrl}
+          houseId={houseId}
+          style={{
+            alignSelf: 'center',
+            borderColor: colors.goldBorder,
+            marginVertical: 16,
+            width: visual.kind === 'book' ? '50%' : '86%',
+          }}
+        />
         <View style={{alignItems: 'center', gap: 14}}>
           {chips.length > 0 ? (
             <View
@@ -281,8 +292,8 @@ export function ContentDetailScreen({id, onRead, onOpenItem, onBack}: ContentDet
           <View
             style={{
               alignItems: 'center',
+              alignSelf: 'stretch',
               flexDirection: 'row',
-              flexWrap: 'wrap',
               gap: 10,
               justifyContent: 'center',
               marginTop: 7,
@@ -298,10 +309,11 @@ export function ContentDetailScreen({id, onRead, onOpenItem, onBack}: ContentDet
                 borderRadius: radii.md,
                 flexDirection: 'row',
                 gap: spacing.sm,
+                flex: 1,
                 justifyContent: 'center',
                 minHeight: 51.5,
-                minWidth: 170,
-                paddingHorizontal: spacing.xl,
+                minWidth: 0,
+                paddingHorizontal: spacing.md,
               }}>
               <Icon name={PRIMARY_ICON[item.type]} size={20} color={colors.bgDarkPremium} />
               <Text variant="bodyStrong" style={{color: colors.bgDarkPremium}}>
@@ -377,6 +389,6 @@ export function ContentDetailScreen({id, onRead, onOpenItem, onBack}: ContentDet
 }
 
 const styles = StyleSheet.create({
-  fill: {...StyleSheet.absoluteFill},
+  fill: {position: 'absolute', top: 0, left: 0, right: 0, bottom: 0},
   hero: {borderWidth: 1, justifyContent: 'space-between', overflow: 'hidden'},
 });
