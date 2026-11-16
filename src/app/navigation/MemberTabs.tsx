@@ -15,6 +15,7 @@ import {
   createBottomTabNavigator,
   type BottomTabBarProps,
 } from '@react-navigation/bottom-tabs';
+import {getFocusedRouteNameFromRoute} from '@react-navigation/native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import Svg, {Path, Circle} from 'react-native-svg';
 import {Text, useTheme} from '@shared/designsystem';
@@ -160,6 +161,13 @@ function MemberTabBar({state, navigation}: BottomTabBarProps) {
   const {t} = useTranslation();
   const {colors} = useTheme();
   const insets = useSafeAreaInsets();
+
+  // Lecteurs (PDF, texte, audio, vidéo) : pas de barre du bas.
+  const active = state.routes[state.index];
+  const inner = active ? getFocusedRouteNameFromRoute(active) : undefined;
+  if (inner === 'Reader' || inner === 'Player') {
+    return null;
+  }
 
   return (
     <View
