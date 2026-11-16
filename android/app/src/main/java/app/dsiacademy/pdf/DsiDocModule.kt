@@ -4,7 +4,6 @@ import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReactContextBaseJavaModule
 import com.facebook.react.bridge.ReactMethod
-import com.facebook.react.modules.network.OkHttpClientProvider
 import okhttp3.Call
 import okhttp3.Request
 import java.io.IOException
@@ -23,7 +22,7 @@ class DsiDocModule(context: ReactApplicationContext) : ReactContextBaseJavaModul
     pool.execute {
       try {
         if (!url.startsWith("https://")) { promise.reject("INVALID_URL", "https only"); return@execute }
-        val call = OkHttpClientProvider.createClient().newCall(Request.Builder().url(url).build())
+        val call = SharedHttp.client.newCall(Request.Builder().url(url).build())
         calls[requestId] = call
         val data = call.execute().use { res ->
           if (!res.isSuccessful) { promise.reject("HTTP_${res.code}", "status"); return@execute }

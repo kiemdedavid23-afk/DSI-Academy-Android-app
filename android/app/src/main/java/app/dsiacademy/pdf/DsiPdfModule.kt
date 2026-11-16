@@ -14,7 +14,6 @@ import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReactContextBaseJavaModule
 import com.facebook.react.bridge.ReactMethod
-import com.facebook.react.modules.network.OkHttpClientProvider
 import okhttp3.Call
 import okhttp3.Request
 import java.io.File
@@ -52,6 +51,11 @@ class DsiPdfModule(context: ReactApplicationContext) : ReactContextBaseJavaModul
 
   override fun getName() = "DsiPdf"
 
+  private companion object {
+    /** En dessous : téléchargement complet puis affichage. Au-dessus : lecture au fur et à mesure. */
+    const val SMALL_PDF_BYTES = 5L * 1024 * 1024
+  }
+
   private fun purge() {
     dir.listFiles()?.forEach { it.delete() }
   }
@@ -69,7 +73,7 @@ class DsiPdfModule(context: ReactApplicationContext) : ReactContextBaseJavaModul
         if (Build.VERSION.SDK_INT >= 26 && tryRanged(handle, url, promise)) {
           return@execute
         }
-        val call = OkHttpClientProvider.createClient().newCall(Request.Builder().url(url).build())
+        val call = SharedHttp.client.newCall(Request.Builder().url(url).build())
         pendingCalls[requestId] = call
         call.execute().use { res ->
           if (!res.isSuccessful) {
@@ -133,7 +137,7 @@ class DsiPdfModule(context: ReactApplicationContext) : ReactContextBaseJavaModul
 
   /** Lecture par morceaux (API 26+). Renvoie true si la promesse est réglée ; false → repli téléchargement complet. */
   private fun tryRanged(handle: String, url: String, promise: Promise): Boolean {
-    val client = OkHttpClientProvider.createClient()
+    val client = SharedHttp.client
     val probe = Request.Builder().url(url).header("Range", "bytes=0-0").build()
     val size: Long
     client.newCall(probe).execute().use { res ->
@@ -147,6 +151,9 @@ class DsiPdfModule(context: ReactApplicationContext) : ReactContextBaseJavaModul
       }
       val total = res.header("Content-Range")?.substringAfter('/')?.toLongOrNull()
       if (res.code != 206 || total == null || total <= 0) return false
+      // Petit fichier : un seul téléchargement complet est plus rapide que des
+      // dizaines de requêtes par blocs.
+      if (total <= SMALL_PDF_BYTES) return false
       size = total
     }
     val source = RangeSource(url, size, client)

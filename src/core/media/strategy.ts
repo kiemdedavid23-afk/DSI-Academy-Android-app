@@ -59,10 +59,10 @@ export function planStrategy(
 }
 
 function pickMime(
-  probe: Extract<ProbeResult, {kind: 'ok'}>,
+  probe: Extract<ProbeResult, {kind: 'ok'}> | null,
   link: DeliveryLink,
 ): string | null {
-  const fromSource = probe.contentType;
+  const fromSource = probe?.contentType ?? null;
   if (
     fromSource &&
     (fromSource.startsWith('audio/') || fromSource.startsWith('video/'))
@@ -73,8 +73,9 @@ function pickMime(
 }
 
 /**
- * Seconde étape : construit la stratégie finale. `probe` est null pour YouTube
- * (aucun sondage : la source est la page du lecteur intégré).
+ * Seconde étape : construit la stratégie finale. `probe` est facultatif : le
+ * moteur ne sonde plus la source (le lecteur natif la vérifie à l'ouverture),
+ * la taille vient alors du Worker (size_bytes) quand il la donne.
  */
 export function buildStrategy(
   link: DeliveryLink,
@@ -85,10 +86,8 @@ export function buildStrategy(
     const videoId = parseYoutubeVideoId(link.url);
     return videoId ? {kind, videoId} : {refusal: 'INVALID_YOUTUBE_LINK'};
   }
-  if (probe === null) {
-    return {refusal: 'UNSUPPORTED_FORMAT'};
-  }
-  const totalBytes = probe.totalBytes ?? link.sizeBytes;
+  const totalBytes = probe?.totalBytes ?? link.sizeBytes;
+  const rangeSupported = probe?.rangeSupported ?? false;
   if (kind === 'nativeStream') {
     return {
       kind,
@@ -96,7 +95,7 @@ export function buildStrategy(
       format: link.format.toLowerCase(),
       mimeType: pickMime(probe, link),
       totalBytes,
-      rangeSupported: probe.rangeSupported,
+      rangeSupported,
     };
   }
   if (kind === 'tempFile') {
@@ -105,7 +104,7 @@ export function buildStrategy(
       url: link.url,
       format: link.format.toLowerCase(),
       totalBytes,
-      rangeSupported: probe.rangeSupported,
+      rangeSupported,
     };
   }
   return {
