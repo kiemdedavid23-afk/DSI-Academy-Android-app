@@ -7,6 +7,7 @@ import React, {useCallback} from 'react';
 import {useFocusEffect} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {useTranslation} from '@shared/i18n';
+import {MemberHeader} from '@features/member-space/shell/components/MemberHeader';
 import {AcademyHubScreen} from '@features/academy/screens/AcademyHubScreen';
 import {LibraryDiscoverScreen} from '@features/content/screens/LibraryDiscoverScreen';
 import {TextReaderScreen} from '@features/content/screens/TextReaderScreen';
@@ -37,13 +38,31 @@ function FormationRoute(props: React.ComponentProps<typeof FormationScreen>) {
 
 const Stack = createNativeStackNavigator<AcademyStackParamList>();
 
+/** En-tête de marque (icône, DSI Academy, mot d'accueil, cloche, heure). */
+function brandHeader(welcomeKey: string, navigation: any) {
+  return () => (
+    <MemberHeader
+      showMenu={false}
+      bellFirst
+      welcomeKey={welcomeKey}
+      onOpenDrawer={() => {}}
+      onOpenNotifications={() =>
+        navigation.getParent()?.navigate('MemberSpace', {screen: 'MemberNotifications'})
+      }
+    />
+  );
+}
+
 export function AcademyStack() {
   const {t} = useTranslation();
   return (
     <Stack.Navigator screenOptions={{headerShown: true}}>
       <Stack.Screen
         name="AcademyHub"
-        options={{title: t('houses.academy')}}>
+        options={({navigation}) => ({
+          title: t('houses.academy'),
+          header: brandHeader('houses.welcome.academy', navigation),
+        })}>
         {({navigation}) => (
           <AcademyHubScreen
             onOpenHouse={house => {
@@ -57,8 +76,12 @@ export function AcademyStack() {
       </Stack.Screen>
       <Stack.Screen
         name="LibraryDiscover"
-        options={({route}) => ({
+        options={({route, navigation}) => ({
           title: t(`houses.${route.params?.house ?? 'library'}`),
+          header: brandHeader(
+            `houses.welcome.${route.params?.house ?? 'library'}`,
+            navigation,
+          ),
         })}>
         {({route, navigation}) => (
           <LibraryDiscoverScreen
