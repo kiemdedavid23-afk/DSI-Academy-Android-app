@@ -9,9 +9,11 @@ import React, {useCallback, useEffect, useRef, useState, useSyncExternalStore} f
 import {FlatList, Image, PixelRatio, Pressable, ScrollView, View, useWindowDimensions} from 'react-native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {renderPdfPage} from '@core/media/pdfNative';
+import {loadTrace} from '@core/media/loadTrace';
 import {readerErrorKey} from '@core/utils/readerFailure';
-import {Button, ErrorState, LoadingState, Text, TextField, useTheme, withAlpha} from '@shared/designsystem';
+import {Button, ErrorState, Text, TextField, useTheme, withAlpha} from '@shared/designsystem';
 import {useTranslation} from '@shared/i18n';
+import {LoadProgress} from '../components/LoadProgress';
 import {bookmarksStore} from '@shared/store';
 import {pdfReaderStore, type PdfErrorKind} from '../store/pdfReaderStore';
 
@@ -23,6 +25,8 @@ const ZOOM_MAX = 3;
 const ZOOM_STEP = 0.25;
 /** Au-delà, le rendu devient trop lourd pour la mémoire : l'image est simplement agrandie. */
 const MAX_RENDER_PX = 2400;
+/** Première page : un aperçu léger s'affiche avant la version nette. */
+const LOW_RES_PX = 480;
 
 export function pdfErrorKey(kind: PdfErrorKind | null): string {
   if (kind === 'pdfProtected') {
@@ -41,8 +45,26 @@ function PdfPage({handle, index, width, height}: {handle: string; index: number;
   useEffect(() => {
     let alive = true;
     const px = Math.min(MAX_RENDER_PX, Math.round(PixelRatio.getPixelSizeForLayoutSize(width)));
+    const firstLoad = loadTrace.get().currentId === 'render';
+    let sharp = false;
+    if (firstLoad && px > LOW_RES_PX) {
+      renderPdfPage(handle, index, LOW_RES_PX)
+        .then(r => {
+          loadTrace.finish(false, 'render');
+          if (alive && !sharp) {
+            setUri(r.uri);
+          }
+        })
+        .catch(() => undefined);
+    }
     renderPdfPage(handle, index, px)
-      .then(r => alive && setUri(r.uri))
+      .then(r => {
+        sharp = true;
+        loadTrace.finish(false, 'render');
+        if (alive) {
+          setUri(r.uri);
+        }
+      })
       .catch(() => alive && setFailed(true));
     return () => {
       alive = false;
@@ -124,7 +146,7 @@ export function PdfReaderScreen({id, title}: PdfReaderScreenProps) {
   );
 
   if (st.status === 'loading' || st.status === 'idle') {
-    return <LoadingState fill accessibilityLabel={t('content.loading')} />;
+    return <LoadProgress />;
   }
   if (st.status === 'error') {
     return (

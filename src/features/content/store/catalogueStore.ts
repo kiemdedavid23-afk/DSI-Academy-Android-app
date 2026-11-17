@@ -5,6 +5,7 @@
  * La visibilité (published + active) est appliquée par le mapper (L4a).
  */
 
+import {clearContentCache} from '@core/cache/diskCache';
 import {fetchCatalogue} from '@core/api/endpoints/content/catalogue.api';
 import type {CatalogueCursor} from '@core/utils/contentDisplay';
 import type {
@@ -115,6 +116,9 @@ export function createCatalogueStore(type: ContentType) {
     subscribe: store.subscribe,
     /** Premier chargement ; sans effet si la liste est déjà affichée. */
     load: async (opts?: {force?: boolean}) => {
+      if (opts?.force) {
+        await clearContentCache();
+      }
       const s = store.getState();
       if (!opts?.force && (s.status === 'success' || s.status === 'loading')) {
         return;

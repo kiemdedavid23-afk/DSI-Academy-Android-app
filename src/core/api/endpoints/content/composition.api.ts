@@ -1,3 +1,4 @@
+import {cached} from '../../../cache/diskCache';
 import {http} from '@core/network';
 import {catchNet} from './common.api';
 import {failure} from './common.mapper';
@@ -9,7 +10,7 @@ function validId(id: number): boolean {
 }
 
 /** GET /content/:parent_id/components (composants actifs seulement, par défaut). */
-export async function fetchComponents(
+async function fetchComponentsRemote(
   parentId: number,
 ): Promise<ComponentsResult> {
   if (!validId(parentId)) {
@@ -26,7 +27,7 @@ export async function fetchComponents(
 }
 
 /** GET /content/:parent_id/components/tree (profondeur max 10). */
-export async function fetchComponentTree(
+async function fetchComponentTreeRemote(
   parentId: number,
 ): Promise<TreeResult> {
   if (!validId(parentId)) {
@@ -40,4 +41,12 @@ export async function fetchComponentTree(
   } catch (err) {
     return catchNet(err);
   }
+}
+
+export function fetchComponents(parentId: number): Promise<ComponentsResult> {
+  return cached(`components:${parentId}`, () => fetchComponentsRemote(parentId));
+}
+
+export function fetchComponentTree(parentId: number): Promise<TreeResult> {
+  return cached(`tree:${parentId}`, () => fetchComponentTreeRemote(parentId));
 }

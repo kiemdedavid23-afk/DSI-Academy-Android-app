@@ -5,6 +5,7 @@
  * Les fiches déjà vues sont gardées en mémoire (session) : affichage immédiat.
  */
 
+import {clearContentCache} from '@core/cache/diskCache';
 import {fetchContentById} from '@core/api/endpoints/content/catalogue.api';
 import type {
   Content,
@@ -33,6 +34,9 @@ export function createDetailStore() {
   let generation = 0;
 
   async function load(id: number, opts?: {force?: boolean}): Promise<void> {
+    if (opts?.force) {
+      await clearContentCache();
+    }
     generation += 1;
     const mine = generation;
     const cached = cache.get(id);

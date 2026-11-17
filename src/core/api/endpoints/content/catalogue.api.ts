@@ -1,4 +1,5 @@
 import {http} from '@core/network';
+import {cached} from '../../../cache/diskCache';
 import {catchNet} from './common.api';
 import {failure} from './common.mapper';
 import type {ContentType} from './common.types';
@@ -22,7 +23,7 @@ import type {
  * Routes publiques (aucune preuve d'accès). On demande editorial_status=published ;
  * le contrôle moderation_status se fait au mapper (NOTES-ET-ECARTS n°2).
  */
-export async function fetchCatalogue(
+async function fetchCatalogueRemote(
   params: CatalogueParams,
 ): Promise<CatalogueResult> {
   try {
@@ -46,7 +47,7 @@ export async function fetchCatalogue(
 }
 
 /** GET /content/:id */
-export async function fetchContentById(
+async function fetchContentByIdRemote(
   id: number,
 ): Promise<ContentDetailResult> {
   if (!Number.isInteger(id) || id <= 0) {
@@ -63,7 +64,7 @@ export async function fetchContentById(
 }
 
 /** GET /content/by-slug/:type/:slug */
-export async function fetchContentBySlug(
+async function fetchContentBySlugRemote(
   type: ContentType,
   slug: string,
 ): Promise<ContentDetailResult> {
@@ -113,7 +114,7 @@ export async function searchContent(
 }
 
 /** GET /content/categories?type= (catégories actives ayant du contenu publié). */
-export async function fetchCategories(
+async function fetchCategoriesRemote(
   type: ContentType,
 ): Promise<CategoriesResult> {
   try {
@@ -124,4 +125,20 @@ export async function fetchCategories(
   } catch (err) {
     return catchNet(err);
   }
+}
+
+export function fetchCatalogue(params: CatalogueParams): Promise<CatalogueResult> {
+  return cached(`catalogue:${JSON.stringify(params)}`, () => fetchCatalogueRemote(params));
+}
+
+export function fetchContentById(id: number): Promise<ContentDetailResult> {
+  return cached(`content:${id}`, () => fetchContentByIdRemote(id));
+}
+
+export function fetchContentBySlug(type: ContentType, slug: string): Promise<ContentDetailResult> {
+  return cached(`slug:${type}:${slug}`, () => fetchContentBySlugRemote(type, slug));
+}
+
+export function fetchCategories(type: ContentType): Promise<CategoriesResult> {
+  return cached(`categories:${type}`, () => fetchCategoriesRemote(type));
 }

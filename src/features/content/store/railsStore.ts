@@ -4,6 +4,7 @@
  * parmi les trois plus fournies.
  */
 
+import {clearContentCache} from '@core/cache/diskCache';
 import {fetchCatalogue, fetchCategories} from '@core/api/endpoints/content/catalogue.api';
 import type {Content, ContentErrorKind, ContentType} from '@core/utils/contentDisplay';
 import {storeRegistry} from '@shared/store';
@@ -36,6 +37,9 @@ export function createRailsStore(type: ContentType) {
   let generation = 0;
 
   async function load(opts?: {force?: boolean}): Promise<void> {
+    if (opts?.force) {
+      await clearContentCache();
+    }
     const s = store.getState();
     if (!opts?.force && (s.status === 'success' || s.status === 'loading')) {
       return;

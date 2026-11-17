@@ -31,11 +31,15 @@ import java.util.concurrent.Executors
 class DsiPdfModule(context: ReactApplicationContext) : ReactContextBaseJavaModule(context) {
 
   private class Session(
-    val file: File?,
-    val fd: ParcelFileDescriptor,
-    val renderer: PdfRenderer,
-    val thread: HandlerThread? = null,
-  )
+    var file: File?,
+    var fd: ParcelFileDescriptor,
+    var renderer: PdfRenderer,
+    var thread: HandlerThread? = null,
+    val url: String? = null,
+    val maxBytes: Long = 0L,
+  ) {
+    @Volatile var background = false
+  }
 
   private val sessions = ConcurrentHashMap<String, Session>()
   private val pendingCalls = ConcurrentHashMap<String, Call>()
@@ -52,8 +56,8 @@ class DsiPdfModule(context: ReactApplicationContext) : ReactContextBaseJavaModul
   override fun getName() = "DsiPdf"
 
   private companion object {
-    /** En dessous : téléchargement complet puis affichage. Au-dessus : lecture au fur et à mesure. */
-    const val SMALL_PDF_BYTES = 5L * 1024 * 1024
+    /** En dessous : téléchargement complet puis affichage. Au-dessus : première page par lecture partielle, fichier complet en arrière-plan. */
+    const val SMALL_PDF_BYTES = 1L * 1024 * 1024
   }
 
   private fun purge() {
@@ -70,7 +74,7 @@ class DsiPdfModule(context: ReactApplicationContext) : ReactContextBaseJavaModul
           promise.reject("INVALID_URL", "https only")
           return@execute
         }
-        if (Build.VERSION.SDK_INT >= 26 && tryRanged(handle, url, promise)) {
+        if (Build.VERSION.SDK_INT >= 26 && tryRanged(handle, url, maxBytes.toLong(), promise)) {
           return@execute
         }
         val call = SharedHttp.client.newCall(Request.Builder().url(url).build())
@@ -140,7 +144,7 @@ class DsiPdfModule(context: ReactApplicationContext) : ReactContextBaseJavaModul
   }
 
   /** Lecture par morceaux (API 26+). Renvoie true si la promesse est réglée ; false → repli téléchargement complet. */
-  private fun tryRanged(handle: String, url: String, promise: Promise): Boolean {
+  private fun tryRanged(handle: String, url: String, maxBytes: Long, promise: Promise): Boolean {
     val client = SharedHttp.client
     val probe = Request.Builder().url(url).header("Range", "bytes=0-0").build()
     val size: Long
@@ -155,8 +159,8 @@ class DsiPdfModule(context: ReactApplicationContext) : ReactContextBaseJavaModul
       }
       val total = res.header("Content-Range")?.substringAfter('/')?.toLongOrNull()
       if (res.code != 206 || total == null || total <= 0) return false
-      // Petit fichier : un seul téléchargement complet est plus rapide que des
-      // dizaines de requêtes par blocs.
+      // Très petit fichier : un seul téléchargement est plus rapide que plusieurs
+      // requêtes par blocs. Sinon la première page s'affiche par lecture partielle.
       if (total <= SMALL_PDF_BYTES) return false
       size = total
     }
@@ -168,7 +172,7 @@ class DsiPdfModule(context: ReactApplicationContext) : ReactContextBaseJavaModul
     )
     try {
       val renderer = PdfRenderer(fd)
-      sessions[handle] = Session(null, fd, renderer, thread)
+      sessions[handle] = Session(null, fd, renderer, thread, url, maxBytes)
       val map = Arguments.createMap()
       map.putString("handle", handle)
       map.putInt("pageCount", renderer.pageCount)
@@ -236,8 +240,74 @@ class DsiPdfModule(context: ReactApplicationContext) : ReactContextBaseJavaModul
             promise.resolve(map)
           }
         }
+        startBackgroundDownload(handle, session)
       } catch (e: Exception) {
         promise.reject("RENDER_FAILED", e.message)
+      }
+    }
+  }
+
+  /** Après la première page : télécharge le fichier complet en arrière-plan, puis bascule dessus. */
+  private fun startBackgroundDownload(handle: String, session: Session) {
+    val url = session.url ?: return
+    if (session.file != null || session.background) return
+    session.background = true
+    downloads.execute {
+      val file = File(dir, "$handle.pdf")
+      val key = "bg_$handle"
+      try {
+        val call = SharedHttp.client.newCall(Request.Builder().url(url).build())
+        pendingCalls[key] = call
+        call.execute().use { res ->
+          if (!res.isSuccessful) return@execute
+          if ((res.header("Content-Type") ?: "").lowercase().startsWith("text/html")) return@execute
+          val body = res.body ?: return@execute
+          var total = 0L
+          FileOutputStream(file).use { out ->
+            val buf = ByteArray(64 * 1024)
+            val input = body.byteStream()
+            while (true) {
+              val n = input.read(buf)
+              if (n < 0) break
+              total += n
+              if (total > session.maxBytes) { file.delete(); return@execute }
+              out.write(buf, 0, n)
+            }
+          }
+        }
+        renders.execute { swapToFile(handle, session, file) }
+      } catch (e: Exception) {
+        file.delete()
+      } finally {
+        pendingCalls.remove(key)
+      }
+    }
+  }
+
+  /** Remplace la lecture partielle par le fichier local complet (sur le fil de rendu). */
+  private fun swapToFile(handle: String, session: Session, file: File) {
+    synchronized(session) {
+      if (sessions[handle] !== session) { file.delete(); return }
+      try {
+        val fd = ParcelFileDescriptor.open(file, ParcelFileDescriptor.MODE_READ_ONLY)
+        val renderer = try {
+          PdfRenderer(fd)
+        } catch (e: Exception) {
+          fd.close(); file.delete()
+          return
+        }
+        val oldRenderer = session.renderer
+        val oldFd = session.fd
+        val oldThread = session.thread
+        session.renderer = renderer
+        session.fd = fd
+        session.file = file
+        session.thread = null
+        try { oldRenderer.close() } catch (_: Exception) {}
+        try { oldFd.close() } catch (_: Exception) {}
+        oldThread?.quitSafely()
+      } catch (e: Exception) {
+        file.delete()
       }
     }
   }
@@ -251,6 +321,8 @@ class DsiPdfModule(context: ReactApplicationContext) : ReactContextBaseJavaModul
   }
 
   private fun closeSession(handle: String) {
+    pendingCalls.remove("bg_$handle")?.cancel()
+    File(dir, "$handle.pdf").delete()
     val session = sessions.remove(handle) ?: return
     synchronized(session) {
       try { session.renderer.close() } catch (_: Exception) {}
