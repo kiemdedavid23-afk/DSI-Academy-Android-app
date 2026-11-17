@@ -1340,6 +1340,14 @@
     "backToDetail": "Retour au détail",
     "notFound": "Contenu introuvable.",
     "loading": "Chargement…",
+    "trace": {
+      "link": "Demande du lien",
+      "open": "Ouverture chez la source",
+      "buffer": "Mise en mémoire tampon",
+      "render": "Affichage de la première page",
+      "done": "Chargé en {{total}}",
+      "failed": "Échec après {{total}}"
+    },
     "errorLoad": "Impossible de charger ce contenu pour le moment.",
     "categoryEmpty": "Rien dans cette catégorie pour le moment.",
     "accessProofMissing": "Accès non disponible. Reconnectez-vous ou vérifiez votre abonnement.",

@@ -24,6 +24,27 @@ export {isAllowedYoutubeNavigation, YOUTUBE_BASE_URL, YOUTUBE_ORIGIN_WHITELIST};
 export const POLL_MS = 500;
 export const SAVE_EVERY_MS = 5000;
 export const MAX_RE_RESOLVES = 2;
+/** Délais de sécurité : sans eux, une étape qui ne répond pas laisse le chargement tourner indéfiniment. */
+export const LINK_TIMEOUT_MS = 25_000;
+export const LOAD_TIMEOUT_MS = 10_000;
+export const STALL_MS = 30_000;
+
+const TIMED_OUT = Symbol('timeout');
+function withTimeout<T>(p: Promise<T>, ms: number): Promise<T | typeof TIMED_OUT> {
+  return new Promise((resolve, reject) => {
+    const timer = setTimeout(() => resolve(TIMED_OUT), ms);
+    p.then(
+      v => {
+        clearTimeout(timer);
+        resolve(v);
+      },
+      e => {
+        clearTimeout(timer);
+        reject(e);
+      },
+    );
+  });
+}
 const VIDEO_FORMATS = ['mp4', 'webm'];
 
 export type PlayerKind = 'audio' | 'video' | 'youtube';
@@ -96,6 +117,7 @@ export function createPlayerStore() {
   }
   let resumePercent: number | null = null;
   let reResolves = 0;
+  let stall: {since: number; position: number} | null = null;
   let busy = false;
 
   function stopPoll() {
@@ -128,10 +150,22 @@ export function createPlayerStore() {
 
   /** Demande un lien et le confie au lecteur natif. Renvoie false en cas d'échec (état d'erreur posé). */
   async function start(mine: number, startMs: number): Promise<boolean> {
-    const opened = await openMedia(store.getState().contentId as number);
+    stall = null;
+    let linkRes: Awaited<ReturnType<typeof openMedia>> | typeof TIMED_OUT;
+    try {
+      linkRes = await withTimeout(openMedia(store.getState().contentId as number), LINK_TIMEOUT_MS);
+    } catch {
+      linkRes = TIMED_OUT;
+    }
     if (mine !== generation) {
       return false;
     }
+    if (linkRes === TIMED_OUT) {
+      loadTrace.finish(true);
+      store.setState({status: 'error', errorKind: 'timeout', retryable: true});
+      return false;
+    }
+    const opened = linkRes;
     if (opened.kind === 'failure') {
       loadTrace.finish(true);
       store.setState({status: 'error', errorKind: opened.errorKind, retryable: opened.retryable});
@@ -149,13 +183,33 @@ export function createPlayerStore() {
       return false;
     }
     const kind: PlayerKind = VIDEO_FORMATS.includes(s.format.toLowerCase()) ? 'video' : 'audio';
-    const ok = await loadMedia({
-      url: s.url,
-      title: store.getState().title,
-      artwork: store.getState().artwork,
-      startMs,
-      audio: kind === 'audio',
-    });
+    let ok = false;
+    try {
+      const res = await withTimeout(
+        loadMedia({
+          url: s.url,
+          title: store.getState().title,
+          artwork: store.getState().artwork,
+          startMs,
+          audio: kind === 'audio',
+        }),
+        LOAD_TIMEOUT_MS,
+      );
+      if (res === TIMED_OUT) {
+        if (mine === generation) {
+          loadTrace.finish(true);
+          store.setState({status: 'error', errorKind: 'timeout', retryable: true});
+        }
+        return false;
+      }
+      ok = res;
+    } catch {
+      if (mine === generation) {
+        loadTrace.finish(true);
+        store.setState({status: 'error', errorKind: 'server', retryable: true});
+      }
+      return false;
+    }
     if (mine !== generation) {
       return false;
     }
@@ -195,6 +249,21 @@ export function createPlayerStore() {
       }
       if (st.bufferedPercent !== undefined) {
         loadTrace.setProgress(st.bufferedPercent);
+      }
+      // Garde-fou : lecteur ni en lecture ni prêt, sans avancer, depuis trop longtemps.
+      if (!st.playing && st.state !== 'ready' && st.state !== 'ended') {
+        const now = Date.now();
+        if (!stall || stall.position !== st.positionMs) {
+          stall = {since: now, position: st.positionMs};
+        } else if (now - stall.since > STALL_MS) {
+          stall = null;
+          stopPoll();
+          loadTrace.finish(true);
+          store.setState({status: 'error', errorKind: 'timeout', retryable: true, playing: false});
+          return;
+        }
+      } else {
+        stall = null;
       }
       if (st.state === 'ready' || st.playing) {
         loadTrace.finish(false, 'buffer');

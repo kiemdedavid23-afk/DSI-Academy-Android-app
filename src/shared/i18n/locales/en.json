@@ -1340,6 +1340,14 @@
     "backToDetail": "Back to details",
     "notFound": "Content not found.",
     "loading": "Loading…",
+    "trace": {
+      "link": "Requesting the link",
+      "open": "Opening the source",
+      "buffer": "Buffering",
+      "render": "Showing the first page",
+      "done": "Loaded in {{total}}",
+      "failed": "Failed after {{total}}"
+    },
     "errorLoad": "Unable to load this content right now.",
     "categoryEmpty": "Nothing in this category yet.",
     "accessProofMissing": "Access unavailable. Please sign in again or check your subscription.",
