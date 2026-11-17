@@ -1,4 +1,5 @@
 import {NativeModules} from 'react-native';
+import {pollProgress} from './progressPoll';
 import type {MediaErrorKind} from './types';
 
 /** Pont vers le module Kotlin DsiPdf (PdfRenderer). Aucun texte de la source n'est exposé. */
@@ -6,6 +7,7 @@ import type {MediaErrorKind} from './types';
 type NativeDsiPdf = {
   open(requestId: string, url: string, maxBytes: number): Promise<{handle: string; pageCount: number}>;
   cancelOpen(requestId: string): void;
+  getProgress?(requestId: string): Promise<{loaded: number; total: number}>;
   renderPage(handle: string, index: number, width: number): Promise<{uri: string; width: number; height: number}>;
   close(handle: string): Promise<void>;
 };
@@ -59,12 +61,15 @@ export async function openPdf(url: string, requestId: string): Promise<PdfOpenRe
   if (!mod) {
     return {kind: 'failure', errorKind: 'unsupportedFormat', code: 'NO_NATIVE_MODULE', retryable: false, reResolve: false};
   }
+  const stop = pollProgress(requestId, mod.getProgress ? id => mod.getProgress!(id) : undefined);
   try {
     const res = await mod.open(requestId, url, MAX_PDF_BYTES);
     return {kind: 'success', handle: res.handle, pageCount: res.pageCount};
   } catch (e) {
     const code = (e as {code?: string}).code ?? 'NETWORK';
     return {kind: 'failure', code, ...classifyPdfError(code)};
+  } finally {
+    stop();
   }
 }
 

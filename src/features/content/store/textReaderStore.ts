@@ -6,6 +6,7 @@
  */
 
 import {readTextContent} from '@core/media/textReader';
+import {loadTrace} from '@core/media/loadTrace';
 import type {MediaErrorKind} from '@core/utils/readerFailure';
 import {storageGet, storageSet} from '@core/storage';
 import {continueStore, progressStore, storeRegistry} from '@shared/store';
@@ -87,12 +88,16 @@ export function createTextReaderStore() {
       status: 'loading',
       scaleIndex,
     });
+    loadTrace.begin('text');
     const [res, saved] = await Promise.all([
       readTextContent(contentId, {signal: abort.signal}),
       progressStore.get(contentId),
     ]);
     if (mine !== generation) {
       return;
+    }
+    if (res.kind !== 'notText') {
+      loadTrace.finish(res.kind === 'failure');
     }
     if (res.kind === 'failure') {
       store.setState({

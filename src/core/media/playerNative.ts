@@ -9,6 +9,8 @@ export type PlayerState = {
   positionMs: number;
   durationMs: number;
   speed: number;
+  /** Part de la durée déjà en mémoire tampon, de 0 à 100 (absent si Android non mis à jour). */
+  bufferedPercent?: number;
   error: string | null;
 };
 

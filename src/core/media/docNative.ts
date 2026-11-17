@@ -1,5 +1,6 @@
 import {NativeModules} from 'react-native';
 import {classifyPdfError} from './pdfNative';
+import {pollProgress} from './progressPoll';
 
 /** Pont vers le module Kotlin DsiDoc : EPUB, MOBI, DOCX lus en mémoire et analysés en natif. */
 
@@ -20,6 +21,7 @@ export type DocOpenResult =
 type NativeDsiDoc = {
   open(requestId: string, url: string, format: string, maxBytes: number): Promise<string>;
   cancelOpen(requestId: string): void;
+  getProgress?(requestId: string): Promise<{loaded: number; total: number}>;
 };
 
 function native(): NativeDsiDoc | null {
@@ -51,12 +53,15 @@ export async function openDocument(url: string, format: string, requestId: strin
   if (!mod) {
     return {kind: 'failure', errorKind: 'unsupportedFormat', code: 'NO_NATIVE_MODULE', retryable: false, reResolve: false};
   }
+  const stop = pollProgress(requestId, mod.getProgress ? id => mod.getProgress!(id) : undefined);
   try {
     const json = await mod.open(requestId, url, format.toLowerCase(), MAX_DOC_BYTES);
     return {kind: 'success', blocks: JSON.parse(json) as DocBlock[]};
   } catch (e) {
     const code = (e as {code?: string}).code ?? 'NETWORK';
     return {kind: 'failure', code, ...classifyDocError(code)};
+  } finally {
+    stop();
   }
 }
 

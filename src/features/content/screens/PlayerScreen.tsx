@@ -17,8 +17,10 @@ import {
 } from 'react-native';
 import {WebView} from 'react-native-webview';
 import {readerErrorKey} from '@core/utils/readerFailure';
-import {ErrorState, LoadingState, mediaStageColors, Text, useTheme, withAlpha} from '@shared/designsystem';
+import {ErrorState, mediaStageColors, Text, useTheme, withAlpha} from '@shared/designsystem';
 import {useTranslation} from '@shared/i18n';
+import {BufferOverlay, LoadProgress} from '../components/LoadProgress';
+import {loadTrace} from '@core/media/loadTrace';
 import {AudioStage} from '../components/AudioStage';
 import {ReaderFrame} from '../components/ReaderFrame';
 import {VideoStage} from '../components/VideoStage';
@@ -161,6 +163,12 @@ export function PlayerScreen({id, title, thumbnailUrl, onBack}: PlayerScreenProp
   const {t} = useTranslation();
   const {spacing} = useTheme();
   const st = useSyncExternalStore(playerStore.subscribe, playerStore.getState);
+  const trace = useSyncExternalStore(loadTrace.subscribe, loadTrace.get);
+  const initialBuffer = trace.currentId === 'buffer';
+  const overlay =
+    initialBuffer || st.buffering ? (
+      <BufferOverlay percent={initialBuffer ? trace.progress : st.bufferedPercent} />
+    ) : null;
 
   useEffect(() => {
     if (Platform.OS === 'android' && Number(Platform.Version) >= 33) {
@@ -196,7 +204,7 @@ export function PlayerScreen({id, title, thumbnailUrl, onBack}: PlayerScreenProp
   );
 
   if (st.status === 'loading' || st.status === 'idle') {
-    return frame(<LoadingState fill accessibilityLabel={t('content.loading')} />);
+    return frame(<LoadProgress thumbnailUrl={thumbnailUrl} />);
   }
   if (st.status === 'error') {
     return frame(
@@ -240,33 +248,39 @@ export function PlayerScreen({id, title, thumbnailUrl, onBack}: PlayerScreenProp
 
   if (st.kind === 'video') {
     return (
-      <VideoStage
-        title={st.title}
-        fullscreen={st.fullscreen}
-        playing={st.playing}
-        positionMs={st.positionMs}
-        durationMs={st.durationMs}
-        speed={st.speed}
-        video={<NativeVideo style={{flex: 1}} />}
-        gestures={g => <VideoGestures enabled={g.enabled} onSingleTap={g.onSingleTap} />}
-        onBack={onBack}
-      />
+      <View style={{flex: 1}}>
+        <VideoStage
+          title={st.title}
+          fullscreen={st.fullscreen}
+          playing={st.playing}
+          positionMs={st.positionMs}
+          durationMs={st.durationMs}
+          speed={st.speed}
+          video={<NativeVideo style={{flex: 1}} />}
+          gestures={g => <VideoGestures enabled={g.enabled} onSingleTap={g.onSingleTap} />}
+          onBack={onBack}
+        />
+        {overlay}
+      </View>
     );
   }
 
   return (
-    <AudioStage
-      title={st.title}
-      thumbnailUrl={thumbnailUrl}
-      playing={st.playing}
-      positionMs={st.positionMs}
-      durationMs={st.durationMs}
-      speed={st.speed}
-      loop={st.loop}
-      muted={st.muted}
-      sleepMinutes={st.sleepMinutes}
-      buffering={st.buffering}
-      onBack={onBack}
-    />
+    <View style={{flex: 1}}>
+      <AudioStage
+        title={st.title}
+        thumbnailUrl={thumbnailUrl}
+        playing={st.playing}
+        positionMs={st.positionMs}
+        durationMs={st.durationMs}
+        speed={st.speed}
+        loop={st.loop}
+        muted={st.muted}
+        sleepMinutes={st.sleepMinutes}
+        buffering={st.buffering}
+        onBack={onBack}
+      />
+      {overlay}
+    </View>
   );
 }

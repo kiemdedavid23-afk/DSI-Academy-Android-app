@@ -5,6 +5,7 @@
  */
 
 import {openMedia} from '@core/media/engine';
+import {loadTrace} from '@core/media/loadTrace';
 import {
   classifyPlayerError,
   getPlayerState,
@@ -36,6 +37,8 @@ export type PlayerStoreState = {
   youtubeHtml: string | null;
   playing: boolean;
   buffering: boolean;
+  /** Mémoire tampon en pourcentage, ou null si inconnu. */
+  bufferedPercent: number | null;
   ended: boolean;
   positionMs: number;
   durationMs: number;
@@ -63,6 +66,7 @@ const INITIAL: PlayerStoreState = {
   youtubeHtml: null,
   playing: false,
   buffering: false,
+  bufferedPercent: null,
   ended: false,
   positionMs: 0,
   durationMs: 0,
@@ -129,15 +133,18 @@ export function createPlayerStore() {
       return false;
     }
     if (opened.kind === 'failure') {
+      loadTrace.finish(true);
       store.setState({status: 'error', errorKind: opened.errorKind, retryable: opened.retryable});
       return false;
     }
     const s = opened.media.strategy;
     if (s.kind === 'embeddedYoutube') {
+      loadTrace.finish();
       store.setState({status: 'ready', kind: 'youtube', youtubeHtml: youtubeEmbedHtml(s.videoId)});
       return true;
     }
     if (s.kind !== 'nativeStream') {
+      loadTrace.finish(true);
       store.setState({status: 'error', errorKind: 'unsupportedFormat', retryable: false});
       return false;
     }
@@ -153,9 +160,11 @@ export function createPlayerStore() {
       return false;
     }
     if (!ok) {
+      loadTrace.finish(true);
       store.setState({status: 'error', errorKind: 'unsupportedFormat', retryable: false});
       return false;
     }
+    loadTrace.step('buffer');
     store.setState({status: 'ready', kind});
     return true;
   }
@@ -179,14 +188,22 @@ export function createPlayerStore() {
           return;
         }
         stopPoll();
+        loadTrace.finish(true);
         const kind = c.errorKind === 'pdfProtected' || c.errorKind === 'pdfInvalid' ? 'server' : c.errorKind;
         store.setState({status: 'error', errorKind: kind, retryable: c.retryable, playing: false});
         return;
+      }
+      if (st.bufferedPercent !== undefined) {
+        loadTrace.setProgress(st.bufferedPercent);
+      }
+      if (st.state === 'ready' || st.playing) {
+        loadTrace.finish(false, 'buffer');
       }
       const prev = store.getState();
       store.setState({
         playing: st.playing,
         buffering: st.state === 'buffering',
+        bufferedPercent: st.bufferedPercent ?? null,
         ended: st.state === 'ended',
         positionMs: st.positionMs,
         durationMs: st.durationMs,
@@ -214,6 +231,7 @@ export function createPlayerStore() {
     reResolves = 0;
     lastSave = 0;
     store.replace({...INITIAL, contentId, title, artwork, status: 'loading'});
+    loadTrace.begin('player');
     const saved = await progressStore.get(contentId);
     if (mine !== generation) {
       return;

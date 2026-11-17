@@ -130,6 +130,7 @@ class DsiPlayerModule(private val ctx: ReactApplicationContext) : ReactContextBa
       map.putDouble("positionMs", p.currentPosition.toDouble())
       map.putDouble("durationMs", if (p.duration == C.TIME_UNSET) 0.0 else p.duration.toDouble())
       map.putDouble("speed", p.playbackParameters.speed.toDouble())
+      map.putInt("bufferedPercent", p.bufferedPercentage)
       if (lastError != null) map.putString("error", lastError) else map.putNull("error")
       promise.resolve(map)
     }

@@ -1,6 +1,9 @@
 /** Lecteur EPUB / MOBI / DOCX : lien du moteur → analyse native en mémoire. Rien n'est écrit sur le disque. */
 
 import {openMedia} from '@core/media/engine';
+import {loadTrace} from '@core/media/loadTrace';
+import {takeRecentMedia} from '@core/media/recentMedia';
+import type {OpenMediaResult} from '@core/media/types';
 import {cancelOpenDocument, isDocFormat, openDocument, type DocBlock, type DocErrorKind} from '@core/media/docNative';
 import {continueStore, progressStore, storeRegistry} from '@shared/store';
 import {createSimpleStore} from './simpleStore';
@@ -51,13 +54,19 @@ export function createDocReaderStore() {
     const mine = generation;
     stop();
     store.replace({...INITIAL, contentId, title, status: 'loading'});
+    const recent = takeRecentMedia(contentId);
+    if (!recent) {
+      loadTrace.begin('doc');
+    }
     const saved = await progressStore.get(contentId);
     for (let attempt = 0; attempt < 2; attempt += 1) {
-      const opened = await openMedia(contentId);
+      const opened: OpenMediaResult =
+        attempt === 0 && recent ? {kind: 'success', media: recent} : await openMedia(contentId);
       if (mine !== generation) {
         return;
       }
       if (opened.kind === 'failure') {
+        loadTrace.finish(true);
         store.setState({status: 'error', errorKind: opened.errorKind, retryable: opened.retryable});
         return;
       }
@@ -74,6 +83,7 @@ export function createDocReaderStore() {
         return;
       }
       if (res.kind === 'success') {
+        loadTrace.finish();
         store.setState({
           status: 'ready',
           blocks: res.blocks,
@@ -84,6 +94,7 @@ export function createDocReaderStore() {
       if (res.reResolve && attempt === 0) {
         continue;
       }
+      loadTrace.finish(true);
       store.setState({status: 'error', errorKind: res.errorKind, retryable: res.retryable});
       return;
     }

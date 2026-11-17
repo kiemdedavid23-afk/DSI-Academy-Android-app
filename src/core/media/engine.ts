@@ -1,4 +1,6 @@
 import {fetchDeliveryLink} from '../api/endpoints/content/delivery.api';
+import {loadTrace} from './loadTrace';
+import {rememberMedia} from './recentMedia';
 import {fromDeliveryFailure, fromProbeFailure, fromRefusal, tooLarge} from './errors';
 import {buildStrategy, planStrategy} from './strategy';
 import type {OpenMediaResult} from './types';
@@ -24,9 +26,11 @@ export async function openMedia(
   }
   const delivery = await fetchDeliveryLink(contentId);
   if (delivery.kind === 'failure') {
+    loadTrace.finish(true);
     return fromDeliveryFailure(delivery);
   }
   const link = delivery.link;
+  loadTrace.step('open');
 
   const plan = planStrategy(link);
   if ('refusal' in plan) {
@@ -44,15 +48,14 @@ export async function openMedia(
   ) {
     return tooLarge();
   }
-  return {
-    kind: 'success',
-    media: {
-      contentId: link.contentId,
-      contentType: link.contentType,
-      providerId: link.providerId,
-      format: link.format.toLowerCase(),
-      strategy,
-      openedAt: Date.now(),
-    },
+  const media = {
+    contentId: link.contentId,
+    contentType: link.contentType,
+    providerId: link.providerId,
+    format: link.format.toLowerCase(),
+    strategy,
+    openedAt: Date.now(),
   };
+  rememberMedia(media);
+  return {kind: 'success', media};
 }

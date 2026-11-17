@@ -89,6 +89,8 @@ class DsiPdfModule(context: ReactApplicationContext) : ReactContextBaseJavaModul
             promise.reject("NETWORK", "empty body")
             return@execute
           }
+          val prog = longArrayOf(0L, body.contentLength().coerceAtLeast(0L))
+          SharedHttp.progress[requestId] = prog
           var total = 0L
           FileOutputStream(file).use { out ->
             val buf = ByteArray(64 * 1024)
@@ -97,6 +99,7 @@ class DsiPdfModule(context: ReactApplicationContext) : ReactContextBaseJavaModul
               val n = input.read(buf)
               if (n < 0) break
               total += n
+              prog[0] = total
               if (total > maxBytes) {
                 promise.reject("TOO_LARGE", "file too large")
                 file.delete()
@@ -131,6 +134,7 @@ class DsiPdfModule(context: ReactApplicationContext) : ReactContextBaseJavaModul
         promise.reject("NETWORK", e.message)
       } finally {
         pendingCalls.remove(requestId)
+        SharedHttp.progress.remove(requestId)
       }
     }
   }
@@ -182,6 +186,16 @@ class DsiPdfModule(context: ReactApplicationContext) : ReactContextBaseJavaModul
       )
     }
     return true
+  }
+
+  /** Octets reçus et attendus du téléchargement en cours (0 si inconnu ou lecture par morceaux). */
+  @ReactMethod
+  fun getProgress(requestId: String, promise: Promise) {
+    val p = SharedHttp.progress[requestId]
+    val map = Arguments.createMap()
+    map.putDouble("loaded", (p?.get(0) ?: 0L).toDouble())
+    map.putDouble("total", (p?.get(1) ?: 0L).toDouble())
+    promise.resolve(map)
   }
 
   @ReactMethod

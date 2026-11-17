@@ -5,8 +5,10 @@
  */
 
 import {openMedia} from '@core/media/engine';
+import {loadTrace} from '@core/media/loadTrace';
 import {cancelOpenPdf, closePdf, openPdf} from '@core/media/pdfNative';
-import type {MediaErrorKind} from '@core/media/types';
+import {takeRecentMedia} from '@core/media/recentMedia';
+import type {MediaErrorKind, OpenMediaResult} from '@core/media/types';
 import {continueStore, progressStore, storeRegistry} from '@shared/store';
 import {createSimpleStore} from './simpleStore';
 
@@ -89,13 +91,19 @@ export function createPdfReaderStore() {
     const mine = generation;
     await release();
     store.replace({...INITIAL, contentId, title, status: 'loading'});
+    const recent = takeRecentMedia(contentId);
+    if (!recent) {
+      loadTrace.begin('pdf');
+    }
     const saved = await progressStore.get(contentId);
     for (let attempt = 0; attempt < 2; attempt += 1) {
-      const opened = await openMedia(contentId);
+      const opened: OpenMediaResult =
+        attempt === 0 && recent ? {kind: 'success', media: recent} : await openMedia(contentId);
       if (mine !== generation) {
         return;
       }
       if (opened.kind === 'failure') {
+        loadTrace.finish(true);
         fail(opened.errorKind, opened.retryable);
         return;
       }
@@ -115,6 +123,7 @@ export function createPdfReaderStore() {
         return;
       }
       if (res.kind === 'success') {
+        loadTrace.step('render');
         store.setState({
           status: 'ready',
           handle: res.handle,
@@ -126,6 +135,7 @@ export function createPdfReaderStore() {
       if (res.reResolve && attempt === 0) {
         continue;
       }
+      loadTrace.finish(true);
       fail(res.errorKind, res.retryable);
       return;
     }
