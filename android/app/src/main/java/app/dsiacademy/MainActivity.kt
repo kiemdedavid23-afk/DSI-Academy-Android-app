@@ -1,5 +1,7 @@
 package app.dsiacademy
 
+import android.os.Bundle
+import app.dsiacademy.player.PlayerHolder
 import com.facebook.react.ReactActivity
 import com.facebook.react.ReactActivityDelegate
 import com.facebook.react.defaults.DefaultNewArchitectureEntryPoint.fabricEnabled
@@ -12,6 +14,13 @@ class MainActivity : ReactActivity() {
    * rendering of the component.
    */
   override fun getMainComponentName(): String = "DSIAcademy"
+
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    // Préchauffage : on construit le lecteur une fois l'écran affiché, pour que la
+    // première ouverture d'un audio ou d'une vidéo ne paie pas ce coût.
+    window.decorView.post { PlayerHolder.get(this) }
+  }
 
   /**
    * Returns the instance of the [ReactActivityDelegate]. We use [DefaultReactActivityDelegate]
