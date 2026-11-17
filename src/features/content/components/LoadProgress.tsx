@@ -12,6 +12,7 @@ import {
 import {mediaStageColors, Text, useTheme, withAlpha} from '@shared/designsystem';
 import i18n, {useTranslation} from '@shared/i18n';
 import {formatSeconds, loadTrace, type TraceSnapshot} from '@core/media/loadTrace';
+import {diag} from '@core/media/diag';
 
 function summary(s: TraceSnapshot): string {
   const total = formatSeconds((s.finishedAt ?? Date.now()) - s.startedAt);
@@ -30,6 +31,28 @@ loadTrace.onFinish(s => {
     ToastAndroid.show(summary(s), ToastAndroid.LONG);
   }
 });
+
+/** Journal d'ouverture du lecteur (étapes et durées) : montre où le chargement s'arrête. */
+export function DiagLines({color}: {color?: 'muted' | 'onDark'}) {
+  const lines = useSyncExternalStore(diag.subscribe, diag.get);
+  const {spacing} = useTheme();
+  if (lines.length === 0) {
+    return (
+      <Text variant="bodySmall" color={color} style={{marginTop: spacing.lg}}>
+        {"Aucune étape : le lecteur n'a pas démarré."}
+      </Text>
+    );
+  }
+  return (
+    <View style={{marginTop: spacing.lg, alignSelf: 'stretch', paddingHorizontal: spacing.lg}} testID="diag-lines">
+      {lines.map((l, i) => (
+        <Text key={`${i}-${l}`} variant="bodySmall" color={color}>
+          {l}
+        </Text>
+      ))}
+    </View>
+  );
+}
 
 type BarProps = {percent: number | null; trackColor: string; fillColor: string};
 
@@ -117,6 +140,7 @@ export function LoadProgress({thumbnailUrl}: {thumbnailUrl?: string | null}) {
             {`${t(`content.trace.${snap.currentId}`)} · ${formatSeconds(now - snap.currentSince)}`}
           </Text>
         ) : null}
+        <DiagLines />
       </View>
     </View>
   );
@@ -135,6 +159,7 @@ export function BufferOverlay({percent}: {percent: number | null}) {
           <ProgressBar percent={percent} trackColor={withAlpha(mediaStageColors.text, 0.3)} fillColor={colors.royalStart} />
         </View>
       </View>
+      <DiagLines color="onDark" />
     </View>
   );
 }

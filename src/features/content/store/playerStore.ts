@@ -5,6 +5,7 @@
  */
 
 import {openMedia} from '@core/media/engine';
+import {diag} from '@core/media/diag';
 import {loadTrace} from '@core/media/loadTrace';
 import {
   classifyPlayerError,
@@ -28,6 +29,7 @@ export const MAX_RE_RESOLVES = 2;
 export const LINK_TIMEOUT_MS = 25_000;
 export const LOAD_TIMEOUT_MS = 10_000;
 export const STALL_MS = 30_000;
+export const OPEN_TIMEOUT_MS = 40_000;
 
 const TIMED_OUT = Symbol('timeout');
 function withTimeout<T>(p: Promise<T>, ms: number): Promise<T | typeof TIMED_OUT> {
@@ -151,6 +153,7 @@ export function createPlayerStore() {
   /** Demande un lien et le confie au lecteur natif. Renvoie false en cas d'échec (état d'erreur posé). */
   async function start(mine: number, startMs: number): Promise<boolean> {
     stall = null;
+    diag.log('3 demande du lien');
     let linkRes: Awaited<ReturnType<typeof openMedia>> | typeof TIMED_OUT;
     try {
       linkRes = await withTimeout(openMedia(store.getState().contentId as number), LINK_TIMEOUT_MS);
@@ -166,6 +169,7 @@ export function createPlayerStore() {
       return false;
     }
     const opened = linkRes;
+    diag.log(opened.kind === 'failure' ? `4 lien refusé : ${opened.errorKind}` : `4 lien reçu : ${opened.media.strategy.kind} ${'format' in opened.media.strategy ? opened.media.strategy.format : ''}`);
     if (opened.kind === 'failure') {
       loadTrace.finish(true);
       store.setState({status: 'error', errorKind: opened.errorKind, retryable: opened.retryable});
@@ -183,6 +187,7 @@ export function createPlayerStore() {
       return false;
     }
     const kind: PlayerKind = VIDEO_FORMATS.includes(s.format.toLowerCase()) ? 'video' : 'audio';
+    diag.log('5 remise au lecteur natif');
     let ok = false;
     try {
       const res = await withTimeout(
@@ -203,6 +208,7 @@ export function createPlayerStore() {
         return false;
       }
       ok = res;
+      diag.log(res ? '6 lecteur natif : accepté' : '6 lecteur natif : absent');
     } catch {
       if (mine === generation) {
         loadTrace.finish(true);
@@ -247,6 +253,7 @@ export function createPlayerStore() {
         store.setState({status: 'error', errorKind: kind, retryable: c.retryable, playing: false});
         return;
       }
+      diag.log(`état : ${st.state} · tampon ${st.bufferedPercent ?? '?'} % · erreur ${st.error ?? 'aucune'}`);
       if (st.bufferedPercent !== undefined) {
         loadTrace.setProgress(st.bufferedPercent);
       }
@@ -301,10 +308,20 @@ export function createPlayerStore() {
     lastSave = 0;
     store.replace({...INITIAL, contentId, title, artwork, status: 'loading'});
     loadTrace.begin('player');
+    diag.reset();
+    diag.log('1 ouverture du lecteur');
+    // Filet global : quoi qu'il arrive (stockage, lien, lecteur), le chargement ne dépasse jamais ce délai.
+    setTimeout(() => {
+      if (mine === generation && store.getState().status === 'loading') {
+        loadTrace.finish(true);
+        store.setState({status: 'error', errorKind: 'timeout', retryable: true});
+      }
+    }, OPEN_TIMEOUT_MS);
     const saved = await progressStore.get(contentId);
     if (mine !== generation) {
       return;
     }
+    diag.log('2 reprise lue');
     resumePercent = saved !== null && saved > 3 && saved < 97 ? saved : null;
     const ok = await start(mine, 0);
     if (ok && store.getState().kind !== 'youtube' && mine === generation) {
