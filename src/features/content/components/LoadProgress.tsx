@@ -9,7 +9,7 @@ import {
   ToastAndroid,
   View,
 } from 'react-native';
-import {Text, useTheme} from '@shared/designsystem';
+import {mediaStageColors, Text, useTheme, withAlpha} from '@shared/designsystem';
 import i18n, {useTranslation} from '@shared/i18n';
 import {formatSeconds, loadTrace, type TraceSnapshot} from '@core/media/loadTrace';
 
@@ -127,12 +127,12 @@ export function BufferOverlay({percent}: {percent: number | null}) {
   const {colors, spacing} = useTheme();
   return (
     <View pointerEvents="none" style={[StyleSheet.absoluteFill, styles.center]}>
-      <View style={[styles.pill, {padding: spacing.lg}]}>
+      <View style={[styles.pill, {padding: spacing.lg, backgroundColor: withAlpha(mediaStageColors.background, 0.6)}]}>
         <Text variant="bodyStrong" style={styles.pillText}>
           {percent !== null ? `${percent} %` : '…'}
         </Text>
         <View style={{width: 120, marginTop: spacing.sm}}>
-          <ProgressBar percent={percent} trackColor="rgba(255,255,255,0.3)" fillColor={colors.royalStart} />
+          <ProgressBar percent={percent} trackColor={withAlpha(mediaStageColors.text, 0.3)} fillColor={colors.royalStart} />
         </View>
       </View>
     </View>
@@ -145,6 +145,6 @@ const styles = StyleSheet.create({
   center: {flex: 1, alignItems: 'center', justifyContent: 'center'},
   track: {height: 6, borderRadius: 3, overflow: 'hidden', width: '100%'},
   fill: {height: 6, borderRadius: 3},
-  pill: {backgroundColor: 'rgba(0,0,0,0.6)', borderRadius: 16, alignItems: 'center'},
-  pillText: {color: '#FFFFFF'},
+  pill: {borderRadius: 16, alignItems: 'center'},
+  pillText: {color: mediaStageColors.text},
 });
