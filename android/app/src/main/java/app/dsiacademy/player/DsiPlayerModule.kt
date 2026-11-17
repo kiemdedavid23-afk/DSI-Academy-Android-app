@@ -29,10 +29,11 @@ class DsiPlayerModule(private val ctx: ReactApplicationContext) : ReactContextBa
   @Volatile private var lastError: String? = null
   private var listening = false
 
-  override fun getName() = "DsiPlayer"
+  override fun getName(): String = "DsiPlayer"
 
-  private fun ui(block: () -> Unit) = UiThreadUI(block)
-  private fun UiThreadUI(block: () -> Unit) = UiThreadUtil.runOnUiThread(block)
+  private fun ui(block: () -> Unit) {
+    UiThreadUtil.runOnUiThread(Runnable { block() })
+  }
 
   private fun codeOf(e: PlaybackException): String {
     var cause: Throwable? = e
@@ -78,21 +79,40 @@ class DsiPlayerModule(private val ctx: ReactApplicationContext) : ReactContextBa
     }
   }
 
-  @ReactMethod fun play() = ui { PlayerHolder.get(ctx).play() }
-  @ReactMethod fun pause() = ui { PlayerHolder.get(ctx).pause() }
-  @ReactMethod fun seekTo(ms: Double) = ui { PlayerHolder.get(ctx).seekTo(ms.toLong()) }
-  @ReactMethod fun setSpeed(speed: Double) = ui { PlayerHolder.get(ctx).setPlaybackSpeed(speed.toFloat()) }
+  @ReactMethod
+  fun play() {
+    ui { PlayerHolder.get(ctx).play() }
+  }
+
+  @ReactMethod
+  fun pause() {
+    ui { PlayerHolder.get(ctx).pause() }
+  }
+
+  @ReactMethod
+  fun seekTo(ms: Double) {
+    ui { PlayerHolder.get(ctx).seekTo(ms.toLong()) }
+  }
+
+  @ReactMethod
+  fun setSpeed(speed: Double) {
+    ui { PlayerHolder.get(ctx).setPlaybackSpeed(speed.toFloat()) }
+  }
 
   /** Lecture en boucle du contenu en cours. */
   @ReactMethod
-  fun setLoop(enabled: Boolean) = ui {
-    PlayerHolder.get(ctx).repeatMode = if (enabled) Player.REPEAT_MODE_ONE else Player.REPEAT_MODE_OFF
+  fun setLoop(enabled: Boolean) {
+    ui {
+      PlayerHolder.get(ctx).repeatMode = if (enabled) Player.REPEAT_MODE_ONE else Player.REPEAT_MODE_OFF
+    }
   }
 
   /** Volume du lecteur, de 0 (muet) à 1. */
   @ReactMethod
-  fun setVolume(volume: Double) = ui {
-    PlayerHolder.get(ctx).volume = volume.toFloat().coerceIn(0f, 1f)
+  fun setVolume(volume: Double) {
+    ui {
+      PlayerHolder.get(ctx).volume = volume.toFloat().coerceIn(0f, 1f)
+    }
   }
 
   /** Image dans l'image (Android 8 et plus), format 16:9. */
