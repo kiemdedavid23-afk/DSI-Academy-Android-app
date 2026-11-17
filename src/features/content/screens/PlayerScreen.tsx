@@ -4,6 +4,7 @@
  * image dans l'image, double-tap ±15 s et appui long 2× sur la vidéo.
  */
 
+import {diag} from '@core/media/diag';
 import React, {useEffect, useRef, useState, useSyncExternalStore} from 'react';
 import {
   AppState,
@@ -171,10 +172,18 @@ export function PlayerScreen({id, title, thumbnailUrl, onBack}: PlayerScreenProp
     ) : null;
 
   useEffect(() => {
-    if (Platform.OS === 'android' && Number(Platform.Version) >= 33) {
-      void PermissionsAndroid.request('android.permission.POST_NOTIFICATIONS');
+    diag.reset();
+    diag.log('0 écran du lecteur affiché');
+    try {
+      if (Platform.OS === 'android' && Number(Platform.Version) >= 33) {
+        void PermissionsAndroid.request('android.permission.POST_NOTIFICATIONS').catch(() => undefined);
+      }
+    } catch {
+      // La demande de notification ne doit jamais empêcher la lecture.
     }
-    void playerStore.open(id, title, thumbnailUrl);
+    playerStore.open(id, title, thumbnailUrl).catch((e: unknown) => {
+      diag.log(`exception à l'ouverture : ${String((e as {message?: string})?.message ?? e).slice(0, 90)}`);
+    });
     return () => {
       void playerStore.close(id);
     };
@@ -196,6 +205,10 @@ export function PlayerScreen({id, title, thumbnailUrl, onBack}: PlayerScreenProp
     });
     return () => sub.remove();
   }, []);
+
+  useEffect(() => {
+    diag.log(`statut du lecteur : ${st.status}`);
+  }, [st.status]);
 
   const frame = (node: React.ReactNode) => (
     <ReaderFrame title={title} onBack={onBack}>
