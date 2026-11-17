@@ -127,6 +127,8 @@
       "empty": "Cette formation n'a pas encore de module.",
       "typeBook": "Lecture",
       "typeAudio": "Audio",
+      "previous": "Précédent",
+      "next": "Suivant",
       "typeVideo": "Vidéo"
     }
   }

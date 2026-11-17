@@ -52,7 +52,7 @@ export function TextReaderScreen({id, title}: TextReaderScreenProps) {
     resumed.current = false;
     void textReaderStore.open(id, title);
     return () => {
-      void textReaderStore.close();
+      void textReaderStore.close(id);
     };
   }, [id, title]);
 

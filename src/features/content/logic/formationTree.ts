@@ -92,3 +92,16 @@ export function summarize(
     started: modules.some(m => (progress[m.contentId] ?? 0) > 0),
   };
 }
+
+/** Module précédent et suivant dans l'ordre du programme (sections ignorées). Rien si le module n'est pas dans la formation ouverte. */
+export function neighbors(
+  items: ProgramItem[],
+  contentId: number,
+): {prev: ProgramModule | null; next: ProgramModule | null} {
+  const modules = modulesOf(items);
+  const i = modules.findIndex(m => m.contentId === contentId);
+  if (i < 0) {
+    return {prev: null, next: null};
+  }
+  return {prev: modules[i - 1] ?? null, next: modules[i + 1] ?? null};
+}

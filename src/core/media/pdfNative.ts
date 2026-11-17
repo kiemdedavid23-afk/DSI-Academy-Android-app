@@ -5,7 +5,9 @@ import type {MediaErrorKind} from './types';
 /** Pont vers le module Kotlin DsiPdf (PdfRenderer). Aucun texte de la source n'est exposé. */
 
 type NativeDsiPdf = {
-  open(requestId: string, url: string, maxBytes: number): Promise<{handle: string; pageCount: number}>;
+  open(requestId: string, url: string, maxBytes: number, cacheKey: string): Promise<{handle: string; pageCount: number}>;
+  prefetch?(requestId: string, url: string, maxBytes: number, cacheKey: string): Promise<boolean>;
+  clearCache?(): Promise<void>;
   cancelOpen(requestId: string): void;
   getProgress?(requestId: string): Promise<{loaded: number; total: number}>;
   renderPage(handle: string, index: number, width: number): Promise<{uri: string; width: number; height: number}>;
@@ -56,14 +58,15 @@ export function classifyPdfError(code: string): Omit<Extract<PdfOpenResult, {kin
   }
 }
 
-export async function openPdf(url: string, requestId: string): Promise<PdfOpenResult> {
+/** `cacheKey` (id du contenu) : le fichier est gardé 24 h dans le cache privé de l'app. */
+export async function openPdf(url: string, requestId: string, cacheKey = ''): Promise<PdfOpenResult> {
   const mod = native();
   if (!mod) {
     return {kind: 'failure', errorKind: 'unsupportedFormat', code: 'NO_NATIVE_MODULE', retryable: false, reResolve: false};
   }
   const stop = pollProgress(requestId, mod.getProgress ? id => mod.getProgress!(id) : undefined);
   try {
-    const res = await mod.open(requestId, url, MAX_PDF_BYTES);
+    const res = await mod.open(requestId, url, MAX_PDF_BYTES, cacheKey);
     return {kind: 'success', handle: res.handle, pageCount: res.pageCount};
   } catch (e) {
     const code = (e as {code?: string}).code ?? 'NETWORK';
@@ -90,5 +93,23 @@ export async function closePdf(handle: string): Promise<void> {
     await native()?.close(handle);
   } catch {
     /* fermeture au mieux : le cache est aussi purgé au démarrage */
+  }
+}
+
+/** Dépose un PDF dans le cache sans l'ouvrir (module suivant d'une formation). */
+export async function prefetchPdf(url: string, requestId: string, cacheKey: string, maxBytes: number): Promise<boolean> {
+  try {
+    return (await native()?.prefetch?.(requestId, url, maxBytes, cacheKey)) ?? false;
+  } catch {
+    return false;
+  }
+}
+
+/** Vide le cache des PDF (déconnexion). */
+export async function clearPdfCache(): Promise<void> {
+  try {
+    await native()?.clearCache?.();
+  } catch {
+    /* au mieux */
   }
 }

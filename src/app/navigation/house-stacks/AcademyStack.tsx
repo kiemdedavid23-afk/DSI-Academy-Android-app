@@ -4,6 +4,7 @@
  */
 
 import React, {useCallback} from 'react';
+import {View} from 'react-native';
 import {useFocusEffect} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {useTranslation} from '@shared/i18n';
@@ -15,6 +16,8 @@ import {TextReaderScreen} from '@features/content/screens/TextReaderScreen';
 import {FormationScreen} from '@features/content/screens/FormationScreen';
 import {formationStore} from '@features/content/store/formationStore';
 import {PlayerScreen} from '@features/content/screens/PlayerScreen';
+import {ModuleNav} from '@features/content/components/ModuleNav';
+import type {ProgramModule} from '@features/content/logic/formationTree';
 import type {DiscoverHouse} from '@features/content/store/houseStores';
 import {ContentDetailScreen} from '@features/content/screens/ContentDetailScreen';
 
@@ -38,6 +41,15 @@ function FormationRoute(props: React.ComponentProps<typeof FormationScreen>) {
 }
 
 const Stack = createNativeStackNavigator<AcademyStackParamList>();
+
+/** Module voisin d'une formation : remplace l'écran courant (le retour mène au programme). */
+function goToModule(navigation: any, m: ProgramModule) {
+  if (m.type === 'book') {
+    navigation.replace('Reader', {id: m.contentId, title: m.title});
+  } else {
+    navigation.replace('Player', {id: m.contentId, title: m.title, thumbnailUrl: null});
+  }
+}
 
 /** En-tête de marque (icône, DSI Academy, mot d'accueil, cloche, heure). */
 function brandHeader(welcomeKey: string, navigation: any) {
@@ -117,7 +129,12 @@ export function AcademyStack() {
         options={({route}) => ({title: route.params.title, headerShown: false})}>
         {({route, navigation}) => (
           <ReaderFrame title={route.params.title} onBack={() => navigation.goBack()}>
-            <TextReaderScreen id={route.params.id} title={route.params.title} />
+            <View style={{flex: 1}}>
+              <View style={{flex: 1}}>
+                <TextReaderScreen id={route.params.id} title={route.params.title} />
+              </View>
+              <ModuleNav contentId={route.params.id} onGo={m => goToModule(navigation, m)} />
+            </View>
           </ReaderFrame>
         )}
       </Stack.Screen>
@@ -140,12 +157,17 @@ export function AcademyStack() {
         name="Player"
         options={({route}) => ({title: route.params.title, headerShown: false})}>
         {({route, navigation}) => (
-          <PlayerScreen
-            id={route.params.id}
-            title={route.params.title}
-            thumbnailUrl={route.params.thumbnailUrl}
-            onBack={() => navigation.goBack()}
-          />
+          <View style={{flex: 1}}>
+            <View style={{flex: 1}}>
+              <PlayerScreen
+                id={route.params.id}
+                title={route.params.title}
+                thumbnailUrl={route.params.thumbnailUrl}
+                onBack={() => navigation.goBack()}
+              />
+            </View>
+            <ModuleNav contentId={route.params.id} onGo={m => goToModule(navigation, m)} />
+          </View>
         )}
       </Stack.Screen>
     </Stack.Navigator>

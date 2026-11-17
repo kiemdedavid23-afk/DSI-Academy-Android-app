@@ -25,8 +25,9 @@ import java.util.concurrent.Executors
 
 /**
  * Lecteur PDF natif (android.graphics.pdf.PdfRenderer). Le fichier est écrit
- * dans le cache privé de l'app (jamais dans le stockage partagé) et effacé à
- * la fermeture, au démarrage du module et à la destruction du contexte.
+ * dans le cache privé de l'app (jamais dans le stockage partagé) et gardé 24 h
+ * (300 Mo au plus) ; il est effacé à la déconnexion. Sans clé de cache, il est
+ * effacé à la fermeture.
  */
 class DsiPdfModule(context: ReactApplicationContext) : ReactContextBaseJavaModule(context) {
 
@@ -37,8 +38,11 @@ class DsiPdfModule(context: ReactApplicationContext) : ReactContextBaseJavaModul
     var thread: HandlerThread? = null,
     val url: String? = null,
     val maxBytes: Long = 0L,
+    val cacheKey: String? = null,
   ) {
     @Volatile var background = false
+    /** Fichier du cache de 24 h : jamais effacé à la fermeture de la session. */
+    @Volatile var keep = false
   }
 
   private val sessions = ConcurrentHashMap<String, Session>()
@@ -49,8 +53,13 @@ class DsiPdfModule(context: ReactApplicationContext) : ReactContextBaseJavaModul
   private val dir: File
     get() = File(reactApplicationContext.cacheDir, "dsi-pdf").also { it.mkdirs() }
 
+  /** Cache privé des PDF (24 h), un fichier par contenu. */
+  private val cacheDirPdf: File
+    get() = File(reactApplicationContext.cacheDir, "dsi-pdf-cache").also { it.mkdirs() }
+
   init {
     purge()
+    trimCache()
   }
 
   override fun getName() = "DsiPdf"
@@ -58,6 +67,140 @@ class DsiPdfModule(context: ReactApplicationContext) : ReactContextBaseJavaModul
   private companion object {
     /** En dessous : téléchargement complet puis affichage. Au-dessus : première page par lecture partielle, fichier complet en arrière-plan. */
     const val SMALL_PDF_BYTES = 1L * 1024 * 1024
+    const val CACHE_TTL_MS = 24L * 60 * 60 * 1000
+    const val CACHE_MAX_BYTES = 300L * 1024 * 1024
+    const val PART_MAX_AGE_MS = 60L * 60 * 1000
+  }
+
+  /** Clé de cache sûre pour un nom de fichier (chiffres, lettres, tiret) ; null si inutilisable. */
+  private fun safeKey(raw: String?): String? =
+    raw?.takeIf { it.isNotBlank() && it.length <= 40 && it.all { c -> c.isLetterOrDigit() || c == '-' || c == '_' } }
+
+  private fun isFresh(f: File): Boolean =
+    f.exists() && f.length() > 0 && System.currentTimeMillis() - f.lastModified() <= CACHE_TTL_MS
+
+  /** Supprime les fichiers expirés (24 h), les téléchargements abandonnés, puis les plus anciens au-delà de 300 Mo. */
+  private fun trimCache() {
+    try {
+      val now = System.currentTimeMillis()
+      cacheDirPdf.listFiles()?.forEach {
+        val age = now - it.lastModified()
+        if ((it.name.endsWith(".part") && age > PART_MAX_AGE_MS) || (!it.name.endsWith(".part") && age > CACHE_TTL_MS)) it.delete()
+      }
+      val pdfs = cacheDirPdf.listFiles { f -> f.name.endsWith(".pdf") }?.sortedBy { it.lastModified() } ?: return
+      var total = pdfs.sumOf { it.length() }
+      for (f in pdfs) {
+        if (total <= CACHE_MAX_BYTES) break
+        total -= f.length()
+        f.delete()
+      }
+    } catch (_: Exception) {
+      // Nettoyage au mieux.
+    }
+  }
+
+  /** Le téléchargement terminé devient le fichier du cache (remplace l'ancien). */
+  private fun promote(part: File, key: String): File {
+    val dest = File(cacheDirPdf, "$key.pdf")
+    if (dest.exists()) dest.delete()
+    if (!part.renameTo(dest)) return part
+    dest.setLastModified(System.currentTimeMillis())
+    trimCache()
+    return dest
+  }
+
+  /** Ouvre le PDF depuis le cache s'il a moins de 24 h. Renvoie true si la promesse est réglée. */
+  private fun openFromCache(handle: String, key: String, promise: Promise): Boolean {
+    val f = File(cacheDirPdf, "$key.pdf")
+    if (!isFresh(f)) return false
+    return try {
+      val fd = ParcelFileDescriptor.open(f, ParcelFileDescriptor.MODE_READ_ONLY)
+      val renderer = try {
+        PdfRenderer(fd)
+      } catch (e: Exception) {
+        fd.close(); f.delete()
+        return false
+      }
+      sessions[handle] = Session(f, fd, renderer, cacheKey = key).also { it.keep = true }
+      val map = Arguments.createMap()
+      map.putString("handle", handle)
+      map.putInt("pageCount", renderer.pageCount)
+      promise.resolve(map)
+      true
+    } catch (e: Exception) {
+      f.delete()
+      false
+    }
+  }
+
+  /** Télécharge `url` dans `target` ; false au moindre souci (refus, page web, trop gros, annulation). */
+  private fun downloadTo(url: String, target: File, maxBytes: Long, callKey: String): Boolean {
+    return try {
+      val call = SharedHttp.client.newCall(Request.Builder().url(url).build())
+      pendingCalls[callKey] = call
+      var ok = false
+      call.execute().use { res ->
+        val body = res.body
+        if (!res.isSuccessful || body == null) return@use
+        if ((res.header("Content-Type") ?: "").lowercase().startsWith("text/html")) return@use
+        if (body.contentLength() > maxBytes) return@use
+        var total = 0L
+        FileOutputStream(target).use { out ->
+          val buf = ByteArray(64 * 1024)
+          val input = body.byteStream()
+          while (true) {
+            val n = input.read(buf)
+            if (n < 0) break
+            total += n
+            if (total > maxBytes) { total = -1L; break }
+            out.write(buf, 0, n)
+          }
+        }
+        ok = total > 0
+      }
+      if (ok) {
+        ok = target.inputStream().use { ins ->
+          val head = ByteArray(5)
+          ins.read(head) == 5 && String(head, Charsets.ISO_8859_1) == "%PDF-"
+        }
+      }
+      if (!ok) target.delete()
+      ok
+    } catch (e: Exception) {
+      target.delete()
+      false
+    } finally {
+      pendingCalls.remove(callKey)
+    }
+  }
+
+  /** Préchargement du module suivant : le PDF est déposé dans le cache, sans l'ouvrir. Ne rejette jamais. */
+  @ReactMethod
+  fun prefetch(requestId: String, url: String, maxBytes: Double, cacheKey: String, promise: Promise) {
+    downloads.execute {
+      val key = safeKey(cacheKey)
+      if (key == null || !url.startsWith("https://")) {
+        promise.resolve(false)
+        return@execute
+      }
+      val dest = File(cacheDirPdf, "$key.pdf")
+      if (isFresh(dest)) {
+        promise.resolve(true)
+        return@execute
+      }
+      val part = File(cacheDirPdf, "$key.${UUID.randomUUID()}.part")
+      val ok = downloadTo(url, part, maxBytes.toLong(), "pf_$requestId")
+      if (ok) promote(part, key)
+      promise.resolve(ok)
+    }
+  }
+
+  /** Vide le cache (déconnexion) et annule les préchargements en cours. */
+  @ReactMethod
+  fun clearCache(promise: Promise) {
+    pendingCalls.keys.filter { it.startsWith("pf_") }.forEach { pendingCalls.remove(it)?.cancel() }
+    cacheDirPdf.listFiles()?.forEach { it.delete() }
+    promise.resolve(null)
   }
 
   private fun purge() {
@@ -65,17 +208,24 @@ class DsiPdfModule(context: ReactApplicationContext) : ReactContextBaseJavaModul
   }
 
   @ReactMethod
-  fun open(requestId: String, url: String, maxBytes: Double, promise: Promise) {
+  fun open(requestId: String, url: String, maxBytes: Double, cacheKey: String, promise: Promise) {
     downloads.execute {
       val handle = UUID.randomUUID().toString()
-      val file = File(dir, "$handle.pdf")
+      val key = safeKey(cacheKey)
+      var file = File(dir, "$handle.pdf")
       try {
         if (!url.startsWith("https://")) {
           promise.reject("INVALID_URL", "https only")
           return@execute
         }
-        if (Build.VERSION.SDK_INT >= 26 && tryRanged(handle, url, maxBytes.toLong(), promise)) {
+        if (key != null && openFromCache(handle, key, promise)) {
           return@execute
+        }
+        if (Build.VERSION.SDK_INT >= 26 && tryRanged(handle, url, maxBytes.toLong(), key, promise)) {
+          return@execute
+        }
+        if (key != null) {
+          file = File(cacheDirPdf, "$key.$handle.part")
         }
         val call = SharedHttp.client.newCall(Request.Builder().url(url).build())
         pendingCalls[requestId] = call
@@ -113,6 +263,9 @@ class DsiPdfModule(context: ReactApplicationContext) : ReactContextBaseJavaModul
             }
           }
         }
+        if (key != null) {
+          file = promote(file, key)
+        }
         val fd = ParcelFileDescriptor.open(file, ParcelFileDescriptor.MODE_READ_ONLY)
         val renderer = try {
           PdfRenderer(fd)
@@ -125,7 +278,7 @@ class DsiPdfModule(context: ReactApplicationContext) : ReactContextBaseJavaModul
           promise.reject("PDF_INVALID", "not a valid pdf")
           return@execute
         }
-        sessions[handle] = Session(file, fd, renderer)
+        sessions[handle] = Session(file, fd, renderer, cacheKey = key).also { it.keep = key != null && file.name == "$key.pdf" }
         val map = Arguments.createMap()
         map.putString("handle", handle)
         map.putInt("pageCount", renderer.pageCount)
@@ -144,7 +297,7 @@ class DsiPdfModule(context: ReactApplicationContext) : ReactContextBaseJavaModul
   }
 
   /** Lecture par morceaux (API 26+). Renvoie true si la promesse est réglée ; false → repli téléchargement complet. */
-  private fun tryRanged(handle: String, url: String, maxBytes: Long, promise: Promise): Boolean {
+  private fun tryRanged(handle: String, url: String, maxBytes: Long, key: String?, promise: Promise): Boolean {
     val client = SharedHttp.client
     val probe = Request.Builder().url(url).header("Range", "bytes=0-0").build()
     val size: Long
@@ -172,7 +325,7 @@ class DsiPdfModule(context: ReactApplicationContext) : ReactContextBaseJavaModul
     )
     try {
       val renderer = PdfRenderer(fd)
-      sessions[handle] = Session(null, fd, renderer, thread, url, maxBytes)
+      sessions[handle] = Session(null, fd, renderer, thread, url, maxBytes, key)
       val map = Arguments.createMap()
       map.putString("handle", handle)
       map.putInt("pageCount", renderer.pageCount)
@@ -253,7 +406,8 @@ class DsiPdfModule(context: ReactApplicationContext) : ReactContextBaseJavaModul
     if (session.file != null || session.background) return
     session.background = true
     downloads.execute {
-      val file = File(dir, "$handle.pdf")
+      val ck = session.cacheKey
+      var file = if (ck != null) File(cacheDirPdf, "$ck.$handle.part") else File(dir, "$handle.pdf")
       val key = "bg_$handle"
       try {
         val call = SharedHttp.client.newCall(Request.Builder().url(url).build())
@@ -275,7 +429,11 @@ class DsiPdfModule(context: ReactApplicationContext) : ReactContextBaseJavaModul
             }
           }
         }
-        renders.execute { swapToFile(handle, session, file) }
+        if (ck != null) {
+          file = promote(file, ck)
+        }
+        val ready = file
+        renders.execute { swapToFile(handle, session, ready) }
       } catch (e: Exception) {
         file.delete()
       } finally {
@@ -287,7 +445,7 @@ class DsiPdfModule(context: ReactApplicationContext) : ReactContextBaseJavaModul
   /** Remplace la lecture partielle par le fichier local complet (sur le fil de rendu). */
   private fun swapToFile(handle: String, session: Session, file: File) {
     synchronized(session) {
-      if (sessions[handle] !== session) { file.delete(); return }
+      if (sessions[handle] !== session) { if (session.cacheKey == null) file.delete(); return }
       try {
         val fd = ParcelFileDescriptor.open(file, ParcelFileDescriptor.MODE_READ_ONLY)
         val renderer = try {
@@ -302,6 +460,7 @@ class DsiPdfModule(context: ReactApplicationContext) : ReactContextBaseJavaModul
         session.renderer = renderer
         session.fd = fd
         session.file = file
+        session.keep = session.cacheKey != null && file.name == "${session.cacheKey}.pdf"
         session.thread = null
         try { oldRenderer.close() } catch (_: Exception) {}
         try { oldFd.close() } catch (_: Exception) {}
@@ -327,7 +486,7 @@ class DsiPdfModule(context: ReactApplicationContext) : ReactContextBaseJavaModul
     synchronized(session) {
       try { session.renderer.close() } catch (_: Exception) {}
       try { session.fd.close() } catch (_: Exception) {}
-      session.file?.delete()
+      if (!session.keep) session.file?.delete()
       session.thread?.quitSafely()
       dir.listFiles { f -> f.name.startsWith("${handle}_") }?.forEach { it.delete() }
     }

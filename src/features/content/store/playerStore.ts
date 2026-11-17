@@ -314,7 +314,10 @@ export function createPlayerStore() {
       playerControls.setFullscreen(on);
       store.setState({fullscreen: on});
     },
-    close: async () => {
+    close: async (expectedId?: number) => {
+      if (expectedId !== undefined && store.getState().contentId !== expectedId) {
+        return;
+      }
       generation += 1;
       stopPoll();
       clearSleep();

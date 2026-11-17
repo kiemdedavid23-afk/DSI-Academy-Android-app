@@ -1,12 +1,13 @@
 /**
  * Lecteur PDF natif : lien du moteur (L4b) → fichier temporaire privé écrit par
- * le module Kotlin → pages rendues à la demande. Effacé à la fermeture.
+ * le module Kotlin (gardé 24 h dans le cache privé, effacé à la déconnexion)
+ * → pages rendues à la demande.
  * Seuls l'id, le pourcentage et le titre de reprise sont mémorisés.
  */
 
 import {openMedia} from '@core/media/engine';
 import {loadTrace} from '@core/media/loadTrace';
-import {cancelOpenPdf, closePdf, openPdf} from '@core/media/pdfNative';
+import {cancelOpenPdf, clearPdfCache, closePdf, openPdf} from '@core/media/pdfNative';
 import {takeRecentMedia} from '@core/media/recentMedia';
 import type {MediaErrorKind, OpenMediaResult} from '@core/media/types';
 import {continueStore, progressStore, storeRegistry} from '@shared/store';
@@ -114,7 +115,7 @@ export function createPdfReaderStore() {
       }
       requestSeq += 1;
       currentRequest = `pdf-${requestSeq}`;
-      const res = await openPdf(strategy.url, currentRequest);
+      const res = await openPdf(strategy.url, currentRequest, String(contentId));
       currentRequest = null;
       if (mine !== generation) {
         if (res.kind === 'success') {
@@ -156,7 +157,10 @@ export function createPdfReaderStore() {
       }
       timer = setTimeout(() => void persist(), PDF_SAVE_DELAY_MS);
     },
-    close: async () => {
+    close: async (expectedId?: number) => {
+      if (expectedId !== undefined && store.getState().contentId !== expectedId) {
+        return;
+      }
       generation += 1;
       if (timer) {
         clearTimeout(timer);
@@ -176,7 +180,10 @@ export function createPdfReaderStore() {
       void release();
       store.replace(INITIAL);
     },
-    purge: () => api.reset(),
+    purge: () => {
+      api.reset();
+      void clearPdfCache();
+    },
   };
   storeRegistry.register(api);
   return api;

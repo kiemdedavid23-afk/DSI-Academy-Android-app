@@ -115,7 +115,10 @@ export function createDocReaderStore() {
       }
       timer = setTimeout(() => void persist(), 1000);
     },
-    close: async () => {
+    close: async (expectedId?: number) => {
+      if (expectedId !== undefined && store.getState().contentId !== expectedId) {
+        return;
+      }
       generation += 1;
       if (timer) {
         clearTimeout(timer);

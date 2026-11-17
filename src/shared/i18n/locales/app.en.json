@@ -127,6 +127,8 @@
       "empty": "This course has no modules yet.",
       "typeBook": "Reading",
       "typeAudio": "Audio",
+      "previous": "Previous",
+      "next": "Next",
       "typeVideo": "Video"
     }
   }

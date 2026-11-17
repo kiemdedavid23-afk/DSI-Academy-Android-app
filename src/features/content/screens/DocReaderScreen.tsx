@@ -47,7 +47,7 @@ export function DocReaderScreen({id, title}: {id: number; title: string}) {
     resumed.current = false;
     void docReaderStore.open(id, title);
     return () => {
-      void docReaderStore.close();
+      void docReaderStore.close(id);
     };
   }, [id, title]);
 

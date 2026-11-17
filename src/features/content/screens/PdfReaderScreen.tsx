@@ -102,7 +102,7 @@ export function PdfReaderScreen({id, title}: PdfReaderScreenProps) {
   useEffect(() => {
     void pdfReaderStore.open(id, title);
     return () => {
-      void pdfReaderStore.close();
+      void pdfReaderStore.close(id);
     };
   }, [id, title]);
 

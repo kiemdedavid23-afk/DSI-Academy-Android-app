@@ -176,7 +176,7 @@ export function PlayerScreen({id, title, thumbnailUrl, onBack}: PlayerScreenProp
     }
     void playerStore.open(id, title, thumbnailUrl);
     return () => {
-      void playerStore.close();
+      void playerStore.close(id);
     };
   }, [id, title, thumbnailUrl]);
 

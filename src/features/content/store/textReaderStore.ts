@@ -146,7 +146,10 @@ export function createTextReaderStore() {
       void storageSet(PREFS_KEY, i);
     },
     /** Quitter le lecteur : enregistre tout de suite, annule la lecture en cours. */
-    close: async () => {
+    close: async (expectedId?: number) => {
+      if (expectedId !== undefined && store.getState().contentId !== expectedId) {
+        return;
+      }
       generation += 1;
       abort?.abort();
       if (timer) {
