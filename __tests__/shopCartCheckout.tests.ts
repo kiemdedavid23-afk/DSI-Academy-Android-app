@@ -43,7 +43,8 @@ const balance = jest.requireMock('@core/api/endpoints/payment/membre.api')
 const purchase = COMMERCE_STORES.shop.purchase;
 
 function product(id: string, priceDsi: number): CommerceProduct {
-  return cartCheckoutProduct(id, priceDsi);
+  // Un vrai produit par id (cartCheckoutProduct renvoie toujours l'id « cart »).
+  return {...cartCheckoutProduct(id, priceDsi), id, hasAsset: true};
 }
 
 beforeEach(() => {
