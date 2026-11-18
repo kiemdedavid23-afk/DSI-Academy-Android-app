@@ -97,10 +97,7 @@ export function mapMarketplaceCatalogue(
   };
 }
 
-/**
- * Détail : le Rapport dit « un produit (+ extras) » sans fixer l'enveloppe
- * interne. On accepte l'objet seul ou rangé sous listing / item / product.
- */
+/** Détail : le Worker renvoie le produit à plat dans `data` (confirmé). */
 export function mapMarketplaceProductDetail(
   env: EnvelopeResult,
 ): CommerceResult<{product: CommerceProduct}> {
@@ -108,10 +105,7 @@ export function mapMarketplaceProductDetail(
   if (fail) {
     return fail;
   }
-  const d = asRecord(env.data);
-  const raw =
-    asRecord(d?.listing) ?? asRecord(d?.item) ?? asRecord(d?.product) ?? d;
-  const product = mapMarketplaceProduct(raw);
+  const product = mapMarketplaceProduct(env.data);
   if (!product) {
     return failure('notFound', env.status, 'NOT_FOUND');
   }

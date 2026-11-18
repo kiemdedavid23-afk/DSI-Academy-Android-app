@@ -15,6 +15,8 @@ import communityProfileFr from './locales/communityProfile.fr.json';
 import communityProfileEn from './locales/communityProfile.en.json';
 import appFr from './locales/app.fr.json';
 import appEn from './locales/app.en.json';
+import commerceFr from './locales/commerce.fr.json';
+import commerceEn from './locales/commerce.en.json';
 
 export type AppLanguage = 'fr' | 'en';
 
@@ -25,6 +27,7 @@ const resources = {
       ...communityProfileFr,
       ...communityFr,
       ...appFr,
+      ...commerceFr,
     },
   },
   en: {
@@ -33,6 +36,7 @@ const resources = {
       ...communityProfileEn,
       ...communityEn,
       ...appEn,
+      ...commerceEn,
     },
   },
 };

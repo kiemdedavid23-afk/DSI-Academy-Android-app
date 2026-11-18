@@ -17,7 +17,7 @@
         "title": "Formation X"
       }
     ],
-    "createdAt": "2026-11-10T09:30:00.000Z",
+    "createdAt": 1763424000000,
     "failureReason": "DEBIT_REFUSED",
     "paymentRef": "ref_9"
   }

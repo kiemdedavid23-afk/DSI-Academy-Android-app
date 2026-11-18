@@ -199,7 +199,7 @@ describe('Boutique : mappers', () => {
     expect(r.orders).toHaveLength(2);
     expect(r.orders[0].status).toBe('paid');
     expect(r.orders[0].discountDsi).toBe(150);
-    expect(r.orders[0].createdAt).toBe(Date.parse('2026-11-10T09:30:00.000Z'));
+    expect(r.orders[0].createdAt).toBe(1763424000000);
     expect(r.orders[1].status).toBe('processing');
     expect(r.orders[1].rawStatus).toBe('payment_unknown');
     expect(r.orders[0].items[0].productId).toBe('prod_abc123');
@@ -273,13 +273,9 @@ describe('Marketplace : mappers', () => {
     expect(r.items[1].free).toBe(true);
     expect(r.items[1].coverUrl).toBeNull();
   });
-  it('détail : objet seul ou sous listing, privé = introuvable', () => {
+  it('détail : produit à plat dans data, privé = introuvable', () => {
     const a = mapMarketplaceProductDetail(env(200, mpProduct));
     expect(a.kind === 'success' && a.product.title).toBe('Pack modèles');
-    const b = mapMarketplaceProductDetail(
-      env(200, {success: true, data: {listing: mpProduct.data}}),
-    );
-    expect(b.kind).toBe('success');
     const c = mapMarketplaceProductDetail(
       env(200, {
         success: true,

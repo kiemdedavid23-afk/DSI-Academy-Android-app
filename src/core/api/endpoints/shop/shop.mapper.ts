@@ -1,7 +1,6 @@
 import type {EnvelopeResult} from '@core/network';
 import {
   asBool,
-  asEpochMs,
   asHttpsUrl,
   asInt,
   asRecord,
@@ -195,7 +194,7 @@ export function mapShopOrder(raw: unknown): CommerceOrder | null {
     rawStatus: asString(r.status),
     paymentRef: asString(r.paymentRef),
     failureReason: asString(r.failureReason),
-    createdAt: asEpochMs(r.createdAt),
+    createdAt: asInt(r.createdAt),
   };
 }
 
@@ -274,7 +273,7 @@ export function mapShopLibrary(
       category: asString(r.category),
       assetFileId: asString(r.assetFileId),
       hasAsset: asBool(r.hasAsset),
-      grantedAt: asEpochMs(r.grantedAt),
+      grantedAt: asInt(r.grantedAt),
       orderId: asString(r.orderId),
     };
   });

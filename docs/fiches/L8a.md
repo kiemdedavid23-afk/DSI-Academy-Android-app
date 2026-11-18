@@ -26,10 +26,10 @@ Couche réseau et modèle commun, sans écran. Les écrans communs viennent en L
 ## Hors L8a
 Panier et code promo (L8d), tendances, vendeurs, avis (L9a), écrans et stores (L8b, L8c), lecture des fichiers de la bibliothèque (L8c).
 
-## Points à confirmer avec les Workers
-1. Marketplace : forme exacte de `GET /catalog/:id` (le mapper accepte l'objet seul ou sous `listing`, `item`, `product`).
-2. Boutique : forme de la réponse de `/media/:id/read-url` (le mapper accepte `url`, `readUrl` ou `signedUrl`, en https).
-3. Boutique : le format de `createdAt` des commandes (le mapper accepte un nombre ou une date ISO).
+## Confirmations des Workers
+- Marketplace : `GET /catalog/:id` renvoie le produit à plat dans `data` (ni `item` ni `listing`). Le mapper lit `title` ou `name`.
+- Boutique : `createdAt` des commandes est un entier en millisecondes ; le mapper est strict (un texte est refusé).
+- Boutique : la forme de `/media/:id/read-url` vient du Worker de stockage et reste à confirmer auprès de lui (le mapper accepte `url`, `readUrl` ou `signedUrl`, en https). TTL demandé : 300 s ; l'Access Proof est exigé même pour une couverture.
 
 ## Vérifications faites
 - Typage strict des fichiers `src` de L8a : aucune erreur.

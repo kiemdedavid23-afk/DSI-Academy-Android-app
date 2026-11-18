@@ -1,0 +1,12 @@
+{
+  "commerce": {
+    "priceDsi": "{{amount}} DSI",
+    "openProduct": "Open {{title}}",
+    "favorites": "My favorites",
+    "favAdd": "Add to favorites",
+    "favAddError": "Unable to add this favorite right now.",
+    "reviews_one": "{{count}} review",
+    "reviews_other": "{{count}} reviews",
+    "notFound": "Product not found."
+  }
+}

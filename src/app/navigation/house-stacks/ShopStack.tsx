@@ -1,24 +1,11 @@
 /**
- * Pile ShopStack — placeholder jusqu'à l'étape dédiée.
+ * Pile Boutique (L8b) : catalogue, fiche, favoris — la pile commune sur la
+ * source `shop`. Panier et code promo arrivent en L8d, l'achat en L8c.
  */
 
 import React from 'react';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import {useTranslation} from '@shared/i18n';
-import {PlaceholderScreen} from '../PlaceholderScreen';
-
-const Stack = createNativeStackNavigator();
+import {CommerceStack} from './CommerceStack';
 
 export function ShopStack() {
-  const {t} = useTranslation();
-  return (
-    <Stack.Navigator screenOptions={{headerShown: true, title: t('houses.shop')}}>
-      <Stack.Screen
-        name="Home"
-        children={() => (
-          <PlaceholderScreen titleKey="houses.shop" testID="screen-shop" />
-        )}
-      />
-    </Stack.Navigator>
-  );
+  return <CommerceStack source="shop" />;
 }

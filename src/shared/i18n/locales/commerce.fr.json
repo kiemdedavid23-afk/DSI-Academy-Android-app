@@ -1,0 +1,12 @@
+{
+  "commerce": {
+    "priceDsi": "{{amount}} DSI",
+    "openProduct": "Ouvrir {{title}}",
+    "favorites": "Mes favoris",
+    "favAdd": "Ajouter aux favoris",
+    "favAddError": "Impossible d’ajouter ce favori pour le moment.",
+    "reviews_one": "{{count}} avis",
+    "reviews_other": "{{count}} avis",
+    "notFound": "Produit introuvable."
+  }
+}
