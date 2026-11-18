@@ -3,6 +3,7 @@ import {
   asBool,
   asHttpsUrl,
   asInt,
+  asNumber,
   asRecord,
   asString,
   checkEnvelope,
@@ -18,7 +19,12 @@ import type {
   CommerceResult,
   CommerceWriteResult,
 } from '../commerce/commerce.types';
-import type {ShopLibraryItem, ShopReadUrl} from './shop.types';
+import type {
+  ShopCartLine,
+  ShopLibraryItem,
+  ShopPromoPreview,
+  ShopReadUrl,
+} from './shop.types';
 
 /** Première couverture https de `coverUrls` (Contrat 1 : préférée à coverFileId). */
 function firstCover(v: unknown): string | null {
@@ -301,4 +307,47 @@ export function mapShopReadUrl(
     }
   }
   return failure('invalidResponse', env.status, 'INVALID_READ_URL');
+}
+
+/** Panier serveur (B.1 à B.4) : seules les lignes à id et quantité entière ≥ 1 passent. */
+export function mapShopCart(
+  env: EnvelopeResult,
+): CommerceResult<{lines: ShopCartLine[]}> {
+  const fail = checkEnvelope(env, 'shop');
+  if (fail) {
+    return fail;
+  }
+  const lines = mapList(env.data, 'items', raw => {
+    const r = asRecord(raw);
+    const productId = asString(r?.productId);
+    const qty = asInt(r?.qty);
+    if (!productId || qty === null || qty < 1) {
+      return null;
+    }
+    return {productId, qty};
+  });
+  return {kind: 'success', lines};
+}
+
+/**
+ * Aperçu d'un code promo (B.10), indicatif : aucun quota consommé. Un type
+ * autre que « percent » est gardé tel quel mais sans estimation côté app.
+ */
+export function mapShopPromo(
+  env: EnvelopeResult,
+): CommerceResult<{promo: ShopPromoPreview}> {
+  const fail = checkEnvelope(env, 'shop');
+  if (fail) {
+    return fail;
+  }
+  const r = asRecord(env.data);
+  const code = asString(r?.code);
+  const value = asNumber(r?.value);
+  if (!r || !code || value === null || value < 0) {
+    return failure('invalidResponse', env.status, 'INVALID_PROMO');
+  }
+  return {
+    kind: 'success',
+    promo: {code, kind: r.type === 'percent' ? 'percent' : 'other', value},
+  };
 }

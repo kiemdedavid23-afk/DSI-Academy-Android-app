@@ -7,8 +7,10 @@ import type {
   CommerceFailure,
   PurchaseParams,
 } from '../commerce/commerce.types';
+import type {ShopCartLine} from './shop.types';
 import {isValidCheckoutKey} from '../commerce/commerce.idempotency';
 import {
+  mapShopCart,
   mapShopCatalogue,
   mapShopCategories,
   mapShopCheckout,
@@ -17,6 +19,7 @@ import {
   mapShopLibrary,
   mapShopOrderDetail,
   mapShopOrders,
+  mapShopPromo,
   mapShopProductDetail,
   mapShopReadUrl,
 } from './shop.mapper';
@@ -190,4 +193,87 @@ export async function fetchShopReadUrl(fileId: string) {
     ),
   );
   return mapShopReadUrl(env);
+}
+
+/* --------------------------------- Panier --------------------------------- */
+
+export async function fetchShopCart() {
+  const missing = noProof();
+  if (missing) {
+    return missing;
+  }
+  const env = await safeEnvelope(
+    shop().get('/api/shop/cart', {auth: 'accessProof'}),
+  );
+  return mapShopCart(env);
+}
+
+/** Remplacement complet : le Worker ne vérifie les produits qu'au checkout. */
+export async function replaceShopCart(lines: ShopCartLine[]) {
+  const missing = noProof();
+  if (missing) {
+    return missing;
+  }
+  const env = await safeEnvelope(
+    shop().put(
+      '/api/shop/cart',
+      {items: lines.map(l => ({productId: l.productId, qty: l.qty}))},
+      {auth: 'accessProof'},
+    ),
+  );
+  return mapShopCart(env);
+}
+
+export async function addShopCartItem(productId: string, qty = 1) {
+  const missing = noProof();
+  if (missing) {
+    return missing;
+  }
+  if (!productId) {
+    return failure('validation', null, 'MISSING_ID');
+  }
+  const env = await safeEnvelope(
+    shop().post(
+      '/api/shop/cart/items',
+      {productId, qty: Number.isInteger(qty) && qty >= 1 ? qty : 1},
+      {auth: 'accessProof'},
+    ),
+  );
+  return mapShopCart(env);
+}
+
+export async function removeShopCartItem(productId: string) {
+  const missing = noProof();
+  if (missing) {
+    return missing;
+  }
+  if (!productId) {
+    return failure('validation', null, 'MISSING_ID');
+  }
+  const env = await safeEnvelope(
+    shop().delete(`/api/shop/cart/items/${encodeURIComponent(productId)}`, {
+      auth: 'accessProof',
+    }),
+  );
+  return mapShopCart(env);
+}
+
+/** Aperçu seulement (aucun quota consommé) ; la validation réelle est au checkout. */
+export async function previewShopPromo(code: string) {
+  const missing = noProof();
+  if (missing) {
+    return missing;
+  }
+  const clean = code.trim().toUpperCase();
+  if (!clean) {
+    return failure('validation', null, 'MISSING_CODE');
+  }
+  const env = await safeEnvelope(
+    shop().post(
+      '/api/shop/promo/validate',
+      {code: clean},
+      {auth: 'accessProof'},
+    ),
+  );
+  return mapShopPromo(env);
 }

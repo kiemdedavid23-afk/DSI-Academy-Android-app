@@ -1,0 +1,13 @@
+{
+  "success": true,
+  "error": null,
+  "code": null,
+  "data": {
+    "items": [
+      {"productId": "prod_abc123", "qty": 2},
+      {"productId": "prod_def456", "qty": 1},
+      {"productId": "prod_zero", "qty": 0},
+      {"qty": 3}
+    ]
+  }
+}
