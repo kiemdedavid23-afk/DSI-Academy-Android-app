@@ -12,6 +12,41 @@
     "paymentRefused": "The payment was declined. Check your DSI balance, then try again.",
     "selfPurchase": "You can't buy your own product.",
     "openSubscription": "Renew my subscription",
-    "refunded": "Refunded"
+    "refunded": "Refunded",
+    "cart": {
+      "title": "My cart",
+      "open": "View cart",
+      "add": "Add to cart",
+      "emptyTitle": "Your cart is empty",
+      "emptyHint": "Add products from the Shop to pay for them together.",
+      "remove": "Remove",
+      "details": "View product",
+      "unavailable": "Item unavailable",
+      "lineTotal": "Quantity {{qty}} · {{amount}} DSI",
+      "qtyMinus": "Decrease quantity of {{title}}",
+      "qtyPlus": "Increase quantity of {{title}}",
+      "writeError": "The cart could not be updated. Try again.",
+      "promoLabel": "Promo code",
+      "promoApply": "Apply",
+      "promoChecking": "Checking…",
+      "promoRemove": "Remove code",
+      "promoNote": "The code is only definitively validated at payment.",
+      "promoValid": "Code {{code}}: {{value}}% off (estimate).",
+      "promoValidOther": "Code {{code}} accepted: the discount will be applied at payment.",
+      "promoInvalid": "This code is not valid.",
+      "subtotal": "Subtotal: {{amount}} DSI",
+      "discount": "Estimated discount: −{{amount}} DSI",
+      "total": "Estimated total: {{amount}} DSI",
+      "blocked": "Remove unavailable items to proceed to payment.",
+      "checkout": "Proceed to payment",
+      "estimateNote": "Estimated amount: the final amount is computed at payment.",
+      "paid": "Thank you! Your order is paid.",
+      "errors": {
+        "promo": "The promo code is no longer valid. Remove it, then try again.",
+        "product": "An item is no longer available. Remove it from the cart, then try again.",
+        "empty": "Your cart is empty.",
+        "reconciliation": "A previous payment is being verified. Try again in a moment."
+      }
+    }
   }
 }

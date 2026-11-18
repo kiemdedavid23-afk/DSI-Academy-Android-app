@@ -88,3 +88,26 @@ export function orderStatusKey(
         : 'mp.status.processing';
   }
 }
+
+/**
+ * Échec du paiement du panier Boutique → clé i18n. Un 404/409 avec un code
+ * promo signifie « code refusé » ; sans code, message générique.
+ */
+export function cartPurchaseErrorKey(
+  kind: CommerceErrorKind | null,
+  hasPromo: boolean,
+): string {
+  switch (kind) {
+    case 'notFound':
+    case 'conflict':
+      return hasPromo ? 'commerce.cart.errors.promo' : purchaseErrorKey(kind);
+    case 'productUnavailable':
+      return 'commerce.cart.errors.product';
+    case 'validation':
+      return 'commerce.cart.errors.empty';
+    case 'reconciliationPending':
+      return 'commerce.cart.errors.reconciliation';
+    default:
+      return purchaseErrorKey(kind);
+  }
+}

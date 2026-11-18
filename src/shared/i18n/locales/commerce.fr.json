@@ -12,6 +12,41 @@
     "paymentRefused": "Le paiement a été refusé. Vérifiez votre solde DSI, puis réessayez.",
     "selfPurchase": "Vous ne pouvez pas acheter votre propre produit.",
     "openSubscription": "Renouveler mon abonnement",
-    "refunded": "Remboursé"
+    "refunded": "Remboursé",
+    "cart": {
+      "title": "Mon panier",
+      "open": "Voir le panier",
+      "add": "Ajouter au panier",
+      "emptyTitle": "Votre panier est vide",
+      "emptyHint": "Ajoutez des produits depuis la Boutique pour les payer ensemble.",
+      "remove": "Retirer",
+      "details": "Voir la fiche",
+      "unavailable": "Article indisponible",
+      "lineTotal": "Quantité {{qty}} · {{amount}} DSI",
+      "qtyMinus": "Diminuer la quantité de {{title}}",
+      "qtyPlus": "Augmenter la quantité de {{title}}",
+      "writeError": "Le panier n’a pas pu être mis à jour. Réessayez.",
+      "promoLabel": "Code promo",
+      "promoApply": "Appliquer",
+      "promoChecking": "Vérification…",
+      "promoRemove": "Retirer le code",
+      "promoNote": "Le code n’est définitivement validé qu’au paiement.",
+      "promoValid": "Code {{code}} : {{value}} % de remise (estimation).",
+      "promoValidOther": "Code {{code}} accepté : la remise sera appliquée au paiement.",
+      "promoInvalid": "Ce code n’est pas valable.",
+      "subtotal": "Sous-total : {{amount}} DSI",
+      "discount": "Remise estimée : −{{amount}} DSI",
+      "total": "Total estimé : {{amount}} DSI",
+      "blocked": "Retirez les articles indisponibles pour passer au paiement.",
+      "checkout": "Passer au paiement",
+      "estimateNote": "Montant estimé : le montant final est calculé au paiement.",
+      "paid": "Merci ! Votre commande est payée.",
+      "errors": {
+        "promo": "Le code promo n’est plus valable. Retirez-le, puis réessayez.",
+        "product": "Un article n’est plus disponible. Retirez-le du panier, puis réessayez.",
+        "empty": "Votre panier est vide.",
+        "reconciliation": "Un paiement précédent est en cours de vérification. Réessayez dans un instant."
+      }
+    }
   }
 }

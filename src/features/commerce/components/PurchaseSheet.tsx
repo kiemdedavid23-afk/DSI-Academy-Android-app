@@ -9,7 +9,11 @@ import {Modal, StyleSheet, View} from 'react-native';
 import {Button, LoadingState, Text, useTheme, withAlpha} from '@shared/designsystem';
 import {useTranslation} from '@shared/i18n';
 import {formatDsiAmount} from '../logic/format';
-import {accessErrorKey, purchaseErrorKey} from '../logic/errorKey';
+import {
+  accessErrorKey,
+  cartPurchaseErrorKey,
+  purchaseErrorKey,
+} from '../logic/errorKey';
 import {COMMERCE_STORES} from '../store/commerceStores';
 import type {CommerceAccess, CommerceSource} from '../store/commerceTypes';
 import {PriceTag} from './PriceTag';
@@ -85,6 +89,11 @@ export function PurchaseSheet({
     body = (
       <>
         <PriceTag priceDsi={price} free={product.free} large />
+        {p.cart ? (
+          <Text variant="caption" color="secondary" testID="purchase-cart-estimate">
+            {t('commerce.cart.estimateNote')}
+          </Text>
+        ) : null}
         {bal.status === 'loading' || bal.status === 'idle' ? (
           <Text variant="caption" color="secondary">
             {t('mp.checkout.balanceLoading')}
@@ -183,24 +192,26 @@ export function PurchaseSheet({
     body = (
       <>
         <Text variant="body" testID="purchase-paid">
-          {t('mp.purchaseDemo')}
+          {t(p.cart ? 'commerce.cart.paid' : 'mp.purchaseDemo')}
         </Text>
         <Text variant="caption" color="secondary">
           {t('mp.checkout.result.orderRef', {ref: order.orderId})}
         </Text>
-        {accessMsg ? (
+        {accessMsg && !p.cart ? (
           <Text variant="caption" color="secondary" testID="purchase-access-error">
             {t(accessMsg)}
           </Text>
         ) : null}
+        {p.cart ? null : (
+          <Button
+            label={t(accessing ? 'mp.orders.accessLoading' : 'mp.checkout.result.access')}
+            loading={accessing}
+            onPress={() => void openPaid(order.orderId)}
+            testID="purchase-access"
+          />
+        )}
         <Button
-          label={t(accessing ? 'mp.orders.accessLoading' : 'mp.checkout.result.access')}
-          loading={accessing}
-          onPress={() => void openPaid(order.orderId)}
-          testID="purchase-access"
-        />
-        <Button
-          variant="secondary"
+          variant={p.cart ? 'primary' : 'secondary'}
           label={t('mp.checkout.result.myPurchases')}
           onPress={go(onOpenPurchases)}
         />
@@ -212,7 +223,7 @@ export function PurchaseSheet({
     body = (
       <>
         <Text variant="body" testID="purchase-failed">
-          {t(purchaseErrorKey(kind))}
+          {t(p.cart ? cartPurchaseErrorKey(kind, p.promoCode !== null) : purchaseErrorKey(kind))}
         </Text>
         {kind === 'subscriptionInactive' ? (
           <Button
@@ -253,7 +264,7 @@ export function PurchaseSheet({
             },
           ]}>
           <Text variant="subtitle" accessibilityRole="header" numberOfLines={2}>
-            {product.title}
+            {p.cart ? t('commerce.cart.title') : product.title}
           </Text>
           {body}
         </View>

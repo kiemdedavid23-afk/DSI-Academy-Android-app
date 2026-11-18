@@ -182,6 +182,10 @@ export type PurchaseState = {
   verifying: boolean;
   /** Dernière vérification sans réponse : l'achat reste « en cours ». */
   verifyFailed: boolean;
+  /** Code promo du panier Boutique (L8d), envoyé au checkout. */
+  promoCode: string | null;
+  /** Achat du panier Boutique : pas d'ouverture d'un produit unique. */
+  cart: boolean;
 };
 
 const initialPurchase = (): PurchaseState => ({
@@ -192,6 +196,8 @@ const initialPurchase = (): PurchaseState => ({
   errorKind: null,
   verifying: false,
   verifyFailed: false,
+  promoCode: null,
+  cart: false,
 });
 
 /** Échecs après lesquels le résultat est incertain : on rejoue avec la même clé. */
@@ -227,7 +233,10 @@ export function createPurchaseStore(
     getState: store.getState,
     subscribe: store.subscribe,
     /** Ouvre la confirmation : nouvelle intention = nouvelle clé. */
-    start: (product: CommerceProduct) => {
+    start: (
+      product: CommerceProduct,
+      opts?: {promoCode?: string | null; cart?: boolean},
+    ) => {
       if (busy) {
         return;
       }
@@ -236,6 +245,8 @@ export function createPurchaseStore(
         phase: 'confirming',
         product,
         key: createCheckoutKey(),
+        promoCode: opts?.promoCode ?? null,
+        cart: opts?.cart === true,
       });
     },
     /** Confirme l'achat, ou le rejoue avec la même clé après un résultat incertain. */
@@ -253,6 +264,7 @@ export function createPurchaseStore(
         const res = await api.purchase({
           productId: s.product.id,
           idempotencyKey: s.key,
+          promoCode: s.promoCode ?? undefined,
         });
         if (res.kind === 'failure') {
           store.setState({
@@ -277,6 +289,8 @@ export function createPurchaseStore(
         phase: 'confirming',
         product: s.product,
         key: createCheckoutKey(),
+        promoCode: s.promoCode,
+        cart: s.cart,
       });
     },
     /** Vérifier un paiement en cours (reconcile / relecture), sans second débit. */

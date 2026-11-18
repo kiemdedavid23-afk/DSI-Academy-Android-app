@@ -5,6 +5,7 @@
  * Le code promo n'est qu'un aperçu : il est consommé au checkout.
  */
 
+import {getCommerceApi} from '@core/api/endpoints/commerce/commerce.sources';
 import {
   addShopCartItem,
   fetchShopCart,
@@ -14,6 +15,7 @@ import {
 } from '@core/api/endpoints/shop/shop.api';
 import type {
   CommerceErrorKind,
+  CommerceProduct,
   CommerceResult,
 } from '@core/api/endpoints/commerce/commerce.types';
 import type {
@@ -35,6 +37,10 @@ export type CartState = {
   promo: ShopPromoPreview | null;
   promoStatus: PromoStatus;
   promoErrorKind: CommerceErrorKind | null;
+  /** Produits des lignes (titre, prix) : lus au catalogue ou à la fiche. */
+  products: CommerceProduct[];
+  productsStatus: LoadStatus;
+  productsErrorKind: CommerceErrorKind | null;
 };
 
 export type CartWriteResult =
@@ -49,6 +55,9 @@ const initial = (): CartState => ({
   promo: null,
   promoStatus: 'idle',
   promoErrorKind: null,
+  products: [],
+  productsStatus: 'idle',
+  productsErrorKind: null,
 });
 
 function createCartStore() {
@@ -112,6 +121,31 @@ function createCartStore() {
         .getState()
         .lines.map(l => (l.productId === productId ? {...l, qty} : l));
       return write(productId, () => replaceShopCart(next));
+    },
+    /**
+     * Lit les produits manquants (catalogue déjà connu d'abord, puis fiche ;
+     * un 404 laisse la ligne sans produit = « indisponible »).
+     */
+    hydrate: async (known: CommerceProduct[] = []) => {
+      const s = store.getState();
+      const have = new Set(s.products.map(p => p.id));
+      const ids = s.lines.map(l => l.productId);
+      if (ids.every(id => have.has(id)) || s.productsStatus === 'loading') {
+        return;
+      }
+      store.setState({productsStatus: 'loading', productsErrorKind: null});
+      const res = await getCommerceApi('shop').fetchProductsByIds({
+        ids,
+        known: [...s.products, ...known],
+      });
+      if (res.kind === 'failure') {
+        store.setState({
+          productsStatus: 'error',
+          productsErrorKind: res.errorKind,
+        });
+        return;
+      }
+      store.setState({productsStatus: 'success', products: res.items});
     },
     inCart: (productId: string): boolean =>
       store.getState().lines.some(l => l.productId === productId),

@@ -10,12 +10,14 @@ import {Linking, Pressable, View} from 'react-native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {Icon, useTheme} from '@shared/designsystem';
 import {useTranslation} from '@shared/i18n';
+import {CartAction} from '@features/commerce/components/CartAction';
 import {PurchaseAction} from '@features/commerce/components/PurchaseAction';
 import {CommerceDiscoverScreen} from '@features/commerce/screens/CommerceDiscoverScreen';
 import {CommerceFavoritesScreen} from '@features/commerce/screens/CommerceFavoritesScreen';
 import {CommerceLinkScreen} from '@features/commerce/screens/CommerceLinkScreen';
 import {CommerceProductScreen} from '@features/commerce/screens/CommerceProductScreen';
 import {CommercePurchasesScreen} from '@features/commerce/screens/CommercePurchasesScreen';
+import {ShopCartScreen} from '@features/commerce/screens/ShopCartScreen';
 import type {
   CommerceAccess,
   CommerceProduct,
@@ -27,6 +29,7 @@ export type CommerceStackParamList = {
   Product: {id: string; product?: CommerceProduct};
   Favorites: undefined;
   Purchases: undefined;
+  Cart: undefined;
   Link: {url: string};
 };
 
@@ -47,7 +50,7 @@ export function CommerceStack({source}: {source: CommerceSource}) {
 
   const headerButton = (
     label: string,
-    icon: 'BookmarkIcon' | 'BagIcon',
+    icon: 'BookmarkIcon' | 'BagIcon' | 'StoreIcon',
     onPress: () => void,
     testID: string,
   ) => (
@@ -74,6 +77,14 @@ export function CommerceStack({source}: {source: CommerceSource}) {
           title: t(source === 'shop' ? 'houses.shop' : 'houses.marketplace'),
           headerRight: () => (
             <View style={{flexDirection: 'row'}}>
+              {source === 'shop'
+                ? headerButton(
+                    t('commerce.cart.title'),
+                    'StoreIcon',
+                    () => navigation.navigate('Cart'),
+                    'shop-open-cart',
+                  )
+                : null}
               {headerButton(
                 t('mp.member.purchases'),
                 'BagIcon',
@@ -106,8 +117,14 @@ export function CommerceStack({source}: {source: CommerceSource}) {
             seed={route.params.product ?? null}
             // Boutique : l'achat passe par le panier (L8d). Marketplace : achat direct.
             renderAction={
-              source === 'marketplace'
+              source === 'shop'
                 ? product => (
+                    <CartAction
+                      product={product}
+                      onOpenCart={() => navigation.navigate('Cart')}
+                    />
+                  )
+                : product => (
                     <PurchaseAction
                       source={source}
                       product={product}
@@ -127,7 +144,6 @@ export function CommerceStack({source}: {source: CommerceSource}) {
                       }
                     />
                   )
-                : undefined
             }
           />
         )}
@@ -151,6 +167,29 @@ export function CommerceStack({source}: {source: CommerceSource}) {
             onOpenAccess={access =>
                         openAccess(access, url => navigation.navigate('Link', {url}))
                       }
+          />
+        )}
+      </Stack.Screen>
+      <Stack.Screen name="Cart" options={{title: t('commerce.cart.title')}}>
+        {({navigation}) => (
+          <ShopCartScreen
+            sheet={{
+              onOpenDsi: () =>
+                navigation
+                  .getParent()
+                  ?.navigate('MemberSpace', {screen: 'MemberDsiHoldings'}),
+              onOpenSubscription: () =>
+                navigation
+                  .getParent()
+                  ?.navigate('MemberSpace', {screen: 'MemberSubscription'}),
+              onOpenPurchases: () => navigation.navigate('Purchases'),
+              onOpenAccess: access =>
+                openAccess(access, url => navigation.navigate('Link', {url})),
+            }}
+            onDiscover={() => navigation.navigate('Discover')}
+            onOpenProduct={product =>
+              navigation.navigate('Product', {id: product.id, product})
+            }
           />
         )}
       </Stack.Screen>

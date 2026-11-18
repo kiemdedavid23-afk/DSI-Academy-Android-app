@@ -11,6 +11,36 @@ import type {
   ShopPromoPreview,
 } from '@core/api/endpoints/shop/shop.types';
 
+/**
+ * Produit fictif « panier » pour la fenêtre d'achat commune : le titre et le
+ * montant servent à l'affichage ; le Worker relit le panier serveur.
+ */
+export function cartCheckoutProduct(
+  title: string,
+  totalDsi: number,
+): CommerceProduct {
+  return {
+    source: 'shop',
+    id: 'cart',
+    title,
+    tagline: null,
+    description: null,
+    category: null,
+    priceDsi: totalDsi,
+    free: totalDsi === 0,
+    coverUrl: null,
+    badge: null,
+    featured: false,
+    hasAsset: false,
+    sellerId: null,
+    storeName: null,
+    reviewAvg: null,
+    reviewCount: 0,
+    salesCount: 0,
+    favoritesCount: 0,
+  };
+}
+
 export type CartTotals = {
   subtotalDsi: number;
   /** null si pas de code, ou si le type de remise n'est pas estimable. */
