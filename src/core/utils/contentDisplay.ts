@@ -9,7 +9,8 @@ import type {Content} from '../api/endpoints/content/common.types';
 // Types réexportés : les écrans et composants n'importent pas core/api (R-LAY-5).
 export type {Content, ContentErrorKind, ContentType} from '../api/endpoints/content/common.types';
 export type {ContentTreeNode} from '../api/endpoints/content/composition.types';
-export type {Category, CatalogueCursor} from '../api/endpoints/content/catalogue.types';
+export type {Category, CatalogueCursor, CategoryNode} from '../api/endpoints/content/catalogue.types';
+export type {PartItem} from '../api/endpoints/content/parts.types';
 
 export function formatDuration(seconds: number | null | undefined): string | null {
   if (seconds == null || Number.isNaN(seconds)) {

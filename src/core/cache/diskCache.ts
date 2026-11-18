@@ -8,7 +8,10 @@ import {storageGet, storageSet} from '../storage/kvStorage';
  * les données du membre. Un échec réseau ou serveur renvoie la dernière copie
  * connue (jusqu'à 7 jours) plutôt qu'une erreur.
  */
-const PREFIX = 'dsi.cache.v1:';
+// v2 : les réponses mises en cache sous v1 avaient un curseur et des dates
+// mal lus (secondes Unix) ; elles sont abandonnées et effacées une fois.
+const PREFIX = 'dsi.cache.v2:';
+const LEGACY_PREFIXES = ['dsi.cache.v1:'];
 export const CACHE_TTL_MS = 24 * 60 * 60 * 1000;
 const STALE_MAX_MS = 7 * CACHE_TTL_MS;
 
@@ -29,7 +32,12 @@ async function purgeExpiredOnce(): Promise<void> {
   }
   purged = true;
   try {
-    const keys = (await AsyncStorage.getAllKeys()).filter(k => k.startsWith(PREFIX));
+    const all = await AsyncStorage.getAllKeys();
+    const legacy = all.filter(k => LEGACY_PREFIXES.some(p => k.startsWith(p)));
+    if (legacy.length > 0) {
+      await AsyncStorage.multiRemove(legacy);
+    }
+    const keys = all.filter(k => k.startsWith(PREFIX));
     const rows = await AsyncStorage.multiGet(keys);
     const old = rows
       .filter(([, raw]) => {

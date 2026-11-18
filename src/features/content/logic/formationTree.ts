@@ -4,7 +4,7 @@
  * demande la livraison avec l'id du MODULE, jamais celui de la formation.
  */
 
-import type {ContentTreeNode} from '@core/utils/contentDisplay';
+import type {ContentTreeNode, PartItem} from '@core/utils/contentDisplay';
 
 export type ModuleType = 'book' | 'audio' | 'video';
 
@@ -61,6 +61,49 @@ export function flattenProgram(root: ContentTreeNode): ProgramItem[] {
   }
 
   walk(root, 0);
+  return out;
+}
+
+/**
+ * Programme depuis les PARTIES de l'œuvre (GET /content/:id/parts/tree, Worker
+ * v1.2). Même résultat que flattenProgram : une partie de type « training » est
+ * une section, les autres sont des modules (livre, audio, vidéo).
+ */
+export function flattenParts(parts: PartItem[]): ProgramItem[] {
+  const out: ProgramItem[] = [];
+  const seen = new Set<number>();
+
+  function walk(list: PartItem[], depth: number) {
+    if (depth > MAX_DEPTH) {
+      return;
+    }
+    const sorted = [...list].sort(
+      (a, b) => a.position - b.position || a.index - b.index,
+    );
+    for (const part of sorted) {
+      const c = part.content;
+      if (seen.has(c.id)) {
+        continue;
+      }
+      seen.add(c.id);
+      if (c.type === 'training') {
+        out.push({kind: 'section', key: `s${part.linkId}`, title: c.title, depth});
+        walk(part.children, depth + 1);
+      } else {
+        out.push({
+          kind: 'module',
+          key: `m${part.linkId}`,
+          contentId: c.id,
+          title: c.title,
+          type: c.type,
+          depth,
+          durationSeconds: c.durationSeconds,
+        });
+      }
+    }
+  }
+
+  walk(parts, 0);
   return out;
 }
 
