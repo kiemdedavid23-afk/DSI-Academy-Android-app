@@ -1,0 +1,6 @@
+{
+  "success": false,
+  "error": "Abonnement inactif",
+  "code": "SUBSCRIPTION_INACTIVE",
+  "data": null
+}

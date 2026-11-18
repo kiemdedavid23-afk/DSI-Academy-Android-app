@@ -1,0 +1,24 @@
+{
+  "success": true,
+  "error": null,
+  "code": null,
+  "data": {
+    "id": "shop_003",
+    "subtotalDsi": 1500,
+    "discountDsi": 150,
+    "totalDsi": 1350,
+    "promoCode": "PROMO10",
+    "status": "failed",
+    "financialOperationId": "boutique_finop_1",
+    "items": [
+      {
+        "productId": "prod_abc123",
+        "qty": 1,
+        "title": "Formation X"
+      }
+    ],
+    "createdAt": "2026-11-10T09:30:00.000Z",
+    "failureReason": "DEBIT_REFUSED",
+    "paymentRef": "ref_9"
+  }
+}

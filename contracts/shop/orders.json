@@ -1,0 +1,46 @@
+{
+  "success": true,
+  "error": null,
+  "code": null,
+  "data": {
+    "orders": [
+      {
+        "id": "shop_001",
+        "subtotalDsi": 1500,
+        "discountDsi": 150,
+        "totalDsi": 1350,
+        "promoCode": "PROMO10",
+        "status": "paid",
+        "financialOperationId": "boutique_finop_1",
+        "items": [
+          {
+            "productId": "prod_abc123",
+            "qty": 1,
+            "title": "Formation X"
+          }
+        ],
+        "createdAt": "2026-11-10T09:30:00.000Z"
+      },
+      {
+        "id": "shop_002",
+        "subtotalDsi": 1500,
+        "discountDsi": 150,
+        "totalDsi": 1350,
+        "promoCode": "PROMO10",
+        "status": "payment_unknown",
+        "financialOperationId": "boutique_finop_1",
+        "items": [
+          {
+            "productId": "prod_abc123",
+            "qty": 1,
+            "title": "Formation X"
+          }
+        ],
+        "createdAt": "2026-11-10T09:30:00.000Z"
+      },
+      {
+        "id": "x"
+      }
+    ]
+  }
+}

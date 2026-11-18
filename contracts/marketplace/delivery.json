@@ -1,0 +1,12 @@
+{
+  "success": true,
+  "error": null,
+  "code": null,
+  "data": {
+    "orderId": "mp_001",
+    "listingId": "lst_a1b2c3d4e5f6",
+    "deliveryType": "URL",
+    "deliveryUrl": "https://vendeur.example.invalid/acces/abc",
+    "title": "Pack modèles"
+  }
+}

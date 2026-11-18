@@ -1,0 +1,6 @@
+{
+  "success": false,
+  "error": "Solde insuffisant",
+  "code": "INSUFFICIENT_BALANCE",
+  "data": null
+}

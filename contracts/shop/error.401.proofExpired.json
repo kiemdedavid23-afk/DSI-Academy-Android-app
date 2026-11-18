@@ -1,0 +1,6 @@
+{
+  "success": false,
+  "error": "Preuve expirée",
+  "code": "ACCESS_PROOF_EXPIRED",
+  "data": null
+}

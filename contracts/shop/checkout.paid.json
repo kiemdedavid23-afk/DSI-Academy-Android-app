@@ -1,0 +1,15 @@
+{
+  "success": true,
+  "error": null,
+  "code": null,
+  "data": {
+    "orderId": "shop_001",
+    "status": "paid",
+    "subtotalDsi": 1500,
+    "discountDsi": 150,
+    "totalDsi": 1350,
+    "promoCode": "PROMO10",
+    "financialOperationId": "boutique_finop_1",
+    "replay": false
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "success": true,
+  "error": null,
+  "code": null,
+  "data": {
+    "productIds": [
+      "prod_abc123",
+      "prod_def456"
+    ]
+  }
+}

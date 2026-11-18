@@ -1,0 +1,6 @@
+{
+  "success": false,
+  "error": "Débit refusé",
+  "code": "UPSTREAM",
+  "data": null
+}

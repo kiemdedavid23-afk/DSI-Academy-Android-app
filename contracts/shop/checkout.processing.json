@@ -1,0 +1,15 @@
+{
+  "success": true,
+  "error": null,
+  "code": null,
+  "data": {
+    "orderId": "shop_004",
+    "status": "payment_unknown",
+    "subtotalDsi": 1500,
+    "discountDsi": 0,
+    "totalDsi": 1500,
+    "financialOperationId": "boutique_finop_4",
+    "replay": false,
+    "note": "Paiement en cours de vérification"
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "success": false,
+  "error": "Compte non autorisé",
+  "code": "ACCOUNT_ACCESS_DENIED",
+  "data": null
+}

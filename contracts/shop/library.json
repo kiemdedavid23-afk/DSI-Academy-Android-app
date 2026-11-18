@@ -1,0 +1,22 @@
+{
+  "success": true,
+  "error": null,
+  "code": null,
+  "data": {
+    "items": [
+      {
+        "productId": "prod_abc123",
+        "title": "Formation X",
+        "category": "formations",
+        "coverFileId": "file_cover_1",
+        "assetFileId": "file_asset_1",
+        "hasAsset": true,
+        "grantedAt": 1763300000000,
+        "orderId": "shop_001"
+      },
+      {
+        "title": "sans id"
+      }
+    ]
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "success": true,
+  "error": null,
+  "code": null,
+  "data": {
+    "id": "prod_abc123",
+    "sku": "FORM-001",
+    "title": "Formation X",
+    "tagline": "Apprendre vite",
+    "description": "Description longue",
+    "category": "formations",
+    "priceDsi": 1500,
+    "status": "published",
+    "featured": false,
+    "badge": null,
+    "coverFileId": "file_cover_1",
+    "coverUrls": [
+      "http://insecure.invalid/a.jpg",
+      "https://i.ibb.co/abc123/cover1.jpg",
+      "https://files.catbox.moe/xyz.png"
+    ],
+    "hasAsset": true
+  }
+}

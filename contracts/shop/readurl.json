@@ -1,0 +1,9 @@
+{
+  "success": true,
+  "error": null,
+  "code": null,
+  "data": {
+    "url": "https://storage.example.invalid/read/abc?sig=1",
+    "expiresIn": 300
+  }
+}

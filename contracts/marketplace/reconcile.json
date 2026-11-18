@@ -1,0 +1,15 @@
+{
+  "success": true,
+  "error": null,
+  "code": null,
+  "data": {
+    "orderId": "mp_002",
+    "status": "paid",
+    "priceDsi": 100,
+    "financialOperationId": "marketplace_finop_2",
+    "paymentRef": "ref_2",
+    "financialStatus": "COMPLETED",
+    "financialReason": null,
+    "reconciled": true
+  }
+}

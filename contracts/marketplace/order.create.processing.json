@@ -1,0 +1,16 @@
+{
+  "success": true,
+  "error": null,
+  "code": null,
+  "data": {
+    "orderId": "mp_002",
+    "status": "processing",
+    "priceDsi": 100,
+    "commissionDsi": 10,
+    "feesDsi": 0,
+    "financialOperationId": "marketplace_finop_2",
+    "paymentRef": "",
+    "financialStatus": "PROCESSING",
+    "replay": true
+  }
+}

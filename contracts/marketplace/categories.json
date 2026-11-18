@@ -1,0 +1,17 @@
+{
+  "success": true,
+  "error": null,
+  "code": null,
+  "data": {
+    "categories": [
+      {
+        "category": "templates",
+        "count": 4
+      },
+      {
+        "category": "tools",
+        "count": 2
+      }
+    ]
+  }
+}
