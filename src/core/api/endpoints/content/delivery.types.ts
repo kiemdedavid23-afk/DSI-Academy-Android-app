@@ -16,7 +16,7 @@ export type DeliveryLink = {
   mimeType: string | null;
   sizeBytes: number | null;
   /** Seulement avec intent=download. */
-  suggestedFilename: string | null;
+  suggestedFilename?: string | null;
 };
 
 export type DeliveryResult =
