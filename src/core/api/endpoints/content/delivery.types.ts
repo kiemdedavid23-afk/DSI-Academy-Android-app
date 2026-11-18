@@ -15,6 +15,8 @@ export type DeliveryLink = {
   /** Présents seulement pour Google Drive. */
   mimeType: string | null;
   sizeBytes: number | null;
+  /** Seulement avec intent=download. */
+  suggestedFilename: string | null;
 };
 
 export type DeliveryResult =

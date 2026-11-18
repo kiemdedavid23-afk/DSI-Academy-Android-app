@@ -72,6 +72,7 @@ export function mapDelivery(
       url: delivery.url,
       mimeType: asString(delivery.mime_type),
       sizeBytes: asNumber(delivery.size_bytes),
+      suggestedFilename: asString(r.suggested_filename),
     },
   };
 }

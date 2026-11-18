@@ -28,6 +28,17 @@ export function asNumber(v: unknown): number | null {
   return null;
 }
 
+/**
+ * Date du Worker : entier en secondes Unix (v1.2). Une chaîne de date
+ * (anciens contrats) est conservée. Renvoie une date ISO ou null.
+ */
+export function asDateIso(v: unknown): string | null {
+  if (typeof v === 'number' && Number.isFinite(v) && v > 0) {
+    return new Date(v * 1000).toISOString();
+  }
+  return typeof v === 'string' && v !== '' ? v : null;
+}
+
 export function asBool(v: unknown): boolean {
   return v === true || v === 1;
 }
@@ -140,9 +151,12 @@ export function mapContent(raw: unknown): Content | null {
     level: asString(r.level),
     durationSeconds: asNumber(r.duration_seconds),
     viewCount: asNumber(r.view_count) ?? 0,
+    likeCount: asNumber(r.like_count) ?? 0,
+    partsCount: asNumber(r.parts_count) ?? 0,
+    isPart: typeof r.is_part === 'boolean' ? r.is_part : null,
     thumbnailUrl: mapThumbnail(r.thumbnail_url),
-    createdAt: asString(r.created_at),
-    updatedAt: asString(r.updated_at),
+    createdAt: asDateIso(r.created_at),
+    updatedAt: asDateIso(r.updated_at),
   };
 }
 

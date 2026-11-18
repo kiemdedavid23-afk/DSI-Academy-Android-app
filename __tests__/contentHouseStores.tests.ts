@@ -35,6 +35,9 @@ function book(id: number): Content {
     level: null,
     durationSeconds: null,
     viewCount: 0,
+    likeCount: 0,
+    partsCount: 0,
+    isPart: null,
     thumbnailUrl: null,
     createdAt: null,
     updatedAt: null,
@@ -55,7 +58,7 @@ describe('catalogueStore', () => {
   });
 
   it('ajoute la suite avec le curseur complet, sans doublon', async () => {
-    const cursor = {createdAt: '2026-11-01T10:00:00Z', id: 1};
+    const cursor = {createdAt: 1793527200, id: 1};
     mCat
       .mockResolvedValueOnce({kind: 'success', items: [book(2), book(1)], nextCursor: cursor, hiddenCount: 0})
       .mockResolvedValueOnce({kind: 'success', items: [book(1), book(0)], nextCursor: null, hiddenCount: 0});
@@ -86,7 +89,7 @@ describe('catalogueStore', () => {
     expect(s.getState().errorKind).toBe('network');
 
     mCat
-      .mockResolvedValueOnce({kind: 'success', items: [book(1)], nextCursor: {createdAt: 'x', id: 1}, hiddenCount: 0})
+      .mockResolvedValueOnce({kind: 'success', items: [book(1)], nextCursor: {createdAt: 1, id: 1}, hiddenCount: 0})
       .mockResolvedValueOnce(fail);
     await s.load({force: true});
     await s.loadMore();

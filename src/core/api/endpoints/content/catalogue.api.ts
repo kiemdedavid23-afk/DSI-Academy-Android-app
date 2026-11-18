@@ -6,6 +6,7 @@ import type {ContentType} from './common.types';
 import {
   mapCatalogue,
   mapCategories,
+  mapCategoryTree,
   mapContentDetail,
   mapSearch,
 } from './catalogue.mapper';
@@ -13,6 +14,7 @@ import type {
   CatalogueParams,
   CatalogueResult,
   CategoriesResult,
+  CategoryTreeResult,
   ContentDetailResult,
   SearchParams,
   SearchResult,
@@ -34,6 +36,7 @@ async function fetchCatalogueRemote(
         type: params.type,
         editorial_status: 'published',
         category_id: params.categoryId,
+        exact_category: params.exactCategory ? 'true' : undefined,
         language: params.language,
         limit: params.limit,
         cursor_created_at: cursor ? cursor.createdAt : undefined,
@@ -103,6 +106,7 @@ export async function searchContent(
         type: params.type,
         language: params.language,
         category_id: params.categoryId,
+        exact_category: params.exactCategory ? 'true' : undefined,
         limit: params.limit,
         offset: params.offset,
       },
@@ -141,4 +145,22 @@ export function fetchContentBySlug(type: ContentType, slug: string): Promise<Con
 
 export function fetchCategories(type: ContentType): Promise<CategoriesResult> {
   return cached(`categories:${type}`, () => fetchCategoriesRemote(type));
+}
+
+/** GET /content/categories/tree?type= (Worker v1.2 ; 404 NOT_FOUND sur un v1). */
+async function fetchCategoryTreeRemote(
+  type: ContentType,
+): Promise<CategoryTreeResult> {
+  try {
+    const response = await http
+      .service('content')
+      .get('/content/categories/tree', {auth: 'none', query: {type}});
+    return mapCategoryTree(response.status, response.body, response.bodyKind);
+  } catch (err) {
+    return catchNet(err);
+  }
+}
+
+export function fetchCategoryTree(type: ContentType): Promise<CategoryTreeResult> {
+  return cached(`categoryTree:${type}`, () => fetchCategoryTreeRemote(type));
 }

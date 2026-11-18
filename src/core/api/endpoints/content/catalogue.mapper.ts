@@ -14,6 +14,8 @@ import type {
   CatalogueResult,
   CategoriesResult,
   Category,
+  CategoryNode,
+  CategoryTreeResult,
   ContentDetailResult,
   SearchResult,
 } from './catalogue.types';
@@ -41,7 +43,7 @@ function mapCursor(raw: unknown): CatalogueCursor | null {
   if (!r) {
     return null;
   }
-  const createdAt = asString(r.cursor_created_at);
+  const createdAt = asInt(r.cursor_created_at);
   const id = asInt(r.cursor_id);
   return createdAt !== null && id !== null ? {createdAt, id} : null;
 }
@@ -137,4 +139,65 @@ export function mapCategories(
     }
   });
   return {kind: 'success', items};
+}
+
+const TREE_MAX_NODES = 5000;
+
+function mapCategoryNode(raw: unknown, budget: {left: number}): CategoryNode | null {
+  const c = asRecord(raw);
+  const id = asInt(c?.id);
+  const name = asString(c?.name);
+  const slug = asString(c?.slug);
+  if (!c || id === null || name === null || slug === null || budget.left <= 0) {
+    return null;
+  }
+  budget.left -= 1;
+  const children: CategoryNode[] = [];
+  if (Array.isArray(c.children)) {
+    c.children.forEach(child => {
+      const node = mapCategoryNode(child, budget);
+      if (node) {
+        children.push(node);
+      }
+    });
+  }
+  return {
+    id,
+    name,
+    slug,
+    parentId: asInt(c.parent_id),
+    depth: asInt(c.depth) ?? 1,
+    contentCount: asNumber(c.content_count) ?? 0,
+    totalCount: asNumber(c.total_count) ?? 0,
+    children,
+  };
+}
+
+/**
+ * GET /content/categories/tree → { items: [nœud], max_depth }. Arbre vide :
+ * succès. Worker v1 : 404 NOT_FOUND (route inconnue), à traiter par l'appelant
+ * comme « arbre indisponible » (repli sur la liste à plat).
+ */
+export function mapCategoryTree(
+  status: number,
+  body: unknown,
+  bodyKind?: string,
+): CategoryTreeResult {
+  const bad = checkResponse(status, body, bodyKind);
+  if (bad) {
+    return bad;
+  }
+  const r = asRecord(body);
+  if (!r || !Array.isArray(r.items)) {
+    return failure('invalidResponse', status, 'MISSING_ITEMS');
+  }
+  const budget = {left: TREE_MAX_NODES};
+  const items: CategoryNode[] = [];
+  r.items.forEach(entry => {
+    const node = mapCategoryNode(entry, budget);
+    if (node) {
+      items.push(node);
+    }
+  });
+  return {kind: 'success', items, maxDepth: asInt(r.max_depth) ?? 8};
 }

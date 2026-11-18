@@ -16,7 +16,7 @@
       "duration_seconds": null,
       "view_count": 0,
       "thumbnail_url": "https://img.example.invalid/12.webp",
-      "created_at": "2026-11-01T10:00:00Z",
+      "created_at": 1793527200,
       "updated_at": "2026-11-01T10:00:00Z"
     },
     {
@@ -35,7 +35,7 @@
       "duration_seconds": null,
       "view_count": 0,
       "thumbnail_url": null,
-      "created_at": "2026-11-01T10:00:00Z",
+      "created_at": 1793527200,
       "updated_at": "2026-11-01T10:00:00Z"
     },
     {
@@ -54,12 +54,12 @@
       "duration_seconds": null,
       "view_count": 0,
       "thumbnail_url": null,
-      "created_at": "2026-11-01T10:00:00Z",
+      "created_at": 1793527200,
       "updated_at": "2026-11-01T10:00:00Z"
     }
   ],
   "next_cursor": {
-    "cursor_created_at": "2026-11-01T10:00:00Z",
+    "cursor_created_at": 1793527200,
     "cursor_id": 10
   }
 }

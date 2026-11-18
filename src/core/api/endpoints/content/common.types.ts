@@ -31,6 +31,12 @@ export type Content = {
   level: string | null;
   durationSeconds: number | null;
   viewCount: number;
+  /** Absent des anciens Workers : 0. */
+  likeCount: number;
+  /** Nombre de parties actives (œuvre composée), 0 sinon. */
+  partsCount: number;
+  /** Présent seulement dans la fiche (GET /content/:id) : null ailleurs. */
+  isPart: boolean | null;
   thumbnailUrl: string | null;
   createdAt: string | null;
   updatedAt: string | null;

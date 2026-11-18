@@ -74,7 +74,7 @@ describe('catalogue.mapper', () => {
     if (r.kind === 'success') {
       expect(r.items.map(i => i.id)).toEqual([12, 11]);
       expect(r.hiddenCount).toBe(1);
-      expect(r.nextCursor).toEqual({createdAt: '2026-11-01T10:00:00Z', id: 10});
+      expect(r.nextCursor).toEqual({createdAt: 1793527200, id: 10});
     }
   });
   it('vide : succès, pas une erreur', () => {
@@ -117,7 +117,7 @@ describe('catalogue.api', () => {
       type: 'book',
       categoryId: 3,
       limit: 30,
-      cursor: {createdAt: '2026-11-01T10:00:00Z', id: 10},
+      cursor: {createdAt: 1793527200, id: 10},
     });
     expect(http.service).toHaveBeenCalledWith('content');
     expect(mockGet).toHaveBeenCalledWith('/content', {
@@ -126,9 +126,10 @@ describe('catalogue.api', () => {
         type: 'book',
         editorial_status: 'published',
         category_id: 3,
+        exact_category: undefined,
         language: undefined,
         limit: 30,
-        cursor_created_at: '2026-11-01T10:00:00Z',
+        cursor_created_at: 1793527200,
         cursor_id: 10,
       },
     });
