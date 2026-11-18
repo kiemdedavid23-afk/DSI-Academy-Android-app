@@ -47,6 +47,19 @@
         "empty": "Your cart is empty.",
         "reconciliation": "A previous payment is being verified. Try again in a moment."
       }
+    },
+    "library": {
+      "title": "My library",
+      "open": "Open",
+      "opening": "Opening…",
+      "emptyTitle": "Your library is empty",
+      "emptyHint": "Your Shop purchases will appear here.",
+      "grantedOn": "Purchased on {{date}}",
+      "noFile": "No file available for this purchase.",
+      "support": "This file is unavailable. Contact support and mention this product.",
+      "denied": "You don’t have access to this file.",
+      "busy": "An opening is already in progress.",
+      "myLibrary": "My library"
     }
   }
 }

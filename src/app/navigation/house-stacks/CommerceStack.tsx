@@ -18,6 +18,7 @@ import {CommerceLinkScreen} from '@features/commerce/screens/CommerceLinkScreen'
 import {CommerceProductScreen} from '@features/commerce/screens/CommerceProductScreen';
 import {CommercePurchasesScreen} from '@features/commerce/screens/CommercePurchasesScreen';
 import {ShopCartScreen} from '@features/commerce/screens/ShopCartScreen';
+import {ShopLibraryScreen} from '@features/commerce/screens/ShopLibraryScreen';
 import type {
   CommerceAccess,
   CommerceProduct,
@@ -30,6 +31,7 @@ export type CommerceStackParamList = {
   Favorites: undefined;
   Purchases: undefined;
   Cart: undefined;
+  Library: undefined;
   Link: {url: string};
 };
 
@@ -50,7 +52,7 @@ export function CommerceStack({source}: {source: CommerceSource}) {
 
   const headerButton = (
     label: string,
-    icon: 'BookmarkIcon' | 'BagIcon' | 'StoreIcon',
+    icon: 'BookmarkIcon' | 'BagIcon' | 'StoreIcon' | 'BookIcon',
     onPress: () => void,
     testID: string,
   ) => (
@@ -83,6 +85,14 @@ export function CommerceStack({source}: {source: CommerceSource}) {
                     'StoreIcon',
                     () => navigation.navigate('Cart'),
                     'shop-open-cart',
+                  )
+                : null}
+              {source === 'shop'
+                ? headerButton(
+                    t('commerce.library.title'),
+                    'BookIcon',
+                    () => navigation.navigate('Library'),
+                    'shop-open-library',
                   )
                 : null}
               {headerButton(
@@ -183,12 +193,23 @@ export function CommerceStack({source}: {source: CommerceSource}) {
                   .getParent()
                   ?.navigate('MemberSpace', {screen: 'MemberSubscription'}),
               onOpenPurchases: () => navigation.navigate('Purchases'),
+              onOpenLibrary: () => navigation.navigate('Library'),
               onOpenAccess: access =>
                 openAccess(access, url => navigation.navigate('Link', {url})),
             }}
             onDiscover={() => navigation.navigate('Discover')}
             onOpenProduct={product =>
               navigation.navigate('Product', {id: product.id, product})
+            }
+          />
+        )}
+      </Stack.Screen>
+      <Stack.Screen name="Library" options={{title: t('commerce.library.title')}}>
+        {({navigation}) => (
+          <ShopLibraryScreen
+            onDiscover={() => navigation.navigate('Discover')}
+            onOpenAccess={access =>
+              openAccess(access, url => navigation.navigate('Link', {url}))
             }
           />
         )}

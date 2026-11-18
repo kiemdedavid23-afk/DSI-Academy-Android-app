@@ -47,6 +47,19 @@
         "empty": "Votre panier est vide.",
         "reconciliation": "Un paiement précédent est en cours de vérification. Réessayez dans un instant."
       }
+    },
+    "library": {
+      "title": "Ma bibliothèque",
+      "open": "Ouvrir",
+      "opening": "Ouverture…",
+      "emptyTitle": "Votre bibliothèque est vide",
+      "emptyHint": "Vos achats de la Boutique apparaîtront ici.",
+      "grantedOn": "Acheté le {{date}}",
+      "noFile": "Aucun fichier disponible pour cet achat.",
+      "support": "Ce fichier est indisponible. Contactez le support en indiquant ce produit.",
+      "denied": "Vous n’avez pas accès à ce fichier.",
+      "busy": "Une ouverture est déjà en cours.",
+      "myLibrary": "Ma bibliothèque"
     }
   }
 }

@@ -23,6 +23,8 @@ export type PurchaseSheetProps = {
   onOpenDsi: () => void;
   onOpenSubscription: () => void;
   onOpenPurchases: () => void;
+  /** Boutique : après un paiement du panier, ouvre la Bibliothèque. */
+  onOpenLibrary?: () => void;
   /** Ouvre l'achat : lien du vendeur (WebView) ou fichier (hors de l'app). */
   onOpenAccess: (access: CommerceAccess) => void;
 };
@@ -32,6 +34,7 @@ export function PurchaseSheet({
   onOpenDsi,
   onOpenSubscription,
   onOpenPurchases,
+  onOpenLibrary,
   onOpenAccess,
 }: PurchaseSheetProps) {
   const stores = COMMERCE_STORES[source];
@@ -210,8 +213,15 @@ export function PurchaseSheet({
             testID="purchase-access"
           />
         )}
+        {p.cart && onOpenLibrary ? (
+          <Button
+            label={t('commerce.library.myLibrary')}
+            onPress={go(onOpenLibrary)}
+            testID="purchase-open-library"
+          />
+        ) : null}
         <Button
-          variant={p.cart ? 'primary' : 'secondary'}
+          variant={p.cart && !onOpenLibrary ? 'primary' : 'secondary'}
           label={t('mp.checkout.result.myPurchases')}
           onPress={go(onOpenPurchases)}
         />

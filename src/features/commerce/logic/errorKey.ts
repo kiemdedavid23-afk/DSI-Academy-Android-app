@@ -111,3 +111,20 @@ export function cartPurchaseErrorKey(
       return purchaseErrorKey(kind);
   }
 }
+
+/**
+ * Échec d'ouverture depuis la Bibliothèque Boutique → clé i18n.
+ * `entitlementUnavailable` n'est pas transitoire : on oriente vers le support.
+ */
+export function libraryOpenErrorKey(kind: CommerceErrorKind | null): string {
+  switch (kind) {
+    case 'entitlementUnavailable':
+      return 'commerce.library.support';
+    case 'forbidden':
+      return 'commerce.library.denied';
+    case 'conflict':
+      return 'commerce.library.busy';
+    default:
+      return accessErrorKey(kind);
+  }
+}
