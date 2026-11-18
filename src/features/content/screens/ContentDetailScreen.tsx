@@ -48,13 +48,15 @@ export type ContentDetailScreenProps = {
     type?: ContentType,
     thumbnailUrl?: string | null,
   ) => void;
+  /** Ouvre la liste des parties d'une œuvre composée (livre, audio, vidéo). */
+  onOpenParts?: (id: number, title: string, type: ContentType) => void;
   /** Ouvre la fiche d'un contenu de la rangée « Dans la même catégorie ». */
   onOpenItem?: (item: Content) => void;
   /** Bouton « Retour » du héros. */
   onBack?: () => void;
 };
 
-export function ContentDetailScreen({id, onRead, onOpenItem, onBack}: ContentDetailScreenProps) {
+export function ContentDetailScreen({id, onRead, onOpenParts, onOpenItem, onBack}: ContentDetailScreenProps) {
   const {t} = useTranslation();
   const {colors, spacing, radii} = useTheme();
   const st = useSyncExternalStore(
@@ -140,6 +142,11 @@ export function ContentDetailScreen({id, onRead, onOpenItem, onBack}: ContentDet
   if (item.partsCount > 0) {
     chips.push(t('content.partsCount', {count: item.partsCount}));
   }
+  if (item.likeCount > 0) {
+    chips.push(t('content.likeCount', {count: item.likeCount}));
+  }
+  // Œuvre composée hors formation : le bouton ouvre la liste de ses parties.
+  const opensParts = item.partsCount > 0 && item.type !== 'training' && !!onOpenParts;
 
   const entry = {
     id: String(item.id),
@@ -148,8 +155,9 @@ export function ContentDetailScreen({id, onRead, onOpenItem, onBack}: ContentDet
     path: '',
   };
 
-  const primaryLabel =
-    item.type === 'audio'
+  const primaryLabel = opensParts
+    ? t('content.openParts')
+    : item.type === 'audio'
       ? t('app.player.listen')
       : item.type === 'video'
       ? t('app.player.watch')
@@ -302,7 +310,11 @@ export function ContentDetailScreen({id, onRead, onOpenItem, onBack}: ContentDet
               marginTop: 7,
             }}>
             <Pressable
-              onPress={() => onRead(item.id, item.title, item.type, item.thumbnailUrl)}
+              onPress={() =>
+                opensParts && onOpenParts
+                  ? onOpenParts(item.id, item.title, item.type)
+                  : onRead(item.id, item.title, item.type, item.thumbnailUrl)
+              }
               accessibilityRole="button"
               accessibilityLabel={primaryLabel}
               testID="detail-open"

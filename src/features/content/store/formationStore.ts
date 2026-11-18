@@ -14,6 +14,8 @@ import {createSimpleStore} from './simpleStore';
 export type FormationState = {
   id: number | null;
   title: string;
+  /** Maison de la rangée « Reprendre » (formations par défaut). */
+  house: string;
   status: 'idle' | 'loading' | 'success' | 'error';
   items: ProgramItem[];
   progress: Record<number, number>;
@@ -23,6 +25,7 @@ export type FormationState = {
 const INITIAL: FormationState = {
   id: null,
   title: '',
+  house: 'formations',
   status: 'idle',
   items: [],
   progress: {},
@@ -35,7 +38,7 @@ export function createFormationStore() {
 
   async function refreshProgress(): Promise<void> {
     const mine = generation;
-    const {id, title, items} = store.getState();
+    const {id, title, house, items} = store.getState();
     if (id === null) {
       return;
     }
@@ -52,14 +55,14 @@ export function createFormationStore() {
     const sum = summarize(items, progress);
     if (sum.started) {
       await progressStore.save(id, sum.percent);
-      await continueStore.set({id: String(id), house: 'formations', title, path: '', progress: sum.percent});
+      await continueStore.set({id: String(id), house, title, path: '', progress: sum.percent});
     }
   }
 
-  async function load(id: number, title: string): Promise<void> {
+  async function load(id: number, title: string, house = 'formations'): Promise<void> {
     generation += 1;
     const mine = generation;
-    store.replace({...INITIAL, id, title, status: 'loading'});
+    store.replace({...INITIAL, id, title, house, status: 'loading'});
     // Worker v1.2 : le programme vient des parties de l'œuvre. Si le contenu
     // n'est pas une œuvre composée (ou Worker v1), repli sur les composants.
     const parts = await fetchPartsTree(id);

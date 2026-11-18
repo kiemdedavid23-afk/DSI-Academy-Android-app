@@ -66,8 +66,8 @@ export function flattenProgram(root: ContentTreeNode): ProgramItem[] {
 
 /**
  * Programme depuis les PARTIES de l'œuvre (GET /content/:id/parts/tree, Worker
- * v1.2). Même résultat que flattenProgram : une partie de type « training » est
- * une section, les autres sont des modules (livre, audio, vidéo).
+ * v1.2). Une partie de type « training » ou qui a des sous-parties est une
+ * section ; les autres sont des modules (livre, audio, vidéo).
  */
 export function flattenParts(parts: PartItem[]): ProgramItem[] {
   const out: ProgramItem[] = [];
@@ -86,7 +86,7 @@ export function flattenParts(parts: PartItem[]): ProgramItem[] {
         continue;
       }
       seen.add(c.id);
-      if (c.type === 'training') {
+      if (c.type === 'training' || part.children.length > 0) {
         out.push({kind: 'section', key: `s${part.linkId}`, title: c.title, depth});
         walk(part.children, depth + 1);
       } else {

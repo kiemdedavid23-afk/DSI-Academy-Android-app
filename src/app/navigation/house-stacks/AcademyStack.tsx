@@ -19,6 +19,7 @@ import {PlayerScreen} from '@features/content/screens/PlayerScreen';
 import {ModuleNav} from '@features/content/components/ModuleNav';
 import type {ProgramModule} from '@features/content/logic/formationTree';
 import type {DiscoverHouse} from '@features/content/store/houseStores';
+import {houseOfType} from '@shared/houses/houseVisuals';
 import {ContentDetailScreen} from '@features/content/screens/ContentDetailScreen';
 
 export type AcademyStackParamList = {
@@ -26,7 +27,7 @@ export type AcademyStackParamList = {
   LibraryDiscover: {house?: DiscoverHouse} | undefined;
   ContentDetail: {id: number};
   Reader: {id: number; title: string};
-  Formation: {id: number; title: string};
+  Formation: {id: number; title: string; house?: string};
   Player: {id: number; title: string; thumbnailUrl: string | null};
 };
 
@@ -114,6 +115,9 @@ export function AcademyStack() {
             id={route.params.id}
             onBack={() => navigation.goBack()}
             onOpenItem={item => navigation.replace('ContentDetail', {id: item.id})}
+            onOpenParts={(id, title, type) =>
+              navigation.navigate('Formation', {id, title, house: houseOfType(type)})
+            }
             onRead={(id, title, type, thumbnailUrl) =>
               type === 'training'
                 ? navigation.navigate('Formation', {id, title})
@@ -145,6 +149,7 @@ export function AcademyStack() {
           <FormationRoute
             id={route.params.id}
             title={route.params.title}
+            house={route.params.house}
             onOpenModule={m =>
               m.type === 'book'
                 ? navigation.navigate('Reader', {id: m.contentId, title: m.title})

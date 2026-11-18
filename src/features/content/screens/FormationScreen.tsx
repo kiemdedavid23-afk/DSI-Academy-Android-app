@@ -11,6 +11,8 @@ import {formationStore} from '../store/formationStore';
 export type FormationScreenProps = {
   id: number;
   title: string;
+  /** Maison de l'œuvre (reprise) ; formations par défaut. */
+  house?: string;
   onOpenModule: (module: ProgramModule) => void;
 };
 
@@ -20,14 +22,14 @@ const TYPE_KEY = {
   video: 'app.formation.typeVideo',
 } as const;
 
-export function FormationScreen({id, title, onOpenModule}: FormationScreenProps) {
+export function FormationScreen({id, title, house, onOpenModule}: FormationScreenProps) {
   const {t} = useTranslation();
   const {colors, spacing, radii} = useTheme();
   const st = useSyncExternalStore(formationStore.subscribe, formationStore.getState);
 
   useEffect(() => {
-    void formationStore.load(id, title);
-  }, [id, title]);
+    void formationStore.load(id, title, house);
+  }, [id, title, house]);
 
   const sum = useMemo(() => summarize(st.items, st.progress), [st.items, st.progress]);
 
@@ -39,7 +41,7 @@ export function FormationScreen({id, title, onOpenModule}: FormationScreenProps)
       <ErrorState
         message={t(contentErrorKey(st.errorKind))}
         retryLabel={t('common.retry')}
-        onRetry={() => void formationStore.load(id, title)}
+        onRetry={() => void formationStore.load(id, title, house)}
         testID="formation-error"
       />
     );
