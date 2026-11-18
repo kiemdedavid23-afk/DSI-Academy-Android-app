@@ -8,8 +8,7 @@ import {View} from 'react-native';
 import {WebView} from 'react-native-webview';
 import {ErrorState, LoadingState, useTheme} from '@shared/designsystem';
 import {useTranslation} from '@shared/i18n';
-import {HTTPS_ORIGIN_WHITELIST} from '@core/config/urlGuards';
-import {isAllowedLinkUrl} from '../logic/linkFilter';
+import {HTTPS_ORIGIN_WHITELIST, isAllowedLinkUrl} from '../logic/linkFilter';
 
 export type CommerceLinkScreenProps = {
   url: string;
