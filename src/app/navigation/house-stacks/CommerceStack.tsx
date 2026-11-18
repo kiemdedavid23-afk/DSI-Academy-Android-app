@@ -8,8 +8,9 @@
 import React from 'react';
 import {Linking, Pressable, View} from 'react-native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import {Icon, useTheme} from '@shared/designsystem';
+import {Button, Icon, useTheme} from '@shared/designsystem';
 import {useTranslation} from '@shared/i18n';
+import {MarketplaceReviews} from '@features/commerce/components/MarketplaceReviews';
 import {CartAction} from '@features/commerce/components/CartAction';
 import {PurchaseAction} from '@features/commerce/components/PurchaseAction';
 import {CommerceDiscoverScreen} from '@features/commerce/screens/CommerceDiscoverScreen';
@@ -17,12 +18,16 @@ import {CommerceFavoritesScreen} from '@features/commerce/screens/CommerceFavori
 import {CommerceLinkScreen} from '@features/commerce/screens/CommerceLinkScreen';
 import {CommerceProductScreen} from '@features/commerce/screens/CommerceProductScreen';
 import {CommercePurchasesScreen} from '@features/commerce/screens/CommercePurchasesScreen';
+import {MarketplaceSellerScreen} from '@features/commerce/screens/MarketplaceSellerScreen';
+import {MarketplaceSellersScreen} from '@features/commerce/screens/MarketplaceSellersScreen';
+import {MarketplaceTrendingScreen} from '@features/commerce/screens/MarketplaceTrendingScreen';
 import {ShopCartScreen} from '@features/commerce/screens/ShopCartScreen';
 import {ShopLibraryScreen} from '@features/commerce/screens/ShopLibraryScreen';
 import type {
   CommerceAccess,
   CommerceProduct,
   CommerceSource,
+  MarketplaceSeller,
 } from '@features/commerce/store/commerceTypes';
 
 export type CommerceStackParamList = {
@@ -32,6 +37,9 @@ export type CommerceStackParamList = {
   Purchases: undefined;
   Cart: undefined;
   Library: undefined;
+  Trending: undefined;
+  Sellers: undefined;
+  Seller: {memberId: string; seller?: MarketplaceSeller};
   Link: {url: string};
 };
 
@@ -116,6 +124,12 @@ export function CommerceStack({source}: {source: CommerceSource}) {
             onOpenProduct={product =>
               navigation.navigate('Product', {id: product.id, product})
             }
+            onOpenTrending={
+              source === 'marketplace' ? () => navigation.navigate('Trending') : undefined
+            }
+            onOpenSellers={
+              source === 'marketplace' ? () => navigation.navigate('Sellers') : undefined
+            }
           />
         )}
       </Stack.Screen>
@@ -135,6 +149,7 @@ export function CommerceStack({source}: {source: CommerceSource}) {
                     />
                   )
                 : product => (
+                    <>
                     <PurchaseAction
                       source={source}
                       product={product}
@@ -153,6 +168,18 @@ export function CommerceStack({source}: {source: CommerceSource}) {
                         openAccess(access, url => navigation.navigate('Link', {url}))
                       }
                     />
+                    {product.sellerId ? (
+                      <Button
+                        variant="secondary"
+                        label={t('mp.pd.storeVisit')}
+                        onPress={() =>
+                          navigation.navigate('Seller', {memberId: product.sellerId ?? ''})
+                        }
+                        testID="marketplace-visit-seller"
+                      />
+                    ) : null}
+                    <MarketplaceReviews productId={product.id} />
+                    </>
                   )
             }
           />
@@ -210,6 +237,35 @@ export function CommerceStack({source}: {source: CommerceSource}) {
             onDiscover={() => navigation.navigate('Discover')}
             onOpenAccess={access =>
               openAccess(access, url => navigation.navigate('Link', {url}))
+            }
+          />
+        )}
+      </Stack.Screen>
+      <Stack.Screen name="Trending" options={{title: t('mp.trending')}}>
+        {({navigation}) => (
+          <MarketplaceTrendingScreen
+            onOpenProduct={product =>
+              navigation.navigate('Product', {id: product.id, product})
+            }
+          />
+        )}
+      </Stack.Screen>
+      <Stack.Screen name="Sellers" options={{title: t('mp.sellers')}}>
+        {({navigation}) => (
+          <MarketplaceSellersScreen
+            onOpenSeller={seller =>
+              navigation.navigate('Seller', {memberId: seller.memberId, seller})
+            }
+          />
+        )}
+      </Stack.Screen>
+      <Stack.Screen name="Seller" options={{title: t('mp.pd.storeTitle')}}>
+        {({route, navigation}) => (
+          <MarketplaceSellerScreen
+            memberId={route.params.memberId}
+            seed={route.params.seller ?? null}
+            onOpenProduct={product =>
+              navigation.navigate('Product', {id: product.id, product})
             }
           />
         )}

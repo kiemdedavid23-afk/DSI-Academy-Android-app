@@ -1,0 +1,23 @@
+{
+  "success": true,
+  "error": null,
+  "code": null,
+  "data": {
+    "sellers": [
+      {
+        "memberId": "u_77",
+        "storeName": "Atelier Awa",
+        "bio": "Modèles et guides",
+        "rating": 4.5,
+        "productsCount": 3
+      },
+      {
+        "memberId": "",
+        "storeName": "Sans id",
+        "bio": null,
+        "rating": null,
+        "productsCount": 0
+      }
+    ]
+  }
+}

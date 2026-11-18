@@ -1,0 +1,54 @@
+{
+  "success": true,
+  "error": null,
+  "code": null,
+  "data": {
+    "seller": {
+      "memberId": "u_77",
+      "storeName": "Atelier Awa",
+      "bio": "Modèles et guides",
+      "rating": 4.5,
+      "productsCount": 3
+    },
+    "products": [
+      {
+        "id": "lst_a1b2c3d4e5f6",
+        "sellerId": "u_77",
+        "title": "Pack modèles",
+        "name": "Pack modèles",
+        "description": "d",
+        "category": "templates",
+        "priceDsi": 100,
+        "free": false,
+        "status": "published",
+        "coverUrl": "https://drive.example.invalid/uc?id=1",
+        "hasAsset": true,
+        "visibility": "PUBLIC",
+        "salesTotal": 12,
+        "salesRecent": 3,
+        "reviewAvg": 4.5,
+        "reviewCount": 6,
+        "favoritesCount": 9
+      },
+      {
+        "id": "lst_private000001",
+        "sellerId": "u_77",
+        "title": "Privé",
+        "name": "Privé",
+        "description": "d",
+        "category": "templates",
+        "priceDsi": 100,
+        "free": false,
+        "status": "published",
+        "coverUrl": "https://drive.example.invalid/uc?id=1",
+        "hasAsset": true,
+        "visibility": "PRIVATE",
+        "salesTotal": 12,
+        "salesRecent": 3,
+        "reviewAvg": 4.5,
+        "reviewCount": 6,
+        "favoritesCount": 9
+      }
+    ]
+  }
+}

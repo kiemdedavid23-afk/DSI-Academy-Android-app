@@ -1,0 +1,28 @@
+{
+  "success": true,
+  "error": null,
+  "code": null,
+  "data": {
+    "listingId": "lst_a1b2c3d4e5f6",
+    "reviews": [
+      {
+        "id": "rev_1",
+        "rating": 4,
+        "comment": "Très utile",
+        "createdAt": 1763000000000
+      },
+      {
+        "id": "rev_2",
+        "rating": 5,
+        "comment": null,
+        "createdAt": 1763100000000
+      },
+      {
+        "id": "rev_bad",
+        "rating": 9,
+        "comment": "x",
+        "createdAt": 1
+      }
+    ]
+  }
+}

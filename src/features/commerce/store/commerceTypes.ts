@@ -11,3 +11,7 @@ export type {
   CommerceProduct,
   CommerceSource,
 } from '@core/api/endpoints/commerce/commerce.types';
+export type {
+  MarketplaceReview,
+  MarketplaceSeller,
+} from '@core/api/endpoints/marketplace/marketplace.types';

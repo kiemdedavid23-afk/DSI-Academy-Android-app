@@ -60,6 +60,25 @@
       "denied": "Vous n’avez pas accès à ce fichier.",
       "busy": "Une ouverture est déjà en cours.",
       "myLibrary": "Ma bibliothèque"
+    },
+    "sellerRating": "Note {{value}} / 5",
+    "reviewsLoadError": "Les avis n’ont pas pu être chargés.",
+    "reviewForm": {
+      "title": "Donner votre avis",
+      "star": "{{value}} sur 5",
+      "commentLabel": "Commentaire (facultatif)",
+      "commentPlaceholder": "Dites aux autres membres ce que vous en avez pensé",
+      "send": "Envoyer mon avis",
+      "thanks": "Merci, votre avis est publié.",
+      "errors": {
+        "forbidden": "Seuls les membres ayant acheté ce produit peuvent donner leur avis.",
+        "conflict": "Vous avez déjà donné votre avis sur ce produit.",
+        "validation": "Choisissez une note de 1 à 5, puis réessayez."
+      }
+    },
+    "discover": {
+      "trending": "Voir les tendances",
+      "sellers": "Voir les vendeurs"
     }
   }
 }

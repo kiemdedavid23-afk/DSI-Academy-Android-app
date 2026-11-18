@@ -18,6 +18,11 @@ import {
   mapMarketplaceOrders,
   mapMarketplaceProductDetail,
   mapMarketplaceReconcile,
+  mapMarketplaceReviews,
+  mapMarketplaceReviewWrite,
+  mapMarketplaceSellerDetail,
+  mapMarketplaceSellers,
+  mapMarketplaceTrending,
 } from './marketplace.mapper';
 
 /**
@@ -217,4 +222,86 @@ export async function fetchMarketplaceDelivery(orderId: string) {
     ),
   );
   return mapMarketplaceDelivery(env);
+}
+
+/* ------------------------- Tendances, vendeurs, avis (L9a) ---------------- */
+
+export const MARKETPLACE_REVIEW_COMMENT_MAX = 2000;
+
+/** Tendances : public, 40 produits maximum, ordre du serveur. */
+export async function fetchMarketplaceTrending() {
+  const env = await safeEnvelope(
+    mp().get('/api/marketplace/trending', {auth: 'none'}),
+  );
+  return mapMarketplaceTrending(env);
+}
+
+export async function fetchMarketplaceSellers() {
+  const env = await safeEnvelope(
+    mp().get('/api/marketplace/sellers', {auth: 'none'}),
+  );
+  return mapMarketplaceSellers(env);
+}
+
+/** 404 si le vendeur n'est pas approuvé. */
+export async function fetchMarketplaceSeller(memberId: string) {
+  if (!memberId) {
+    return failure('validation', null, 'MISSING_ID');
+  }
+  const env = await safeEnvelope(
+    mp().get(`/api/marketplace/sellers/${encodeURIComponent(memberId)}`, {
+      auth: 'none',
+    }),
+  );
+  return mapMarketplaceSellerDetail(env);
+}
+
+export async function fetchMarketplaceReviews(listingId: string) {
+  if (!listingId) {
+    return failure('validation', null, 'MISSING_ID');
+  }
+  const env = await safeEnvelope(
+    mp().get(
+      `/api/marketplace/catalog/${encodeURIComponent(listingId)}/reviews`,
+      {auth: 'none'},
+    ),
+  );
+  return mapMarketplaceReviews(env);
+}
+
+/**
+ * Donner un avis : acheteur payé uniquement (403 sinon), un avis par membre et
+ * par produit (409 sinon). Note entière 1..5, commentaire 2000 caractères max.
+ */
+export async function postMarketplaceReview(
+  listingId: string,
+  rating: number,
+  comment: string,
+) {
+  const missing = noProof();
+  if (missing) {
+    return missing;
+  }
+  if (!listingId) {
+    return failure('validation', null, 'MISSING_ID');
+  }
+  if (!Number.isInteger(rating) || rating < 1 || rating > 5) {
+    return failure('validation', null, 'INVALID_RATING');
+  }
+  const text = comment.trim();
+  if (text.length > MARKETPLACE_REVIEW_COMMENT_MAX) {
+    return failure('validation', null, 'COMMENT_TOO_LONG');
+  }
+  const body: {rating: number; comment?: string} = {rating};
+  if (text !== '') {
+    body.comment = text;
+  }
+  const env = await safeEnvelope(
+    mp().post(
+      `/api/marketplace/listings/${encodeURIComponent(listingId)}/reviews`,
+      body,
+      {auth: 'accessProof'},
+    ),
+  );
+  return mapMarketplaceReviewWrite(env);
 }

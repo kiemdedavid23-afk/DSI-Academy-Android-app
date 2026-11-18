@@ -19,7 +19,11 @@ import type {
   CommerceResult,
   CommerceWriteResult,
 } from '../commerce/commerce.types';
-import type {MarketplaceDelivery} from './marketplace.types';
+import type {
+  MarketplaceDelivery,
+  MarketplaceReview,
+  MarketplaceSeller,
+} from './marketplace.types';
 
 /**
  * Produit Marketplace → modèle commun. Un produit non publié ou PRIVATE est
@@ -270,4 +274,105 @@ export function mapMarketplaceDelivery(
     title: asString(r?.title),
     deliveryUrl,
   };
+}
+
+/* ------------------------- Tendances, vendeurs, avis (L9a) ---------------- */
+
+/** Tendances : l'ordre reçu est conservé (classement serveur, 40 maximum). */
+export function mapMarketplaceTrending(
+  env: EnvelopeResult,
+): CommerceResult<{items: CommerceProduct[]}> {
+  return mapMarketplaceCatalogue(env);
+}
+
+export function mapMarketplaceSellerRow(raw: unknown): MarketplaceSeller | null {
+  const r = asRecord(raw);
+  if (!r) {
+    return null;
+  }
+  const memberId = asString(r.memberId);
+  const storeName = asString(r.storeName);
+  if (!memberId || !storeName) {
+    return null;
+  }
+  return {
+    memberId,
+    storeName,
+    bio: asString(r.bio),
+    rating: asNumber(r.rating),
+    productsCount: Math.max(0, asInt(r.productsCount) ?? 0),
+  };
+}
+
+export function mapMarketplaceSellers(
+  env: EnvelopeResult,
+): CommerceResult<{sellers: MarketplaceSeller[]}> {
+  const fail = checkEnvelope(env, 'marketplace');
+  if (fail) {
+    return fail;
+  }
+  return {
+    kind: 'success',
+    sellers: mapList(env.data, 'sellers', mapMarketplaceSellerRow),
+  };
+}
+
+/**
+ * Boutique d'un vendeur : `{seller, products}`. Les produits PRIVATE sont
+ * écartés par `mapMarketplaceProduct` (le Worker ne les filtre pas, §11.2).
+ * Un produit sans nom de boutique reprend celui du vendeur.
+ */
+export function mapMarketplaceSellerDetail(
+  env: EnvelopeResult,
+): CommerceResult<{seller: MarketplaceSeller; products: CommerceProduct[]}> {
+  const fail = checkEnvelope(env, 'marketplace');
+  if (fail) {
+    return fail;
+  }
+  const seller = mapMarketplaceSellerRow(asRecord(env.data)?.seller);
+  if (!seller) {
+    return failure('notFound', env.status, 'NOT_FOUND');
+  }
+  const products = mapList(env.data, 'products', mapMarketplaceProduct).map(
+    p => ({
+      ...p,
+      storeName: p.storeName ?? seller.storeName,
+      sellerId: p.sellerId ?? seller.memberId,
+    }),
+  );
+  return {kind: 'success', seller, products};
+}
+
+/** Avis : du plus récent au plus ancien ; note hors 1..5 ignorée. */
+export function mapMarketplaceReviews(
+  env: EnvelopeResult,
+): CommerceResult<{reviews: MarketplaceReview[]}> {
+  const fail = checkEnvelope(env, 'marketplace');
+  if (fail) {
+    return fail;
+  }
+  const reviews = mapList(env.data, 'reviews', raw => {
+    const r = asRecord(raw);
+    const id = asString(r?.id);
+    const rating = asInt(r?.rating);
+    if (!r || !id || rating === null || rating < 1 || rating > 5) {
+      return null;
+    }
+    return {
+      id,
+      rating,
+      comment: asString(r.comment),
+      createdAt: asEpochMs(r.createdAt),
+    };
+  });
+  reviews.sort((a, b) => (b.createdAt ?? 0) - (a.createdAt ?? 0));
+  return {kind: 'success', reviews};
+}
+
+/** POST /listings/:id/reviews : 201 attendu ; 403 pas acheteur, 409 déjà noté. */
+export function mapMarketplaceReviewWrite(
+  env: EnvelopeResult,
+): CommerceWriteResult {
+  const fail = checkEnvelope(env, 'marketplace');
+  return fail ?? {kind: 'success'};
 }

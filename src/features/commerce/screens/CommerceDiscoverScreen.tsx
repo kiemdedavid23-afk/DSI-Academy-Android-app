@@ -8,6 +8,7 @@
 import React, {useCallback, useEffect, useState, useSyncExternalStore} from 'react';
 import {FlatList, View} from 'react-native';
 import {
+  Button,
   EmptyState,
   ErrorState,
   LoadingState,
@@ -28,11 +29,16 @@ const COLUMNS = 2;
 export type CommerceDiscoverScreenProps = {
   source: CommerceSource;
   onOpenProduct: (product: CommerceProduct) => void;
+  /** Marketplace seulement (L9a) : entrées vers tendances et vendeurs. */
+  onOpenTrending?: () => void;
+  onOpenSellers?: () => void;
 };
 
 export function CommerceDiscoverScreen({
   source,
   onOpenProduct,
+  onOpenTrending,
+  onOpenSellers,
 }: CommerceDiscoverScreenProps) {
   const stores = COMMERCE_STORES[source];
   const {t} = useTranslation();
@@ -87,6 +93,32 @@ export function CommerceDiscoverScreen({
           testID="commerce-search"
         />
       </View>
+      {source === 'marketplace' && (onOpenTrending || onOpenSellers) ? (
+        <View style={{flexDirection: 'row', gap: spacing.sm, paddingHorizontal: spacing.xl}}>
+          {onOpenTrending ? (
+            <View style={{flex: 1}}>
+              <Button
+                variant="secondary"
+                label={t('mp.trending')}
+                accessibilityLabel={t('commerce.discover.trending')}
+                onPress={onOpenTrending}
+                testID="marketplace-open-trending"
+              />
+            </View>
+          ) : null}
+          {onOpenSellers ? (
+            <View style={{flex: 1}}>
+              <Button
+                variant="secondary"
+                label={t('mp.sellers')}
+                accessibilityLabel={t('commerce.discover.sellers')}
+                onPress={onOpenSellers}
+                testID="marketplace-open-sellers"
+              />
+            </View>
+          ) : null}
+        </View>
+      ) : null}
       {categories.items.length > 0 ? (
         <CommerceCategoryChips
           source={source}
