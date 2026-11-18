@@ -1,9 +1,11 @@
+import {failure} from './commerce.mapper';
 import {
   addMarketplaceFavorite,
   createMarketplaceOrder,
   fetchMarketplaceByIds,
   fetchMarketplaceCatalogue,
   fetchMarketplaceCategories,
+  fetchMarketplaceDelivery,
   fetchMarketplaceFavoriteIds,
   fetchMarketplaceOrder,
   fetchMarketplaceOrders,
@@ -16,15 +18,19 @@ import {
   addShopFavorite,
   fetchShopCatalogue,
   fetchShopCategories,
+  fetchShopLibrary,
   fetchShopFavoriteIds,
   fetchShopOrder,
   fetchShopOrders,
   fetchShopProduct,
+  fetchShopReadUrl,
   removeShopFavorite,
   shopCheckout,
 } from '../shop/shop.api';
 import type {
+  AccessParams,
   CatalogueParams,
+  CommerceAccess,
   CommerceCategory,
   CommerceOrder,
   CommerceOrderState,
@@ -69,6 +75,8 @@ export type CommerceApi = {
   verifyOrder: (
     orderId: string,
   ) => Promise<CommerceResult<{order: CommerceOrderState}>>;
+  /** Ouvrir un produit acheté : lien du vendeur ou URL temporaire du fichier. */
+  access: (params: AccessParams) => Promise<CommerceResult<CommerceAccess>>;
 };
 
 /**
@@ -122,6 +130,42 @@ async function marketplaceProductsByIds(
   return {kind: 'success', items};
 }
 
+/**
+ * Boutique : bibliothèque → `assetFileId` réellement acquis → URL temporaire.
+ * L'identifiant du fichier n'est jamais reconstruit par l'app.
+ */
+async function shopAccess(
+  params: AccessParams,
+): Promise<CommerceResult<CommerceAccess>> {
+  if (!params.productId) {
+    return failure('validation', null, 'MISSING_ID');
+  }
+  const lib = await fetchShopLibrary();
+  if (lib.kind === 'failure') {
+    return lib;
+  }
+  const item = lib.items.find(i => i.productId === params.productId);
+  if (!item || !item.assetFileId) {
+    return failure('entitlementUnavailable', null, 'NO_ASSET');
+  }
+  const read = await fetchShopReadUrl(item.assetFileId);
+  if (read.kind === 'failure') {
+    return read;
+  }
+  return {kind: 'success', url: read.url, mode: 'external'};
+}
+
+/** Marketplace : livraison de la commande → lien du vendeur (WebView). */
+async function marketplaceAccess(
+  params: AccessParams,
+): Promise<CommerceResult<CommerceAccess>> {
+  const res = await fetchMarketplaceDelivery(params.orderId);
+  if (res.kind === 'failure') {
+    return res;
+  }
+  return {kind: 'success', url: res.deliveryUrl, mode: 'webview'};
+}
+
 const shopApi: CommerceApi = {
   source: 'shop',
   fetchCatalogue: fetchShopCatalogue,
@@ -138,6 +182,7 @@ const shopApi: CommerceApi = {
       idempotencyKey: params.idempotencyKey,
       promoCode: params.promoCode,
     }),
+  access: shopAccess,
   /** Boutique : on relit la commande (le serveur réconcilie à la lecture). */
   verifyOrder: async orderId => {
     const res = await fetchShopOrder(orderId);
@@ -175,6 +220,7 @@ const marketplaceApi: CommerceApi = {
       idempotencyKey: params.idempotencyKey,
     }),
   verifyOrder: reconcileMarketplaceOrder,
+  access: marketplaceAccess,
 };
 
 export function getCommerceApi(source: CommerceSource): CommerceApi {

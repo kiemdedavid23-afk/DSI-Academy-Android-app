@@ -14,6 +14,11 @@ import type {
 } from '@core/api/endpoints/commerce/commerce.types';
 import {storeRegistry} from '@shared/store';
 import {createSimpleStore} from './simpleStore';
+import {
+  commerceBalanceStore,
+  createOrdersStore,
+  createPurchaseStore,
+} from './purchaseStores';
 
 export type LoadStatus = 'idle' | 'loading' | 'success' | 'error';
 
@@ -328,12 +333,22 @@ function createFavoritesStore(source: CommerceSource) {
 /* ------------------------------ Jeu par source ---------------------------- */
 
 function createStores(source: CommerceSource) {
+  const orders = createOrdersStore(source);
   return {
     source,
     catalogue: createCatalogueStore(source),
     categories: createCategoriesStore(source),
     detail: createDetailStore(source),
     favorites: createFavoritesStore(source),
+    orders,
+    balance: commerceBalanceStore,
+    // Un achat payé rafraîchit « Mes achats » et le solde.
+    purchase: createPurchaseStore(source, {
+      onPaid: () => {
+        void orders.load({force: true});
+        void commerceBalanceStore.load({force: true});
+      },
+    }),
   };
 }
 

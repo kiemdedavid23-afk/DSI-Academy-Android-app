@@ -9,6 +9,9 @@ import shopE404 from '../contracts/shop/error.404.notFound.json';
 import mpCatalog from '../contracts/marketplace/catalog.json';
 import mpReconcile from '../contracts/marketplace/reconcile.json';
 import mpPaid from '../contracts/marketplace/order.create.paid.json';
+import mpDelivery from '../contracts/marketplace/delivery.json';
+import shopLibrary from '../contracts/shop/library.json';
+import shopReadUrl from '../contracts/shop/readurl.json';
 
 jest.mock('@core/network', () => ({
   http: {service: jest.fn()},
@@ -139,5 +142,27 @@ describe('getCommerceApi', () => {
     expect(mockPost.mock.calls[0][0]).toBe(
       '/api/marketplace/me/orders/mp_002/reconcile',
     );
+  });
+
+  it('accès : Marketplace = lien du vendeur dans l’app', async () => {
+    mockGet.mockReturnValue(res(200, mpDelivery));
+    const r = await getCommerceApi('marketplace').access({orderId: 'mp_001', productId: null});
+    expect(r.kind === 'success' && r.mode).toBe('webview');
+    expect(r.kind === 'success' && r.url).toBe('https://vendeur.example.invalid/acces/abc');
+  });
+
+  it('accès : Boutique = bibliothèque puis URL temporaire, hors de l’app', async () => {
+    mockGet.mockReturnValue(res(200, shopLibrary));
+    mockPost.mockReturnValue(res(200, shopReadUrl));
+    const r = await getCommerceApi('shop').access({orderId: 'shop_001', productId: 'prod_abc123'});
+    expect(r.kind === 'success' && r.mode).toBe('external');
+    expect(mockPost.mock.calls[0][0]).toBe('/api/shop/media/file_asset_1/read-url');
+  });
+
+  it('accès : Boutique sans fichier acquis = indisponible, sans appel de lecture', async () => {
+    mockGet.mockReturnValue(res(200, shopLibrary));
+    const r = await getCommerceApi('shop').access({orderId: 'shop_001', productId: 'prod_autre'});
+    expect(r.kind === 'failure' && r.errorKind).toBe('entitlementUnavailable');
+    expect(mockPost).not.toHaveBeenCalled();
   });
 });

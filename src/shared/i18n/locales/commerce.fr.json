@@ -7,6 +7,11 @@
     "favAddError": "Impossible d’ajouter ce favori pour le moment.",
     "reviews_one": "{{count}} avis",
     "reviews_other": "{{count}} avis",
-    "notFound": "Produit introuvable."
+    "notFound": "Produit introuvable.",
+    "indeterminate": "Le résultat de l’achat est incertain. Relancez : vous ne serez débité qu’une seule fois.",
+    "paymentRefused": "Le paiement a été refusé. Vérifiez votre solde DSI, puis réessayez.",
+    "selfPurchase": "Vous ne pouvez pas acheter votre propre produit.",
+    "openSubscription": "Renouveler mon abonnement",
+    "refunded": "Remboursé"
   }
 }

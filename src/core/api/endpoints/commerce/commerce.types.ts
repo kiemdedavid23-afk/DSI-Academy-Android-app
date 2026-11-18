@@ -63,6 +63,15 @@ export type CommerceOrderState = {
   note: string | null;
 };
 
+/**
+ * Accès à un produit acheté. `webview` : lien du vendeur (Marketplace), ouvert
+ * dans le WebView de l'app. `external` : URL temporaire d'un fichier
+ * (Boutique), ouverte hors de l'app.
+ */
+export type CommerceAccess = {url: string; mode: 'webview' | 'external'};
+
+export type AccessParams = {orderId: string; productId: string | null};
+
 export type CommerceErrorKind =
   | 'network'
   | 'server'

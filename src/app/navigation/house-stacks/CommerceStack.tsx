@@ -1,18 +1,23 @@
 /**
- * Pile commune Boutique + Marketplace (L8b) : catalogue → fiche, et favoris.
- * Une seule pile pour les deux maisons (décision D2) ; seule la source change.
- * Les écrans ne connaissent pas la navigation : elle est branchée ici.
+ * Pile commune Boutique + Marketplace : catalogue → fiche, favoris, mes achats,
+ * accès au produit acheté. Une seule pile pour les deux maisons (décision D2) ;
+ * seule la source change. Les écrans ne connaissent pas la navigation : elle
+ * est branchée ici.
  */
 
 import React from 'react';
-import {Pressable} from 'react-native';
+import {Linking, Pressable, View} from 'react-native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {Icon, useTheme} from '@shared/designsystem';
 import {useTranslation} from '@shared/i18n';
+import {PurchaseAction} from '@features/commerce/components/PurchaseAction';
 import {CommerceDiscoverScreen} from '@features/commerce/screens/CommerceDiscoverScreen';
 import {CommerceFavoritesScreen} from '@features/commerce/screens/CommerceFavoritesScreen';
+import {CommerceLinkScreen} from '@features/commerce/screens/CommerceLinkScreen';
 import {CommerceProductScreen} from '@features/commerce/screens/CommerceProductScreen';
+import {CommercePurchasesScreen} from '@features/commerce/screens/CommercePurchasesScreen';
 import type {
+  CommerceAccess,
   CommerceProduct,
   CommerceSource,
 } from '@features/commerce/store/commerceTypes';
@@ -21,13 +26,45 @@ export type CommerceStackParamList = {
   Discover: undefined;
   Product: {id: string; product?: CommerceProduct};
   Favorites: undefined;
+  Purchases: undefined;
+  Link: {url: string};
 };
 
 const Stack = createNativeStackNavigator<CommerceStackParamList>();
 
+/** Ouvre un produit acheté : lien du vendeur dans l'app, fichier hors de l'app. */
+function openAccess(access: CommerceAccess, onWebview: (url: string) => void) {
+  if (access.mode === 'webview') {
+    onWebview(access.url);
+  } else {
+    void Linking.openURL(access.url);
+  }
+}
+
 export function CommerceStack({source}: {source: CommerceSource}) {
   const {t} = useTranslation();
   const {colors, touch} = useTheme();
+
+  const headerButton = (
+    label: string,
+    icon: 'BookmarkIcon' | 'BagIcon',
+    onPress: () => void,
+    testID: string,
+  ) => (
+    <Pressable
+      onPress={onPress}
+      accessibilityRole="button"
+      accessibilityLabel={label}
+      testID={testID}
+      style={{
+        alignItems: 'center',
+        justifyContent: 'center',
+        minHeight: touch.min,
+        minWidth: touch.min,
+      }}>
+      <Icon name={icon} size={22} color={colors.textPrimary} />
+    </Pressable>
+  );
 
   return (
     <Stack.Navigator screenOptions={{headerShown: true}}>
@@ -36,19 +73,20 @@ export function CommerceStack({source}: {source: CommerceSource}) {
         options={({navigation}) => ({
           title: t(source === 'shop' ? 'houses.shop' : 'houses.marketplace'),
           headerRight: () => (
-            <Pressable
-              onPress={() => navigation.navigate('Favorites')}
-              accessibilityRole="button"
-              accessibilityLabel={t('commerce.favorites')}
-              testID={`${source}-open-favorites`}
-              style={{
-                alignItems: 'center',
-                justifyContent: 'center',
-                minHeight: touch.min,
-                minWidth: touch.min,
-              }}>
-              <Icon name="BookmarkIcon" size={22} color={colors.textPrimary} />
-            </Pressable>
+            <View style={{flexDirection: 'row'}}>
+              {headerButton(
+                t('mp.member.purchases'),
+                'BagIcon',
+                () => navigation.navigate('Purchases'),
+                `${source}-open-purchases`,
+              )}
+              {headerButton(
+                t('commerce.favorites'),
+                'BookmarkIcon',
+                () => navigation.navigate('Favorites'),
+                `${source}-open-favorites`,
+              )}
+            </View>
           ),
         })}>
         {({navigation}) => (
@@ -61,11 +99,36 @@ export function CommerceStack({source}: {source: CommerceSource}) {
         )}
       </Stack.Screen>
       <Stack.Screen name="Product" options={{title: t('app.catalogue.detailTitle')}}>
-        {({route}) => (
+        {({route, navigation}) => (
           <CommerceProductScreen
             source={source}
             id={route.params.id}
             seed={route.params.product ?? null}
+            // Boutique : l'achat passe par le panier (L8d). Marketplace : achat direct.
+            renderAction={
+              source === 'marketplace'
+                ? product => (
+                    <PurchaseAction
+                      source={source}
+                      product={product}
+                      onOpenDsi={() =>
+                        navigation
+                          .getParent()
+                          ?.navigate('MemberSpace', {screen: 'MemberDsiHoldings'})
+                      }
+                      onOpenSubscription={() =>
+                        navigation
+                          .getParent()
+                          ?.navigate('MemberSpace', {screen: 'MemberSubscription'})
+                      }
+                      onOpenPurchases={() => navigation.navigate('Purchases')}
+                      onOpenAccess={access =>
+                        openAccess(access, url => navigation.navigate('Link', {url}))
+                      }
+                    />
+                  )
+                : undefined
+            }
           />
         )}
       </Stack.Screen>
@@ -78,6 +141,22 @@ export function CommerceStack({source}: {source: CommerceSource}) {
             }
             onDiscover={() => navigation.navigate('Discover')}
           />
+        )}
+      </Stack.Screen>
+      <Stack.Screen name="Purchases" options={{title: t('mp.member.purchases')}}>
+        {({navigation}) => (
+          <CommercePurchasesScreen
+            source={source}
+            onDiscover={() => navigation.navigate('Discover')}
+            onOpenAccess={access =>
+                        openAccess(access, url => navigation.navigate('Link', {url}))
+                      }
+          />
+        )}
+      </Stack.Screen>
+      <Stack.Screen name="Link" options={{title: t('mp.orders.open')}}>
+        {({route, navigation}) => (
+          <CommerceLinkScreen url={route.params.url} onClose={() => navigation.goBack()} />
         )}
       </Stack.Screen>
     </Stack.Navigator>

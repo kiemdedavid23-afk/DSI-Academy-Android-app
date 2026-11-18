@@ -7,6 +7,11 @@
     "favAddError": "Unable to add this favorite right now.",
     "reviews_one": "{{count}} review",
     "reviews_other": "{{count}} reviews",
-    "notFound": "Product not found."
+    "notFound": "Product not found.",
+    "indeterminate": "The purchase result is uncertain. Try again: you will only be charged once.",
+    "paymentRefused": "The payment was declined. Check your DSI balance, then try again.",
+    "selfPurchase": "You can't buy your own product.",
+    "openSubscription": "Renew my subscription",
+    "refunded": "Refunded"
   }
 }
