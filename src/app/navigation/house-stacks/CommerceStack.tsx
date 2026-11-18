@@ -8,9 +8,9 @@
 import React from 'react';
 import {Linking, Pressable, View} from 'react-native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import {Button, Icon, useTheme} from '@shared/designsystem';
+import {Icon, useTheme} from '@shared/designsystem';
 import {useTranslation} from '@shared/i18n';
-import {MarketplaceReviews} from '@features/commerce/components/MarketplaceReviews';
+import {MarketplaceProductExtras} from '@features/commerce/components/MarketplaceProductExtras';
 import {CartAction} from '@features/commerce/components/CartAction';
 import {PurchaseAction} from '@features/commerce/components/PurchaseAction';
 import {CommerceDiscoverScreen} from '@features/commerce/screens/CommerceDiscoverScreen';
@@ -139,7 +139,7 @@ export function CommerceStack({source}: {source: CommerceSource}) {
             source={source}
             id={route.params.id}
             seed={route.params.product ?? null}
-            // Boutique : l'achat passe par le panier (L8d). Marketplace : achat direct.
+            // Boutique : l'achat passe par le panier (L8d). Marketplace : barre d'achat fixe.
             renderAction={
               source === 'shop'
                 ? product => (
@@ -149,7 +149,17 @@ export function CommerceStack({source}: {source: CommerceSource}) {
                     />
                   )
                 : product => (
-                    <>
+                    <MarketplaceProductExtras
+                      product={product}
+                      onOpenSeller={memberId => navigation.navigate('Seller', {memberId})}
+                      onOpenProduct={p => navigation.push('Product', {id: p.id, product: p})}
+                    />
+                  )
+            }
+            renderBar={
+              source === 'shop'
+                ? undefined
+                : product => (
                     <PurchaseAction
                       source={source}
                       product={product}
@@ -168,18 +178,6 @@ export function CommerceStack({source}: {source: CommerceSource}) {
                         openAccess(access, url => navigation.navigate('Link', {url}))
                       }
                     />
-                    {product.sellerId ? (
-                      <Button
-                        variant="secondary"
-                        label={t('mp.pd.storeVisit')}
-                        onPress={() =>
-                          navigation.navigate('Seller', {memberId: product.sellerId ?? ''})
-                        }
-                        testID="marketplace-visit-seller"
-                      />
-                    ) : null}
-                    <MarketplaceReviews productId={product.id} />
-                    </>
                   )
             }
           />

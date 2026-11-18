@@ -26,6 +26,8 @@ export type CommerceProduct = {
   reviewCount: number;
   salesCount: number;
   favoritesCount: number;
+  /** Marketplace : date de création (ms), pour « Nouveautés ». Absent côté Boutique. */
+  createdAt?: number | null;
 };
 
 export type CommerceCategory = {slug: string; count: number};

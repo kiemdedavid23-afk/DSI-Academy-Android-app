@@ -6,14 +6,15 @@
 import React, {useEffect, useSyncExternalStore} from 'react';
 import {FlatList, Pressable, View} from 'react-native';
 import {
-  Card,
   EmptyState,
   ErrorState,
+  Icon,
   LoadingState,
   Text,
   useTheme,
 } from '@shared/designsystem';
 import {useTranslation} from '@shared/i18n';
+import {ProductCover} from '../components/ProductCover';
 import {commerceErrorKey} from '../logic/errorKey';
 import {MARKETPLACE_STORES} from '../store/marketplaceStores';
 import type {MarketplaceSeller} from '../store/commerceTypes';
@@ -25,7 +26,7 @@ export type MarketplaceSellersScreenProps = {
 export function MarketplaceSellersScreen({onOpenSeller}: MarketplaceSellersScreenProps) {
   const store = MARKETPLACE_STORES.sellers;
   const {t} = useTranslation();
-  const {colors, spacing, touch} = useTheme();
+  const {colors, spacing, radii, glass, touch} = useTheme();
   const state = useSyncExternalStore(store.subscribe, store.getState);
 
   useEffect(() => {
@@ -82,25 +83,37 @@ export function MarketplaceSellersScreen({onOpenSeller}: MarketplaceSellersScree
           accessibilityRole="button"
           accessibilityLabel={item.storeName}
           testID={`seller-card-${item.memberId}`}
-          style={{minHeight: touch.min}}>
-          <Card>
-            <View style={{gap: spacing.xs}}>
-              <Text variant="cardTitle" numberOfLines={1}>
-                {item.storeName}
+          style={{
+            alignItems: 'center',
+            backgroundColor: glass.bg,
+            borderColor: glass.border,
+            borderRadius: radii.lg,
+            borderWidth: 1,
+            flexDirection: 'row',
+            gap: spacing.md,
+            minHeight: touch.min,
+            padding: spacing.md,
+          }}>
+          <View style={{width: 60}}>
+            <ProductCover coverUrl={null} title={item.storeName} aspect={1} initialVariant="title" />
+          </View>
+          <View style={{flex: 1, gap: 3}}>
+            <Text variant="cardTitle" numberOfLines={1}>
+              {item.storeName}
+            </Text>
+            {item.bio ? (
+              <Text variant="bodySmall" color="secondary" numberOfLines={2}>
+                {item.bio}
               </Text>
-              {item.bio ? (
-                <Text variant="caption" color="secondary" numberOfLines={2}>
-                  {item.bio}
-                </Text>
-              ) : null}
-              <Text variant="micro" color="muted">
-                {t('mp.sellersPage.count', {count: item.productsCount})}
-                {item.rating !== null
-                  ? ` · ${t('commerce.sellerRating', {value: item.rating.toFixed(1)})}`
-                  : ''}
-              </Text>
-            </View>
-          </Card>
+            ) : null}
+            <Text variant="caption" color="secondary">
+              {t('mp.sellersPage.count', {count: item.productsCount})}
+              {item.rating !== null
+                ? ` · ${t('commerce.sellerRating', {value: item.rating.toFixed(1)})}`
+                : ''}
+            </Text>
+          </View>
+          <Icon name="ChevronRightIcon" size={20} color={colors.textSecondary} />
         </Pressable>
       )}
     />

@@ -4,9 +4,18 @@
  */
 
 import React, {useEffect, useSyncExternalStore} from 'react';
-import {FlatList, View} from 'react-native';
-import {EmptyState, ErrorState, LoadingState, Text, useTheme} from '@shared/designsystem';
+import {FlatList, Image, View} from 'react-native';
+import {
+  EmptyState,
+  ErrorState,
+  LoadingState,
+  Text,
+  useTheme,
+  withAlpha,
+} from '@shared/designsystem';
 import {useTranslation} from '@shared/i18n';
+import {ProductCover} from '../components/ProductCover';
+import {artFor} from '../logic/art';
 import {ProductCard} from '../components/ProductCard';
 import {commerceErrorKey} from '../logic/errorKey';
 import {MARKETPLACE_STORES} from '../store/marketplaceStores';
@@ -28,7 +37,7 @@ export function MarketplaceSellerScreen({
 }: MarketplaceSellerScreenProps) {
   const store = MARKETPLACE_STORES.seller;
   const {t} = useTranslation();
-  const {colors, spacing} = useTheme();
+  const {colors, spacing, radii} = useTheme();
   const state = useSyncExternalStore(store.subscribe, store.getState);
 
   useEffect(() => {
@@ -75,23 +84,73 @@ export function MarketplaceSellerScreen({
       columnWrapperStyle={{gap: spacing.md, paddingHorizontal: spacing.xl}}
       contentContainerStyle={{gap: spacing.lg, paddingBottom: spacing.xxxl}}
       ListHeaderComponent={
-        <View style={{gap: spacing.xs, padding: spacing.xl}}>
-          <Text variant="micro" color="muted" style={{textTransform: 'uppercase'}}>
-            {t('mp.sellerPage.eyebrow')}
-          </Text>
-          <Text variant="title" accessibilityRole="header">
-            {seller?.storeName ?? ''}
-          </Text>
-          {seller?.bio ? (
-            <Text variant="body" color="secondary">
-              {seller.bio}
-            </Text>
-          ) : null}
-          {seller && seller.rating !== null ? (
-            <Text variant="caption" color="secondary">
-              {t('commerce.sellerRating', {value: seller.rating.toFixed(1)})}
-            </Text>
-          ) : null}
+        <View style={{gap: spacing.lg, padding: spacing.xl}}>
+          <View
+            style={{
+              backgroundColor: colors.bgDarkPremium,
+              borderColor: colors.goldBorder,
+              borderRadius: radii.lg,
+              borderWidth: 1,
+              overflow: 'hidden',
+            }}>
+            <Image
+              source={artFor(seller?.storeName)}
+              blurRadius={20}
+              resizeMode="cover"
+              style={{position: 'absolute', top: 0, bottom: 0, left: 0, right: 0}}
+              accessible={false}
+            />
+            <View
+              style={{
+                position: 'absolute',
+                top: 0,
+                bottom: 0,
+                left: 0,
+                right: 0,
+                backgroundColor: withAlpha(colors.bgDarkPremium, 0.6),
+              }}
+            />
+            <View
+              style={{alignItems: 'center', flexDirection: 'row', gap: spacing.lg, padding: spacing.xl}}>
+              <View style={{width: 88}}>
+                <ProductCover
+                  coverUrl={null}
+                  title={seller?.storeName}
+                  aspect={1}
+                  initialVariant="display"
+                  style={{borderRadius: radii.lg}}
+                />
+              </View>
+              <View style={{alignItems: 'flex-start', flex: 1, gap: 6}}>
+                <View
+                  style={{
+                    backgroundColor: withAlpha(colors.goldPrestige, 0.14),
+                    borderColor: colors.goldBorder,
+                    borderRadius: radii.pill,
+                    borderWidth: 1,
+                    paddingHorizontal: 9,
+                    paddingVertical: 3,
+                  }}>
+                  <Text variant="micro" style={{color: colors.goldPrestige, textTransform: 'uppercase'}}>
+                    {t('mp.sellerPage.eyebrow')}
+                  </Text>
+                </View>
+                <Text variant="title" accessibilityRole="header" style={{color: '#FFFFFF'}}>
+                  {seller?.storeName ?? ''}
+                </Text>
+                {seller?.bio ? (
+                  <Text variant="bodySmall" numberOfLines={3} style={{color: '#FFFFFF', opacity: 0.88}}>
+                    {seller.bio}
+                  </Text>
+                ) : null}
+                {seller && seller.rating !== null ? (
+                  <Text variant="caption" style={{color: '#FFFFFF', opacity: 0.88}}>
+                    {t('commerce.sellerRating', {value: seller.rating.toFixed(1)})}
+                  </Text>
+                ) : null}
+              </View>
+            </View>
+          </View>
           {status === 'success' ? (
             <Text variant="subtitle" accessibilityRole="header">
               {t('mp.sellerProducts')}

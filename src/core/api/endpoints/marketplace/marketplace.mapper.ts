@@ -65,6 +65,7 @@ export function mapMarketplaceProduct(raw: unknown): CommerceProduct | null {
     reviewCount: asInt(r.reviewCount) ?? 0,
     salesCount: asInt(r.salesTotal) ?? asInt(r.salesCount) ?? 0,
     favoritesCount: asInt(r.favoritesCount) ?? 0,
+    createdAt: asEpochMs(r.createdAt),
   };
 }
 

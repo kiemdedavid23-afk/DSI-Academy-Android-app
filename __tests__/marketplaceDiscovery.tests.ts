@@ -9,6 +9,7 @@ import {
 } from '@core/api/endpoints/marketplace/marketplace.api';
 import {MARKETPLACE_STORES} from '../src/features/commerce/store/marketplaceStores';
 import {reviewErrorKey, starsText} from '../src/features/commerce/components/MarketplaceReviews';
+import {artIndex} from '../src/features/commerce/logic/art';
 import trending from '../contracts/marketplace/trending.json';
 import sellers from '../contracts/marketplace/sellers.json';
 import seller from '../contracts/marketplace/seller.json';
@@ -160,5 +161,16 @@ describe('avis', () => {
     expect(starsText(4)).toBe('★★★★☆');
     expect(starsText(9)).toBe('★★★★★');
     expect(starsText(-1)).toBe('☆☆☆☆☆');
+  });
+});
+
+describe('illustrations de remplacement', () => {
+  it('un même texte donne toujours la même illustration, dans 0..3', () => {
+    expect(artIndex('Pack modèles')).toBe(artIndex('Pack modèles'));
+    for (const seed of ['', 'a', 'Atelier Awa', null, undefined]) {
+      const i = artIndex(seed);
+      expect(i).toBeGreaterThanOrEqual(0);
+      expect(i).toBeLessThanOrEqual(3);
+    }
   });
 });

@@ -10,6 +10,7 @@ import {Pressable, View} from 'react-native';
 import {Button, Card, Text, TextField, useTheme} from '@shared/designsystem';
 import {useTranslation} from '@shared/i18n';
 import {commerceErrorKey} from '../logic/errorKey';
+import {RatingStars, StarMark} from './Stars';
 import {MARKETPLACE_STORES} from '../store/marketplaceStores';
 import type {CommerceErrorKind} from '../store/commerceTypes';
 
@@ -37,7 +38,7 @@ export function reviewErrorKey(kind: CommerceErrorKind | null): string {
 export function MarketplaceReviews({productId}: {productId: string}) {
   const store = MARKETPLACE_STORES.reviews;
   const {t} = useTranslation();
-  const {colors, spacing, touch} = useTheme();
+  const {spacing, touch} = useTheme();
   const state = useSyncExternalStore(store.subscribe, store.getState);
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState('');
@@ -88,13 +89,18 @@ export function MarketplaceReviews({productId}: {productId: string}) {
       ) : null}
 
       {reviews.map(r => (
-        <Card key={r.id} testID={`marketplace-review-${r.id}`}>
+        <Card variant="glass" key={r.id} testID={`marketplace-review-${r.id}`}>
           <View style={{gap: spacing.xs}}>
-            <Text
-              variant="body"
+            <View
+              style={{alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between'}}
               accessibilityLabel={t('mp.pd.ratingAria', {value: r.rating})}>
-              {starsText(r.rating)}
-            </Text>
+              <RatingStars value={r.rating} />
+              {r.createdAt !== null ? (
+                <Text variant="caption" color="secondary">
+                  {new Date(r.createdAt).toLocaleDateString()}
+                </Text>
+              ) : null}
+            </View>
             <Text variant="body" color={r.comment ? undefined : 'secondary'}>
               {r.comment ?? t('mp.pd.reviewNoComment')}
             </Text>
@@ -121,11 +127,7 @@ export function MarketplaceReviews({productId}: {productId: string}) {
                 minHeight: touch.min,
                 minWidth: touch.min,
               }}>
-              <Text
-                variant="title"
-                style={{color: n <= rating ? colors.goldPrestige : colors.textMuted}}>
-                {n <= rating ? '★' : '☆'}
-              </Text>
+              <StarMark size={28} filled={n <= rating} />
             </Pressable>
           ))}
         </View>

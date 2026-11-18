@@ -3,7 +3,7 @@
  * dans l'ordre du serveur, sans retri ; les dix premiers portent leur rang.
  */
 
-import React, {useEffect, useMemo, useSyncExternalStore} from 'react';
+import React, {useEffect, useSyncExternalStore} from 'react';
 import {FlatList, View} from 'react-native';
 import {EmptyState, ErrorState, LoadingState, Text, useTheme} from '@shared/designsystem';
 import {useTranslation} from '@shared/i18n';
@@ -29,11 +29,6 @@ export function MarketplaceTrendingScreen({onOpenProduct}: MarketplaceTrendingSc
     void store.load();
   }, [store]);
 
-  const items = useMemo(
-    () =>
-      state.items.map((p, i) => (i < RANKED ? {...p, badge: `#${i + 1}`} : p)),
-    [state.items],
-  );
 
   let empty: React.ReactNode = null;
   if (state.items.length === 0) {
@@ -63,7 +58,7 @@ export function MarketplaceTrendingScreen({onOpenProduct}: MarketplaceTrendingSc
     <FlatList
       style={{flex: 1, backgroundColor: colors.bgApp}}
       testID="screen-marketplace-trending"
-      data={items}
+      data={state.items}
       keyExtractor={p => p.id}
       numColumns={COLUMNS}
       columnWrapperStyle={{gap: spacing.md, paddingHorizontal: spacing.xl}}
@@ -79,7 +74,13 @@ export function MarketplaceTrendingScreen({onOpenProduct}: MarketplaceTrendingSc
         </View>
       }
       ListEmptyComponent={empty}
-      renderItem={({item}) => <ProductCard product={item} onPress={onOpenProduct} />}
+      renderItem={({item, index}) => (
+        <ProductCard
+          product={item}
+          onPress={onOpenProduct}
+          rank={index < RANKED ? index + 1 : undefined}
+        />
+      )}
     />
   );
 }

@@ -1,4 +1,4 @@
-/** Prix en DSI, ou « Gratuit ». */
+/** Prix en DSI (site : .dsi-mpc-price) : montant en gras, « DSI » en petit et en gris ; « Gratuit » sinon. */
 
 import React from 'react';
 import {Text} from '@shared/designsystem';
@@ -13,9 +13,16 @@ export type PriceTagProps = {
 
 export function PriceTag({priceDsi, free, large = false}: PriceTagProps) {
   const {t} = useTranslation();
+  const variant = large ? 'subtitle' : 'bodyStrong';
+  if (free) {
+    return <Text variant={variant}>{t('mp.card.free')}</Text>;
+  }
   return (
-    <Text variant={large ? 'subtitle' : 'bodySmallStrong'} color="gold">
-      {free ? t('shop.free') : t('commerce.priceDsi', {amount: formatDsiAmount(priceDsi)})}
+    <Text variant={variant} accessibilityLabel={t('commerce.priceDsi', {amount: formatDsiAmount(priceDsi)})}>
+      {formatDsiAmount(priceDsi)}{' '}
+      <Text variant="micro" color="secondary">
+        {t('mp.card.currency')}
+      </Text>
     </Text>
   );
 }
