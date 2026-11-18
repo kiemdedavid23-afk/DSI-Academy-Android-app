@@ -1352,6 +1352,8 @@
     "deliveryError": "Unable to retrieve this content right now.",
     "openContent": "Open",
     "newBadge": "New",
+    "partsCount_one": "{{count}} part",
+    "partsCount_other": "{{count}} parts",
     "selectionsTitle": "DSI selections",
     "seeAll": "See all",
     "newTitle": "New arrivals",

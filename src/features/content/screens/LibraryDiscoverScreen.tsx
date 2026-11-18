@@ -30,6 +30,7 @@ import {ContentCard} from '../components/ContentCard';
 import {ContentFeatured} from '../components/ContentFeatured';
 import {ContentRail} from '../components/ContentRail';
 import {HouseBanner, type HouseSection} from '../components/HouseBanner';
+import {categoryChips, flattenNodes} from '../logic/categoryTree';
 import {contentErrorKey} from '../logic/errorKey';
 import {isRecent} from '../logic/recent';
 import {HOUSE_STORES, type DiscoverHouse} from '../store/houseStores';
@@ -77,11 +78,16 @@ export function LibraryDiscoverScreen({
     cb => stores.categories.subscribe(() => cb()),
     () => stores.categories.getState(),
   );
+  const tree = useSyncExternalStore(
+    cb => stores.tree.subscribe(() => cb()),
+    () => stores.tree.getState(),
+  );
   const rails = useSyncExternalStore(railsStore.subscribe, railsStore.getState);
 
   useEffect(() => {
     void stores.catalogue.load();
     void stores.categories.load();
+    void stores.tree.load();
     void railsStore.load();
   }, [stores, railsStore]);
 
@@ -110,12 +116,24 @@ export function LibraryDiscoverScreen({
   const list = searching ? search : cat;
   const items = list.items;
   const loading = list.status === 'loading' || list.status === 'idle';
-  const categoryList = useMemo(() => categories.data ?? [], [categories.data]);
+  const treeNodes = useMemo(() => tree.data ?? [], [tree.data]);
+  // Chips = chemin de la catégorie choisie + son niveau suivant (arbre du Worker).
+  const categoryList = useMemo(
+    () => categoryChips(treeNodes, cat.categoryId),
+    [treeNodes, cat.categoryId],
+  );
+  // Noms de TOUTES les catégories (y compris celles sans contenu direct).
+  const nameById = useMemo(() => {
+    const map = new Map<number, string>();
+    (categories.data ?? []).forEach(c => map.set(c.id, c.name));
+    flattenNodes(treeNodes).forEach(n => map.set(n.id, n.name));
+    return map;
+  }, [categories.data, treeNodes]);
 
   const categoryName = useCallback(
     (item: Content): string | null =>
-      categoryList.find(c => c.id === item.categoryId)?.name ?? null,
-    [categoryList],
+      (item.categoryId !== null ? nameById.get(item.categoryId) : undefined) ?? null,
+    [nameById],
   );
 
   const open = useCallback(

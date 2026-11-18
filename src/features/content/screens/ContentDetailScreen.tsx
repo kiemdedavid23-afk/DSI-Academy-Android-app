@@ -137,6 +137,9 @@ export function ContentDetailScreen({id, onRead, onOpenItem, onBack}: ContentDet
   if (duration) {
     chips.push(duration);
   }
+  if (item.partsCount > 0) {
+    chips.push(t('content.partsCount', {count: item.partsCount}));
+  }
 
   const entry = {
     id: String(item.id),

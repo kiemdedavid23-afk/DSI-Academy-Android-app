@@ -1352,6 +1352,8 @@
     "deliveryError": "Impossible de récupérer ce contenu pour le moment.",
     "openContent": "Ouvrir",
     "newBadge": "Nouveau",
+    "partsCount_one": "{{count}} partie",
+    "partsCount_other": "{{count}} parties",
     "selectionsTitle": "Sélections DSI",
     "seeAll": "Voir tout",
     "newTitle": "Nouveautés",

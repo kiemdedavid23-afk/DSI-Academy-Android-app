@@ -49,6 +49,27 @@ export function pathTo(tree: CategoryNode[], id: number): CategoryNode[] {
   return [];
 }
 
+/** Tous les nœuds de l'arbre, à plat (recherche d'un nom par identifiant). */
+export function flattenNodes(tree: CategoryNode[]): CategoryNode[] {
+  return tree.flatMap(n => [n, ...flattenNodes(n.children)]);
+}
+
+/**
+ * Chips d'un niveau à la fois : le chemin jusqu'à la catégorie choisie (la
+ * dernière est active), puis ses sous-catégories ; sans choix, les catégories
+ * principales. count = total_count (catégorie + descendants).
+ */
+export function categoryChips(tree: CategoryNode[], selectedId: number | null): Category[] {
+  const path = selectedId === null ? [] : pathTo(tree, selectedId);
+  const level = childrenOf(tree, path.length > 0 ? path[path.length - 1].id : null);
+  return [...path, ...level].map(n => ({
+    id: n.id,
+    name: n.name,
+    slug: n.slug,
+    count: n.totalCount,
+  }));
+}
+
 /** Repli (Worker v1, route absente) : liste à plat vue comme un arbre sans enfants. */
 export function fromFlat(categories: Category[]): CategoryNode[] {
   return categories.map(c => ({
