@@ -3,6 +3,11 @@
  * ouvert dans l'app, en https uniquement. Tout autre schéma est refusé.
  */
 
+import {HTTPS_ORIGIN_WHITELIST} from '@core/config/urlGuards';
+
+/** Liste blanche d'origines du WebView (https uniquement), relayée depuis core/config (R-LAY-5). */
+export {HTTPS_ORIGIN_WHITELIST};
+
 export function isAllowedLinkUrl(url: unknown): boolean {
   if (typeof url !== 'string') {
     return false;
