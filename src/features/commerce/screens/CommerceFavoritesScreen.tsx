@@ -88,7 +88,7 @@ export function CommerceFavoritesScreen({
             testID="commerce-favorites-remove-error">
             {t('mp.favs.removeError')}
           </Text>
-        ) : null
+        ) : undefined
       }
       ListEmptyComponent={
         <EmptyState

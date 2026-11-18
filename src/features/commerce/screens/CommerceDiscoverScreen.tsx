@@ -177,7 +177,7 @@ export function CommerceDiscoverScreen({
       columnWrapperStyle={{gap: spacing.md, paddingHorizontal: spacing.xl}}
       contentContainerStyle={{gap: spacing.lg, paddingBottom: spacing.xxxl}}
       ListHeaderComponent={header}
-      ListEmptyComponent={empty}
+      ListEmptyComponent={empty ?? undefined}
       keyboardShouldPersistTaps="handled"
       renderItem={({item}) => <ProductCard product={item} onPress={open} />}
     />

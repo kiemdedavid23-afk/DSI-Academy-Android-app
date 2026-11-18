@@ -73,7 +73,7 @@ export function MarketplaceTrendingScreen({onOpenProduct}: MarketplaceTrendingSc
           </Text>
         </View>
       }
-      ListEmptyComponent={empty}
+      ListEmptyComponent={empty ?? undefined}
       renderItem={({item, index}) => (
         <ProductCard
           product={item}

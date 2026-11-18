@@ -27,3 +27,6 @@ export function parseYoutubeVideoId(value: unknown): string | null {
   );
   return short ? short[1] : null;
 }
+
+/** Liste blanche d'origines du WebView : https uniquement (R-NET-1 : le littéral reste dans core/config). */
+export const HTTPS_ORIGIN_WHITELIST: string[] = ['https://*'];

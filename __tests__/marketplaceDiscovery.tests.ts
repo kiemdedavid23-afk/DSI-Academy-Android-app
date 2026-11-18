@@ -23,7 +23,7 @@ jest.mock('@core/network', () => ({
   safeEnvelope: jest.requireActual('@core/network/envelope').safeEnvelope,
 }));
 jest.mock('@core/session', () => ({
-  sessionStore: {getAccessProof: jest.fn()},
+  sessionStore: {getAccessProof: jest.fn(), onSessionCleared: jest.fn()},
 }));
 
 const mockGet = jest.fn();

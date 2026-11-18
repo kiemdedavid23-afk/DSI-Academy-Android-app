@@ -72,11 +72,11 @@ export function MarketplaceHomeSections({
               <Text variant="micro" style={{color: colors.goldPrestige, textTransform: 'uppercase'}}>
                 {t('mp.home.featuredEyebrow')}
               </Text>
-              <Text variant="subtitle" numberOfLines={2} style={{color: '#FFFFFF'}}>
+              <Text variant="subtitle" numberOfLines={2} style={{color: colors.textOnDark}}>
                 {featured.title}
               </Text>
               {featured.storeName ? (
-                <Text variant="caption" numberOfLines={1} style={{color: '#FFFFFF', opacity: 0.9}}>
+                <Text variant="caption" numberOfLines={1} style={{color: colors.textOnDark, opacity: 0.9}}>
                   {featured.storeName}
                 </Text>
               ) : null}

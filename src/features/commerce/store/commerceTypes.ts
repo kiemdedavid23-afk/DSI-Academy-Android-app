@@ -15,3 +15,7 @@ export type {
   MarketplaceReview,
   MarketplaceSeller,
 } from '@core/api/endpoints/marketplace/marketplace.types';
+export type {
+  ShopCartLine,
+  ShopPromoPreview,
+} from '@core/api/endpoints/shop/shop.types';

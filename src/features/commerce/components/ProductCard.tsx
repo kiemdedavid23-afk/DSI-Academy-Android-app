@@ -7,7 +7,7 @@
 
 import React from 'react';
 import {Pressable, StyleSheet, View} from 'react-native';
-import {Text, useTheme} from '@shared/designsystem';
+import {Text, useTheme, withAlpha} from '@shared/designsystem';
 import {useTranslation} from '@shared/i18n';
 import {categoryKeys} from '../logic/errorKey';
 import type {CommerceProduct} from '../store/commerceTypes';
@@ -61,9 +61,16 @@ export function ProductCard({product, onPress, footer, rank}: ProductCardProps) 
             <View
               style={[
                 styles.chip,
-                {borderRadius: radii.pill, bottom: spacing.sm, left: spacing.sm, maxWidth: '88%'},
+                {
+                  backgroundColor: withAlpha(colors.bgDarkPremium, 0.72),
+                  borderColor: withAlpha(colors.textOnDark, 0.2),
+                  borderRadius: radii.pill,
+                  bottom: spacing.sm,
+                  left: spacing.sm,
+                  maxWidth: '88%',
+                },
               ]}>
-              <Text variant="micro" numberOfLines={1} style={{color: '#FFFFFF'}}>
+              <Text variant="micro" numberOfLines={1} style={{color: colors.textOnDark}}>
                 {category}
               </Text>
             </View>
@@ -110,8 +117,6 @@ const styles = StyleSheet.create({
     position: 'absolute',
   },
   chip: {
-    backgroundColor: 'rgba(2, 8, 23, 0.72)',
-    borderColor: 'rgba(255, 255, 255, 0.2)',
     borderWidth: 1,
     paddingHorizontal: 8,
     paddingVertical: 3,

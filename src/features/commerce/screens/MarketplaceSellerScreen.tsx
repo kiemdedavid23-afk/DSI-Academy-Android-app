@@ -135,16 +135,16 @@ export function MarketplaceSellerScreen({
                     {t('mp.sellerPage.eyebrow')}
                   </Text>
                 </View>
-                <Text variant="title" accessibilityRole="header" style={{color: '#FFFFFF'}}>
+                <Text variant="title" accessibilityRole="header" style={{color: colors.textOnDark}}>
                   {seller?.storeName ?? ''}
                 </Text>
                 {seller?.bio ? (
-                  <Text variant="bodySmall" numberOfLines={3} style={{color: '#FFFFFF', opacity: 0.88}}>
+                  <Text variant="bodySmall" numberOfLines={3} style={{color: colors.textOnDark, opacity: 0.88}}>
                     {seller.bio}
                   </Text>
                 ) : null}
                 {seller && seller.rating !== null ? (
-                  <Text variant="caption" style={{color: '#FFFFFF', opacity: 0.88}}>
+                  <Text variant="caption" style={{color: colors.textOnDark, opacity: 0.88}}>
                     {t('commerce.sellerRating', {value: seller.rating.toFixed(1)})}
                   </Text>
                 ) : null}

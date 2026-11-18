@@ -8,6 +8,7 @@ import {View} from 'react-native';
 import {WebView} from 'react-native-webview';
 import {ErrorState, LoadingState, useTheme} from '@shared/designsystem';
 import {useTranslation} from '@shared/i18n';
+import {HTTPS_ORIGIN_WHITELIST} from '@core/config/urlGuards';
 import {isAllowedLinkUrl} from '../logic/linkFilter';
 
 export type CommerceLinkScreenProps = {
@@ -40,7 +41,7 @@ export function CommerceLinkScreen({url, onClose}: CommerceLinkScreenProps) {
     <View style={{flex: 1, backgroundColor: colors.bgApp}} testID="screen-commerce-link">
       <WebView
         source={{uri: url}}
-        originWhitelist={['https://*']}
+        originWhitelist={HTTPS_ORIGIN_WHITELIST}
         mixedContentMode="never"
         javaScriptEnabled
         incognito

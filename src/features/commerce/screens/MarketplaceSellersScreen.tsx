@@ -76,7 +76,7 @@ export function MarketplaceSellersScreen({onOpenSeller}: MarketplaceSellersScree
           {t('mp.sellersTitle')}
         </Text>
       }
-      ListEmptyComponent={empty}
+      ListEmptyComponent={empty ?? undefined}
       renderItem={({item}) => (
         <Pressable
           onPress={() => onOpenSeller(item)}

@@ -5,11 +5,11 @@
  * chiffrée.
  */
 
-import type {CommerceProduct} from '@core/api/endpoints/commerce/commerce.types';
 import type {
+  CommerceProduct,
   ShopCartLine,
   ShopPromoPreview,
-} from '@core/api/endpoints/shop/shop.types';
+} from '../store/commerceTypes';
 
 /**
  * Produit fictif « panier » pour la fenêtre d'achat commune : le titre et le

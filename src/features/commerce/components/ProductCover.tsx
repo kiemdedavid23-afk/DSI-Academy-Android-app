@@ -82,6 +82,6 @@ export function ProductCover({
 
 const styles = StyleSheet.create({
   box: {borderWidth: 1, overflow: 'hidden', width: '100%'},
-  fill: {...StyleSheet.absoluteFillObject},
+  fill: {...StyleSheet.absoluteFill},
   center: {alignItems: 'center', justifyContent: 'center'},
 });

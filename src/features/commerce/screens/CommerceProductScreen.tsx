@@ -108,8 +108,8 @@ export function CommerceProductScreen({
     product.reviewAvg !== null && product.reviewCount > 0 ? product.reviewAvg : null;
   const long = (product.description ?? '').length > 220;
   const chip = {
-    borderColor: 'rgba(255, 255, 255, 0.28)',
-    backgroundColor: 'rgba(2, 8, 23, 0.55)',
+    borderColor: withAlpha(colors.textOnDark, 0.28),
+    backgroundColor: withAlpha(colors.bgDarkPremium, 0.55),
     borderRadius: radii.sm,
     borderWidth: 1,
     paddingHorizontal: 10,
@@ -157,7 +157,7 @@ export function CommerceProductScreen({
             <View style={{flexDirection: 'row', flexWrap: 'wrap', gap: 6, justifyContent: 'center'}}>
               {category ? (
                 <View style={chip}>
-                  <Text variant="micro" style={{color: '#FFFFFF', textTransform: 'uppercase'}}>
+                  <Text variant="micro" style={{color: colors.textOnDark, textTransform: 'uppercase'}}>
                     {category}
                   </Text>
                 </View>
@@ -177,11 +177,11 @@ export function CommerceProductScreen({
                 </View>
               ) : null}
             </View>
-            <Text variant="title" accessibilityRole="header" style={{color: '#FFFFFF', textAlign: 'center'}}>
+            <Text variant="title" accessibilityRole="header" style={{color: colors.textOnDark, textAlign: 'center'}}>
               {product.title}
             </Text>
             {product.storeName ? (
-              <Text variant="bodySmall" style={{color: '#FFFFFF', opacity: 0.9}}>
+              <Text variant="bodySmall" style={{color: colors.textOnDark, opacity: 0.9}}>
                 {t('mp.pd.by', {store: product.storeName})}
               </Text>
             ) : null}
@@ -199,16 +199,16 @@ export function CommerceProductScreen({
                     style={{alignItems: 'center', flexDirection: 'row', gap: 6}}
                     accessibilityLabel={t('mp.pd.ratingAria', {value: rating.toFixed(1)})}>
                     <RatingStars value={rating} />
-                    <Text variant="captionStrong" style={{color: '#FFFFFF'}}>
+                    <Text variant="captionStrong" style={{color: colors.textOnDark}}>
                       {rating.toFixed(1)}
                     </Text>
-                    <Text variant="caption" style={{color: '#FFFFFF', opacity: 0.85}}>
+                    <Text variant="caption" style={{color: colors.textOnDark, opacity: 0.85}}>
                       {`(${t('mp.pd.reviewCount', {count: product.reviewCount})})`}
                     </Text>
                   </View>
                 ) : null}
                 {product.salesCount > 0 ? (
-                  <Text variant="caption" style={{color: '#FFFFFF', opacity: 0.85}}>
+                  <Text variant="caption" style={{color: colors.textOnDark, opacity: 0.85}}>
                     {t('mp.pd.sold', {count: product.salesCount})}
                   </Text>
                 ) : null}
