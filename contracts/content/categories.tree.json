@@ -1,0 +1,30 @@
+{
+  "items": [
+    {
+      "id": 3,
+      "name": "Développement",
+      "slug": "developpement",
+      "type": "book",
+      "status": "active",
+      "parent_id": null,
+      "depth": 1,
+      "content_count": 4,
+      "total_count": 11,
+      "children": [
+        {
+          "id": 8,
+          "name": "Python",
+          "slug": "python",
+          "type": "book",
+          "status": "active",
+          "parent_id": 3,
+          "depth": 2,
+          "content_count": 7,
+          "total_count": 7,
+          "children": []
+        }
+      ]
+    }
+  ],
+  "max_depth": 8
+}

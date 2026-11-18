@@ -12,8 +12,8 @@
       "downloadable": false,
       "status": "active",
       "priority": 100,
-      "created_at": "2026-11-01T10:00:00Z",
-      "updated_at": "2026-11-01T10:00:00Z"
+      "created_at": 1793527200,
+      "updated_at": 1793527200
     },
     {
       "id": 35,
@@ -27,8 +27,8 @@
       "downloadable": false,
       "status": "active",
       "priority": 50,
-      "created_at": "2026-11-01T10:00:00Z",
-      "updated_at": "2026-11-01T10:00:00Z"
+      "created_at": 1793527200,
+      "updated_at": 1793527200
     }
   ]
 }

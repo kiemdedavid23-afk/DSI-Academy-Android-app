@@ -1,5 +1,6 @@
 import {
   asBool,
+  asDateIso,
   asInt,
   asNumber,
   asRecord,
@@ -32,8 +33,8 @@ export function mapAsset(raw: unknown): Asset | null {
     downloadable: asBool(r.downloadable),
     status: asString(r.status) ?? 'active',
     priority: asNumber(r.priority) ?? 0,
-    createdAt: asString(r.created_at),
-    updatedAt: asString(r.updated_at),
+    createdAt: asDateIso(r.created_at),
+    updatedAt: asDateIso(r.updated_at),
   };
 }
 

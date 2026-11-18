@@ -1,0 +1,72 @@
+{
+  "content": {
+    "id": 14,
+    "uid": "01JABCDEFGHJKMNPQRSTVWXY14",
+    "type": "video",
+    "slug": "leçon-2",
+    "title": "Leçon 2",
+    "description": null,
+    "language": "fr",
+    "level": null,
+    "thumbnail_url": null,
+    "duration_seconds": 1800
+  },
+  "work": {
+    "id": 12,
+    "uid": "01JABCDEFGHJKMNPQRSTVWXY12",
+    "type": "training",
+    "slug": "formation",
+    "title": "Formation",
+    "description": null,
+    "language": "fr",
+    "level": null,
+    "thumbnail_url": null,
+    "duration_seconds": 1800
+  },
+  "parent": {
+    "id": 13,
+    "uid": "01JABCDEFGHJKMNPQRSTVWXY13",
+    "type": "training",
+    "slug": "module-1",
+    "title": "Module 1",
+    "description": null,
+    "language": "fr",
+    "level": null,
+    "thumbnail_url": null,
+    "duration_seconds": 1800
+  },
+  "path": [
+    {
+      "id": 12,
+      "uid": "01JABCDEFGHJKMNPQRSTVWXY12",
+      "type": "training",
+      "slug": "formation",
+      "title": "Formation"
+    }
+  ],
+  "kind": "lesson",
+  "position": 1,
+  "depth": 2,
+  "scope": "parent",
+  "index": 2,
+  "total": 5,
+  "previous": {
+    "link_id": 1,
+    "kind": "lesson",
+    "position": 0,
+    "content": {
+      "id": 11,
+      "uid": "01JABCDEFGHJKMNPQRSTVWXY11",
+      "type": "video",
+      "slug": "leçon-1",
+      "title": "Leçon 1",
+      "description": null,
+      "language": "fr",
+      "level": null,
+      "thumbnail_url": null,
+      "duration_seconds": 1800
+    },
+    "parts_count": 0
+  },
+  "next": null
+}

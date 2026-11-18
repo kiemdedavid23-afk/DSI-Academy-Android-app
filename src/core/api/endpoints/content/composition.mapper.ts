@@ -1,4 +1,5 @@
 import {
+  asDateIso,
   asInt,
   asNumber,
   asRecord,
@@ -49,7 +50,7 @@ export function mapComponent(raw: unknown): ContentComponent | null {
     position: asNumber(r.position) ?? 0,
     status: asString(r.status) ?? 'active',
     metadata: asRecord(r.metadata) ?? {},
-    createdAt: asString(r.created_at),
+    createdAt: asDateIso(r.created_at),
     child: mapChild(r.child),
   };
 }

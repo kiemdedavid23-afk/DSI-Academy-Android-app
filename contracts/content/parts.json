@@ -1,0 +1,43 @@
+{
+  "work": {
+    "id": 12,
+    "uid": "01JABCDEFGHJKMNPQRSTVWXY12",
+    "type": "training",
+    "slug": "formation",
+    "title": "Formation",
+    "description": null,
+    "language": "fr",
+    "level": null,
+    "thumbnail_url": null,
+    "duration_seconds": 1800
+  },
+  "is_work": true,
+  "total_parts": 1,
+  "total_duration_seconds": 5400,
+  "duration_complete": true,
+  "unknown_duration_parts": 0,
+  "items": [
+    {
+      "index": 1,
+      "link_id": 77,
+      "kind": "module",
+      "position": 0,
+      "depth": 1,
+      "content": {
+        "id": 13,
+        "uid": "01JABCDEFGHJKMNPQRSTVWXY13",
+        "type": "training",
+        "slug": "module-1",
+        "title": "Module 1",
+        "description": null,
+        "language": "fr",
+        "level": null,
+        "thumbnail_url": null,
+        "duration_seconds": 1800
+      },
+      "parts_count": 3,
+      "duration_seconds": 5400,
+      "duration_complete": true
+    }
+  ]
+}
