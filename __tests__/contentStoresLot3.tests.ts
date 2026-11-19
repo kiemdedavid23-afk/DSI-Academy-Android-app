@@ -25,7 +25,7 @@ const mParts = fetchPartsTree as jest.Mock;
 const mComp = fetchComponentTree as jest.Mock;
 
 const node = (id: number, name: string, children: CategoryNode[] = [], parentId: number | null = null): CategoryNode => ({
-  id, name, slug: name.toLowerCase(), parentId, depth: 1,
+  id, name, slug: name.toLowerCase(), parentId, thumbnailUrl: null, depth: 1,
   contentCount: 1, totalCount: 1, children,
 });
 
@@ -54,7 +54,7 @@ describe('logique de l\'arbre des catégories', () => {
     expect(childrenOf(tree, 99)).toEqual([]);
   });
   it('repli : liste à plat vue comme un arbre sans enfants', () => {
-    expect(fromFlat([{id: 3, name: 'Dev', slug: 'dev', count: 4}])[0]).toMatchObject({
+    expect(fromFlat([{id: 3, name: 'Dev', slug: 'dev', count: 4, thumbnailUrl: null}])[0]).toMatchObject({
       id: 3, parentId: null, contentCount: 4, totalCount: 4, children: [],
     });
   });
@@ -70,7 +70,7 @@ describe('categoryTreeStore', () => {
   });
   it('route absente (NOT_FOUND) : repli sur la liste à plat', async () => {
     mTree.mockResolvedValue({kind: 'failure', errorKind: 'notFound', status: 404, code: 'NOT_FOUND'});
-    mFlat.mockResolvedValue({kind: 'success', items: [{id: 3, name: 'Dev', slug: 'dev', count: 4}]});
+    mFlat.mockResolvedValue({kind: 'success', items: [{id: 3, name: 'Dev', slug: 'dev', count: 4, thumbnailUrl: null}]});
     const s = createCategoryTreeStore('book');
     await s.load();
     expect(s.getState().data?.[0]).toMatchObject({id: 3, totalCount: 4});

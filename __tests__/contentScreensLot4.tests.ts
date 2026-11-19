@@ -5,7 +5,7 @@ import {
 } from '../src/features/content/logic/categoryTree';
 
 const n = (id: number, name: string, total: number, children: CategoryNode[] = [], parentId: number | null = null): CategoryNode => ({
-  id, name, slug: name.toLowerCase(), parentId, depth: 1,
+  id, name, slug: name.toLowerCase(), parentId, thumbnailUrl: null, depth: 1,
   contentCount: 0, totalCount: total, children,
 });
 

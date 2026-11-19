@@ -26,11 +26,12 @@ import {
   type HouseId,
 } from '@shared/houses/houseVisuals';
 import {CategoryChips} from '../components/CategoryChips';
+import {CategoryGrid} from '../components/CategoryGrid';
 import {ContentCard} from '../components/ContentCard';
 import {ContentFeatured} from '../components/ContentFeatured';
 import {ContentRail} from '../components/ContentRail';
 import {HouseBanner, type HouseSection} from '../components/HouseBanner';
-import {categoryChips, flattenNodes} from '../logic/categoryTree';
+import {categoryChips, childrenOf, flattenNodes, pathTo} from '../logic/categoryTree';
 import {contentErrorKey} from '../logic/errorKey';
 import {isRecent} from '../logic/recent';
 import {HOUSE_STORES, type DiscoverHouse} from '../store/houseStores';
@@ -64,6 +65,8 @@ export function LibraryDiscoverScreen({
   const {colors, spacing, radii} = useTheme();
   const [text, setText] = useState('');
   const [section, setSection] = useState<HouseSection>('discover');
+  // Explorer : true = liste de tous les contenus au lieu des cartes de catégories.
+  const [browseAll, setBrowseAll] = useState(false);
   const [entry, setEntry] = useState<ContinueEntry | null>(null);
 
   const cat = useSyncExternalStore(
@@ -243,6 +246,7 @@ export function LibraryDiscoverScreen({
               onOpen={open}
               onSeeAll={() => {
                 void stores.catalogue.setCategory(null);
+                setBrowseAll(true);
                 setSection('explore');
               }}
               testID="rail-new"
@@ -302,6 +306,21 @@ export function LibraryDiscoverScreen({
   const wide = visual.kind === 'video' || visual.kind === 'course';
   const columns = wide ? 1 : 2;
 
+  // Explorer : cartes de catégories (niveau racine), puis on descend de niveau en niveau.
+  const showCategories = !searching && !browseAll && cat.categoryId === null && treeNodes.length > 0;
+  const path = cat.categoryId !== null ? pathTo(treeNodes, cat.categoryId) : [];
+  const subCategories = !searching && cat.categoryId !== null ? childrenOf(treeNodes, cat.categoryId) : [];
+  const parentName = path.length > 1 ? path[path.length - 2].name : t('content.allCategories');
+  const goBack = () => {
+    if (path.length > 1) {
+      void stores.catalogue.setCategory(path[path.length - 2].id);
+    } else {
+      void stores.catalogue.setCategory(null);
+      setBrowseAll(false);
+    }
+  };
+  const selectCategory = (id: number) => void stores.catalogue.setCategory(id);
+
   const header = (
     <View style={{gap: spacing.md, paddingBottom: spacing.md}}>
       {banner}
@@ -322,12 +341,49 @@ export function LibraryDiscoverScreen({
           testID="library-search"
         />
       </View>
-      {!searching && categoryList.length > 0 ? (
-        <CategoryChips
-          categories={categoryList}
-          selectedId={cat.categoryId}
-          onSelect={id => void stores.catalogue.setCategory(id)}
-        />
+      {showCategories ? (
+        <View style={{gap: spacing.md}}>
+          <Text variant="subtitle" accessibilityRole="header" style={{paddingHorizontal: spacing.xl}}>
+            {t('content.categoriesTitle')}
+          </Text>
+          <CategoryGrid
+            categories={childrenOf(treeNodes, null)}
+            houseId={house}
+            columns={columns}
+            onSelect={selectCategory}
+          />
+          <Pressable
+            onPress={() => setBrowseAll(true)}
+            accessibilityRole="button"
+            testID="explore-all"
+            style={{alignSelf: 'flex-start', paddingHorizontal: spacing.xl}}>
+            <Text variant="bodySmallStrong" color="secondary" style={{textDecorationLine: 'underline'}}>
+              {t('content.seeAllContents')}
+            </Text>
+          </Pressable>
+        </View>
+      ) : null}
+      {!searching && !showCategories && (cat.categoryId !== null || browseAll) ? (
+        <View style={{gap: spacing.sm, paddingHorizontal: spacing.xl}}>
+          <Pressable onPress={goBack} accessibilityRole="button" testID="explore-back">
+            <Text variant="bodySmallStrong" color="secondary">
+              {`‹ ${parentName}`}
+            </Text>
+          </Pressable>
+          <Text variant="subtitle" accessibilityRole="header">
+            {cat.categoryId !== null
+              ? path.map(n => n.name).join(' › ') || nameById.get(cat.categoryId) || ''
+              : t('content.allContents')}
+          </Text>
+        </View>
+      ) : null}
+      {subCategories.length > 0 ? (
+        <View style={{gap: spacing.md}}>
+          <Text variant="bodySmallStrong" color="secondary" style={{paddingHorizontal: spacing.xl}}>
+            {t('content.subcategoriesTitle')}
+          </Text>
+          <CategoryGrid categories={subCategories} houseId={house} columns={columns} onSelect={selectCategory} />
+        </View>
       ) : null}
       {searching && list.status === 'success' && items.length > 0 ? (
         <Text
@@ -341,7 +397,9 @@ export function LibraryDiscoverScreen({
   );
 
   let body: React.ReactNode = null;
-  if (loading && items.length === 0) {
+  if (showCategories) {
+    body = null;
+  } else if (loading && items.length === 0) {
     body = <LoadingState accessibilityLabel={t('content.loading')} />;
   } else if (list.status === 'error' && items.length === 0) {
     body = (
@@ -374,7 +432,7 @@ export function LibraryDiscoverScreen({
   return (
     <View style={{flex: 1, backgroundColor: colors.bgApp}} testID="screen-library">
       <FlatList
-        data={body ? [] : items}
+        data={body || showCategories ? [] : items}
         key={columns}
         numColumns={columns}
         keyExtractor={item => String(item.id)}
@@ -395,7 +453,7 @@ export function LibraryDiscoverScreen({
             />
           </View>
         )}
-        onEndReached={onEnd}
+        onEndReached={showCategories ? undefined : onEnd}
         onEndReachedThreshold={0.4}
         ListFooterComponent={
           list.loadingMore ? (

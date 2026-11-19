@@ -67,6 +67,7 @@ export function categoryChips(tree: CategoryNode[], selectedId: number | null): 
     name: n.name,
     slug: n.slug,
     count: n.totalCount,
+    thumbnailUrl: n.thumbnailUrl,
   }));
 }
 
@@ -77,6 +78,7 @@ export function fromFlat(categories: Category[]): CategoryNode[] {
     name: c.name,
     slug: c.slug,
     parentId: null,
+    thumbnailUrl: c.thumbnailUrl,
     depth: 1,
     contentCount: c.count,
     totalCount: c.count,

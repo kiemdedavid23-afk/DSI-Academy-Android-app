@@ -7,6 +7,7 @@ import {
   failure,
   isPubliclyVisible,
   mapContent,
+  mapThumbnail,
 } from './common.mapper';
 import type {Content} from './common.types';
 import type {
@@ -135,7 +136,13 @@ export function mapCategories(
     const name = asString(c?.name);
     const slug = asString(c?.slug);
     if (c && id !== null && name !== null && slug !== null) {
-      items.push({id, name, slug, count: asNumber(c.count) ?? 0});
+      items.push({
+        id,
+        name,
+        slug,
+        count: asNumber(c.count) ?? 0,
+        thumbnailUrl: mapThumbnail(c.thumbnail_url),
+      });
     }
   });
   return {kind: 'success', items};
@@ -166,6 +173,7 @@ function mapCategoryNode(raw: unknown, budget: {left: number}): CategoryNode | n
     name,
     slug,
     parentId: asInt(c.parent_id),
+    thumbnailUrl: mapThumbnail(c.thumbnail_url),
     depth: asInt(c.depth) ?? 1,
     contentCount: asNumber(c.content_count) ?? 0,
     totalCount: asNumber(c.total_count) ?? 0,

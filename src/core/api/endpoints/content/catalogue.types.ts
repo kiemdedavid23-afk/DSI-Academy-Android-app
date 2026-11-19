@@ -8,6 +8,8 @@ export type Category = {
   name: string;
   slug: string;
   count: number;
+  /** Image de couverture de la catégorie (https), null si absente. */
+  thumbnailUrl: string | null;
 };
 
 export type CatalogueParams = {
@@ -64,6 +66,8 @@ export type CategoryNode = {
   name: string;
   slug: string;
   parentId: number | null;
+  /** Image de couverture de la catégorie (https), null si absente. */
+  thumbnailUrl: string | null;
   /** 1 pour une catégorie principale. */
   depth: number;
   /** Contenus publiés directement dans la catégorie. */
