@@ -373,6 +373,7 @@
     "subtitle": "View official announcements, maintenance and system information from DSI Academy.",
     "loading": "Loading notifications...",
     "errorTitle": "Loading error",
+    "loadErrorMessage": "We couldn’t load your notifications. Check your connection and try again.",
     "emptyTitle": "No notifications",
     "emptyMessage": "There are no active announcements or system notifications at the moment.",
     "period": "Period: {{start}} to {{end}}",

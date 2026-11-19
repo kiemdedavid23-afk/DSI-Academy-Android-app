@@ -221,22 +221,6 @@ export function MemberProfileScreen() {
                 paddingVertical: 5,
                 paddingHorizontal: 12,
                 borderRadius: 999,
-                backgroundColor: colors.goldHalo14,
-                borderWidth: 1,
-                borderColor: colors.goldBorder,
-              }}>
-              <Text style={{color: colors.goldPrestige, fontSize: 13.1, letterSpacing: 0.4}}>
-                {t('profile.identifier')}{' '}
-                <Text style={{color: colors.goldPrestige, fontSize: 13.1, fontWeight: '700', letterSpacing: 0.4}}>
-                  {p.identifiantDsi || t('profile.notAssigned')}
-                </Text>
-              </Text>
-            </View>
-            <View
-              style={{
-                paddingVertical: 5,
-                paddingHorizontal: 12,
-                borderRadius: 999,
                 backgroundColor:
                   p.statut === 'active'
                     ? colors.statusActiveOnDarkBg

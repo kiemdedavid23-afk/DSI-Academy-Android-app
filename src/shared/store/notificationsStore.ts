@@ -120,7 +120,7 @@ export const notificationsStore = {
       }
       set({
         status: state.items.length ? 'ready' : 'error',
-        errorMessage: 'notifications.errorTitle',
+        errorMessage: 'notifications.loadErrorMessage',
       });
       return;
     }

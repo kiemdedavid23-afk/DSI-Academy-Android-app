@@ -152,6 +152,7 @@ export function MemberPaymentHistoryScreen() {
               flex: 1,
               minHeight: 80,
               padding: 12,
+              justifyContent: 'space-between',
               borderRadius: radii.md,
               backgroundColor: glass.bg,
               borderWidth: 1,

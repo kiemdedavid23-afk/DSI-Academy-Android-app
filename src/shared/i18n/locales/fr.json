@@ -373,6 +373,7 @@
     "subtitle": "Consultez les annonces officielles, maintenances et informations système de DSI Academy.",
     "loading": "Chargement des notifications en cours...",
     "errorTitle": "Erreur de chargement",
+    "loadErrorMessage": "Impossible de charger vos notifications. Vérifiez votre connexion et réessayez.",
     "emptyTitle": "Aucune notification",
     "emptyMessage": "Il n'y a aucune annonce active ou notification système pour le moment.",
     "period": "Période : {{start}} au {{end}}",

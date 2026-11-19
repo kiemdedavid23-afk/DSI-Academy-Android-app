@@ -205,7 +205,7 @@ export function MemberWithdrawalsScreen() {
           </Text>
           <Text style={{color: colors.textOnDark, opacity: 0.85}}>
             {t('withdrawals.totalEarned')}{' '}
-            <Text style={{fontWeight: '700'}}>{fmt(totalGagne, locale)} DSI</Text>
+            <Text style={{fontWeight: '700', color: colors.textOnDark}}>{fmt(totalGagne, locale)} DSI</Text>
           </Text>
           <Pressable
             onPress={() => {
@@ -249,6 +249,11 @@ export function MemberWithdrawalsScreen() {
                     defaultValue: dernier.statut || '—',
                   })
                 : '—',
+              color: dernier
+                ? dernier.statut === 'rejetee'
+                  ? colors.dangerText
+                  : colors.success
+                : colors.textPrimary,
             },
           ].map(c => (
             <View
@@ -263,7 +268,7 @@ export function MemberWithdrawalsScreen() {
                 borderColor: glass.border,
               }}>
               <Text style={{fontSize: 11, color: colors.textSecondary}}>{c.label}</Text>
-              <Text style={{marginTop: 4, fontWeight: '700', color: colors.textPrimary}}>
+              <Text style={{marginTop: 4, fontWeight: '700', color: c.color ?? colors.textPrimary}}>
                 {c.value}
               </Text>
             </View>

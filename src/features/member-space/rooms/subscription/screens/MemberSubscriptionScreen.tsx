@@ -239,9 +239,10 @@ export function MemberSubscriptionScreen() {
                 borderColor: glass.border,
                 borderRadius: radii.md,
                 padding: 12,
+                justifyContent: 'space-between',
               },
             ]}>
-            <Text style={{fontSize: 11, color: colors.textSecondary}}>{c.label}</Text>
+            <Text numberOfLines={2} style={{fontSize: 11, color: colors.textSecondary}}>{c.label}</Text>
             <Text
               style={{
                 marginTop: 4,
