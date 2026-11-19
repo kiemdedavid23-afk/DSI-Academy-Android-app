@@ -24,7 +24,9 @@ import {favoritesStore, selectionsStore} from '@shared/store';
 import {HOUSE_VISUALS, houseOfType} from '@shared/houses/houseVisuals';
 import {ContentCover} from '../components/ContentCover';
 import {ContentRail} from '../components/ContentRail';
+import {PartsSection} from '../components/PartsSection';
 import {contentErrorKey} from '../logic/errorKey';
+import type {ProgramModule} from '../logic/formationTree';
 import {isRecent} from '../logic/recent';
 import {contentDetailStore} from '../store/detailStore';
 import {contentSimilarStore} from '../store/similarStore';
@@ -48,6 +50,8 @@ export type ContentDetailScreenProps = {
     type?: ContentType,
     thumbnailUrl?: string | null,
   ) => void;
+  /** Ouvre une partie (lecteur ou lecteur audio/vidéo) depuis la section « Parties ». */
+  onOpenModule?: (module: ProgramModule) => void;
   /** Ouvre la liste des parties d'une œuvre composée (livre, audio, vidéo). */
   onOpenParts?: (id: number, title: string, type: ContentType) => void;
   /** Ouvre la fiche d'un contenu de la rangée « Dans la même catégorie ». */
@@ -56,7 +60,7 @@ export type ContentDetailScreenProps = {
   onBack?: () => void;
 };
 
-export function ContentDetailScreen({id, onRead, onOpenParts, onOpenItem, onBack}: ContentDetailScreenProps) {
+export function ContentDetailScreen({id, onRead, onOpenParts, onOpenModule, onOpenItem, onBack}: ContentDetailScreenProps) {
   const {t} = useTranslation();
   const {colors, spacing, radii} = useTheme();
   const st = useSyncExternalStore(
@@ -385,6 +389,10 @@ export function ContentDetailScreen({id, onRead, onOpenParts, onOpenItem, onBack
             </Pressable>
           ) : null}
         </View>
+      ) : null}
+
+      {item.partsCount > 0 && onOpenModule ? (
+        <PartsSection id={item.id} title={item.title} house={houseId} onOpenModule={onOpenModule} />
       ) : null}
 
       {similar.id === item.id && similar.items.length > 0 && onOpenItem ? (

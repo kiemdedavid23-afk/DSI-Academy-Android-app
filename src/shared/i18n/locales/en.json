@@ -1419,6 +1419,8 @@
       "aboutTitle": "About",
       "readMore": "Read more",
       "readLess": "Show less",
+      "partsTitle": "Parts ({{count}})",
+      "partsMore": "Show all {{count}} parts",
       "similarTitle": "In the same category"
     },
     "download": {

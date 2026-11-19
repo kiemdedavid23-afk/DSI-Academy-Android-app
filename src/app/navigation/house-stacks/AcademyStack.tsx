@@ -115,6 +115,11 @@ export function AcademyStack() {
             id={route.params.id}
             onBack={() => navigation.goBack()}
             onOpenItem={item => navigation.replace('ContentDetail', {id: item.id})}
+            onOpenModule={m =>
+              m.type === 'book'
+                ? navigation.navigate('Reader', {id: m.contentId, title: m.title})
+                : navigation.navigate('Player', {id: m.contentId, title: m.title, thumbnailUrl: null})
+            }
             onOpenParts={(id, title, type) =>
               navigation.navigate('Formation', {id, title, house: houseOfType(type)})
             }

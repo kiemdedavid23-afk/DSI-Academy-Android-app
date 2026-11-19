@@ -1,7 +1,7 @@
 import {fetchPartsTree} from '@core/api/endpoints/content/parts.api';
 import type {PartItem} from '@core/utils/contentDisplay';
 import {createFormationStore} from '../src/features/content/store/formationStore';
-import {flattenParts} from '../src/features/content/logic/formationTree';
+import {flattenParts, previewItems} from '../src/features/content/logic/formationTree';
 
 jest.mock('@core/api/endpoints/content/parts.api');
 jest.mock('@core/api/endpoints/content/composition.api');
@@ -53,3 +53,21 @@ function mockParts() {
     },
   });
 }
+
+describe('aperçu de la section Parties', () => {
+  const mod = (i: number) => ({kind: 'module' as const, key: `m${i}`, contentId: i, title: `P${i}`, type: 'book' as const, depth: 0, durationSeconds: null});
+  const sec = (i: number) => ({kind: 'section' as const, key: `s${i}`, title: `S${i}`, depth: 0});
+  it('court : tout est montré', () => {
+    const items = [mod(1), mod(2)];
+    expect(previewItems(items, false)).toHaveLength(2);
+  });
+  it('long : 6 lignes, ou tout si déplié', () => {
+    const items = Array.from({length: 10}, (_, i) => mod(i));
+    expect(previewItems(items, false)).toHaveLength(6);
+    expect(previewItems(items, true)).toHaveLength(10);
+  });
+  it('un titre de section ne finit jamais l\'aperçu', () => {
+    const items = [mod(1), mod(2), mod(3), mod(4), mod(5), sec(1), mod(6), mod(7)];
+    expect(previewItems(items, false).map(i => i.key)).toEqual(['m1', 'm2', 'm3', 'm4', 'm5']);
+  });
+});

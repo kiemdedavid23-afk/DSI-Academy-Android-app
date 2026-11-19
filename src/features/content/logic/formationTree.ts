@@ -107,6 +107,21 @@ export function flattenParts(parts: PartItem[]): ProgramItem[] {
   return out;
 }
 
+/** Nombre de lignes montrées avant « Voir tout » dans la fiche. */
+export const PARTS_PREVIEW = 6;
+
+/**
+ * Lignes de la section « Parties » de la fiche : tout si déplié, sinon les
+ * premières ; un titre de section ne reste jamais seul en dernière ligne.
+ */
+export function previewItems(items: ProgramItem[], expanded: boolean, limit = PARTS_PREVIEW): ProgramItem[] {
+  if (expanded || items.length <= limit) {
+    return items;
+  }
+  const head = items.slice(0, limit);
+  return head[head.length - 1]?.kind === 'section' ? head.slice(0, -1) : head;
+}
+
 export function modulesOf(items: ProgramItem[]): ProgramModule[] {
   return items.filter((i): i is ProgramModule => i.kind === 'module');
 }
