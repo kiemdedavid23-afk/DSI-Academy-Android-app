@@ -4,7 +4,9 @@
  *  · Historique : toutes les commandes, y compris échouées ou remboursées.
  */
 
-import type {CommerceOrder, CommerceOrderStatus} from '../store/commerceTypes';
+import type {CommerceOrder} from '../store/commerceTypes';
+
+type CommerceOrderStatus = CommerceOrder['status'];
 
 export type OrdersMode = 'purchases' | 'history';
 export type StatusTone = 'success' | 'warning' | 'danger' | 'neutral';
