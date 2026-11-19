@@ -11,9 +11,8 @@ import React, {useCallback, useEffect, useMemo, useState, useSyncExternalStore} 
 import {Image, View} from 'react-native';
 import {Icon, useTheme, withAlpha} from '@shared/designsystem';
 import {HOUSE_STORES} from '../store/houseStores';
-import {FAN_COVERS} from '../store/coversStore';
+import {FAN_COVERS, type CoverItem} from '../store/coversStore';
 import {HOUSE_ORDER, HOUSE_VISUALS, type HouseId} from '@shared/houses/houseVisuals';
-import type {CoverItem} from '@core/api/endpoints/content/covers.types';
 import {
   FAN_SPECS,
   MIX_SPECS,
