@@ -1,9 +1,11 @@
 import {
+  FAN_OVERLAP,
+  FAN_RADIUS,
+  FAN_SPAN,
   FAN_SPECS,
+  MIX_SPECS,
   fanAngles,
   fanHeight,
-  MIX_REF,
-  MIX_SPECS,
   mixCovers,
   mixedHeight,
   placeFans,
@@ -43,26 +45,37 @@ describe('stackOrder', () => {
   });
 });
 
-describe('placeFans', () => {
-  it('éventail du haut par-dessus celui du bas, points d\'attache imbriqués', () => {
+describe('placeFans (demi-cercles)', () => {
+  it('chaque éventail est un demi-cercle de -90° à +90°', () => {
     const p = placeFans('book', 8, 8);
+    expect(FAN_SPAN).toBe(180);
+    expect(p.top[0].angle).toBe(-90);
+    expect(p.top[7].angle).toBe(90);
+    expect(p.bottom[0].angle).toBe(-90);
+    expect(p.bottom[7].angle).toBe(90);
+  });
+  it('arche du haut : bout extérieur en haut du bandeau, centre à y = rayon', () => {
     const s = FAN_SPECS.book;
+    const c = placeFans('book', 8, 8).top[0];
+    expect(c.top).toBe(0);
+    expect(c.origin).toBe(`${s.w / 2}px ${FAN_RADIUS}px`);
+  });
+  it('cuvette du bas : bout extérieur en bas, centre remonté du chevauchement', () => {
+    const s = FAN_SPECS.book;
+    const c = placeFans('book', 8, 8).bottom[0];
+    expect(c.top + s.h).toBe(FAN_RADIUS - FAN_OVERLAP + FAN_RADIUS);
+    expect(c.top + s.h).toBe(fanHeight('book'));
+  });
+  it('éventail du haut par-dessus celui du bas, centrale au-dessus', () => {
+    const p = placeFans('book', 8, 8);
     expect(Math.min(...p.top.map(c => c.z))).toBeGreaterThan(Math.max(...p.bottom.map(c => c.z)));
-    // haut : cadre au-dessus du point d'attache (en bas du cadre)
-    expect(p.top[0]).toMatchObject({top: 0, origin: '50% 100%'});
-    // bas : cadre sous son point d'attache, remonté du chevauchement
-    expect(p.bottom[0]).toMatchObject({top: s.h - s.overlap, origin: '50% 0%'});
-    expect(p.top).toHaveLength(8);
-    expect(p.bottom).toHaveLength(8);
+    expect(p.top[3].z).toBeGreaterThan(p.top[0].z);
   });
-  it('hauteur totale : deux couvertures moins le chevauchement', () => {
-    expect(fanHeight('book')).toBe(2 * 114 - 34);
-    expect(fanHeight('video')).toBe(2 * 72 - 22);
-  });
-  it('plus bas que l\'ancienne illustration carrée (331 dp) pour toutes les maisons', () => {
+  it('plus bas que l\'ancienne illustration carrée (331 dp), pour toutes les maisons', () => {
     (['book', 'audio', 'video', 'course'] as const).forEach(k => {
       expect(fanHeight(k)).toBeLessThan(331);
     });
+    expect(fanHeight()).toBe(2 * FAN_RADIUS - FAN_OVERLAP);
   });
 });
 
@@ -81,20 +94,16 @@ describe('mixCovers (accueil Academy)', () => {
 
 describe('placeMixedFans', () => {
   const kinds = ['book', 'video', 'course', 'audio'] as const;
-  it('points d\'attache communs malgré les formats différents', () => {
+  it('bouts extérieurs sur le même cercle malgré les formats différents', () => {
     const p = placeMixedFans([...kinds], [...kinds]);
-    p.top.forEach(c => expect(c.top + MIX_SPECS[c.kind].h).toBe(MIX_REF.h));
-    p.bottom.forEach(c => expect(c.top).toBe(MIX_REF.h - MIX_REF.overlap));
-    expect(p.top.every(c => c.origin === '50% 100%')).toBe(true);
-    expect(p.bottom.every(c => c.origin === '50% 0%')).toBe(true);
+    p.top.forEach(c => expect(c.top).toBe(0));
+    p.bottom.forEach(c => expect(c.top + MIX_SPECS[c.kind].h).toBe(mixedHeight()));
   });
-  it('haut par-dessus le bas, centrale au-dessus', () => {
+  it('haut par-dessus le bas', () => {
     const p = placeMixedFans(['book', 'book', 'book'], ['audio', 'audio', 'audio']);
     expect(Math.min(...p.top.map(c => c.z))).toBeGreaterThan(Math.max(...p.bottom.map(c => c.z)));
-    expect(p.top[1].z).toBeGreaterThan(p.top[0].z);
   });
-  it('plus bas que l\'ancienne illustration (331 dp)', () => {
-    expect(mixedHeight()).toBe(2 * MIX_REF.h - MIX_REF.overlap);
+  it('hauteur sous l\'ancienne illustration', () => {
     expect(mixedHeight()).toBeLessThan(331);
   });
 });

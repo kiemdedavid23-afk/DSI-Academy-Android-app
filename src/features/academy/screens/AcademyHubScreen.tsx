@@ -62,9 +62,9 @@ export function AcademyHubScreen({onOpenHouse, onContinue}: AcademyHubScreenProp
       <View
         style={[
           styles.hero,
-          {borderColor: colors.goldBorder, borderRadius: radii.lg, backgroundColor: colors.bgDarkPremium},
+          {borderRadius: radii.lg},
         ]}>
-        <View style={{paddingHorizontal: spacing.xxl, paddingTop: spacing.xxl}}>
+        <View>
           <MixedCoverFans />
         </View>
         <View style={{padding: spacing.xxl, gap: spacing.sm, alignItems: 'flex-start'}}>
@@ -88,13 +88,13 @@ export function AcademyHubScreen({onOpenHouse, onContinue}: AcademyHubScreenProp
             <>
               <Text
                 variant="title"
-                color="onDark"
+                color="primary"
                 accessibilityRole="header"
                 style={{lineHeight: 31}}>
                 {entry.title}
               </Text>
               {entryVisual ? (
-                <Text variant="bodySmall" color="onDark" style={{opacity: 0.85}}>
+                <Text variant="bodySmall" color="primary" >
                   {t(entryVisual.nameKey)}
                 </Text>
               ) : null}
@@ -104,7 +104,7 @@ export function AcademyHubScreen({onOpenHouse, onContinue}: AcademyHubScreenProp
                   accessibilityValue={{min: 0, max: 100, now: progress}}
                   style={[
                     styles.track,
-                    {borderRadius: radii.pill, backgroundColor: withAlpha(colors.textOnDark, 0.2)},
+                    {borderRadius: radii.pill, backgroundColor: withAlpha(colors.textPrimary, 0.12)},
                   ]}>
                   <View
                     style={{
@@ -139,12 +139,12 @@ export function AcademyHubScreen({onOpenHouse, onContinue}: AcademyHubScreenProp
             <>
               <Text
                 variant="title"
-                color="onDark"
+                color="primary"
                 accessibilityRole="header"
                 style={{lineHeight: 31}}>
                 {t('academy.heroTitle')}
               </Text>
-              <Text variant="bodySmall" color="onDark" style={{opacity: 0.85}}>
+              <Text variant="bodySmall" color="primary" >
                 {t('academy.subtitle')}
               </Text>
             </>
@@ -236,7 +236,7 @@ const styles = StyleSheet.create({
   },
   fill: {position: 'absolute', top: 0, left: 0, right: 0, bottom: 0},
   grid: {flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between'},
-  hero: {borderWidth: 1, overflow: 'hidden'},
+  hero: {overflow: 'hidden'},
   house: {borderWidth: 1, justifyContent: 'flex-end', minHeight: 189, overflow: 'hidden', width: '47.65625%'},
   track: {height: 6, maxWidth: 320, overflow: 'hidden', width: '100%'},
 });

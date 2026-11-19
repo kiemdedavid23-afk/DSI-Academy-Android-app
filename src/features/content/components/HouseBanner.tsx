@@ -1,9 +1,10 @@
 /**
  * Bandeau d'une maison (site : ContentHouseLayout.jsx + HouseShell.css).
  * Mesuré sur les captures du site (720 px = 360 dp) :
- *  · carte sombre pleine largeur, bordure or, marge intérieure 13,5 dp ;
- *  · deux éventails de couvertures en haut (CoverFans), puis sélecteur des quatre maisons,
- *    puis icône + « GRANDE MAISON DSI » + titre + accroche ;
+ *  · pas de carte : les deux éventails de couvertures (CoverFans, demi-cercles) et le
+ *    texte posent sur le fond de l'écran ;
+ *  · le fond sombre est limité au sélecteur des quatre maisons (barre arrondie) ;
+ *  · puis icône + « GRANDE MAISON DSI » + titre + accroche ;
  *  · sous la carte : pastilles de sections, collées au bord gauche.
  */
 import React, {useCallback, useRef} from 'react';
@@ -46,15 +47,7 @@ export function HouseBanner({houseId, section, onSwitchHouse, onSection}: HouseB
 
   return (
     <View style={{gap: 16.5}}>
-      <View
-        style={{
-          backgroundColor: colors.houseBannerBg,
-          borderColor: colors.goldBorder,
-          borderRadius: radii.lg,
-          borderWidth: 1,
-          overflow: 'hidden',
-          padding: PAD,
-        }}>
+      <View style={{paddingHorizontal: PAD}}>
         <CoverFans houseId={houseId} />
         <ScrollView
           ref={scroller}
@@ -63,12 +56,12 @@ export function HouseBanner({houseId, section, onSwitchHouse, onSection}: HouseB
           onContentSizeChange={reveal}
           style={{
             alignSelf: 'stretch',
-            backgroundColor: withAlpha(colors.houseBannerBg, 0.55),
-            borderColor: withAlpha(colors.textOnDark, 0.18),
+            backgroundColor: colors.houseBannerBg,
+            borderColor: colors.goldBorder,
             borderRadius: radii.pill,
             borderWidth: 1,
             flexGrow: 0,
-            marginTop: 24.5,
+            marginTop: 16,
           }}
           contentContainerStyle={{gap: spacing.xs, padding: spacing.xs}}
           accessibilityLabel={t('content.nav.switcherLabel')}>
@@ -109,15 +102,15 @@ export function HouseBanner({houseId, section, onSwitchHouse, onSection}: HouseB
           <View
             style={{
               alignItems: 'center',
-              backgroundColor: withAlpha(colors.houseBannerBg, 0.55),
-              borderColor: withAlpha(colors.textOnDark, 0.25),
+              backgroundColor: colors.bgSurface,
+              borderColor: colors.goldBorder,
               borderRadius: radii.md,
               borderWidth: 1,
               height: ICON_BOX,
               justifyContent: 'center',
               width: ICON_BOX,
             }}>
-            <Icon name={visual.icon} size={26} color={colors.textOnDark} />
+            <Icon name={visual.icon} size={26} color={colors.textPrimary} />
           </View>
           <View style={{flex: 1}}>
             <Text
@@ -126,10 +119,10 @@ export function HouseBanner({houseId, section, onSwitchHouse, onSection}: HouseB
               style={{fontSize: 11, letterSpacing: 0.95, textTransform: 'uppercase'}}>
               {t('houses.eyebrow')}
             </Text>
-            <Text variant="title" color="onDark" accessibilityRole="header">
+            <Text variant="title" color="primary" accessibilityRole="header">
               {t(visual.nameKey)}
             </Text>
-            <Text variant="bodySmall" color="onDark" style={{opacity: 0.85}}>
+            <Text variant="bodySmall" color="secondary">
               {t(visual.taglineKey)}
             </Text>
           </View>

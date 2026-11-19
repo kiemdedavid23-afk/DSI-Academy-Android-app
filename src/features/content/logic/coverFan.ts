@@ -1,27 +1,37 @@
 /**
- * Géométrie des deux éventails de couvertures du bandeau d'une maison.
- * Éventail du haut : attaché en bas, il s'ouvre vers le haut. Éventail du
- * bas : attaché en haut, il s'ouvre vers le bas. Les deux se chevauchent à
- * leur jonction, celui du haut posé par-dessus. Aucun rendu ici : que du calcul.
+ * Géométrie des deux éventails de couvertures, en demi-cercles.
+ * Éventail du haut : demi-cercle ouvert vers le haut (arche). Éventail du bas :
+ * demi-cercle ouvert vers le bas (cuvette). Les deux forment un anneau et se
+ * chevauchent à leur jonction, celui du haut posé par-dessus. Chaque couverture
+ * est tournée autour du centre de son demi-cercle, bout extérieur sur le cercle.
+ * Aucun rendu ici : que du calcul.
  */
 
 export type FanKind = 'book' | 'audio' | 'video' | 'course';
 
-export type FanSpec = {
-  /** Largeur et hauteur d'une couverture (dp), dans le format de la maison. */
-  w: number;
-  h: number;
-  /** Ouverture totale de l'éventail (degrés). */
-  span: number;
-  /** Chevauchement des deux points d'attache (dp). */
-  overlap: number;
+export type CardSize = {w: number; h: number};
+
+/** Rayon extérieur des demi-cercles (dp) : bout extérieur de chaque couverture. */
+export const FAN_RADIUS = 146;
+/** Ouverture de chaque éventail : un demi-cercle. */
+export const FAN_SPAN = 180;
+/** Les deux centres sont rapprochés de ce nombre de dp : c'est le chevauchement. */
+export const FAN_OVERLAP = 40;
+
+/** Taille d'une couverture (dp), dans le format de la maison. */
+export const FAN_SPECS: Record<FanKind, CardSize> = {
+  book: {w: 80, h: 120},
+  audio: {w: 100, h: 100},
+  video: {w: 136, h: 77},
+  course: {w: 136, h: 77},
 };
 
-export const FAN_SPECS: Record<FanKind, FanSpec> = {
-  book: {w: 76, h: 114, span: 80, overlap: 34},
-  audio: {w: 92, h: 92, span: 70, overlap: 28},
-  video: {w: 128, h: 72, span: 56, overlap: 22},
-  course: {w: 128, h: 72, span: 56, overlap: 22},
+/** Taille dans la composition mixte de l'accueil (un peu plus petite). */
+export const MIX_SPECS: Record<FanKind, CardSize> = {
+  book: {w: 72, h: 108},
+  audio: {w: 90, h: 90},
+  video: {w: 122, h: 69},
+  course: {w: 122, h: 69},
 };
 
 /** Angles (degrés) répartis de -span/2 à +span/2 ; un seul élément : 0. */
@@ -41,10 +51,14 @@ export function splitCovers<T>(items: T[]): {top: T[]; bottom: T[]} {
   return {top: items.slice(0, mid), bottom: items.slice(mid)};
 }
 
-/** Hauteur du bandeau d'éventails : deux couvertures moins le chevauchement. */
-export function fanHeight(kind: FanKind): number {
-  const s = FAN_SPECS[kind];
-  return 2 * s.h - s.overlap;
+/** Hauteur des deux éventails : deux rayons moins le chevauchement. */
+export function fanHeight(_kind?: FanKind): number {
+  return 2 * FAN_RADIUS - FAN_OVERLAP;
+}
+
+/** Hauteur de la composition de l'accueil (même cercle que les maisons). */
+export function mixedHeight(): number {
+  return fanHeight();
 }
 
 /**
@@ -64,60 +78,56 @@ export type FanPlacement = {
   angle: number;
   /** Bord haut du cadre non tourné de la couverture (dp, depuis le haut du bandeau). */
   top: number;
+  /** Centre du demi-cercle, en dp depuis le coin haut-gauche du cadre de la couverture. */
   origin: string;
   /** Rang de dessin : plus grand = dessus. */
   z: number;
 };
 
 /**
- * Placement des deux éventails. Les couvertures du haut ont leur point
- * d'attache en bas du cadre ; celles du bas, en haut du cadre. Le point
- * d'attache du bas est remonté de `overlap` : les deux éventails s'imbriquent.
+ * Placement général : une taille par couverture. Centre du demi-cercle du haut
+ * à y = rayon ; centre du bas remonté de `FAN_OVERLAP`. Le bout extérieur de
+ * chaque couverture est sur le cercle, quel que soit son format.
  */
-export function placeFans(
-  kind: FanKind,
-  topCount: number,
-  bottomCount: number,
+export function placeArcs(
+  topSizes: CardSize[],
+  bottomSizes: CardSize[],
 ): {top: FanPlacement[]; bottom: FanPlacement[]} {
-  const s = FAN_SPECS[kind];
-  const pivotTop = s.h;
-  const pivotBottom = s.h - s.overlap;
+  const centerTop = FAN_RADIUS;
+  const centerBottom = FAN_RADIUS - FAN_OVERLAP;
 
-  const build = (count: number, top: number, origin: string, zBase: number): FanPlacement[] => {
-    const angles = fanAngles(count, s.span);
+  const build = (
+    sizes: CardSize[],
+    frameTop: (s: CardSize) => number,
+    center: number,
+    zBase: number,
+  ): FanPlacement[] => {
+    const angles = fanAngles(sizes.length, FAN_SPAN);
     const order = stackOrder(angles);
-    return angles.map((angle, index) => ({
-      index,
-      angle,
-      top,
-      origin,
-      z: zBase + order.indexOf(index),
-    }));
+    return angles.map((angle, index) => {
+      const s = sizes[index];
+      const top = frameTop(s);
+      return {
+        index,
+        angle,
+        top,
+        origin: `${s.w / 2}px ${center - top}px`,
+        z: zBase + order.indexOf(index),
+      };
+    });
   };
 
   return {
-    // L'éventail du bas est dessiné d'abord ; celui du haut passe par-dessus.
-    bottom: build(bottomCount, pivotBottom, '50% 0%', 0),
-    top: build(topCount, pivotTop - s.h, '50% 100%', 100),
+    // Cuvette (bas) dessinée d'abord ; l'arche (haut) passe par-dessus.
+    bottom: build(bottomSizes, s => centerBottom + FAN_RADIUS - s.h, centerBottom, 0),
+    top: build(topSizes, () => centerTop - FAN_RADIUS, centerTop, 100),
   };
 }
 
-/* ───────── Accueil Academy : éventails mélangeant les quatre maisons ───────── */
-
-/** Taille d'une couverture dans la composition mixte (chaque maison garde son format). */
-export const MIX_SPECS: Record<FanKind, {w: number; h: number}> = {
-  book: {w: 64, h: 96},
-  audio: {w: 80, h: 80},
-  video: {w: 112, h: 63},
-  course: {w: 112, h: 63},
-};
-
-/** Hauteur de référence (la plus haute couverture), ouverture et chevauchement de la composition mixte. */
-export const MIX_REF = {h: 96, span: 70, overlap: 28};
-
-/** Hauteur du bandeau de l'accueil : deux hauteurs de référence moins le chevauchement. */
-export function mixedHeight(): number {
-  return 2 * MIX_REF.h - MIX_REF.overlap;
+/** Éventails d'une maison : toutes les couvertures dans le format de la maison. */
+export function placeFans(kind: FanKind, topCount: number, bottomCount: number) {
+  const s = FAN_SPECS[kind];
+  return placeArcs(Array(topCount).fill(s), Array(bottomCount).fill(s));
 }
 
 /**
@@ -139,34 +149,17 @@ export function mixCovers<T>(lists: T[][], total: number): T[] {
 
 export type MixedPlacement = FanPlacement & {kind: FanKind};
 
-/**
- * Même géométrie que `placeFans`, mais chaque couverture a son propre format :
- * les points d'attache restent communs (en bas du cadre pour l'éventail du haut,
- * en haut du cadre pour celui du bas), seule la position du cadre change.
- */
+/** Accueil Academy : chaque couverture garde le format de sa maison. */
 export function placeMixedFans(
   topKinds: FanKind[],
   bottomKinds: FanKind[],
 ): {top: MixedPlacement[]; bottom: MixedPlacement[]} {
-  const build = (
-    kinds: FanKind[],
-    topOf: (kind: FanKind) => number,
-    origin: string,
-    zBase: number,
-  ): MixedPlacement[] => {
-    const angles = fanAngles(kinds.length, MIX_REF.span);
-    const order = stackOrder(angles);
-    return angles.map((angle, index) => ({
-      index,
-      angle,
-      kind: kinds[index],
-      top: topOf(kinds[index]),
-      origin,
-      z: zBase + order.indexOf(index),
-    }));
-  };
+  const p = placeArcs(
+    topKinds.map(k => MIX_SPECS[k]),
+    bottomKinds.map(k => MIX_SPECS[k]),
+  );
   return {
-    bottom: build(bottomKinds, () => MIX_REF.h - MIX_REF.overlap, '50% 0%', 0),
-    top: build(topKinds, k => MIX_REF.h - MIX_SPECS[k].h, '50% 100%', 100),
+    top: p.top.map(x => ({...x, kind: topKinds[x.index]})),
+    bottom: p.bottom.map(x => ({...x, kind: bottomKinds[x.index]})),
   };
 }
