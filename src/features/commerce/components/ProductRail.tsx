@@ -1,8 +1,8 @@
 /** Rangée horizontale de cartes (site : .dsi-mp-rail) avec titre et « Tout voir » facultatif. */
 
 import React from 'react';
-import {FlatList, View} from 'react-native';
-import {Button, Text, useTheme} from '@shared/designsystem';
+import {FlatList, Pressable, View} from 'react-native';
+import {Icon, Text, useTheme} from '@shared/designsystem';
 import {useTranslation} from '@shared/i18n';
 import type {CommerceProduct} from '../store/commerceTypes';
 import {ProductCard} from './ProductCard';
@@ -19,7 +19,7 @@ export type ProductRailProps = {
 
 export function ProductRail({title, items, onOpenProduct, onSeeAll, testID}: ProductRailProps) {
   const {t} = useTranslation();
-  const {spacing} = useTheme();
+  const {spacing, colors, touch} = useTheme();
   if (items.length === 0) {
     return null;
   }
@@ -36,7 +36,16 @@ export function ProductRail({title, items, onOpenProduct, onSeeAll, testID}: Pro
           {title}
         </Text>
         {onSeeAll ? (
-          <Button variant="ghost" label={t('mp.seeAll')} onPress={onSeeAll} />
+          <Pressable
+            onPress={onSeeAll}
+            accessibilityRole="button"
+            testID={testID ? `${testID}-see-all` : undefined}
+            style={{alignItems: 'center', flexDirection: 'row', gap: 6, minHeight: touch.min}}>
+            <Text variant="bodySmall" color="secondary">
+              {t('commerce.shell.seeAll')}
+            </Text>
+            <Icon name="ArrowRightIcon" size={16} color={colors.textSecondary} />
+          </Pressable>
         ) : null}
       </View>
       <FlatList

@@ -17,7 +17,6 @@ import {
   useTheme,
 } from '@shared/designsystem';
 import {useTranslation} from '@shared/i18n';
-import {MarketplaceHomeSections} from '../components/MarketplaceHomeSections';
 import {CommerceCategoryChips} from '../components/CommerceCategoryChips';
 import {ProductCard} from '../components/ProductCard';
 import {commerceErrorKey} from '../logic/errorKey';
@@ -131,13 +130,6 @@ export function CommerceDiscoverScreen({
           categories={categories.items}
           selected={cat.category}
           onSelect={slug => void stores.catalogue.setCategory(slug)}
-        />
-      ) : null}
-      {source === 'marketplace' && !filtering && cat.status === 'success' && cat.items.length > 0 ? (
-        <MarketplaceHomeSections
-          catalogue={cat.items}
-          onOpenProduct={open}
-          onOpenTrending={onOpenTrending}
         />
       ) : null}
       {filtering && cat.status === 'success' && cat.items.length > 0 ? (

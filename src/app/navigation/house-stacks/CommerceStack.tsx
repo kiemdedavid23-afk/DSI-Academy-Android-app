@@ -20,7 +20,6 @@ import {CommerceLinkScreen} from '@features/commerce/screens/CommerceLinkScreen'
 import {CommerceProductScreen} from '@features/commerce/screens/CommerceProductScreen';
 import {MarketplaceSellerScreen} from '@features/commerce/screens/MarketplaceSellerScreen';
 import {MarketplaceSellersScreen} from '@features/commerce/screens/MarketplaceSellersScreen';
-import {MarketplaceTrendingScreen} from '@features/commerce/screens/MarketplaceTrendingScreen';
 import {ShopCartScreen} from '@features/commerce/screens/ShopCartScreen';
 import {ShopLibraryScreen} from '@features/commerce/screens/ShopLibraryScreen';
 import type {
@@ -36,7 +35,6 @@ export type CommerceStackParamList = {
   Product: {id: string; product?: CommerceProduct};
   Cart: undefined;
   Library: undefined;
-  Trending: undefined;
   Sellers: undefined;
   Seller: {memberId: string; seller?: MarketplaceSeller};
   Link: {url: string};
@@ -68,9 +66,6 @@ export function CommerceStack({source}: {source: CommerceSource}) {
             }
             onOpenAccess={access =>
               openAccess(access, url => navigation.navigate('Link', {url}))
-            }
-            onOpenTrending={
-              source === 'marketplace' ? () => navigation.navigate('Trending') : undefined
             }
             onOpenSellers={
               source === 'marketplace' ? () => navigation.navigate('Sellers') : undefined
@@ -160,15 +155,6 @@ export function CommerceStack({source}: {source: CommerceSource}) {
             onDiscover={() => navigation.navigate('Discover')}
             onOpenAccess={access =>
               openAccess(access, url => navigation.navigate('Link', {url}))
-            }
-          />
-        )}
-      </Stack.Screen>
-      <Stack.Screen name="Trending" options={{title: t('mp.trending')}}>
-        {({navigation}) => (
-          <MarketplaceTrendingScreen
-            onOpenProduct={product =>
-              navigation.navigate('Product', {id: product.id, product})
             }
           />
         )}

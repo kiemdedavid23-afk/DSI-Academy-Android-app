@@ -3,9 +3,9 @@
  * en pastilles, puis le contenu de la section. Même coque pour les deux sources,
  * seuls les contenus et les sections changent (Boutique : pas de Vendeur).
  * Les écrans de section posent la coque en tête de leur liste (`shellHeader`).
- * Transition : Découvrir et Explorer affichent encore le catalogue d'origine
- * (refaits aux lots 12 et 13), Mes achats n'a que Mes achats et Favoris (lot 14),
- * Vendeur est un message d'attente (lot 15).
+ * Transition : Explorer affiche encore le catalogue d'origine (refait au lot 13),
+ * Mes achats n'a que Mes achats et Favoris (lot 14), Vendeur est un message
+ * d'attente (lot 15).
  */
 
 import React, {useEffect, useMemo, useState} from 'react';
@@ -25,6 +25,7 @@ import {
 import type {CommerceAccess, CommerceProduct, CommerceSource} from '../store/commerceTypes';
 import {CommerceDiscoverScreen} from './CommerceDiscoverScreen';
 import {CommerceFavoritesScreen} from './CommerceFavoritesScreen';
+import {CommerceHomeScreen, type DiscoverTab} from './CommerceHomeScreen';
 import {CommercePurchasesScreen} from './CommercePurchasesScreen';
 
 export type CommerceHouseRequest = {section?: CommerceSection; tab?: PurchasesTab};
@@ -36,7 +37,6 @@ export type CommerceHouseScreenProps = {
   onOpenProduct: (product: CommerceProduct) => void;
   onOpenAccess: (access: CommerceAccess) => void;
   /** Marketplace seulement. */
-  onOpenTrending?: () => void;
   onOpenSellers?: () => void;
   /** Boutique seulement (jusqu'au lot 16). */
   onOpenCart?: () => void;
@@ -48,7 +48,6 @@ export function CommerceHouseScreen({
   request,
   onOpenProduct,
   onOpenAccess,
-  onOpenTrending,
   onOpenSellers,
   onOpenCart,
   onOpenLibrary,
@@ -57,16 +56,23 @@ export function CommerceHouseScreen({
   const {colors, spacing, radii} = useTheme();
   const [section, setSection] = useState<CommerceSection>(resolveSection(source, request?.section));
   const [tab, setTab] = useState<PurchasesTab>(request?.tab ?? 'purchases');
+  const [homeTab, setHomeTab] = useState<DiscoverTab>('home');
 
   useEffect(() => {
     if (request) {
       setSection(resolveSection(source, request.section));
       setTab(request.tab ?? 'purchases');
+      setHomeTab('home');
     }
   }, [source, request]);
 
   const tabs = useMemo(
     () => PURCHASES_TABS.map(id => ({id, label: t(`commerce.shell.tabs.${id}`)})),
+    [t],
+  );
+  const homeTabs = useMemo(
+    () =>
+      (['home', 'trending'] as const).map(id => ({id, label: t(`commerce.shell.homeTabs.${id}`)})),
     [t],
   );
 
@@ -106,6 +112,14 @@ export function CommerceHouseScreen({
             ? action(t('commerce.library.title'), 'BookIcon', onOpenLibrary, 'shop-open-library')
             : null}
         </View>
+      ) : null}
+      {section === 'discover' ? (
+        <CommerceUnderTabs
+          tabs={homeTabs}
+          active={homeTab}
+          onChange={setHomeTab}
+          accessibilityLabel={t('commerce.shell.tabsLabel')}
+        />
       ) : null}
       {section === 'purchases' ? (
         <CommerceUnderTabs
@@ -148,12 +162,23 @@ export function CommerceHouseScreen({
       />
     );
   }
+  if (section === 'discover') {
+    return (
+      <CommerceHomeScreen
+        source={source}
+        tab={homeTab}
+        shellHeader={shellHeader}
+        onOpenProduct={onOpenProduct}
+        onSeeAllTrending={() => setHomeTab('trending')}
+        onSeeAllNew={() => setSection('explore')}
+      />
+    );
+  }
   return (
     <CommerceDiscoverScreen
       key={section}
       source={source}
       onOpenProduct={onOpenProduct}
-      onOpenTrending={onOpenTrending}
       onOpenSellers={onOpenSellers}
       shellHeader={shellHeader}
     />

@@ -131,7 +131,18 @@
           }
         }
       },
-      "sellerSoon": "L'espace vendeur arrive bientôt."
+      "sellerSoon": "L'espace vendeur arrive bientôt.",
+      "homeTabs": {
+        "home": "Accueil",
+        "trending": "Tendances"
+      },
+      "featured": "À la une",
+      "viewProduct": "Voir le produit",
+      "trendingTitle": "Tendances",
+      "newTitle": "Nouveautés",
+      "seeAll": "Tout voir",
+      "searchProduct": "Rechercher un produit…",
+      "trendingEmpty": "Aucune tendance pour le moment."
     }
   }
 }

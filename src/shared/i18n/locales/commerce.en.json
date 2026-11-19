@@ -131,7 +131,18 @@
           }
         }
       },
-      "sellerSoon": "The seller space is coming soon."
+      "sellerSoon": "The seller space is coming soon.",
+      "homeTabs": {
+        "home": "Home",
+        "trending": "Trending"
+      },
+      "featured": "Featured",
+      "viewProduct": "View product",
+      "trendingTitle": "Trending",
+      "newTitle": "New arrivals",
+      "seeAll": "See all",
+      "searchProduct": "Search for a product…",
+      "trendingEmpty": "Nothing trending yet."
     }
   }
 }
