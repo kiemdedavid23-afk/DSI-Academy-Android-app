@@ -18,6 +18,7 @@ import {
   withAlpha,
 } from '@shared/designsystem';
 import {useTranslation} from '@shared/i18n';
+import {Glyph} from '../components/CheckoutGlyphs';
 import {PriceTag} from '../components/PriceTag';
 import {ProductCover} from '../components/ProductCover';
 import {RatingStars} from '../components/Stars';
@@ -48,7 +49,7 @@ export function CommerceProductScreen({
 }: CommerceProductScreenProps) {
   const stores = COMMERCE_STORES[source];
   const {t} = useTranslation();
-  const {colors, spacing, radii, touch} = useTheme();
+  const {colors, spacing, radii} = useTheme();
   const [favError, setFavError] = useState<string | null>(null);
   const [expanded, setExpanded] = useState(false);
 
@@ -181,7 +182,14 @@ export function CommerceProductScreen({
               {product.title}
             </Text>
             {product.storeName ? (
-              <Text variant="bodySmall" style={{color: colors.textOnDark, opacity: 0.9}}>
+              <Text
+                variant="bodySmall"
+                style={{
+                  color: colors.textOnDark,
+                  opacity: 0.9,
+                  textDecorationColor: colors.goldPrestige,
+                  textDecorationLine: 'underline',
+                }}>
                 {t('mp.pd.by', {store: product.storeName})}
               </Text>
             ) : null}
@@ -229,11 +237,11 @@ export function CommerceProductScreen({
                 alignItems: 'center',
                 backgroundColor: isFavorite ? colors.goldLight : colors.bgSurface,
                 borderColor: isFavorite ? colors.goldBorder : colors.borderLight,
-                borderRadius: radii.md,
+                borderRadius: radii.pill,
                 borderWidth: 1,
+                height: 52,
                 justifyContent: 'center',
-                minHeight: touch.min,
-                minWidth: touch.min,
+                width: 52,
               }}>
               <Icon
                 name="BookmarkIcon"
@@ -249,13 +257,19 @@ export function CommerceProductScreen({
           ) : null}
 
           {source === 'marketplace' ? (
-            <View style={{flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm}}>
-              <Text variant="caption" color="secondary">
-                {`✓ ${t('mp.pd.instant')}`}
-              </Text>
-              <Text variant="caption" color="secondary">
-                {`✓ ${t('mp.pd.secure')}`}
-              </Text>
+            <View style={{gap: spacing.md}} testID="commerce-perks">
+              <View style={{alignItems: 'center', flexDirection: 'row', gap: spacing.md}}>
+                <Glyph name="clock" size={28} color={colors.goldPrestige} />
+                <Text variant="bodySmall" color="secondary" style={{flex: 1}}>
+                  {t('mp.pd.instant')}
+                </Text>
+              </View>
+              <View style={{alignItems: 'center', flexDirection: 'row', gap: spacing.md}}>
+                <Icon name="ShieldIcon" size={28} color={colors.goldPrestige} />
+                <Text variant="bodySmall" color="secondary" style={{flex: 1}}>
+                  {t('mp.pd.secure')}
+                </Text>
+              </View>
             </View>
           ) : null}
 

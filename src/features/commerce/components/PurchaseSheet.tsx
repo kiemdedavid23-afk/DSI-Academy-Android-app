@@ -8,11 +8,10 @@ import React, {useEffect, useSyncExternalStore} from 'react';
 import {Modal, StyleSheet, View} from 'react-native';
 import {Button, Text, useTheme, withAlpha} from '@shared/designsystem';
 import {useTranslation} from '@shared/i18n';
-import {formatDsiAmount} from '../logic/format';
 import {cartPurchaseErrorKey, purchaseErrorKey} from '../logic/errorKey';
 import {COMMERCE_STORES} from '../store/commerceStores';
 import type {CommerceAccess, CommerceSource} from '../store/commerceTypes';
-import {PriceTag} from './PriceTag';
+import {PurchaseSteps} from './PurchaseSteps';
 import {PurchaseStatusPage} from './PurchaseStatusPage';
 
 export type PurchaseSheetProps = {
@@ -38,7 +37,6 @@ export function PurchaseSheet({
   const {t} = useTranslation();
   const {colors, spacing, radii} = useTheme();
   const p = useSyncExternalStore(stores.purchase.subscribe, stores.purchase.getState);
-  const bal = useSyncExternalStore(stores.balance.subscribe, stores.balance.getState);
   const confirming = p.phase === 'confirming';
   useEffect(() => {
     if (confirming) {
@@ -60,9 +58,6 @@ export function PurchaseSheet({
     );
   }
   const product = p.product;
-  const price = product.priceDsi;
-  const known = bal.status === 'success' && bal.amount !== null;
-  const insufficient = known && price > 0 && (bal.amount as number) < price;
 
   const go = (fn: () => void) => () => {
     stores.purchase.dismiss();
@@ -71,64 +66,7 @@ export function PurchaseSheet({
 
   let body: React.ReactNode = null;
   if (p.phase === 'confirming') {
-    body = (
-      <>
-        <PriceTag priceDsi={price} free={product.free} large />
-        {p.cart ? (
-          <Text variant="caption" color="secondary" testID="purchase-cart-estimate">
-            {t('commerce.cart.estimateNote')}
-          </Text>
-        ) : null}
-        {bal.status === 'loading' || bal.status === 'idle' ? (
-          <Text variant="caption" color="secondary">
-            {t('mp.checkout.balanceLoading')}
-          </Text>
-        ) : bal.status === 'error' ? (
-          <View style={{gap: spacing.xs}}>
-            <Text variant="caption" color="secondary">
-              {t('mp.checkout.balanceError')}
-            </Text>
-            <Button
-              variant="ghost"
-              label={t('mp.checkout.balanceRetry')}
-              onPress={() => void stores.balance.load({force: true})}
-            />
-          </View>
-        ) : (
-          <View style={{gap: spacing.xs}}>
-            <Text variant="caption" color="secondary">
-              {t('mp.checkout.balanceNow', {amount: formatDsiAmount(bal.amount as number)})}
-            </Text>
-            <Text variant="caption" color={insufficient ? 'primary' : 'secondary'}>
-              {insufficient
-                ? t('mp.checkout.balanceMissing', {
-                    amount: formatDsiAmount(price - (bal.amount as number)),
-                  })
-                : t('mp.checkout.balanceAfter', {
-                    amount: formatDsiAmount((bal.amount as number) - price),
-                  })}
-            </Text>
-          </View>
-        )}
-        <Text variant="caption" color="secondary">
-          {t('mp.checkout.deliveryNote')}
-        </Text>
-        {insufficient ? (
-          <Button
-            label={t('mp.member.balance')}
-            onPress={go(onOpenDsi)}
-            testID="purchase-open-dsi"
-          />
-        ) : (
-          <Button
-            label={t('mp.checkout.pay', {amount: formatDsiAmount(price)})}
-            onPress={() => void stores.purchase.confirm()}
-            testID="purchase-confirm"
-          />
-        )}
-        <Button variant="ghost" label={t('common.cancel')} onPress={stores.purchase.dismiss} />
-      </>
-    );
+    body = null;
   } else if (p.phase === 'indeterminate') {
     body = (
       <>
@@ -188,10 +126,21 @@ export function PurchaseSheet({
               paddingBottom: spacing.xxl,
             },
           ]}>
-          <Text variant="subtitle" accessibilityRole="header" numberOfLines={2}>
-            {p.cart ? t('commerce.cart.title') : product.title}
-          </Text>
-          {body}
+          {confirming ? (
+            <PurchaseSteps
+              source={source}
+              product={product}
+              cart={p.cart}
+              onOpenDsi={go(onOpenDsi)}
+            />
+          ) : (
+            <>
+              <Text variant="subtitle" accessibilityRole="header" numberOfLines={2}>
+                {p.cart ? t('commerce.cart.title') : product.title}
+              </Text>
+              {body}
+            </>
+          )}
         </View>
       </View>
     </Modal>
