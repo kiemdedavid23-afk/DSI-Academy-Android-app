@@ -5,7 +5,7 @@ import {View} from 'react-native';
 import {Text, useTheme} from '@shared/designsystem';
 import {useTranslation} from '@shared/i18n';
 import {formatDsiAmount} from '../logic/format';
-import {orderTitle} from '../logic/purchases';
+import {formatOrderDate, orderTitle} from '../logic/purchases';
 import type {CommerceOrder} from '../store/commerceTypes';
 import {OrderStatusBadge} from './OrderStatusBadge';
 import {ProductCover} from './ProductCover';
@@ -19,7 +19,7 @@ export type PurchaseRowProps = {
 const THUMB = 72;
 
 export function PurchaseRow({order, children}: PurchaseRowProps) {
-  const {t} = useTranslation();
+  const {t, i18n} = useTranslation();
   const {colors, spacing, radii} = useTheme();
   const {title, more} = orderTitle(order);
   const name = title ?? t('mp.orders.fallbackTitle');
@@ -43,13 +43,13 @@ export function PurchaseRow({order, children}: PurchaseRowProps) {
           <Text variant="cardTitle" numberOfLines={2}>
             {more > 0 ? `${name} +${more}` : name}
           </Text>
-          {order.createdAt ? (
-            <Text variant="caption" color="secondary">
-              {new Date(order.createdAt).toLocaleDateString()}
-            </Text>
-          ) : null}
-          <Text variant="bodySmallStrong" color="gold">
-            {t('commerce.priceDsi', {amount: formatDsiAmount(order.totalDsi)})}
+          <Text variant="caption" color="secondary">
+            {[
+              order.createdAt ? formatOrderDate(order.createdAt, i18n.language) : null,
+              t('commerce.priceDsi', {amount: formatDsiAmount(order.totalDsi)}),
+            ]
+              .filter(Boolean)
+              .join(' · ')}
           </Text>
           <OrderStatusBadge order={order} />
         </View>

@@ -165,8 +165,10 @@ export function CommerceHouseScreen({
           testID={`screen-${source}-codes`}>
           {shellHeader}
           <EmptyState
-            icon="GiftIcon"
-            message={t('commerce.shell.codesSoon')}
+            icon="BagIcon"
+            accent
+            title={t('commerce.shell.codesSoon')}
+            message={t('commerce.shell.codesSoonHint')}
             testID="commerce-codes-soon"
           />
         </ScrollView>

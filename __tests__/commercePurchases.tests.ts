@@ -48,7 +48,7 @@ describe('sous-onglets de Mes achats', () => {
   ])('%s : un libellé par sous-onglet et les textes de l\'historique', (_l, json) => {
     const shell = (json as any).commerce.shell;
     PURCHASES_TABS.forEach(id => expect(typeof shell.tabs[id]).toBe('string'));
-    ['codesSoon', 'historyEmptyTitle', 'historyEmptyHint'].forEach(k =>
+    ['codesSoon', 'codesSoonHint', 'historyEmptyTitle', 'historyEmptyHint'].forEach(k =>
       expect(typeof shell[k]).toBe('string'),
     );
   });

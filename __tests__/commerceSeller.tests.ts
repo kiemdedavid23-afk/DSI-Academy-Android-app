@@ -1,24 +1,26 @@
 import commerceFr from '../src/shared/i18n/locales/commerce.fr.json';
 import commerceEn from '../src/shared/i18n/locales/commerce.en.json';
+import fr from '../src/shared/i18n/locales/fr.json';
+import en from '../src/shared/i18n/locales/en.json';
 
-const KEYS = [
-  'title', 'body', 'howTitle', 'step1', 'step2', 'step3',
-  'needTitle', 'need1', 'need2', 'need3', 'terms', 'start', 'startSoon',
+const LANDING = [
+  'title', 'body', 'howTitle', 'how1', 'how2', 'how3', 'needTitle',
+  'need1', 'need2', 'need3', 'need4', 'termsPrefix', 'termsLink', 'termsSuffix',
+  'start', 'hintCheck',
 ];
 
 describe('écran d\'entrée Vendeur', () => {
   it.each([
+    ['fr', fr],
+    ['en', en],
+  ])('%s : textes du site présents (mp.apply.landing)', (_l, json) => {
+    const landing = (json as any).mp.apply.landing;
+    LANDING.forEach(k => expect(typeof landing[k]).toBe('string'));
+  });
+  it.each([
     ['fr', commerceFr],
     ['en', commerceEn],
-  ])('%s : tous les textes sont présents', (_l, json) => {
-    const seller = (json as any).commerce.shell.seller;
-    KEYS.forEach(k => expect(typeof seller[k]).toBe('string'));
-    expect(Object.keys(seller).sort()).toEqual([...KEYS].sort());
-  });
-  it('anciens textes retirés', () => {
-    [commerceFr, commerceEn].forEach(json => {
-      expect((json as any).commerce.discover).toBeUndefined();
-      expect((json as any).commerce.shell.sellerSoon).toBeUndefined();
-    });
+  ])('%s : message d\'attente de la candidature', (_l, json) => {
+    expect(typeof (json as any).commerce.shell.seller.startSoon).toBe('string');
   });
 });

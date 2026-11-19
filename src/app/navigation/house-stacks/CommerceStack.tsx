@@ -9,6 +9,7 @@ import React from 'react';
 import {Linking} from 'react-native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {useTranslation} from '@shared/i18n';
+import {MemberHeader} from '@features/member-space/shell/components/MemberHeader';
 import {MarketplaceProductExtras} from '@features/commerce/components/MarketplaceProductExtras';
 import {CartAction} from '@features/commerce/components/CartAction';
 import {PurchaseAction} from '@features/commerce/components/PurchaseAction';
@@ -54,7 +55,22 @@ export function CommerceStack({source}: {source: CommerceSource}) {
 
   return (
     <Stack.Navigator screenOptions={{headerShown: true}}>
-      <Stack.Screen name="Discover" options={{headerShown: false}}>
+      <Stack.Screen
+        name="Discover"
+        options={({navigation}) => ({
+          title: t(source === 'shop' ? 'houses.shop' : 'houses.marketplace'),
+          header: () => (
+            <MemberHeader
+              showMenu={false}
+              bellFirst
+              welcomeKey={source === 'shop' ? 'houses.welcome.shop' : 'houses.welcome.marketplace'}
+              onOpenDrawer={() => {}}
+              onOpenNotifications={() =>
+                navigation.getParent()?.navigate('MemberSpace', {screen: 'MemberNotifications'})
+              }
+            />
+          ),
+        })}>
         {({route, navigation}) => (
           <CommerceHouseScreen
             source={source}

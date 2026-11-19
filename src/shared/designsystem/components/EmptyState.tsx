@@ -10,6 +10,8 @@ export type EmptyStateProps = {
   title?: string;
   /** Icône facultative : aucune par défaut (le site n'en impose pas). */
   icon?: IconName;
+  /** Variante dorée (cercle à contour doré, titre serif) : états vides du commerce. */
+  accent?: boolean;
   actionLabel?: string;
   onAction?: () => void;
   style?: StyleProp<ViewStyle>;
@@ -21,6 +23,7 @@ export function EmptyState({
   message,
   title,
   icon,
+  accent = false,
   actionLabel,
   onAction,
   style,
@@ -43,13 +46,22 @@ export function EmptyState({
         <View
           style={[
             styles.iconCircle,
-            {backgroundColor: colors.bgSurfaceAlt, borderColor: colors.borderLight},
+            accent
+              ? styles.iconCircleAccent
+              : null,
+            accent
+              ? {backgroundColor: colors.goldLight, borderColor: colors.goldBorder}
+              : {backgroundColor: colors.bgSurfaceAlt, borderColor: colors.borderLight},
           ]}>
-          <Icon name={icon} size={26} color={colors.textSecondary} />
+          <Icon
+            name={icon}
+            size={accent ? 30 : 26}
+            color={accent ? colors.goldPrestige : colors.textSecondary}
+          />
         </View>
       ) : null}
       {title ? (
-        <Text variant="bodyStrong" color="primary" style={styles.centered}>
+        <Text variant={accent ? 'cardTitle' : 'bodyStrong'} color="primary" style={styles.centered}>
           {title}
         </Text>
       ) : null}
@@ -74,6 +86,11 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  iconCircleAccent: {
+    width: 64,
+    height: 64,
+    borderRadius: 32,
   },
   centered: {
     textAlign: 'center',

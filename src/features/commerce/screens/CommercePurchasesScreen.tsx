@@ -168,6 +168,8 @@ export function CommercePurchasesScreen({
       renderItem={renderOrder}
       ListEmptyComponent={
         <EmptyState
+          accent
+          icon="BagIcon"
           title={t(mode === 'history' ? 'commerce.shell.historyEmptyTitle' : 'mp.orders.emptyTitle')}
           message={t(mode === 'history' ? 'commerce.shell.historyEmptyHint' : 'mp.orders.emptyHint')}
           actionLabel={t('mp.orders.emptyCta')}

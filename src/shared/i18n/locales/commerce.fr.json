@@ -153,25 +153,14 @@
         "priceAsc": "Prix croissant",
         "priceDesc": "Prix décroissant"
       },
-      "codesSoon": "Les codes promo arrivent bientôt.",
+      "codesSoon": "Les codes promo arrivent bientôt",
       "historyEmptyTitle": "Aucune commande pour le moment",
       "historyEmptyHint": "Vos commandes apparaîtront ici.",
       "seller": {
-        "title": "Vendez vos ressources aux membres DSI",
-        "body": "Proposez vos guides, formations, modèles et outils aux membres de la communauté, payés en DSI, après validation de votre candidature.",
-        "howTitle": "Comment ça marche",
-        "step1": "Déposez votre candidature avec les pièces demandées.",
-        "step2": "Notre équipe l'examine et vous informe de sa décision.",
-        "step3": "Publiez vos produits et suivez vos ventes.",
-        "needTitle": "Ce qu'il vous faut",
-        "need1": "Des produits conformes à la charte DSI",
-        "need2": "Une identité vendeur vérifiable",
-        "need3": "Un nom de vitrine et une courte présentation",
-        "terms": "J'ai lu et j'accepte les conditions d'utilisation",
-        "start": "Commencer ma candidature",
         "startSoon": "Le dépôt de candidature ouvrira prochainement."
       },
-      "codesIntro": "Entrez un code promo : il sera gardé pour votre panier."
+      "codesIntro": "Entrez un code promo : il sera gardé pour votre panier.",
+      "codesSoonHint": "Vous pourrez bientôt utiliser un code pour payer moins cher."
     }
   }
 }

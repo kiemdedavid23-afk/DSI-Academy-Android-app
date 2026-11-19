@@ -36,3 +36,18 @@ export function orderTitle(order: CommerceOrder): {title: string | null; more: n
   const first = order.items[0]?.title ?? null;
   return {title: first, more: Math.max(0, order.items.length - 1)};
 }
+
+const MONTHS: Record<string, string[]> = {
+  fr: ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'],
+  en: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+};
+
+/** « 16 novembre 2026 » / « November 16, 2026 » sans dépendre d'Intl (absent ou partiel sur Android). */
+export function formatOrderDate(timestamp: number, lang: string): string {
+  const d = new Date(timestamp);
+  const code = lang.toLowerCase().startsWith('fr') ? 'fr' : 'en';
+  const month = MONTHS[code][d.getMonth()];
+  return code === 'fr'
+    ? `${d.getDate()} ${month} ${d.getFullYear()}`
+    : `${month} ${d.getDate()}, ${d.getFullYear()}`;
+}
