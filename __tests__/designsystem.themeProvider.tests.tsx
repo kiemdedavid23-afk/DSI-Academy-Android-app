@@ -41,7 +41,7 @@ describe('buildTheme', () => {
     expect(theme.isDark).toBe(false);
     expect(theme.colors).toBe(lightColors);
     expect(theme.elevation.card).toBe(2);
-    expect(theme.glass.bg).toBe('rgba(255, 255, 255, 0.86)');
+    expect(theme.glass.bg).toBe('rgba(255, 255, 255, 0.95)');
   });
 
   it('sombre : couleurs sombres et élévation sombre', () => {

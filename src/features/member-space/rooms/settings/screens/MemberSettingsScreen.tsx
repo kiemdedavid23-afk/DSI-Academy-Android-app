@@ -9,7 +9,7 @@ import {Text, useTheme, Icon, MemberAvatar} from '@shared/designsystem';
 import {useTranslation} from '@shared/i18n';
 import {memberProfileStore} from '@shared/store';
 import {sessionStore} from '@core/session';
-import {APP_VERSION} from '@core/config/appInfo';
+import {SettingsVersionFooter} from '../views/SettingsVersionFooter';
 import {SettingsAccountView} from '../views/SettingsAccountView';
 import {SettingsPreferencesView} from '../views/SettingsPreferencesView';
 import {SettingsSecurityView} from '../views/SettingsSecurityView';
@@ -175,9 +175,7 @@ export function MemberSettingsScreen() {
         />
       </SettingsGroup>
 
-      <Text style={{textAlign: 'center', fontSize: 13, color: colors.textMuted}}>
-        DSI Academy · v{APP_VERSION}
-      </Text>
+      <SettingsVersionFooter />
     </SettingsScaffold>
   );
 }

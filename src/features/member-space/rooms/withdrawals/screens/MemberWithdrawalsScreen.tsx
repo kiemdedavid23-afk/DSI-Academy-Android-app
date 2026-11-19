@@ -15,7 +15,7 @@ import {
   Modal,
   FlatList,
 } from 'react-native';
-import {Text, useTheme, Icon} from '@shared/designsystem';
+import {Text, useTheme} from '@shared/designsystem';
 import {PageHeader} from '../../../components/PageHeader';
 import {useTranslation} from '@shared/i18n';
 import {bannerStore} from '@shared/store';

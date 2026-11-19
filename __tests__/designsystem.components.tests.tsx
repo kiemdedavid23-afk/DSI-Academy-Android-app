@@ -206,7 +206,7 @@ describe('Card', () => {
   it.each([
     ['default', lightColors.bgSurface, lightColors.borderLight],
     ['accent', lightColors.goldLight, lightColors.goldBorder],
-    ['glass', 'rgba(255, 255, 255, 0.86)', 'rgba(255, 255, 255, 0.55)'],
+    ['glass', 'rgba(255, 255, 255, 0.95)', 'rgba(255, 255, 255, 0.7)'],
   ] as const)('variante %s (clair)', async (variant, bg, border) => {
     const r = await render(
       <Card variant={variant} testID="card">

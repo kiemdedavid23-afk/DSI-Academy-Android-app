@@ -37,9 +37,9 @@ describe('élévations (§8)', () => {
 });
 
 describe('verre (§9)', () => {
-  it('clair : blanc à 86 % et 55 %', () => {
-    expect(lightGlass.bg).toBe('rgba(255, 255, 255, 0.86)');
-    expect(lightGlass.border).toBe('rgba(255, 255, 255, 0.55)');
+  it('clair : blanc à 95 % et 70 %', () => {
+    expect(lightGlass.bg).toBe('rgba(255, 255, 255, 0.95)');
+    expect(lightGlass.border).toBe('rgba(255, 255, 255, 0.7)');
   });
 
   it('sombre : #0F172A à 78 % et #94A3B8 à 25 %', () => {

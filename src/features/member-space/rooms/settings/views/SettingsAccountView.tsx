@@ -1,6 +1,5 @@
 import React, {useEffect, useSyncExternalStore} from 'react';
 import {useNavigation} from '@react-navigation/native';
-import {useTheme} from '@shared/designsystem';
 import {useTranslation} from '@shared/i18n';
 import {memberProfileStore, memberSubscriptionStore} from '@shared/store';
 import {countryLabel} from '@core/data/countries';
@@ -16,7 +15,6 @@ import {
 
 export function SettingsAccountView({onBack}: {onBack: () => void}) {
   const {t, i18n} = useTranslation();
-  const {colors} = useTheme();
   const navigation = useNavigation<any>();
   const lang = i18n.language?.startsWith('en') ? 'en' : 'fr';
   const profile = useSyncExternalStore(
