@@ -4,7 +4,7 @@
  */
 
 import React, {useEffect, useState, useSyncExternalStore} from 'react';
-import {FlatList} from 'react-native';
+import {FlatList, View} from 'react-native';
 import {
   Button,
   EmptyState,
@@ -25,12 +25,15 @@ export type CommerceFavoritesScreenProps = {
   source: CommerceSource;
   onOpenProduct: (product: CommerceProduct) => void;
   onDiscover: () => void;
+  /** Coque : carte d'ambiance et sélecteurs, posés en tête de la liste. */
+  shellHeader?: React.ReactNode;
 };
 
 export function CommerceFavoritesScreen({
   source,
   onOpenProduct,
   onDiscover,
+  shellHeader,
 }: CommerceFavoritesScreenProps) {
   const stores = COMMERCE_STORES[source];
   const {t} = useTranslation();
@@ -52,17 +55,23 @@ export function CommerceFavoritesScreen({
 
   if ((favs.status === 'loading' || favs.status === 'idle') && favs.items.length === 0) {
     return (
-      <LoadingState accessibilityLabel={t('content.loading')} />
+      <View style={{flex: 1, backgroundColor: colors.bgApp}}>
+        {shellHeader}
+        <LoadingState accessibilityLabel={t('content.loading')} />
+      </View>
     );
   }
   if (favs.status === 'error' && favs.items.length === 0) {
     return (
-      <ErrorState
-        message={t(commerceErrorKey(favs.errorKind))}
-        retryLabel={t('common.retry')}
-        onRetry={() => void stores.favorites.load(stores.catalogue.getState().items)}
-        testID="commerce-favorites-error"
-      />
+      <View style={{flex: 1, backgroundColor: colors.bgApp}}>
+        {shellHeader}
+        <ErrorState
+          message={t(commerceErrorKey(favs.errorKind))}
+          retryLabel={t('common.retry')}
+          onRetry={() => void stores.favorites.load(stores.catalogue.getState().items)}
+          testID="commerce-favorites-error"
+        />
+      </View>
     );
   }
 
@@ -77,17 +86,22 @@ export function CommerceFavoritesScreen({
       contentContainerStyle={{
         gap: spacing.lg,
         paddingBottom: spacing.xxxl,
-        paddingTop: spacing.lg,
+        paddingTop: shellHeader ? 0 : spacing.lg,
       }}
       ListHeaderComponent={
-        removeError ? (
-          <Text
-            variant="caption"
-            color="secondary"
-            style={{paddingHorizontal: spacing.xl}}
-            testID="commerce-favorites-remove-error">
-            {t('mp.favs.removeError')}
-          </Text>
+        shellHeader || removeError ? (
+          <View style={{gap: spacing.md}}>
+            {shellHeader}
+            {removeError ? (
+              <Text
+                variant="caption"
+                color="secondary"
+                style={{paddingHorizontal: spacing.xl}}
+                testID="commerce-favorites-remove-error">
+                {t('mp.favs.removeError')}
+              </Text>
+            ) : null}
+          </View>
         ) : undefined
       }
       ListEmptyComponent={

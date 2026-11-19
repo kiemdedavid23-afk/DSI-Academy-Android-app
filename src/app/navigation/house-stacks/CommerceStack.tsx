@@ -6,18 +6,18 @@
  */
 
 import React from 'react';
-import {Linking, Pressable, View} from 'react-native';
+import {Linking} from 'react-native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import {Icon, useTheme} from '@shared/designsystem';
 import {useTranslation} from '@shared/i18n';
 import {MarketplaceProductExtras} from '@features/commerce/components/MarketplaceProductExtras';
 import {CartAction} from '@features/commerce/components/CartAction';
 import {PurchaseAction} from '@features/commerce/components/PurchaseAction';
-import {CommerceDiscoverScreen} from '@features/commerce/screens/CommerceDiscoverScreen';
-import {CommerceFavoritesScreen} from '@features/commerce/screens/CommerceFavoritesScreen';
+import {
+  CommerceHouseScreen,
+  type CommerceHouseRequest,
+} from '@features/commerce/screens/CommerceHouseScreen';
 import {CommerceLinkScreen} from '@features/commerce/screens/CommerceLinkScreen';
 import {CommerceProductScreen} from '@features/commerce/screens/CommerceProductScreen';
-import {CommercePurchasesScreen} from '@features/commerce/screens/CommercePurchasesScreen';
 import {MarketplaceSellerScreen} from '@features/commerce/screens/MarketplaceSellerScreen';
 import {MarketplaceSellersScreen} from '@features/commerce/screens/MarketplaceSellersScreen';
 import {MarketplaceTrendingScreen} from '@features/commerce/screens/MarketplaceTrendingScreen';
@@ -31,10 +31,9 @@ import type {
 } from '@features/commerce/store/commerceTypes';
 
 export type CommerceStackParamList = {
-  Discover: undefined;
+  /** Coque : section (et sous-onglet de Mes achats) à afficher. */
+  Discover: CommerceHouseRequest | undefined;
   Product: {id: string; product?: CommerceProduct};
-  Favorites: undefined;
-  Purchases: undefined;
   Cart: undefined;
   Library: undefined;
   Trending: undefined;
@@ -56,73 +55,19 @@ function openAccess(access: CommerceAccess, onWebview: (url: string) => void) {
 
 export function CommerceStack({source}: {source: CommerceSource}) {
   const {t} = useTranslation();
-  const {colors, touch} = useTheme();
-
-  const headerButton = (
-    label: string,
-    icon: 'BookmarkIcon' | 'BagIcon' | 'StoreIcon' | 'BookIcon',
-    onPress: () => void,
-    testID: string,
-  ) => (
-    <Pressable
-      onPress={onPress}
-      accessibilityRole="button"
-      accessibilityLabel={label}
-      testID={testID}
-      style={{
-        alignItems: 'center',
-        justifyContent: 'center',
-        minHeight: touch.min,
-        minWidth: touch.min,
-      }}>
-      <Icon name={icon} size={22} color={colors.textPrimary} />
-    </Pressable>
-  );
 
   return (
     <Stack.Navigator screenOptions={{headerShown: true}}>
-      <Stack.Screen
-        name="Discover"
-        options={({navigation}) => ({
-          title: t(source === 'shop' ? 'houses.shop' : 'houses.marketplace'),
-          headerRight: () => (
-            <View style={{flexDirection: 'row'}}>
-              {source === 'shop'
-                ? headerButton(
-                    t('commerce.cart.title'),
-                    'StoreIcon',
-                    () => navigation.navigate('Cart'),
-                    'shop-open-cart',
-                  )
-                : null}
-              {source === 'shop'
-                ? headerButton(
-                    t('commerce.library.title'),
-                    'BookIcon',
-                    () => navigation.navigate('Library'),
-                    'shop-open-library',
-                  )
-                : null}
-              {headerButton(
-                t('mp.member.purchases'),
-                'BagIcon',
-                () => navigation.navigate('Purchases'),
-                `${source}-open-purchases`,
-              )}
-              {headerButton(
-                t('commerce.favorites'),
-                'BookmarkIcon',
-                () => navigation.navigate('Favorites'),
-                `${source}-open-favorites`,
-              )}
-            </View>
-          ),
-        })}>
-        {({navigation}) => (
-          <CommerceDiscoverScreen
+      <Stack.Screen name="Discover" options={{headerShown: false}}>
+        {({route, navigation}) => (
+          <CommerceHouseScreen
             source={source}
+            request={route.params}
             onOpenProduct={product =>
               navigation.navigate('Product', {id: product.id, product})
+            }
+            onOpenAccess={access =>
+              openAccess(access, url => navigation.navigate('Link', {url}))
             }
             onOpenTrending={
               source === 'marketplace' ? () => navigation.navigate('Trending') : undefined
@@ -130,6 +75,8 @@ export function CommerceStack({source}: {source: CommerceSource}) {
             onOpenSellers={
               source === 'marketplace' ? () => navigation.navigate('Sellers') : undefined
             }
+            onOpenCart={source === 'shop' ? () => navigation.navigate('Cart') : undefined}
+            onOpenLibrary={source === 'shop' ? () => navigation.navigate('Library') : undefined}
           />
         )}
       </Stack.Screen>
@@ -173,35 +120,13 @@ export function CommerceStack({source}: {source: CommerceSource}) {
                           .getParent()
                           ?.navigate('MemberSpace', {screen: 'MemberSubscription'})
                       }
-                      onOpenPurchases={() => navigation.navigate('Purchases')}
+                      onOpenPurchases={() => navigation.navigate('Discover', {section: 'purchases'})}
                       onOpenAccess={access =>
                         openAccess(access, url => navigation.navigate('Link', {url}))
                       }
                     />
                   )
             }
-          />
-        )}
-      </Stack.Screen>
-      <Stack.Screen name="Favorites" options={{title: t('commerce.favorites')}}>
-        {({navigation}) => (
-          <CommerceFavoritesScreen
-            source={source}
-            onOpenProduct={product =>
-              navigation.navigate('Product', {id: product.id, product})
-            }
-            onDiscover={() => navigation.navigate('Discover')}
-          />
-        )}
-      </Stack.Screen>
-      <Stack.Screen name="Purchases" options={{title: t('mp.member.purchases')}}>
-        {({navigation}) => (
-          <CommercePurchasesScreen
-            source={source}
-            onDiscover={() => navigation.navigate('Discover')}
-            onOpenAccess={access =>
-                        openAccess(access, url => navigation.navigate('Link', {url}))
-                      }
           />
         )}
       </Stack.Screen>
@@ -217,7 +142,7 @@ export function CommerceStack({source}: {source: CommerceSource}) {
                 navigation
                   .getParent()
                   ?.navigate('MemberSpace', {screen: 'MemberSubscription'}),
-              onOpenPurchases: () => navigation.navigate('Purchases'),
+              onOpenPurchases: () => navigation.navigate('Discover', {section: 'purchases'}),
               onOpenLibrary: () => navigation.navigate('Library'),
               onOpenAccess: access =>
                 openAccess(access, url => navigation.navigate('Link', {url})),

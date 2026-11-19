@@ -24,3 +24,8 @@ export function artIndex(seed: string | null | undefined): number {
 export function artFor(seed: string | null | undefined): ImageSourcePropType {
   return ART[artIndex(seed)];
 }
+
+/** Illustration d'indice fixe (cartes d'ambiance des sections). */
+export function artForIndex(index: number): ImageSourcePropType {
+  return ART[((index % ART.length) + ART.length) % ART.length];
+}

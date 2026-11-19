@@ -79,6 +79,59 @@
     "discover": {
       "trending": "See trending",
       "sellers": "See sellers"
+    },
+    "shell": {
+      "sectionsLabel": "Sections",
+      "tabsLabel": "Subsections",
+      "sections": {
+        "discover": "Discover",
+        "explore": "Explore",
+        "purchases": "My purchases",
+        "seller": "Seller"
+      },
+      "tabs": {
+        "purchases": "My purchases",
+        "favorites": "Favorites"
+      },
+      "eyebrow": {
+        "marketplace": "DSI Marketplace",
+        "shop": "DSI Shop"
+      },
+      "hero": {
+        "marketplace": {
+          "discover": {
+            "title": "Discover",
+            "body": "The resources members are sharing right now."
+          },
+          "explore": {
+            "title": "Explore",
+            "body": "Browse the whole Marketplace catalogue."
+          },
+          "purchases": {
+            "title": "My purchases",
+            "body": "Your purchases, favorites and history."
+          },
+          "seller": {
+            "title": "Seller",
+            "body": "Offer your resources to DSI members."
+          }
+        },
+        "shop": {
+          "discover": {
+            "title": "Discover",
+            "body": "The DSI Shop products of the moment."
+          },
+          "explore": {
+            "title": "Explore",
+            "body": "Browse the whole Shop catalogue."
+          },
+          "purchases": {
+            "title": "My purchases",
+            "body": "Your purchases, favorites and history."
+          }
+        }
+      },
+      "sellerSoon": "The seller space is coming soon."
     }
   }
 }

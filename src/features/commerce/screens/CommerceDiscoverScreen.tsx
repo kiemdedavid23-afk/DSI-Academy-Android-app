@@ -33,6 +33,8 @@ export type CommerceDiscoverScreenProps = {
   /** Marketplace seulement (L9a) : entrées vers tendances et vendeurs. */
   onOpenTrending?: () => void;
   onOpenSellers?: () => void;
+  /** Coque : carte d'ambiance et sélecteurs, posés en tête de la liste. */
+  shellHeader?: React.ReactNode;
 };
 
 export function CommerceDiscoverScreen({
@@ -40,6 +42,7 @@ export function CommerceDiscoverScreen({
   onOpenProduct,
   onOpenTrending,
   onOpenSellers,
+  shellHeader,
 }: CommerceDiscoverScreenProps) {
   const stores = COMMERCE_STORES[source];
   const {t} = useTranslation();
@@ -75,14 +78,16 @@ export function CommerceDiscoverScreen({
 
   const header = (
     <View style={{gap: spacing.md, paddingBottom: spacing.md}}>
-      <View style={{gap: spacing.xs, paddingHorizontal: spacing.xl, paddingTop: spacing.lg}}>
-        <Text variant="title" accessibilityRole="header">
-          {title}
-        </Text>
-        <Text variant="body" color="secondary">
-          {body}
-        </Text>
-      </View>
+      {shellHeader ?? (
+        <View style={{gap: spacing.xs, paddingHorizontal: spacing.xl, paddingTop: spacing.lg}}>
+          <Text variant="title" accessibilityRole="header">
+            {title}
+          </Text>
+          <Text variant="body" color="secondary">
+            {body}
+          </Text>
+        </View>
+      )}
       <View style={{paddingHorizontal: spacing.xl}}>
         <TextField
           label={t('app.catalogue.searchLabel')}

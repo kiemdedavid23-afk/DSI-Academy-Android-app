@@ -23,12 +23,15 @@ export type CommercePurchasesScreenProps = {
   source: CommerceSource;
   onDiscover: () => void;
   onOpenAccess: (access: CommerceAccess) => void;
+  /** Coque : carte d'ambiance et sélecteurs, posés en tête de la liste. */
+  shellHeader?: React.ReactNode;
 };
 
 export function CommercePurchasesScreen({
   source,
   onDiscover,
   onOpenAccess,
+  shellHeader,
 }: CommercePurchasesScreenProps) {
   const stores = COMMERCE_STORES[source];
   const {t} = useTranslation();
@@ -66,16 +69,24 @@ export function CommercePurchasesScreen({
   };
 
   if ((orders.status === 'idle' || orders.status === 'loading') && orders.items.length === 0) {
-    return <LoadingState accessibilityLabel={t('content.loading')} />;
+    return (
+      <View style={{flex: 1, backgroundColor: colors.bgApp}}>
+        {shellHeader}
+        <LoadingState accessibilityLabel={t('content.loading')} />
+      </View>
+    );
   }
   if (orders.status === 'error' && orders.items.length === 0) {
     return (
-      <ErrorState
-        message={t(commerceErrorKey(orders.errorKind))}
-        retryLabel={t('common.retry')}
-        onRetry={() => void stores.orders.load({force: true})}
-        testID="commerce-purchases-error"
-      />
+      <View style={{flex: 1, backgroundColor: colors.bgApp}}>
+        {shellHeader}
+        <ErrorState
+          message={t(commerceErrorKey(orders.errorKind))}
+          retryLabel={t('common.retry')}
+          onRetry={() => void stores.orders.load({force: true})}
+          testID="commerce-purchases-error"
+        />
+      </View>
     );
   }
 
@@ -149,7 +160,8 @@ export function CommercePurchasesScreen({
       testID={`screen-${source}-purchases`}
       data={orders.items}
       keyExtractor={o => o.id}
-      contentContainerStyle={{gap: spacing.md, paddingBottom: spacing.xxxl, paddingTop: spacing.lg}}
+      contentContainerStyle={{gap: spacing.md, paddingBottom: spacing.xxxl, paddingTop: shellHeader ? 0 : spacing.lg}}
+      ListHeaderComponent={shellHeader ? <View>{shellHeader}</View> : undefined}
       renderItem={renderOrder}
       ListEmptyComponent={
         <EmptyState

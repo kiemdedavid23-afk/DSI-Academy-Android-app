@@ -79,6 +79,59 @@
     "discover": {
       "trending": "Voir les tendances",
       "sellers": "Voir les vendeurs"
+    },
+    "shell": {
+      "sectionsLabel": "Sections",
+      "tabsLabel": "Sous-sections",
+      "sections": {
+        "discover": "Découvrir",
+        "explore": "Explorer",
+        "purchases": "Mes achats",
+        "seller": "Vendeur"
+      },
+      "tabs": {
+        "purchases": "Mes achats",
+        "favorites": "Favoris"
+      },
+      "eyebrow": {
+        "marketplace": "Marketplace DSI",
+        "shop": "Boutique DSI"
+      },
+      "hero": {
+        "marketplace": {
+          "discover": {
+            "title": "Découvrir",
+            "body": "Les ressources que les membres partagent en ce moment."
+          },
+          "explore": {
+            "title": "Explorer",
+            "body": "Parcourez tout le catalogue de la Marketplace."
+          },
+          "purchases": {
+            "title": "Mes achats",
+            "body": "Vos achats, vos favoris et votre historique."
+          },
+          "seller": {
+            "title": "Vendeur",
+            "body": "Proposez vos ressources aux membres DSI."
+          }
+        },
+        "shop": {
+          "discover": {
+            "title": "Découvrir",
+            "body": "Les produits de la Boutique DSI du moment."
+          },
+          "explore": {
+            "title": "Explorer",
+            "body": "Parcourez tout le catalogue de la Boutique."
+          },
+          "purchases": {
+            "title": "Mes achats",
+            "body": "Vos achats, vos favoris et votre historique."
+          }
+        }
+      },
+      "sellerSoon": "L'espace vendeur arrive bientôt."
     }
   }
 }
