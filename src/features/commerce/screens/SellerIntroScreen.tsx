@@ -132,7 +132,7 @@ export function SellerIntroScreen({shellHeader, onStart}: SellerIntroScreenProps
           </Text>
         </Pressable>
         <Button
-          label={t(`${L}.start`)}
+          label={`${t(`${L}.start`)}  →`}
           onPress={start}
           disabled={!accepted}
           testID="seller-start"

@@ -1,4 +1,7 @@
-/** Menu de tri : bouton « Trier par [critère ▾] », liste de choix dans une fenêtre. */
+/**
+ * Tri : « Trier par [critère ▾] » comme le site (champ à fond blanc), puis une liste
+ * centrée avec un bouton radio à droite de chaque choix.
+ */
 
 import React, {useState} from 'react';
 import {Modal, Pressable, View} from 'react-native';
@@ -19,62 +22,93 @@ export function SortMenu({value, onChange}: SortMenuProps) {
 
   return (
     <>
-      <Pressable
-        onPress={() => setOpen(true)}
-        accessibilityRole="button"
-        accessibilityLabel={`${t('mp.explore.sortLabel')} ${label(value)}`}
-        testID="commerce-sort"
-        style={{
-          alignItems: 'center',
-          borderColor: colors.borderLight,
-          borderRadius: radii.pill,
-          borderWidth: 1,
-          flexDirection: 'row',
-          gap: spacing.xs,
-          minHeight: 40,
-          paddingHorizontal: spacing.md,
-        }}>
+      <View style={{alignItems: 'center', flexDirection: 'row', gap: spacing.sm}}>
         <Text variant="bodySmall" color="secondary">
           {t('mp.explore.sortLabel')}
         </Text>
-        <Text variant="bodySmallStrong">{label(value)}</Text>
-        <Icon name="ChevronDownIcon" size={18} color={colors.textSecondary} />
-      </Pressable>
+        <Pressable
+          onPress={() => setOpen(true)}
+          accessibilityRole="button"
+          accessibilityLabel={`${t('mp.explore.sortLabel')} ${label(value)}`}
+          testID="commerce-sort"
+          style={{
+            alignItems: 'center',
+            backgroundColor: colors.bgSurface,
+            borderRadius: radii.md,
+            flexDirection: 'row',
+            gap: spacing.md,
+            justifyContent: 'space-between',
+            minHeight: 44,
+            paddingHorizontal: spacing.md,
+          }}>
+          <Text variant="bodySmall">{label(value)}</Text>
+          <Icon name="ChevronDownIcon" size={18} color={colors.textSecondary} />
+        </Pressable>
+      </View>
       <Modal transparent animationType="fade" visible={open} onRequestClose={() => setOpen(false)}>
         <Pressable
           onPress={() => setOpen(false)}
           accessibilityLabel={t('common.close')}
-          style={{flex: 1, backgroundColor: colors.overlay, justifyContent: 'flex-end'}}>
+          style={{
+            backgroundColor: colors.overlay,
+            flex: 1,
+            justifyContent: 'center',
+            paddingHorizontal: spacing.xl,
+          }}>
           <View
             style={{
               backgroundColor: colors.bgSurface,
-              borderTopLeftRadius: radii.lg,
-              borderTopRightRadius: radii.lg,
-              gap: spacing.xs,
-              padding: spacing.lg,
+              borderRadius: radii.lg,
+              overflow: 'hidden',
             }}>
-            {SORT_KEYS.map(key => (
-              <Pressable
-                key={key}
-                onPress={() => {
-                  onChange(key);
-                  setOpen(false);
-                }}
-                accessibilityRole="button"
-                accessibilityState={{selected: key === value}}
-                testID={`commerce-sort-${key}`}
-                style={{
-                  alignItems: 'center',
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                  minHeight: 48,
-                }}>
-                <Text variant="body" color={key === value ? 'gold' : 'primary'}>
-                  {label(key)}
-                </Text>
-                {key === value ? <Icon name="CheckIcon" size={20} color={colors.goldPrestige} /> : null}
-              </Pressable>
-            ))}
+            {SORT_KEYS.map((key, i) => {
+              const on = key === value;
+              return (
+                <Pressable
+                  key={key}
+                  onPress={() => {
+                    onChange(key);
+                    setOpen(false);
+                  }}
+                  accessibilityRole="radio"
+                  accessibilityState={{checked: on}}
+                  testID={`commerce-sort-${key}`}
+                  style={{
+                    alignItems: 'center',
+                    borderTopColor: colors.borderLight,
+                    borderTopWidth: i === 0 ? 0 : 1,
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    minHeight: 56,
+                    paddingHorizontal: spacing.lg,
+                  }}>
+                  <Text variant="bodyStrong" color="primary">
+                    {label(key)}
+                  </Text>
+                  <View
+                    style={{
+                      alignItems: 'center',
+                      borderColor: on ? colors.blueActive : colors.textSecondary,
+                      borderRadius: 11,
+                      borderWidth: 2,
+                      height: 22,
+                      justifyContent: 'center',
+                      width: 22,
+                    }}>
+                    {on ? (
+                      <View
+                        style={{
+                          backgroundColor: colors.blueActive,
+                          borderRadius: 5,
+                          height: 10,
+                          width: 10,
+                        }}
+                      />
+                    ) : null}
+                  </View>
+                </Pressable>
+              );
+            })}
           </View>
         </Pressable>
       </Modal>

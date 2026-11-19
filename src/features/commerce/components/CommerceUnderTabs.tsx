@@ -21,11 +21,17 @@ export function CommerceUnderTabs<T extends string>({
 }: CommerceUnderTabsProps<T>) {
   const {colors, spacing} = useTheme();
   return (
+    <View
+      style={{
+        borderBottomColor: colors.borderLight,
+        borderBottomWidth: 1,
+        marginHorizontal: spacing.xl,
+      }}>
     <ScrollView
       horizontal
       showsHorizontalScrollIndicator={false}
       accessibilityLabel={accessibilityLabel}
-      contentContainerStyle={{gap: spacing.xl, paddingHorizontal: spacing.xl}}
+      contentContainerStyle={{gap: spacing.xl}}
       style={{flexGrow: 0}}>
       {tabs.map(tab => {
         const on = tab.id === active;
@@ -37,13 +43,14 @@ export function CommerceUnderTabs<T extends string>({
             accessibilityState={{selected: on}}
             testID={`commerce-tab-${tab.id}`}
             style={{minHeight: 44, justifyContent: 'center'}}>
-            <Text variant="bodySmallStrong" color={on ? 'primary' : 'secondary'}>
+            <Text variant={on ? 'bodyStrong' : 'bodyMedium'} color={on ? 'primary' : 'secondary'}>
               {tab.label}
             </Text>
             <View
               style={{
                 backgroundColor: on ? colors.goldPrestige : 'transparent',
                 height: 2,
+                marginBottom: -1,
                 marginTop: 4,
               }}
             />
@@ -51,5 +58,6 @@ export function CommerceUnderTabs<T extends string>({
         );
       })}
     </ScrollView>
+    </View>
   );
 }

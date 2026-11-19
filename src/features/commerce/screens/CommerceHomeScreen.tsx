@@ -153,6 +153,7 @@ export function CommerceHomeScreen({
           />
           {categories.items.length > 0 ? (
             <CommerceCategoryChips
+              showAll={false}
               source={source}
               categories={categories.items}
               selected={cat.category}

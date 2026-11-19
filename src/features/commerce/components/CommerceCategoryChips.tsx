@@ -12,6 +12,8 @@ export type CommerceCategoryChipsProps = {
   categories: CommerceCategory[];
   selected: string | null;
   onSelect: (slug: string | null) => void;
+  /** Accueil de Découvrir : pas de « Toutes » ; toucher la pastille active la retire. */
+  showAll?: boolean;
 };
 
 export function CommerceCategoryChips({
@@ -19,6 +21,7 @@ export function CommerceCategoryChips({
   categories,
   selected,
   onSelect,
+  showAll = true,
 }: CommerceCategoryChipsProps) {
   const {t} = useTranslation();
   const {colors, spacing, radii, touch} = useTheme();
@@ -28,7 +31,7 @@ export function CommerceCategoryChips({
     return (
       <Pressable
         key={slug ?? 'all'}
-        onPress={() => onSelect(slug)}
+        onPress={() => onSelect(!showAll && active ? null : slug)}
         accessibilityRole="button"
         accessibilityState={{selected: active}}
         accessibilityLabel={
@@ -44,7 +47,7 @@ export function CommerceCategoryChips({
           borderColor: active ? colors.goldBorder : colors.borderLight,
           backgroundColor: active ? colors.goldLight : colors.bgSurface,
         }}>
-        <Text variant="bodySmallStrong" color={active ? 'gold' : 'secondary'}>
+        <Text variant="bodySmallStrong" color="primary">
           {label}
         </Text>
       </Pressable>
@@ -56,7 +59,7 @@ export function CommerceCategoryChips({
       horizontal
       showsHorizontalScrollIndicator={false}
       contentContainerStyle={{gap: 7, paddingHorizontal: spacing.xl}}>
-      {chip(null, t('app.catalogue.allCategories'))}
+      {showAll ? chip(null, t('app.catalogue.allCategories')) : null}
       {categories.map(c =>
         chip(c.slug, t(categoryKeys(source, c.slug), {defaultValue: c.slug})),
       )}

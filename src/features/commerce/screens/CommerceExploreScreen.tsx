@@ -244,7 +244,7 @@ export function CommerceExploreScreen({
             justifyContent: 'space-between',
             paddingHorizontal: spacing.xl,
           }}>
-          <Text variant="subtitle" accessibilityRole="header" testID="commerce-count">
+          <Text variant="bodySmallStrong" color="secondary" accessibilityRole="header" testID="commerce-count">
             {t('mp.explore.results', {count: sorted.length})}
           </Text>
           <SortMenu value={sort} onChange={setSort} />

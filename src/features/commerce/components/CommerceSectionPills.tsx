@@ -41,7 +41,7 @@ export function CommerceSectionPills({sections, active, onChange}: CommerceSecti
               justifyContent: 'center',
               paddingHorizontal: 18,
             }}>
-            <Text variant="bodySmall" color={on ? 'primary' : 'secondary'}>
+            <Text variant="bodySmallStrong" color="primary">
               {t(`commerce.shell.sections.${id}`)}
             </Text>
           </Pressable>
