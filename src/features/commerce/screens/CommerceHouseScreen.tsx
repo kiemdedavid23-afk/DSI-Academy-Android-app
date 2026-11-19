@@ -3,7 +3,7 @@
  * en pastilles, puis le contenu de la section. Même coque pour les deux sources,
  * seuls les contenus et les sections changent (Boutique : pas de Vendeur).
  * Les écrans de section posent la coque en tête de leur liste (`shellHeader`).
- * Transition : Mes achats n'a que Mes achats et Favoris (lot 14), Vendeur est un message
+ * Transition : Vendeur est un message
  * d'attente (lot 15).
  */
 
@@ -83,7 +83,7 @@ export function CommerceHouseScreen({
     [t],
   );
 
-  const action = (label: string, icon: 'StoreIcon' | 'BookIcon', onPress: () => void, id: string) => (
+  const action = (label: string, icon: 'StoreIcon', onPress: () => void, id: string) => (
     <Pressable
       key={id}
       onPress={onPress}
@@ -115,12 +115,9 @@ export function CommerceHouseScreen({
           setSection(next);
         }}
       />
-      {source === 'shop' && (onOpenCart || onOpenLibrary) ? (
+      {source === 'shop' && onOpenCart ? (
         <View style={{flexDirection: 'row', gap: spacing.sm, paddingHorizontal: spacing.xl}}>
-          {onOpenCart ? action(t('commerce.cart.title'), 'StoreIcon', onOpenCart, 'shop-open-cart') : null}
-          {onOpenLibrary
-            ? action(t('commerce.library.title'), 'BookIcon', onOpenLibrary, 'shop-open-library')
-            : null}
+          {action(t('commerce.cart.title'), 'StoreIcon', onOpenCart, 'shop-open-cart')}
         </View>
       ) : null}
       {section === 'discover' ? (
@@ -156,6 +153,21 @@ export function CommerceHouseScreen({
     );
   }
   if (section === 'purchases') {
+    if (tab === 'codes') {
+      return (
+        <ScrollView
+          style={{flex: 1, backgroundColor: colors.bgApp}}
+          contentContainerStyle={{paddingBottom: spacing.xxxl}}
+          testID={`screen-${source}-codes`}>
+          {shellHeader}
+          <EmptyState
+            icon="GiftIcon"
+            message={t('commerce.shell.codesSoon')}
+            testID="commerce-codes-soon"
+          />
+        </ScrollView>
+      );
+    }
     return tab === 'favorites' ? (
       <CommerceFavoritesScreen
         source={source}
@@ -166,6 +178,8 @@ export function CommerceHouseScreen({
     ) : (
       <CommercePurchasesScreen
         source={source}
+        mode={tab === 'history' ? 'history' : 'purchases'}
+        onOpenLibrary={onOpenLibrary}
         onDiscover={goDiscover}
         onOpenAccess={onOpenAccess}
         shellHeader={shellHeader}

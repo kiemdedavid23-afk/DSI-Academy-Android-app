@@ -91,7 +91,9 @@
       },
       "tabs": {
         "purchases": "Mes achats",
-        "favorites": "Favoris"
+        "favorites": "Favoris",
+        "history": "Historique",
+        "codes": "Codes"
       },
       "eyebrow": {
         "marketplace": "Marketplace DSI",
@@ -155,7 +157,10 @@
         "newest": "Nouveautés",
         "priceAsc": "Prix croissant",
         "priceDesc": "Prix décroissant"
-      }
+      },
+      "codesSoon": "Les codes promo arrivent bientôt.",
+      "historyEmptyTitle": "Aucune commande pour le moment",
+      "historyEmptyHint": "Vos commandes apparaîtront ici."
     }
   }
 }

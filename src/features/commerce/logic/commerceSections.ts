@@ -6,7 +6,7 @@
 import type {CommerceSource} from '../store/commerceTypes';
 
 export type CommerceSection = 'discover' | 'explore' | 'purchases' | 'seller';
-export type PurchasesTab = 'purchases' | 'favorites';
+export type PurchasesTab = 'purchases' | 'favorites' | 'history' | 'codes';
 
 const MARKETPLACE_SECTIONS: readonly CommerceSection[] = [
   'discover',
@@ -16,7 +16,12 @@ const MARKETPLACE_SECTIONS: readonly CommerceSection[] = [
 ];
 const SHOP_SECTIONS: readonly CommerceSection[] = ['discover', 'explore', 'purchases'];
 
-export const PURCHASES_TABS: readonly PurchasesTab[] = ['purchases', 'favorites'];
+export const PURCHASES_TABS: readonly PurchasesTab[] = [
+  'purchases',
+  'favorites',
+  'history',
+  'codes',
+];
 
 export function sectionsFor(source: CommerceSource): readonly CommerceSection[] {
   return source === 'shop' ? SHOP_SECTIONS : MARKETPLACE_SECTIONS;

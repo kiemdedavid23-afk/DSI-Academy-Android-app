@@ -32,7 +32,7 @@ describe('coque : données', () => {
     expect(new Set(Object.values(HERO_ART_INDEX)).size).toBe(4);
   });
   it('sous-onglets de Mes achats', () => {
-    expect(PURCHASES_TABS).toEqual(['purchases', 'favorites']);
+    expect(PURCHASES_TABS).toEqual(['purchases', 'favorites', 'history', 'codes']);
   });
   it('textes fr/en : une carte d\'ambiance par section de chaque maison', () => {
     [commerceFr, commerceEn].forEach(c => {

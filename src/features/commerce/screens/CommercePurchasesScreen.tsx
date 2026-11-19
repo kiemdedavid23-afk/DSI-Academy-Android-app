@@ -1,9 +1,10 @@
 /**
- * « Mes achats » commun (site : MpPurchasesPage). Commandes de la source,
- * statut, vérification d'un paiement en cours, ouverture du produit acheté.
+ * « Mes achats » et « Historique » communs (site : MpPurchasesPage). Commandes de la
+ * source, statut, vérification d'un paiement en cours, ouverture du produit acheté.
+ * Boutique : lien vers la bibliothèque achetée.
  */
 
-import React, {useEffect, useState, useSyncExternalStore} from 'react';
+import React, {useEffect, useMemo, useState, useSyncExternalStore} from 'react';
 import {FlatList, View} from 'react-native';
 import {
   Button,
@@ -14,13 +15,17 @@ import {
   useTheme,
 } from '@shared/designsystem';
 import {useTranslation} from '@shared/i18n';
-import {accessErrorKey, commerceErrorKey, orderStatusKey} from '../logic/errorKey';
-import {formatDsiAmount} from '../logic/format';
+import {PurchaseRow} from '../components/PurchaseRow';
+import {accessErrorKey, commerceErrorKey} from '../logic/errorKey';
+import {ordersFor, type OrdersMode} from '../logic/purchases';
 import {COMMERCE_STORES} from '../store/commerceStores';
 import type {CommerceAccess, CommerceOrder, CommerceSource} from '../store/commerceTypes';
 
 export type CommercePurchasesScreenProps = {
   source: CommerceSource;
+  mode?: OrdersMode;
+  /** Boutique seulement : bibliothèque des achats. */
+  onOpenLibrary?: () => void;
   onDiscover: () => void;
   onOpenAccess: (access: CommerceAccess) => void;
   /** Coque : carte d'ambiance et sélecteurs, posés en tête de la liste. */
@@ -29,15 +34,18 @@ export type CommercePurchasesScreenProps = {
 
 export function CommercePurchasesScreen({
   source,
+  mode = 'purchases',
+  onOpenLibrary,
   onDiscover,
   onOpenAccess,
   shellHeader,
 }: CommercePurchasesScreenProps) {
   const stores = COMMERCE_STORES[source];
   const {t} = useTranslation();
-  const {colors, spacing, radii} = useTheme();
+  const {colors, spacing} = useTheme();
   const orders = useSyncExternalStore(stores.orders.subscribe, stores.orders.getState);
   const [accessKey, setAccessKey] = useState<string | null>(null);
+  const list = useMemo(() => ordersFor(mode, orders.items), [mode, orders.items]);
   const [message, setMessage] = useState<{orderId: string; key: string} | null>(null);
 
   useEffect(() => {
@@ -93,24 +101,7 @@ export function CommercePurchasesScreen({
   const renderOrder = ({item}: {item: CommerceOrder}) => {
     const items = item.items.length > 0 ? item.items : [{productId: '', title: null, qty: null}];
     return (
-      <View
-        testID={`order-${item.id}`}
-        style={{
-          backgroundColor: colors.bgSurface,
-          borderColor: colors.borderLight,
-          borderRadius: radii.md,
-          borderWidth: 1,
-          gap: spacing.sm,
-          marginHorizontal: spacing.xl,
-          padding: spacing.lg,
-        }}>
-        <Text variant="caption" color="secondary">
-          {t(orderStatusKey(item.status, item.rawStatus))}
-          {item.createdAt ? ` · ${new Date(item.createdAt).toLocaleDateString()}` : ''}
-        </Text>
-        <Text variant="bodySmallStrong" color="gold">
-          {t('commerce.priceDsi', {amount: formatDsiAmount(item.totalDsi)})}
-        </Text>
+      <PurchaseRow order={item}>
         {item.status === 'processing' ? (
           <>
             <Text variant="caption" color="secondary">
@@ -125,13 +116,10 @@ export function CommercePurchasesScreen({
             />
           </>
         ) : null}
-        {items.map(line => (
-          <View key={`${item.id}-${line.productId}`} style={{gap: spacing.xs}}>
-            <Text variant="cardTitle" numberOfLines={2}>
-              {line.title ?? t('mp.orders.fallbackTitle')}
-            </Text>
-            {item.status === 'paid' ? (
+        {item.status === 'paid'
+          ? items.map(line => (
               <Button
+                key={`${item.id}-${line.productId}`}
                 variant="secondary"
                 label={t(
                   accessKey === `${item.id}:${line.productId}`
@@ -142,31 +130,46 @@ export function CommercePurchasesScreen({
                 onPress={() => void open(item, line.productId === '' ? null : line.productId)}
                 testID={`order-open-${item.id}`}
               />
-            ) : null}
-          </View>
-        ))}
+            ))
+          : null}
         {message && message.orderId === item.id ? (
           <Text variant="caption" color="secondary" testID="order-message">
             {t(message.key)}
           </Text>
         ) : null}
-      </View>
+      </PurchaseRow>
     );
   };
 
   return (
     <FlatList
       style={{flex: 1, backgroundColor: colors.bgApp}}
-      testID={`screen-${source}-purchases`}
-      data={orders.items}
+      testID={`screen-${source}-${mode}`}
+      data={list}
       keyExtractor={o => o.id}
       contentContainerStyle={{gap: spacing.md, paddingBottom: spacing.xxxl, paddingTop: shellHeader ? 0 : spacing.lg}}
-      ListHeaderComponent={shellHeader ? <View>{shellHeader}</View> : undefined}
+      ListHeaderComponent={
+        shellHeader || (onOpenLibrary && source === 'shop') ? (
+          <View style={{gap: spacing.md}}>
+            {shellHeader}
+            {onOpenLibrary && source === 'shop' ? (
+              <View style={{paddingHorizontal: spacing.xl}}>
+                <Button
+                  variant="secondary"
+                  label={t('commerce.library.title')}
+                  onPress={onOpenLibrary}
+                  testID="shop-open-library"
+                />
+              </View>
+            ) : null}
+          </View>
+        ) : undefined
+      }
       renderItem={renderOrder}
       ListEmptyComponent={
         <EmptyState
-          title={t('mp.orders.emptyTitle')}
-          message={t('mp.orders.emptyHint')}
+          title={t(mode === 'history' ? 'commerce.shell.historyEmptyTitle' : 'mp.orders.emptyTitle')}
+          message={t(mode === 'history' ? 'commerce.shell.historyEmptyHint' : 'mp.orders.emptyHint')}
           actionLabel={t('mp.orders.emptyCta')}
           onAction={onDiscover}
           testID="commerce-purchases-empty"

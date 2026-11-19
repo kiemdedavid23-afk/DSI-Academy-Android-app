@@ -106,6 +106,7 @@ export function CommerceFavoritesScreen({
       }
       ListEmptyComponent={
         <EmptyState
+          icon="BookmarkIcon"
           title={t('mp.favs.emptyTitle')}
           message={t('mp.favs.emptyHint')}
           actionLabel={t('mp.favs.emptyCta')}
