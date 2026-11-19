@@ -161,6 +161,25 @@
       },
       "codesIntro": "Enter a promo code: it will be kept for your cart.",
       "codesSoonHint": "You will soon be able to use a code to pay less."
+    },
+    "purchase": {
+      "doNotClose": "Please keep this page open.",
+      "autoChecking": "We check automatically every 5 seconds.",
+      "stayHere": "Stay here",
+      "receipt": {
+        "orderId": "Order number",
+        "paymentRef": "Payment reference",
+        "operationId": "Financial operation",
+        "subtotal": "Subtotal",
+        "discount": "Discount",
+        "promo": "Promo code",
+        "total": "Total paid"
+      },
+      "redirect": {
+        "access": "Opening your product in {{count}} s…",
+        "library": "Opening your library in {{count}} s…",
+        "purchases": "Opening My purchases in {{count}} s…"
+      }
     }
   }
 }

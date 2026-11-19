@@ -219,6 +219,8 @@ function mapOrderState(r: Record<string, unknown>): CommerceOrderState | null {
     totalDsi: asInt(r.priceDsi),
     replay: r.replay === true,
     note: null,
+    paymentRef: asString(r.paymentRef),
+    operationId: asString(r.financialOperationId),
   };
 }
 

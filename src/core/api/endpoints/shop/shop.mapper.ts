@@ -256,6 +256,11 @@ export function mapShopCheckout(
       totalDsi: asInt(r.totalDsi),
       replay: r.replay === true,
       note: asString(r.note),
+      paymentRef: null,
+      operationId: asString(r.financialOperationId),
+      subtotalDsi: asInt(r.subtotalDsi),
+      discountDsi: asInt(r.discountDsi),
+      promoCode: asString(r.promoCode),
     },
   };
 }

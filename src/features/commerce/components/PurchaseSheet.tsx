@@ -4,19 +4,16 @@
  * résultat. L'écran ne calcule rien : l'état vient du store d'achat.
  */
 
-import React, {useEffect, useState, useSyncExternalStore} from 'react';
+import React, {useEffect, useSyncExternalStore} from 'react';
 import {Modal, StyleSheet, View} from 'react-native';
-import {Button, LoadingState, Text, useTheme, withAlpha} from '@shared/designsystem';
+import {Button, Text, useTheme, withAlpha} from '@shared/designsystem';
 import {useTranslation} from '@shared/i18n';
 import {formatDsiAmount} from '../logic/format';
-import {
-  accessErrorKey,
-  cartPurchaseErrorKey,
-  purchaseErrorKey,
-} from '../logic/errorKey';
+import {cartPurchaseErrorKey, purchaseErrorKey} from '../logic/errorKey';
 import {COMMERCE_STORES} from '../store/commerceStores';
 import type {CommerceAccess, CommerceSource} from '../store/commerceTypes';
 import {PriceTag} from './PriceTag';
+import {PurchaseStatusPage} from './PurchaseStatusPage';
 
 export type PurchaseSheetProps = {
   source: CommerceSource;
@@ -42,15 +39,6 @@ export function PurchaseSheet({
   const {colors, spacing, radii} = useTheme();
   const p = useSyncExternalStore(stores.purchase.subscribe, stores.purchase.getState);
   const bal = useSyncExternalStore(stores.balance.subscribe, stores.balance.getState);
-  const [accessing, setAccessing] = useState(false);
-  const [accessMsg, setAccessMsg] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (p.phase === 'idle') {
-      setAccessMsg(null);
-    }
-  }, [p.phase]);
-
   const confirming = p.phase === 'confirming';
   useEffect(() => {
     if (confirming) {
@@ -61,6 +49,16 @@ export function PurchaseSheet({
   if (p.phase === 'idle' || !p.product) {
     return null;
   }
+  if (p.phase === 'processing' || p.phase === 'pending' || p.phase === 'paid') {
+    return (
+      <PurchaseStatusPage
+        source={source}
+        onOpenPurchases={onOpenPurchases}
+        onOpenLibrary={onOpenLibrary}
+        onOpenAccess={onOpenAccess}
+      />
+    );
+  }
   const product = p.product;
   const price = product.priceDsi;
   const known = bal.status === 'success' && bal.amount !== null;
@@ -69,22 +67,6 @@ export function PurchaseSheet({
   const go = (fn: () => void) => () => {
     stores.purchase.dismiss();
     fn();
-  };
-
-  const openPaid = async (orderId: string) => {
-    if (accessing) {
-      return;
-    }
-    setAccessMsg(null);
-    setAccessing(true);
-    const res = await stores.orders.access({orderId, productId: product.id});
-    setAccessing(false);
-    if (res.ok) {
-      stores.purchase.dismiss();
-      onOpenAccess({url: res.url, mode: res.mode});
-    } else {
-      setAccessMsg(accessErrorKey(res.errorKind));
-    }
   };
 
   let body: React.ReactNode = null;
@@ -147,35 +129,6 @@ export function PurchaseSheet({
         <Button variant="ghost" label={t('common.cancel')} onPress={stores.purchase.dismiss} />
       </>
     );
-  } else if (p.phase === 'processing') {
-    body = (
-      <>
-        <LoadingState accessibilityLabel={t('mp.checkout.paying')} />
-        <Text variant="body" color="secondary" testID="purchase-processing">
-          {t('mp.checkout.paying')}
-        </Text>
-      </>
-    );
-  } else if (p.phase === 'pending') {
-    body = (
-      <>
-        <Text variant="body" testID="purchase-pending">
-          {t('mp.orders.noteProcessing')}
-        </Text>
-        {p.verifyFailed ? (
-          <Text variant="caption" color="secondary">
-            {t('app.catalogue.errorNetwork')}
-          </Text>
-        ) : null}
-        <Button
-          label={t(p.verifying ? 'mp.orders.checking' : 'mp.orders.check')}
-          loading={p.verifying}
-          onPress={() => void stores.purchase.verify()}
-          testID="purchase-verify"
-        />
-        <Button variant="ghost" label={t('common.close')} onPress={stores.purchase.dismiss} />
-      </>
-    );
   } else if (p.phase === 'indeterminate') {
     body = (
       <>
@@ -186,44 +139,6 @@ export function PurchaseSheet({
           label={t('common.retry')}
           onPress={() => void stores.purchase.confirm()}
           testID="purchase-replay"
-        />
-        <Button variant="ghost" label={t('common.close')} onPress={stores.purchase.dismiss} />
-      </>
-    );
-  } else if (p.phase === 'paid' && p.order) {
-    const order = p.order;
-    body = (
-      <>
-        <Text variant="body" testID="purchase-paid">
-          {t(p.cart ? 'commerce.cart.paid' : 'mp.purchaseDemo')}
-        </Text>
-        <Text variant="caption" color="secondary">
-          {t('mp.checkout.result.orderRef', {ref: order.orderId})}
-        </Text>
-        {accessMsg && !p.cart ? (
-          <Text variant="caption" color="secondary" testID="purchase-access-error">
-            {t(accessMsg)}
-          </Text>
-        ) : null}
-        {p.cart ? null : (
-          <Button
-            label={t(accessing ? 'mp.orders.accessLoading' : 'mp.checkout.result.access')}
-            loading={accessing}
-            onPress={() => void openPaid(order.orderId)}
-            testID="purchase-access"
-          />
-        )}
-        {p.cart && onOpenLibrary ? (
-          <Button
-            label={t('commerce.library.myLibrary')}
-            onPress={go(onOpenLibrary)}
-            testID="purchase-open-library"
-          />
-        ) : null}
-        <Button
-          variant={p.cart && !onOpenLibrary ? 'primary' : 'secondary'}
-          label={t('mp.checkout.result.myPurchases')}
-          onPress={go(onOpenPurchases)}
         />
         <Button variant="ghost" label={t('common.close')} onPress={stores.purchase.dismiss} />
       </>

@@ -210,6 +210,24 @@ const KEEP_KEY_KINDS: CommerceErrorKind[] = [
   'invalidResponse',
 ];
 
+export function mergeOrderState(
+  prev: CommerceOrderState,
+  next: CommerceOrderState,
+): CommerceOrderState {
+  const keep = <K extends keyof CommerceOrderState>(k: K) =>
+    (next[k] ?? prev[k]) as CommerceOrderState[K];
+  return {
+    ...next,
+    note: next.note,
+    totalDsi: keep('totalDsi'),
+    paymentRef: keep('paymentRef'),
+    operationId: keep('operationId'),
+    subtotalDsi: keep('subtotalDsi'),
+    discountDsi: keep('discountDsi'),
+    promoCode: keep('promoCode'),
+  };
+}
+
 export function createPurchaseStore(
   source: CommerceSource,
   hooks: {onPaid: () => void},
@@ -218,7 +236,10 @@ export function createPurchaseStore(
   const store = createSimpleStore<PurchaseState>(initialPurchase());
   let busy = false;
 
-  function settle(order: CommerceOrderState) {
+  /** Une relecture ne perd pas les données du premier retour (reçu). */
+  function settle(next: CommerceOrderState) {
+    const prev = store.getState().order;
+    const order = prev ? mergeOrderState(prev, next) : next;
     if (order.status === 'paid') {
       store.setState({phase: 'paid', order, errorKind: null});
       hooks.onPaid();

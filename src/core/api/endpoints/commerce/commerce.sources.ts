@@ -198,6 +198,8 @@ const shopApi: CommerceApi = {
         totalDsi: res.order.totalDsi,
         replay: false,
         note: null,
+        paymentRef: res.order.paymentRef,
+        discountDsi: res.order.discountDsi,
       },
     };
   },

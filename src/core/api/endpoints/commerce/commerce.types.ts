@@ -63,6 +63,12 @@ export type CommerceOrderState = {
   totalDsi: number | null;
   replay: boolean;
   note: string | null;
+  /** Données du reçu (selon le Worker) : absentes, elles restent `undefined` ou `null`. */
+  paymentRef?: string | null;
+  operationId?: string | null;
+  subtotalDsi?: number | null;
+  discountDsi?: number | null;
+  promoCode?: string | null;
 };
 
 /**
