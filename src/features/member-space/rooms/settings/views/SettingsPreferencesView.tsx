@@ -1,13 +1,19 @@
 import React, {useSyncExternalStore} from 'react';
-import {View, ScrollView, Pressable} from 'react-native';
+import {View, Pressable} from 'react-native';
 import {Text, useTheme} from '@shared/designsystem';
 import {useTranslation} from '@shared/i18n';
 import {preferencesStore} from '@shared/preferences';
 import type {ThemePreference} from '@shared/designsystem/theme/themePreferences';
+import {
+  SettingsScaffold,
+  SettingsGroup,
+  SettingsRow,
+  SettingsLabel,
+} from '../components/SettingsKit';
 
 export function SettingsPreferencesView({onBack}: {onBack: () => void}) {
   const {t, i18n} = useTranslation();
-  const {colors, radii, glass} = useTheme();
+  const {colors, radii} = useTheme();
   const prefs = useSyncExternalStore(
     preferencesStore.subscribe,
     () => preferencesStore.get(),
@@ -35,10 +41,9 @@ export function SettingsPreferencesView({onBack}: {onBack: () => void}) {
         flexDirection: 'row',
         gap: 4,
         padding: 4,
-        borderRadius: radii.md,
+        borderRadius: radii.md + 4,
         backgroundColor: colors.bgSurfaceAlt,
-        borderWidth: 1,
-        borderColor: colors.borderLight,
+        margin: 14,
       }}>
       {options.map(o => {
         const active = o.id === value;
@@ -46,20 +51,22 @@ export function SettingsPreferencesView({onBack}: {onBack: () => void}) {
           <Pressable
             key={o.id}
             onPress={() => onChange(o.id)}
+            accessibilityRole="button"
+            accessibilityState={{selected: active}}
             style={{
               flex: 1,
-              paddingVertical: 8.8,
-              paddingHorizontal: 8,
-              borderRadius: Math.max(radii.md - 2, 4),
-              backgroundColor: active ? colors.goldHalo18 : 'transparent',
+              minHeight: 44,
+              justifyContent: 'center',
+              borderRadius: radii.md,
+              backgroundColor: active ? colors.bgSurface : 'transparent',
               borderWidth: active ? 1 : 0,
-              borderColor: colors.goldBorder,
+              borderColor: active ? colors.goldBorder : 'transparent',
               alignItems: 'center',
             }}>
             <Text
               style={{
-                fontSize: 14.1,
-                fontWeight: '600',
+                fontSize: 15,
+                fontWeight: active ? '700' : '500',
                 color: active ? colors.textPrimary : colors.textSecondary,
               }}>
               {o.label}
@@ -71,85 +78,63 @@ export function SettingsPreferencesView({onBack}: {onBack: () => void}) {
   );
 
   return (
-    <ScrollView contentContainerStyle={{padding: 16, gap: 16}}>
-      <Pressable
-        onPress={onBack}
-        style={{
-          alignSelf: 'flex-start',
-          paddingVertical: 7.2,
-          paddingHorizontal: 12,
-          borderRadius: radii.md,
-          backgroundColor: glass.bg,
-          borderWidth: 1,
-          borderColor: glass.border,
-        }}>
-        <Text style={{fontWeight: '600'}}>← {t('settings.back')}</Text>
-      </Pressable>
-      <Text style={{fontSize: 19.2, fontWeight: '800'}}>{t('settings.preferences.title')}</Text>
+    <SettingsScaffold
+      title={t('settings.preferences.title')}
+      onBack={onBack}
+      backLabel={t('settings.back')}
+      testID="screen-settings-preferences">
+      <SettingsLabel>{t('settings.language', {defaultValue: 'Langue'})}</SettingsLabel>
+      <SettingsGroup>
+        <Segment
+          value={prefs.language}
+          onChange={id => setLang(id as 'fr' | 'en')}
+          options={[
+            {id: 'fr', label: 'Français'},
+            {id: 'en', label: 'English'},
+          ]}
+        />
+      </SettingsGroup>
 
-      <Text style={{fontSize: 12.5, fontWeight: '700', letterSpacing: 0.4, color: colors.textSecondary}}>
-        {t('settings.language', {defaultValue: 'LANGUE'})}
-      </Text>
-      <Segment
-        value={prefs.language}
-        onChange={id => setLang(id as 'fr' | 'en')}
-        options={[
-          {id: 'fr', label: 'FR'},
-          {id: 'en', label: 'EN'},
-        ]}
-      />
+      <SettingsLabel>{t('settings.theme', {defaultValue: 'Thème'})}</SettingsLabel>
+      <SettingsGroup>
+        <Segment
+          value={prefs.theme}
+          onChange={id => setTheme(id as ThemePreference)}
+          options={[
+            {id: 'light', label: t('settings.themeLight', {defaultValue: 'Clair'})},
+            {id: 'dark', label: t('settings.themeDark', {defaultValue: 'Sombre'})},
+            {id: 'system', label: t('settings.themeSystem', {defaultValue: 'Système'})},
+          ]}
+        />
+      </SettingsGroup>
 
-      <Text style={{fontSize: 12.5, fontWeight: '700', letterSpacing: 0.4, color: colors.textSecondary}}>
-        {t('settings.theme', {defaultValue: 'THÈME'})}
-      </Text>
-      <Segment
-        value={prefs.theme}
-        onChange={id => setTheme(id as ThemePreference)}
-        options={[
-          {id: 'light', label: t('settings.themeLight', {defaultValue: 'Clair'})},
-          {id: 'dark', label: t('settings.themeDark', {defaultValue: 'Sombre'})},
-          {id: 'system', label: t('settings.themeSystem', {defaultValue: 'Système'})},
-        ]}
-      />
-
-      <Pressable
-        onPress={toggleMotion}
-        style={{
-          flexDirection: 'row',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          padding: 14,
-          borderRadius: radii.md,
-          backgroundColor: glass.bg,
-          borderWidth: 1,
-          borderColor: glass.border,
-          minHeight: 44,
-        }}>
-        <Text style={{fontSize: 15.2, fontWeight: '600', color: colors.textPrimary}}>
-          {t('settings.reduceMotion', {defaultValue: 'Réduire les animations'})}
-        </Text>
-        <View
-          style={{
-            width: 46,
-            height: 26,
-            borderRadius: 13,
-            borderWidth: 1,
-            borderColor: prefs.reduceMotion ? colors.bluePrimary : colors.borderLight,
-            backgroundColor: prefs.reduceMotion ? colors.bluePrimary : colors.bgSurfaceAlt,
-            justifyContent: 'center',
-            paddingHorizontal: 2,
-          }}>
-          <View
-            style={{
-              width: 20,
-              height: 20,
-              borderRadius: 10,
-              backgroundColor: colors.switchKnob,
-              alignSelf: prefs.reduceMotion ? 'flex-end' : 'flex-start',
-            }}
-          />
-        </View>
-      </Pressable>
-    </ScrollView>
+      <SettingsGroup>
+        <SettingsRow
+          title={t('settings.reduceMotion', {defaultValue: 'Réduire les animations'})}
+          onPress={toggleMotion}
+          right={
+            <View
+              style={{
+                width: 50,
+                height: 30,
+                borderRadius: 15,
+                backgroundColor: prefs.reduceMotion ? colors.bluePrimary : colors.borderLight,
+                justifyContent: 'center',
+                paddingHorizontal: 3,
+              }}>
+              <View
+                style={{
+                  width: 24,
+                  height: 24,
+                  borderRadius: 12,
+                  backgroundColor: colors.switchKnob,
+                  alignSelf: prefs.reduceMotion ? 'flex-end' : 'flex-start',
+                }}
+              />
+            </View>
+          }
+        />
+      </SettingsGroup>
+    </SettingsScaffold>
   );
 }

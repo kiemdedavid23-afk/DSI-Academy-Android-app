@@ -1,36 +1,51 @@
 /**
- * Paramètres — hub + navigation vers sous-vues (L3d).
+ * Paramètres — hub sur fond uni + sous-vues. Visuel : SettingsKit.
  */
 
-import React, {useState, useSyncExternalStore} from 'react';
-import {
-  View,
-  ScrollView,
-  Pressable,
-  StyleSheet,
-  Alert,
-} from 'react-native';
-import {useNavigation} from '@react-navigation/native';
+import React, {useCallback, useState, useSyncExternalStore} from 'react';
+import {View, Pressable, Alert, BackHandler} from 'react-native';
+import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import {Text, useTheme, Icon, MemberAvatar} from '@shared/designsystem';
 import {useTranslation} from '@shared/i18n';
 import {memberProfileStore} from '@shared/store';
 import {sessionStore} from '@core/session';
+import {APP_VERSION} from '@core/config/appInfo';
 import {SettingsAccountView} from '../views/SettingsAccountView';
 import {SettingsPreferencesView} from '../views/SettingsPreferencesView';
 import {SettingsSecurityView} from '../views/SettingsSecurityView';
 import {SettingsHelpView} from '../views/SettingsHelpView';
+import {
+  SettingsScaffold,
+  SettingsGroup,
+  SettingsRow,
+  SettingsBadge,
+} from '../components/SettingsKit';
 
 type Section = 'hub' | 'account' | 'preferences' | 'security' | 'help';
 
 export function MemberSettingsScreen() {
   const {t} = useTranslation();
-  const {colors, radii, glass} = useTheme();
+  const {colors, radii} = useTheme();
   const navigation = useNavigation<any>();
   const [section, setSection] = useState<Section>('hub');
 
   const profile = useSyncExternalStore(
     cb => memberProfileStore.subscribe(() => cb()),
     () => memberProfileStore.getState(),
+  );
+
+  // Le retour Android ferme d'abord la sous-page, puis quitte les Paramètres.
+  useFocusEffect(
+    useCallback(() => {
+      const sub = BackHandler.addEventListener('hardwareBackPress', () => {
+        if (section !== 'hub') {
+          setSection('hub');
+          return true;
+        }
+        return false;
+      });
+      return () => sub.remove();
+    }, [section]),
   );
 
   const onLogout = () => {
@@ -46,207 +61,123 @@ export function MemberSettingsScreen() {
     ]);
   };
 
+  const toHub = () => setSection('hub');
+
   if (section === 'account') {
-    return <SettingsAccountView onBack={() => setSection('hub')} />;
+    return <SettingsAccountView onBack={toHub} />;
   }
   if (section === 'preferences') {
-    return <SettingsPreferencesView onBack={() => setSection('hub')} />;
+    return <SettingsPreferencesView onBack={toHub} />;
   }
   if (section === 'security') {
-    return <SettingsSecurityView onBack={() => setSection('hub')} onLogout={onLogout} />;
+    return <SettingsSecurityView onBack={toHub} onLogout={onLogout} />;
   }
   if (section === 'help') {
-    return <SettingsHelpView onBack={() => setSection('hub')} />;
+    return <SettingsHelpView onBack={toHub} />;
   }
 
   const p = profile.data;
   const fullName = p ? `${p.prenom} ${p.nom}`.trim() : '—';
 
-  const rows: {
-    id: Section | 'notifications';
-    title: string;
-    desc: string;
-    icon: 'UserIcon' | 'SettingsIcon' | 'BellIcon' | 'ShieldIcon' | 'HelpIcon';
-    disabled?: boolean;
-  }[] = [
-    {
-      id: 'account',
-      title: t('settings.sections.account.title'),
-      desc: t('settings.sections.account.desc'),
-      icon: 'UserIcon',
-    },
-    {
-      id: 'preferences',
-      title: t('settings.sections.preferences.title'),
-      desc: t('settings.sections.preferences.desc'),
-      icon: 'SettingsIcon',
-    },
-    {
-      id: 'notifications',
-      title: t('settings.sections.notifications.title'),
-      desc: t('common.comingSoon'),
-      icon: 'BellIcon',
-      disabled: true,
-    },
-    {
-      id: 'security',
-      title: t('settings.sections.security.title'),
-      desc: t('settings.sections.security.desc'),
-      icon: 'ShieldIcon',
-    },
-    {
-      id: 'help',
-      title: t('settings.sections.help.title'),
-      desc: t('settings.sections.help.desc'),
-      icon: 'HelpIcon',
-    },
-  ];
+  const leave = () => {
+    if (navigation.canGoBack()) {
+      navigation.goBack();
+    } else {
+      navigation.navigate('MemberHome');
+    }
+  };
 
   return (
-    <ScrollView
-      style={{flex: 1, backgroundColor: 'transparent'}}
-      contentContainerStyle={{padding: 16, paddingBottom: 32, gap: 20}}
+    <SettingsScaffold
+      title={t('settings.title')}
+      onBack={leave}
+      onInfo={() => setSection('help')}
+      backLabel={t('settings.back')}
+      infoLabel={t('settings.sections.help.title')}
       testID="screen-settings">
-      <View
-        style={{
-          backgroundColor: glass.bg,
-          borderColor: glass.border,
-          borderWidth: 1,
-          borderRadius: radii.lg,
-          paddingVertical: 20,
-          paddingHorizontal: 24,
-        }}>
-        <Text style={{fontSize: 21.6, fontWeight: '800', color: colors.textPrimary}}>
-          {t('settings.title')}
-        </Text>
-        <Text style={{fontSize: 13.6, color: colors.textSecondary, marginTop: 4}}>
-          {t('settings.subtitle')}
-        </Text>
-      </View>
-
-      {/* Carte compte */}
+      {/* Carte membre */}
       <Pressable
         onPress={() => navigation.navigate('MemberProfile')}
+        accessibilityRole="button"
         style={{
-          backgroundColor: colors.bgDarkPremium,
-          borderColor: colors.goldBorder,
+          backgroundColor: colors.bgSurface,
+          borderColor: colors.borderLight,
           borderWidth: 1,
-          borderRadius: radii.lg,
+          borderRadius: radii.lg + 6,
           paddingVertical: 16,
-          paddingHorizontal: 17.6,
+          paddingHorizontal: 18,
           flexDirection: 'row',
           alignItems: 'center',
-          gap: 14.4,
+          gap: 14,
         }}>
         <MemberAvatar
           initials={`${p?.prenom?.[0] || 'D'}${p?.nom?.[0] || ''}`.toUpperCase()}
           size="md"
         />
-        <View style={{flex: 1}}>
-          <Text
-            style={{
-              fontFamily: 'Fraunces-SemiBold',
-              fontSize: 17.6,
-              color: colors.textOnDark,
-            }}>
+        <View style={{flex: 1, gap: 2}}>
+          <Text style={{fontSize: 18, fontWeight: '700', color: colors.textPrimary}}>
             {fullName}
           </Text>
-          <Text style={{fontSize: 12.8, color: colors.textOnDark, opacity: 0.85}}>
+          <Text style={{fontSize: 14, color: colors.textSecondary}}>
             {p?.identifiantDsi || '—'}
           </Text>
         </View>
-        <Icon name="ChevronRightIcon" size={20} color={colors.goldPrestige} />
+        <Icon name="ChevronRightIcon" size={20} color={colors.textMuted} />
       </Pressable>
 
-      {/* Catégories */}
-      <View
-        style={{
-          backgroundColor: glass.bg,
-          borderColor: glass.border,
-          borderWidth: 1,
-          borderRadius: radii.lg,
-          overflow: 'hidden',
-        }}>
-        {rows.map((row, idx) => (
-          <Pressable
-            key={row.id}
-            disabled={row.disabled}
-            onPress={() => {
-              if (row.disabled) return;
-              setSection(row.id as Section);
-            }}
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              gap: 13.6,
-              paddingVertical: 14.4,
-              paddingHorizontal: 17.6,
-              minHeight: 44,
-              opacity: row.disabled ? 0.55 : 1,
-              borderBottomWidth: idx < rows.length - 1 ? StyleSheet.hairlineWidth : 0,
-              borderBottomColor: colors.borderLight,
-            }}>
-            <View
-              style={{
-                width: 36,
-                height: 36,
-                borderRadius: radii.md,
-                backgroundColor: colors.bgSurfaceAlt,
-                borderWidth: 1,
-                borderColor: colors.borderLight,
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}>
-              <Icon name={row.icon as any} size={20} color={colors.textSecondary} />
-            </View>
-            <View style={{flex: 1, gap: 2.4}}>
-              <Text style={{fontSize: 15.2, fontWeight: '600', color: colors.textPrimary}}>
-                {row.title}
-              </Text>
-              <Text style={{fontSize: 12.8, color: colors.textSecondary}}>{row.desc}</Text>
-            </View>
-            {!row.disabled ? (
-              <Icon name="ChevronRightIcon" size={18} color={colors.textMuted} />
-            ) : (
-              <View
-                style={{
-                  paddingVertical: 4,
-                  paddingHorizontal: 10,
-                  borderRadius: 999,
-                  backgroundColor: colors.bgSurfaceAlt,
-                  borderWidth: 1,
-                  borderColor: colors.borderLight,
-                }}>
-                <Text style={{fontSize: 12.5, fontWeight: '600', color: colors.textMuted}}>
-                  {t('common.comingSoon')}
-                </Text>
-              </View>
-            )}
-          </Pressable>
-        ))}
-      </View>
+      <SettingsGroup>
+        <SettingsRow
+          icon="UserIcon"
+          title={t('settings.sections.account.title')}
+          onPress={() => setSection('account')}
+          chevron
+          testID="settings-row-account"
+        />
+        <SettingsRow
+          icon="SettingsIcon"
+          title={t('settings.sections.preferences.title')}
+          onPress={() => setSection('preferences')}
+          chevron
+          testID="settings-row-preferences"
+        />
+        <SettingsRow
+          icon="BellIcon"
+          title={t('settings.sections.notifications.title')}
+          disabled
+          right={<SettingsBadge text={t('common.comingSoon')} />}
+        />
+        <SettingsRow
+          icon="ShieldIcon"
+          title={t('settings.sections.security.title')}
+          onPress={() => setSection('security')}
+          chevron
+          testID="settings-row-security"
+        />
+      </SettingsGroup>
 
-      <Pressable
-        onPress={onLogout}
-        style={{
-          paddingVertical: 13.6,
-          paddingHorizontal: 16,
-          borderRadius: radii.lg,
-          backgroundColor: glass.bg,
-          borderWidth: 1,
-          borderColor: colors.dangerBorder,
-          flexDirection: 'row',
-          alignItems: 'center',
-          justifyContent: 'center',
-          gap: 8,
-          minHeight: 44,
-        }}
-        testID="settings-logout">
-        <Icon name="LogoutIcon" size={20} color={colors.dangerText} />
-        <Text style={{color: colors.dangerText, fontSize: 15.2, fontWeight: '700'}}>
-          {t('settings.logout')}
-        </Text>
-      </Pressable>
-    </ScrollView>
+      <SettingsGroup>
+        <SettingsRow
+          icon="HelpIcon"
+          title={t('settings.sections.help.title')}
+          onPress={() => setSection('help')}
+          chevron
+          testID="settings-row-help"
+        />
+      </SettingsGroup>
+
+      <SettingsGroup>
+        <SettingsRow
+          icon="LogoutIcon"
+          title={t('settings.logout')}
+          onPress={onLogout}
+          danger
+          testID="settings-logout"
+        />
+      </SettingsGroup>
+
+      <Text style={{textAlign: 'center', fontSize: 13, color: colors.textMuted}}>
+        DSI Academy · v{APP_VERSION}
+      </Text>
+    </SettingsScaffold>
   );
 }

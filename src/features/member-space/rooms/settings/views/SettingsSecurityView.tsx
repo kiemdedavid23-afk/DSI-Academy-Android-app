@@ -1,10 +1,14 @@
 import React, {useSyncExternalStore} from 'react';
-import {View, ScrollView, Pressable} from 'react-native';
-import {Text, useTheme} from '@shared/designsystem';
 import {useTranslation} from '@shared/i18n';
 import {memberProfileStore, memberSubscriptionStore} from '@shared/store';
 import {sessionStore} from '@core/session';
 import {formatShortDate, statusLabel} from '@core/utils/displayLabels';
+import {
+  SettingsScaffold,
+  SettingsGroup,
+  SettingsRow,
+  SettingsInfoRow,
+} from '../components/SettingsKit';
 
 export function SettingsSecurityView({
   onBack,
@@ -15,8 +19,7 @@ export function SettingsSecurityView({
 }) {
   const {t, i18n} = useTranslation();
   const lang = i18n.language?.startsWith('en') ? 'en' : 'fr';
-  const {colors, radii, glass} = useTheme();
-  const sessionActive = useSyncExternalStore(
+  const active = useSyncExternalStore(
     sessionStore.subscribe,
     () => sessionStore.hasSession(),
     () => false,
@@ -30,70 +33,40 @@ export function SettingsSecurityView({
     () => memberSubscriptionStore.getState(),
   );
 
-  const active = sessionActive;
-
   return (
-    <ScrollView contentContainerStyle={{padding: 16, gap: 16}}>
-      <Pressable
-        onPress={onBack}
-        style={{
-          alignSelf: 'flex-start',
-          padding: 10,
-          borderRadius: radii.md,
-          backgroundColor: glass.bg,
-          borderWidth: 1,
-          borderColor: glass.border,
-        }}>
-        <Text style={{fontWeight: '600'}}>← {t('settings.back')}</Text>
-      </Pressable>
-      <Text style={{fontSize: 19.2, fontWeight: '800'}}>{t('settings.security.title')}</Text>
-
-      <View
-        style={{
-          flexDirection: 'row',
-          alignItems: 'center',
-          gap: 8,
-        }}>
-        <View
-          style={{
-            paddingVertical: 4,
-            paddingHorizontal: 10,
-            borderRadius: 999,
-            backgroundColor: active ? colors.statusActiveBg : colors.bgSurfaceAlt,
-            borderWidth: 1,
-            borderColor: active ? colors.statusActiveBorder : colors.borderLight,
-          }}>
-          <Text
-            style={{
-              fontSize: 12.5,
-              fontWeight: '600',
-              color: active ? colors.statusActiveText : colors.textSecondary,
-            }}>
-            {active
+    <SettingsScaffold
+      title={t('settings.security.title')}
+      onBack={onBack}
+      backLabel={t('settings.back')}
+      testID="screen-settings-security">
+      <SettingsGroup>
+        <SettingsRow
+          icon="ShieldIcon"
+          title={
+            active
               ? t('settings.sessionActive', {defaultValue: 'Session active'})
-              : t('settings.sessionInactive', {defaultValue: 'Session inactive'})}
-          </Text>
-        </View>
-      </View>
+              : t('settings.sessionInactive', {defaultValue: 'Session inactive'})
+          }
+        />
+        <SettingsInfoRow
+          label={t('profile.accountStatus')}
+          value={statusLabel(t, profile.data?.statut)}
+        />
+        <SettingsInfoRow
+          label={t('rooms.subscription')}
+          value={`${statusLabel(t, sub.data?.statut)} · ${formatShortDate(sub.data?.dateFin, lang)}`}
+        />
+      </SettingsGroup>
 
-      <Text style={{color: colors.textSecondary}}>
-        {t('profile.accountStatus')}: {statusLabel(t, profile.data?.statut)}
-      </Text>
-      <Text style={{color: colors.textSecondary}}>
-        {t('rooms.subscription')}: {statusLabel(t, sub.data?.statut)} · {formatShortDate(sub.data?.dateFin, lang)}
-      </Text>
-
-      <Pressable
-        onPress={onLogout}
-        style={{
-          padding: 14,
-          borderRadius: radii.lg,
-          borderWidth: 1,
-          borderColor: colors.dangerBorder,
-          alignItems: 'center',
-        }}>
-        <Text style={{color: colors.dangerText, fontWeight: '700'}}>{t('settings.logout')}</Text>
-      </Pressable>
-    </ScrollView>
+      <SettingsGroup>
+        <SettingsRow
+          icon="LogoutIcon"
+          title={t('settings.logout')}
+          onPress={onLogout}
+          danger
+          testID="settings-security-logout"
+        />
+      </SettingsGroup>
+    </SettingsScaffold>
   );
 }

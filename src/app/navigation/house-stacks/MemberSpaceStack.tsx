@@ -4,7 +4,6 @@
 
 import React from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import {useTranslation} from '@shared/i18n';
 import {MemberHomeScreen} from '@features/member-space/rooms/home/screens/MemberHomeScreen';
 import {MemberSubscriptionScreen} from '@features/member-space/rooms/subscription/screens/MemberSubscriptionScreen';
 import {MemberPaymentHistoryScreen} from '@features/member-space/rooms/payment-history/screens/MemberPaymentHistoryScreen';
@@ -43,7 +42,6 @@ function withShell(Screen: React.ComponentType): React.FC {
 const Home = withShell(MemberHomeScreen);
 
 export function MemberSpaceStack() {
-  const {t} = useTranslation();
   return (
     <Stack.Navigator screenOptions={{headerShown: false}}>
       <Stack.Screen name="MemberHome" component={Home} />
@@ -112,12 +110,8 @@ export function MemberSpaceStack() {
       />
       <Stack.Screen
         name="MemberSettings"
-        options={{headerShown: true, title: t('rooms.settings')}}
-        children={() => (
-          <MemberSpaceShell>
-            <MemberSettingsScreen />
-          </MemberSpaceShell>
-        )}
+        options={{headerShown: false}}
+        component={MemberSettingsScreen}
       />
     </Stack.Navigator>
   );
