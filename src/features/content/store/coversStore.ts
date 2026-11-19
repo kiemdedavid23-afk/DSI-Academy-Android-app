@@ -8,6 +8,9 @@ import type {CoverItem} from '@core/api/endpoints/content/covers.types';
 import type {ContentType} from '@core/utils/contentDisplay';
 import {createResourceStore} from '@shared/store';
 
+/** Type réexporté : les composants n'importent pas @core/api (R-LAY-6). */
+export type {CoverItem};
+
 const TTL_MS = 24 * 60 * 60_000;
 export const FAN_COVERS = 16;
 
