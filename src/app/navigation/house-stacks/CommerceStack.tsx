@@ -19,7 +19,6 @@ import {
 import {CommerceLinkScreen} from '@features/commerce/screens/CommerceLinkScreen';
 import {CommerceProductScreen} from '@features/commerce/screens/CommerceProductScreen';
 import {MarketplaceSellerScreen} from '@features/commerce/screens/MarketplaceSellerScreen';
-import {MarketplaceSellersScreen} from '@features/commerce/screens/MarketplaceSellersScreen';
 import {ShopCartScreen} from '@features/commerce/screens/ShopCartScreen';
 import {ShopLibraryScreen} from '@features/commerce/screens/ShopLibraryScreen';
 import type {
@@ -35,7 +34,6 @@ export type CommerceStackParamList = {
   Product: {id: string; product?: CommerceProduct};
   Cart: undefined;
   Library: undefined;
-  Sellers: undefined;
   Seller: {memberId: string; seller?: MarketplaceSeller};
   Link: {url: string};
 };
@@ -157,15 +155,6 @@ export function CommerceStack({source}: {source: CommerceSource}) {
             onDiscover={() => navigation.navigate('Discover')}
             onOpenAccess={access =>
               openAccess(access, url => navigation.navigate('Link', {url}))
-            }
-          />
-        )}
-      </Stack.Screen>
-      <Stack.Screen name="Sellers" options={{title: t('mp.sellers')}}>
-        {({navigation}) => (
-          <MarketplaceSellersScreen
-            onOpenSeller={seller =>
-              navigation.navigate('Seller', {memberId: seller.memberId, seller})
             }
           />
         )}

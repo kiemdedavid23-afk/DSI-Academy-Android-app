@@ -3,8 +3,6 @@
  * en pastilles, puis le contenu de la section. Même coque pour les deux sources,
  * seuls les contenus et les sections changent (Boutique : pas de Vendeur).
  * Les écrans de section posent la coque en tête de leur liste (`shellHeader`).
- * Transition : Vendeur est un message
- * d'attente (lot 15).
  */
 
 import React, {useEffect, useMemo, useState} from 'react';
@@ -32,6 +30,7 @@ import {CommerceExploreScreen} from './CommerceExploreScreen';
 import {CommerceFavoritesScreen} from './CommerceFavoritesScreen';
 import {CommerceHomeScreen, type DiscoverTab} from './CommerceHomeScreen';
 import {CommercePurchasesScreen} from './CommercePurchasesScreen';
+import {SellerIntroScreen} from './SellerIntroScreen';
 
 export type CommerceHouseRequest = {section?: CommerceSection; tab?: PurchasesTab};
 
@@ -142,15 +141,7 @@ export function CommerceHouseScreen({
   const goDiscover = () => setSection('discover');
 
   if (section === 'seller') {
-    return (
-      <ScrollView
-        style={{flex: 1, backgroundColor: colors.bgApp}}
-        contentContainerStyle={{paddingBottom: spacing.xxxl}}
-        testID={`screen-${source}-seller`}>
-        {shellHeader}
-        <EmptyState message={t('commerce.shell.sellerSoon')} testID="commerce-seller-soon" />
-      </ScrollView>
-    );
+    return <SellerIntroScreen shellHeader={shellHeader} />;
   }
   if (section === 'purchases') {
     if (tab === 'codes') {

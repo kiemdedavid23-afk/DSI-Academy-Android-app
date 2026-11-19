@@ -76,10 +76,6 @@
         "validation": "Choisissez une note de 1 à 5, puis réessayez."
       }
     },
-    "discover": {
-      "trending": "Voir les tendances",
-      "sellers": "Voir les vendeurs"
-    },
     "shell": {
       "sectionsLabel": "Sections",
       "tabsLabel": "Sous-sections",
@@ -133,7 +129,6 @@
           }
         }
       },
-      "sellerSoon": "L'espace vendeur arrive bientôt.",
       "homeTabs": {
         "home": "Accueil",
         "trending": "Tendances"
@@ -160,7 +155,22 @@
       },
       "codesSoon": "Les codes promo arrivent bientôt.",
       "historyEmptyTitle": "Aucune commande pour le moment",
-      "historyEmptyHint": "Vos commandes apparaîtront ici."
+      "historyEmptyHint": "Vos commandes apparaîtront ici.",
+      "seller": {
+        "title": "Vendez vos ressources aux membres DSI",
+        "body": "Proposez vos guides, formations, modèles et outils aux membres de la communauté, payés en DSI, après validation de votre candidature.",
+        "howTitle": "Comment ça marche",
+        "step1": "Déposez votre candidature avec les pièces demandées.",
+        "step2": "Notre équipe l'examine et vous informe de sa décision.",
+        "step3": "Publiez vos produits et suivez vos ventes.",
+        "needTitle": "Ce qu'il vous faut",
+        "need1": "Des produits conformes à la charte DSI",
+        "need2": "Une identité vendeur vérifiable",
+        "need3": "Un nom de vitrine et une courte présentation",
+        "terms": "J'ai lu et j'accepte les conditions d'utilisation",
+        "start": "Commencer ma candidature",
+        "startSoon": "Le dépôt de candidature ouvrira prochainement."
+      }
     }
   }
 }

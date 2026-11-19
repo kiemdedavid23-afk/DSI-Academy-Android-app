@@ -76,10 +76,6 @@
         "validation": "Choose a rating from 1 to 5, then try again."
       }
     },
-    "discover": {
-      "trending": "See trending",
-      "sellers": "See sellers"
-    },
     "shell": {
       "sectionsLabel": "Sections",
       "tabsLabel": "Subsections",
@@ -133,7 +129,6 @@
           }
         }
       },
-      "sellerSoon": "The seller space is coming soon.",
       "homeTabs": {
         "home": "Home",
         "trending": "Trending"
@@ -160,7 +155,22 @@
       },
       "codesSoon": "Promo codes are coming soon.",
       "historyEmptyTitle": "No orders yet",
-      "historyEmptyHint": "Your orders will appear here."
+      "historyEmptyHint": "Your orders will appear here.",
+      "seller": {
+        "title": "Sell your resources to DSI members",
+        "body": "Offer your guides, courses, templates and tools to the community, paid in DSI, once your application is approved.",
+        "howTitle": "How it works",
+        "step1": "Submit your application with the requested documents.",
+        "step2": "Our team reviews it and tells you its decision.",
+        "step3": "Publish your products and follow your sales.",
+        "needTitle": "What you need",
+        "need1": "Products that follow the DSI charter",
+        "need2": "A verifiable seller identity",
+        "need3": "A store name and a short presentation",
+        "terms": "I have read and accept the terms of use",
+        "start": "Start my application",
+        "startSoon": "Applications will open soon."
+      }
     }
   }
 }
