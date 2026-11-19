@@ -16,6 +16,7 @@ import {
   FlatList,
 } from 'react-native';
 import {Text, useTheme, Icon} from '@shared/designsystem';
+import {PageHeader} from '../../../components/PageHeader';
 import {useTranslation} from '@shared/i18n';
 import {bannerStore} from '@shared/store';
 import {
@@ -182,28 +183,11 @@ export function MemberWithdrawalsScreen() {
           />
         }
         testID="screen-withdrawals">
-        {/* Header */}
-        <View style={{flexDirection: 'row', gap: 12, alignItems: 'center'}}>
-          <View
-            style={{
-              width: 48,
-              height: 48,
-              borderRadius: radii.md,
-              backgroundColor: colors.blueLight,
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}>
-            <Icon name="WithdrawalsIcon" size={26} color={colors.bluePrimary} />
-          </View>
-          <View style={{flex: 1}}>
-            <Text style={{fontFamily: 'Fraunces-Bold', fontSize: 22, color: colors.textPrimary}}>
-              {t('withdrawals.title')}
-            </Text>
-            <Text style={{color: colors.textSecondary, fontSize: 14}}>
-              {t('withdrawals.subtitle')}
-            </Text>
-          </View>
-        </View>
+        <PageHeader
+          title={t('withdrawals.title')}
+          subtitle={t('withdrawals.subtitle')}
+          icon="WithdrawalsIcon"
+        />
 
         {/* Hero solde */}
         <View

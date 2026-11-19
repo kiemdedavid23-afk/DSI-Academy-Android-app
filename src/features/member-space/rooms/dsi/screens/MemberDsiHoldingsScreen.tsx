@@ -13,6 +13,7 @@ import {
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {Text, useTheme, Icon} from '@shared/designsystem';
+import {PageHeader} from '../../../components/PageHeader';
 import {useTranslation} from '@shared/i18n';
 import {withdrawalsStore} from '@shared/store';
 import {memberBalanceStore} from '../../home/store/homeDashboardStore';
@@ -106,27 +107,11 @@ export function MemberDsiHoldingsScreen() {
           />
         }
         testID="screen-dsi">
-        <View style={{flexDirection: 'row', gap: 12, alignItems: 'center'}}>
-          <View
-            style={{
-              width: 48,
-              height: 48,
-              borderRadius: radii.md,
-              backgroundColor: colors.blueLight,
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}>
-            <Icon name="DsiIcon" size={26} color={colors.bluePrimary} />
-          </View>
-          <View style={{flex: 1}}>
-            <Text style={{fontFamily: 'Fraunces-Bold', fontSize: 22, color: colors.textPrimary}}>
-              {t('dsi.title')}
-            </Text>
-            <Text style={{color: colors.textSecondary, fontSize: 14}}>
-              {t('dsi.subtitle')}
-            </Text>
-          </View>
-        </View>
+        <PageHeader
+          title={t('dsi.title')}
+          subtitle={t('dsi.subtitle')}
+          icon="DsiIcon"
+        />
 
         {/* Héros */}
         <View

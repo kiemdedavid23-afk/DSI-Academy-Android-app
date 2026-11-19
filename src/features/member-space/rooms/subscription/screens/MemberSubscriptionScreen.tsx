@@ -14,6 +14,7 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import {Text, useTheme} from '@shared/designsystem';
+import {PageHeader} from '../../../components/PageHeader';
 import {useTranslation} from '@shared/i18n';
 import {
   bannerStore,
@@ -169,20 +170,11 @@ export function MemberSubscriptionScreen() {
         <RefreshControl refreshing={subState.status === 'loading'} onRefresh={onRefresh} />
       }
       testID="screen-subscription">
-      {/* En-tête */}
-      <View style={{gap: 4}}>
-        <Text
-          style={{
-            fontFamily: 'Fraunces-Bold',
-            fontSize: 22,
-            color: colors.textPrimary,
-          }}>
-          {t('subscription.title')}
-        </Text>
-        <Text style={{color: colors.textSecondary, fontSize: 14}}>
-          {t('subscription.subtitle')}
-        </Text>
-      </View>
+      <PageHeader
+        title={t('subscription.title')}
+        subtitle={t('subscription.subtitle')}
+        icon="SubscriptionIcon"
+      />
 
       {/* Héros */}
       <View

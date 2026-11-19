@@ -17,6 +17,7 @@ import {
 } from 'react-native';
 import Clipboard from '@react-native-clipboard/clipboard';
 import {Text, useTheme, Icon} from '@shared/designsystem';
+import {PageHeader} from '../../../components/PageHeader';
 import {useTranslation} from '@shared/i18n';
 import {
   referralStore,
@@ -155,33 +156,11 @@ export function MemberReferralScreen() {
         />
       }
       testID="screen-referral">
-      {/* En-tête */}
-      <View style={{flexDirection: 'row', alignItems: 'center', gap: 12}}>
-        <View
-          style={{
-            width: 48,
-            height: 48,
-            borderRadius: radii.md,
-            backgroundColor: colors.blueLight,
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}>
-          <Icon name="ReferralIcon" size={26} color={colors.bluePrimary} />
-        </View>
-        <View style={{flex: 1}}>
-          <Text
-            style={{
-              fontFamily: 'Fraunces-Bold',
-              fontSize: 22,
-              color: colors.textPrimary,
-            }}>
-            {t('referral.title')}
-          </Text>
-          <Text style={{color: colors.textSecondary, fontSize: 14}}>
-            {t('referral.subtitle')}
-          </Text>
-        </View>
-      </View>
+      <PageHeader
+        title={t('referral.title')}
+        subtitle={t('referral.subtitle')}
+        icon="ReferralIcon"
+      />
 
       {/* Héros sombre */}
       <View

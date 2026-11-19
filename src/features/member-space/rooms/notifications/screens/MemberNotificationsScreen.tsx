@@ -13,6 +13,7 @@ import {
   AppState,
 } from 'react-native';
 import {Text, useTheme} from '@shared/designsystem';
+import {PageHeader} from '../../../components/PageHeader';
 import {useTranslation} from '@shared/i18n';
 import {
   notificationsStore,
@@ -240,29 +241,14 @@ export function MemberNotificationsScreen() {
       testID="screen-notifications"
       data={st.items}
       keyExtractor={i => i.id}
-      contentContainerStyle={{padding: 24, gap: 16, paddingBottom: 40}}
+      contentContainerStyle={{padding: 16, gap: 16, paddingBottom: 32}}
       ItemSeparatorComponent={() => <View style={{height: 16}} />}
       ListHeaderComponent={
-        <View
-          style={{
-            borderBottomWidth: 1,
-            borderBottomColor: colors.borderLight,
-            paddingBottom: 16,
-            marginBottom: 8,
-          }}>
-          <Text
-            style={{
-              fontSize: 24,
-              fontWeight: '700',
-              color: colors.textPrimary,
-              marginBottom: 8,
-            }}>
-            {t('notifications.title')}
-          </Text>
-          <Text style={{fontSize: 14, color: colors.textSlate500, marginTop: 0}}>
-            {t('notifications.subtitle')}
-          </Text>
-        </View>
+        <PageHeader
+          title={t('notifications.title')}
+          subtitle={t('notifications.subtitle')}
+          icon="BellIcon"
+        />
       }
       ListEmptyComponent={
         <View

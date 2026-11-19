@@ -14,6 +14,7 @@ import {
 import Clipboard from '@react-native-clipboard/clipboard';
 import {useNavigation} from '@react-navigation/native';
 import {Text, useTheme, Icon, MemberAvatar} from '@shared/designsystem';
+import {PageHeader} from '../../../components/PageHeader';
 import {useTranslation} from '@shared/i18n';
 import {
   memberProfileStore,
@@ -182,42 +183,11 @@ export function MemberProfileScreen() {
         />
       }
       testID="screen-profile">
-      {/* Header */}
-      <View
-        style={[
-          styles.card,
-          {
-            backgroundColor: glass.bg,
-            borderColor: glass.border,
-            borderRadius: radii.lg,
-            paddingVertical: 20,
-            paddingHorizontal: 24,
-          },
-        ]}>
-        <View style={{flexDirection: 'row', gap: 16, alignItems: 'center'}}>
-          <View
-            style={{
-              width: 48,
-              height: 48,
-              borderRadius: radii.md,
-              backgroundColor: colors.blueLight,
-              borderWidth: 1,
-              borderColor: colors.blueBorderSoft,
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}>
-            <Icon name="UserIcon" size={26} color={colors.bluePrimary} />
-          </View>
-          <View style={{flex: 1}}>
-            <Text style={{fontSize: 21.6, fontWeight: '800', color: colors.textPrimary, lineHeight: 26}}>
-              {t('profile.title')}
-            </Text>
-            <Text style={{fontSize: 13.6, color: colors.textSecondary}}>
-              {t('profile.subtitle')}
-            </Text>
-          </View>
-        </View>
-      </View>
+      <PageHeader
+        title={t('profile.title')}
+        subtitle={t('profile.subtitle')}
+        icon="UserIcon"
+      />
 
       {/* Héros */}
       <View

@@ -12,6 +12,7 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import {Text, useTheme, Icon} from '@shared/designsystem';
+import {PageHeader} from '../../../components/PageHeader';
 import {useTranslation} from '@shared/i18n';
 import {formatMontant} from '@core/utils/formatMontant';
 import {paymentsHistoryStore} from '../store/paymentsHistoryStore';
@@ -86,33 +87,11 @@ export function MemberPaymentHistoryScreen() {
         />
       }
       testID="screen-payments">
-      {/* En-tête */}
-      <View style={{flexDirection: 'row', alignItems: 'center', gap: 12}}>
-        <View
-          style={{
-            width: 48,
-            height: 48,
-            borderRadius: radii.md,
-            backgroundColor: colors.blueLight,
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}>
-          <Icon name="PaymentsIcon" size={26} color={colors.bluePrimary} />
-        </View>
-        <View style={{flex: 1}}>
-          <Text
-            style={{
-              fontFamily: 'Fraunces-Bold',
-              fontSize: 22,
-              color: colors.textPrimary,
-            }}>
-            {t('payments.title')}
-          </Text>
-          <Text style={{color: colors.textSecondary, fontSize: 14}}>
-            {t('payments.subtitle')}
-          </Text>
-        </View>
-      </View>
+      <PageHeader
+        title={t('payments.title')}
+        subtitle={t('payments.subtitle')}
+        icon="PaymentsIcon"
+      />
 
       {/* Héros */}
       <View
