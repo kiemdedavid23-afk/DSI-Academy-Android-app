@@ -1,0 +1,20 @@
+{
+  "type": "book",
+  "items": [
+    {
+      "id": 12,
+      "slug": "comment-se-faire-des-amis",
+      "title": "Comment Se Faire Des Amis",
+      "thumbnail_url": "https://covers.example.invalid/book/12-9f3a1c.webp",
+      "cover_small_url": "https://covers.example.invalid/book/12-9f3a1c-240.webp"
+    },
+    {
+      "id": 15,
+      "slug": "pour-lamour-de-soi",
+      "title": "Pour l'amour de soi",
+      "thumbnail_url": "https://covers.example.invalid/book/15-b21e77.webp",
+      "cover_small_url": null
+    }
+  ],
+  "count": 2
+}
