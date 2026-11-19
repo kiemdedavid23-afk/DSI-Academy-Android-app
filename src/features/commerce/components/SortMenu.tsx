@@ -44,7 +44,7 @@ export function SortMenu({value, onChange}: SortMenuProps) {
         <Pressable
           onPress={() => setOpen(false)}
           accessibilityLabel={t('common.close')}
-          style={{flex: 1, backgroundColor: 'rgba(0,0,0,0.45)', justifyContent: 'flex-end'}}>
+          style={{flex: 1, backgroundColor: colors.overlay, justifyContent: 'flex-end'}}>
           <View
             style={{
               backgroundColor: colors.bgSurface,
