@@ -142,7 +142,20 @@
       "newTitle": "New arrivals",
       "seeAll": "See all",
       "searchProduct": "Search for a product…",
-      "trendingEmpty": "Nothing trending yet."
+      "trendingEmpty": "Nothing trending yet.",
+      "exploreTabsLabel": "Explore pages",
+      "exploreTabs": {
+        "search": "Search",
+        "categories": "Categories",
+        "sellers": "Sellers"
+      },
+      "searchCatalogue": "Search the catalog",
+      "sort": {
+        "popularity": "Popularity",
+        "newest": "Newest",
+        "priceAsc": "Price: low to high",
+        "priceDesc": "Price: high to low"
+      }
     }
   }
 }

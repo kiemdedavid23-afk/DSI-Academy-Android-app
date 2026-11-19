@@ -142,7 +142,20 @@
       "newTitle": "Nouveautés",
       "seeAll": "Tout voir",
       "searchProduct": "Rechercher un produit…",
-      "trendingEmpty": "Aucune tendance pour le moment."
+      "trendingEmpty": "Aucune tendance pour le moment.",
+      "exploreTabsLabel": "Pages d'Explorer",
+      "exploreTabs": {
+        "search": "Recherche",
+        "categories": "Catégories",
+        "sellers": "Vendeurs"
+      },
+      "searchCatalogue": "Rechercher dans le catalogue",
+      "sort": {
+        "popularity": "Popularité",
+        "newest": "Nouveautés",
+        "priceAsc": "Prix croissant",
+        "priceDesc": "Prix décroissant"
+      }
     }
   }
 }

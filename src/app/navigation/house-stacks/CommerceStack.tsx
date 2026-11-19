@@ -67,8 +67,10 @@ export function CommerceStack({source}: {source: CommerceSource}) {
             onOpenAccess={access =>
               openAccess(access, url => navigation.navigate('Link', {url}))
             }
-            onOpenSellers={
-              source === 'marketplace' ? () => navigation.navigate('Sellers') : undefined
+            onOpenSeller={
+              source === 'marketplace'
+                ? seller => navigation.navigate('Seller', {memberId: seller.memberId, seller})
+                : undefined
             }
             onOpenCart={source === 'shop' ? () => navigation.navigate('Cart') : undefined}
             onOpenLibrary={source === 'shop' ? () => navigation.navigate('Library') : undefined}

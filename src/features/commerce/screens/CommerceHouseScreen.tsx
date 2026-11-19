@@ -3,8 +3,7 @@
  * en pastilles, puis le contenu de la section. Même coque pour les deux sources,
  * seuls les contenus et les sections changent (Boutique : pas de Vendeur).
  * Les écrans de section posent la coque en tête de leur liste (`shellHeader`).
- * Transition : Explorer affiche encore le catalogue d'origine (refait au lot 13),
- * Mes achats n'a que Mes achats et Favoris (lot 14), Vendeur est un message
+ * Transition : Mes achats n'a que Mes achats et Favoris (lot 14), Vendeur est un message
  * d'attente (lot 15).
  */
 
@@ -22,8 +21,14 @@ import {
   type CommerceSection,
   type PurchasesTab,
 } from '../logic/commerceSections';
-import type {CommerceAccess, CommerceProduct, CommerceSource} from '../store/commerceTypes';
-import {CommerceDiscoverScreen} from './CommerceDiscoverScreen';
+import {DEFAULT_SORT, type SortKey} from '../logic/explore';
+import type {
+  CommerceAccess,
+  CommerceProduct,
+  CommerceSource,
+  MarketplaceSeller,
+} from '../store/commerceTypes';
+import {CommerceExploreScreen} from './CommerceExploreScreen';
 import {CommerceFavoritesScreen} from './CommerceFavoritesScreen';
 import {CommerceHomeScreen, type DiscoverTab} from './CommerceHomeScreen';
 import {CommercePurchasesScreen} from './CommercePurchasesScreen';
@@ -37,7 +42,7 @@ export type CommerceHouseScreenProps = {
   onOpenProduct: (product: CommerceProduct) => void;
   onOpenAccess: (access: CommerceAccess) => void;
   /** Marketplace seulement. */
-  onOpenSellers?: () => void;
+  onOpenSeller?: (seller: MarketplaceSeller) => void;
   /** Boutique seulement (jusqu'au lot 16). */
   onOpenCart?: () => void;
   onOpenLibrary?: () => void;
@@ -48,7 +53,7 @@ export function CommerceHouseScreen({
   request,
   onOpenProduct,
   onOpenAccess,
-  onOpenSellers,
+  onOpenSeller,
   onOpenCart,
   onOpenLibrary,
 }: CommerceHouseScreenProps) {
@@ -57,12 +62,14 @@ export function CommerceHouseScreen({
   const [section, setSection] = useState<CommerceSection>(resolveSection(source, request?.section));
   const [tab, setTab] = useState<PurchasesTab>(request?.tab ?? 'purchases');
   const [homeTab, setHomeTab] = useState<DiscoverTab>('home');
+  const [exploreSort, setExploreSort] = useState<SortKey>(DEFAULT_SORT);
 
   useEffect(() => {
     if (request) {
       setSection(resolveSection(source, request.section));
       setTab(request.tab ?? 'purchases');
       setHomeTab('home');
+      setExploreSort(DEFAULT_SORT);
     }
   }, [source, request]);
 
@@ -103,7 +110,10 @@ export function CommerceHouseScreen({
       <CommerceSectionPills
         sections={sectionsFor(source)}
         active={section}
-        onChange={setSection}
+        onChange={next => {
+          setExploreSort(DEFAULT_SORT);
+          setSection(next);
+        }}
       />
       {source === 'shop' && (onOpenCart || onOpenLibrary) ? (
         <View style={{flexDirection: 'row', gap: spacing.sm, paddingHorizontal: spacing.xl}}>
@@ -170,16 +180,20 @@ export function CommerceHouseScreen({
         shellHeader={shellHeader}
         onOpenProduct={onOpenProduct}
         onSeeAllTrending={() => setHomeTab('trending')}
-        onSeeAllNew={() => setSection('explore')}
+        onSeeAllNew={() => {
+          setExploreSort('newest');
+          setSection('explore');
+        }}
       />
     );
   }
   return (
-    <CommerceDiscoverScreen
-      key={section}
+    <CommerceExploreScreen
+      key={`${section}-${exploreSort}`}
       source={source}
+      initialSort={exploreSort}
       onOpenProduct={onOpenProduct}
-      onOpenSellers={onOpenSellers}
+      onOpenSeller={onOpenSeller}
       shellHeader={shellHeader}
     />
   );

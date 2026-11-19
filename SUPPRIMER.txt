@@ -1,1 +1,2 @@
+Supprimer : src/features/commerce/screens/CommerceDiscoverScreen.tsx
 Supprimer : src/features/commerce/components/MarketplaceHomeSections.tsx
