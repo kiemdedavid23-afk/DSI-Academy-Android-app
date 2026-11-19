@@ -101,3 +101,72 @@ export function placeFans(
     top: build(topCount, pivotTop - s.h, '50% 100%', 100),
   };
 }
+
+/* ───────── Accueil Academy : éventails mélangeant les quatre maisons ───────── */
+
+/** Taille d'une couverture dans la composition mixte (chaque maison garde son format). */
+export const MIX_SPECS: Record<FanKind, {w: number; h: number}> = {
+  book: {w: 64, h: 96},
+  audio: {w: 80, h: 80},
+  video: {w: 112, h: 63},
+  course: {w: 112, h: 63},
+};
+
+/** Hauteur de référence (la plus haute couverture), ouverture et chevauchement de la composition mixte. */
+export const MIX_REF = {h: 96, span: 70, overlap: 28};
+
+/** Hauteur du bandeau de l'accueil : deux hauteurs de référence moins le chevauchement. */
+export function mixedHeight(): number {
+  return 2 * MIX_REF.h - MIX_REF.overlap;
+}
+
+/**
+ * Mélange des listes (une par maison) en alternant : 1re de chacune, puis 2e de
+ * chacune, etc. Liste stable (même entrée, même sortie), `total` éléments au plus.
+ */
+export function mixCovers<T>(lists: T[][], total: number): T[] {
+  const out: T[] = [];
+  const longest = Math.max(0, ...lists.map(l => l.length));
+  for (let i = 0; i < longest && out.length < total; i++) {
+    for (const list of lists) {
+      if (i < list.length && out.length < total) {
+        out.push(list[i]);
+      }
+    }
+  }
+  return out;
+}
+
+export type MixedPlacement = FanPlacement & {kind: FanKind};
+
+/**
+ * Même géométrie que `placeFans`, mais chaque couverture a son propre format :
+ * les points d'attache restent communs (en bas du cadre pour l'éventail du haut,
+ * en haut du cadre pour celui du bas), seule la position du cadre change.
+ */
+export function placeMixedFans(
+  topKinds: FanKind[],
+  bottomKinds: FanKind[],
+): {top: MixedPlacement[]; bottom: MixedPlacement[]} {
+  const build = (
+    kinds: FanKind[],
+    topOf: (kind: FanKind) => number,
+    origin: string,
+    zBase: number,
+  ): MixedPlacement[] => {
+    const angles = fanAngles(kinds.length, MIX_REF.span);
+    const order = stackOrder(angles);
+    return angles.map((angle, index) => ({
+      index,
+      angle,
+      kind: kinds[index],
+      top: topOf(kinds[index]),
+      origin,
+      z: zBase + order.indexOf(index),
+    }));
+  };
+  return {
+    bottom: build(bottomKinds, () => MIX_REF.h - MIX_REF.overlap, '50% 0%', 0),
+    top: build(topKinds, k => MIX_REF.h - MIX_SPECS[k].h, '50% 100%', 100),
+  };
+}

@@ -1,0 +1,1 @@
+Supprimer : src/assets/images/academy/hub-hero.webp

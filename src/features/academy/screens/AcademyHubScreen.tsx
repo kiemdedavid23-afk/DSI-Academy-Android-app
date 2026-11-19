@@ -1,7 +1,8 @@
 /**
  * Hub Académie (site : AcademyScreen.jsx + AcademyScreen.css) : héros « reprendre »
- * ou accueil, puis les quatre maisons en cartes illustrées (2 colonnes).
- * Aucune donnée réseau (reprise locale uniquement).
+ * ou accueil (deux éventails mélangeant les couvertures des quatre maisons, puis
+ * le texte), puis les quatre maisons en cartes illustrées (2 colonnes).
+ * Données réseau : seulement les couvertures de l'éventail (4 requêtes, cache 24 h).
  */
 
 import React, {useEffect, useState} from 'react';
@@ -10,12 +11,8 @@ import {Icon, Scrim, Text, useTheme, withAlpha} from '@shared/designsystem';
 import {useTranslation} from '@shared/i18n';
 import {continueStore, type ContinueEntry} from '@shared/store';
 import {HOUSE_VISUALS, type HouseId} from '@shared/houses/houseVisuals';
-import {
-  continueContentId,
-  HERO_IMAGE,
-  HOUSES,
-  HOUSE_ORDER,
-} from '../logic/houses';
+import {MixedCoverFans} from '../../content/components/CoverFans';
+import {continueContentId, HOUSES, HOUSE_ORDER} from '../logic/houses';
 
 const CHIP = 40;
 
@@ -67,12 +64,9 @@ export function AcademyHubScreen({onOpenHouse, onContinue}: AcademyHubScreenProp
           styles.hero,
           {borderColor: colors.goldBorder, borderRadius: radii.lg, backgroundColor: colors.bgDarkPremium},
         ]}>
-        <Image
-          source={entryVisual ? entryVisual.image : HERO_IMAGE}
-          style={styles.fill}
-          resizeMode="cover"
-        />
-        <Scrim from={0.15} to={0.9} />
+        <View style={{paddingHorizontal: spacing.xxl, paddingTop: spacing.xxl}}>
+          <MixedCoverFans />
+        </View>
         <View style={{padding: spacing.xxl, gap: spacing.sm, alignItems: 'flex-start'}}>
           <View
             style={{
@@ -242,7 +236,7 @@ const styles = StyleSheet.create({
   },
   fill: {position: 'absolute', top: 0, left: 0, right: 0, bottom: 0},
   grid: {flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between'},
-  hero: {borderWidth: 1, justifyContent: 'flex-end', minHeight: 240, overflow: 'hidden'},
+  hero: {borderWidth: 1, overflow: 'hidden'},
   house: {borderWidth: 1, justifyContent: 'flex-end', minHeight: 189, overflow: 'hidden', width: '47.65625%'},
   track: {height: 6, maxWidth: 320, overflow: 'hidden', width: '100%'},
 });

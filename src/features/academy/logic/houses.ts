@@ -6,7 +6,6 @@
 
 import {
   continueContentId,
-  HERO_IMAGE,
   HOUSE_ORDER,
   HOUSE_VISUALS,
   type HouseId,
@@ -14,7 +13,7 @@ import {
 } from '@shared/houses/houseVisuals';
 
 export type {HouseId};
-export {continueContentId, HERO_IMAGE, HOUSE_ORDER};
+export {continueContentId, HOUSE_ORDER};
 
 export type HouseDef = HouseVisual & {available: boolean};
 

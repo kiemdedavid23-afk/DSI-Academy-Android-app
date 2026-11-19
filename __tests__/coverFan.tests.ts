@@ -2,7 +2,12 @@ import {
   FAN_SPECS,
   fanAngles,
   fanHeight,
+  MIX_REF,
+  MIX_SPECS,
+  mixCovers,
+  mixedHeight,
   placeFans,
+  placeMixedFans,
   splitCovers,
   stackOrder,
 } from '../src/features/content/logic/coverFan';
@@ -58,5 +63,38 @@ describe('placeFans', () => {
     (['book', 'audio', 'video', 'course'] as const).forEach(k => {
       expect(fanHeight(k)).toBeLessThan(331);
     });
+  });
+});
+
+describe('mixCovers (accueil Academy)', () => {
+  it('alterne les maisons et respecte le total', () => {
+    const lists = [['a1', 'a2', 'a3'], ['b1', 'b2'], ['c1'], []];
+    expect(mixCovers(lists, 16)).toEqual(['a1', 'b1', 'c1', 'a2', 'b2', 'a3']);
+    expect(mixCovers(lists, 4)).toEqual(['a1', 'b1', 'c1', 'a2']);
+    expect(mixCovers([], 16)).toEqual([]);
+  });
+  it('stable : même entrée, même sortie', () => {
+    const lists = [[1, 2], [3, 4]];
+    expect(mixCovers(lists, 16)).toEqual(mixCovers(lists, 16));
+  });
+});
+
+describe('placeMixedFans', () => {
+  const kinds = ['book', 'video', 'course', 'audio'] as const;
+  it('points d\'attache communs malgré les formats différents', () => {
+    const p = placeMixedFans([...kinds], [...kinds]);
+    p.top.forEach(c => expect(c.top + MIX_SPECS[c.kind].h).toBe(MIX_REF.h));
+    p.bottom.forEach(c => expect(c.top).toBe(MIX_REF.h - MIX_REF.overlap));
+    expect(p.top.every(c => c.origin === '50% 100%')).toBe(true);
+    expect(p.bottom.every(c => c.origin === '50% 0%')).toBe(true);
+  });
+  it('haut par-dessus le bas, centrale au-dessus', () => {
+    const p = placeMixedFans(['book', 'book', 'book'], ['audio', 'audio', 'audio']);
+    expect(Math.min(...p.top.map(c => c.z))).toBeGreaterThan(Math.max(...p.bottom.map(c => c.z)));
+    expect(p.top[1].z).toBeGreaterThan(p.top[0].z);
+  });
+  it('plus bas que l\'ancienne illustration (331 dp)', () => {
+    expect(mixedHeight()).toBe(2 * MIX_REF.h - MIX_REF.overlap);
+    expect(mixedHeight()).toBeLessThan(331);
   });
 });

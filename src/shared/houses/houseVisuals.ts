@@ -62,8 +62,6 @@ export const HOUSE_VISUALS: Record<HouseId, HouseVisual> = {
   },
 };
 
-export const HERO_IMAGE = require('@assets/images/academy/hub-hero.webp');
-
 /** Maison d'un contenu, d'après son type (book → Bibliothèque, etc.). */
 export function houseOfType(type: ContentType): HouseId {
   switch (type) {
