@@ -16,6 +16,7 @@ import {
   useTheme,
 } from '@shared/designsystem';
 import {useTranslation} from '@shared/i18n';
+import {CartLineRow} from '../components/CartLineRow';
 import {cartCheckoutProduct, cartTotals} from '../logic/cart';
 import {commerceErrorKey} from '../logic/errorKey';
 import {formatDsiAmount} from '../logic/format';
@@ -37,7 +38,7 @@ export function ShopCartScreen({
 }: ShopCartScreenProps) {
   const stores = COMMERCE_STORES.shop;
   const {t} = useTranslation();
-  const {colors, spacing} = useTheme();
+  const {colors, spacing, radii} = useTheme();
   const cart = useSyncExternalStore(
     shopCartStore.subscribe,
     shopCartStore.getState,
@@ -152,79 +153,21 @@ export function ShopCartScreen({
           </Text>
         ) : null}
 
-        {cart.lines.map(line => {
-          const product = byId.get(line.productId);
-          const loadingLine = !product && !resolved;
-          return (
-            <View
-              key={line.productId}
-              style={{gap: spacing.xs}}
-              testID={`cart-line-${line.productId}`}>
-              <Text variant="bodySmallStrong" numberOfLines={2}>
-                {product
-                  ? product.title
-                  : t(loadingLine ? 'content.loading' : 'commerce.cart.unavailable')}
-              </Text>
-              {product ? (
-                <Text variant="caption" color="secondary">
-                  {t('commerce.cart.lineTotal', {
-                    qty: line.qty,
-                    amount: formatDsiAmount(product.priceDsi * line.qty),
-                  })}
-                </Text>
-              ) : null}
-              <View style={{flexDirection: 'row', gap: spacing.sm}}>
-                {product ? (
-                  <>
-                    <Button
-                      variant="secondary"
-                      label="−"
-                      accessibilityLabel={t('commerce.cart.qtyMinus', {
-                        title: product.title,
-                      })}
-                      disabled={busy}
-                      onPress={() =>
-                        void write(() =>
-                          shopCartStore.setQty(line.productId, line.qty - 1),
-                        )
-                      }
-                      testID={`cart-minus-${line.productId}`}
-                    />
-                    <Button
-                      variant="secondary"
-                      label="+"
-                      accessibilityLabel={t('commerce.cart.qtyPlus', {
-                        title: product.title,
-                      })}
-                      disabled={busy}
-                      onPress={() =>
-                        void write(() =>
-                          shopCartStore.setQty(line.productId, line.qty + 1),
-                        )
-                      }
-                      testID={`cart-plus-${line.productId}`}
-                    />
-                    <Button
-                      variant="ghost"
-                      label={t('commerce.cart.details')}
-                      onPress={() => onOpenProduct(product)}
-                    />
-                  </>
-                ) : null}
-                <Button
-                  variant="ghost"
-                  label={t('commerce.cart.remove')}
-                  disabled={busy}
-                  loading={cart.busyId === line.productId}
-                  onPress={() =>
-                    void write(() => shopCartStore.remove(line.productId))
-                  }
-                  testID={`cart-remove-${line.productId}`}
-                />
-              </View>
-            </View>
-          );
-        })}
+        {cart.lines.map(line => (
+          <CartLineRow
+            key={line.productId}
+            productId={line.productId}
+            qty={line.qty}
+            product={byId.get(line.productId)}
+            loading={!byId.has(line.productId) && !resolved}
+            busy={busy}
+            removing={cart.busyId === line.productId}
+            onMinus={() => void write(() => shopCartStore.setQty(line.productId, line.qty - 1))}
+            onPlus={() => void write(() => shopCartStore.setQty(line.productId, line.qty + 1))}
+            onRemove={() => void write(() => shopCartStore.remove(line.productId))}
+            onDetails={onOpenProduct}
+          />
+        ))}
 
         {cart.productsStatus === 'error' ? (
           <View style={{gap: spacing.xs}}>
@@ -279,7 +222,16 @@ export function ShopCartScreen({
           </View>
         </View>
 
-        <View style={{gap: spacing.xs}} testID="cart-totals">
+        <View
+          style={{
+            backgroundColor: colors.bgSurface,
+            borderColor: colors.goldBorder,
+            borderRadius: radii.md,
+            borderWidth: 1,
+            gap: spacing.xs,
+            padding: spacing.lg,
+          }}
+          testID="cart-totals">
           <Text variant="body">
             {t('commerce.cart.subtotal', {
               amount: formatDsiAmount(totals.subtotalDsi),

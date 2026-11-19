@@ -170,7 +170,8 @@
         "terms": "J'ai lu et j'accepte les conditions d'utilisation",
         "start": "Commencer ma candidature",
         "startSoon": "Le dépôt de candidature ouvrira prochainement."
-      }
+      },
+      "codesIntro": "Entrez un code promo : il sera gardé pour votre panier."
     }
   }
 }

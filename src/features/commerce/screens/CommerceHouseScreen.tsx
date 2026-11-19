@@ -5,7 +5,7 @@
  * Les écrans de section posent la coque en tête de leur liste (`shellHeader`).
  */
 
-import React, {useEffect, useMemo, useState} from 'react';
+import React, {useEffect, useMemo, useState, useSyncExternalStore} from 'react';
 import {Pressable, ScrollView, View} from 'react-native';
 import {EmptyState, Icon, Text, useTheme} from '@shared/designsystem';
 import {useTranslation} from '@shared/i18n';
@@ -19,6 +19,7 @@ import {
   type CommerceSection,
   type PurchasesTab,
 } from '../logic/commerceSections';
+import {shopCartStore} from '../store/cartStore';
 import {DEFAULT_SORT, type SortKey} from '../logic/explore';
 import type {
   CommerceAccess,
@@ -31,6 +32,7 @@ import {CommerceFavoritesScreen} from './CommerceFavoritesScreen';
 import {CommerceHomeScreen, type DiscoverTab} from './CommerceHomeScreen';
 import {CommercePurchasesScreen} from './CommercePurchasesScreen';
 import {SellerIntroScreen} from './SellerIntroScreen';
+import {ShopPromoCodesScreen} from './ShopPromoCodesScreen';
 
 export type CommerceHouseRequest = {section?: CommerceSection; tab?: PurchasesTab};
 
@@ -61,7 +63,15 @@ export function CommerceHouseScreen({
   const [section, setSection] = useState<CommerceSection>(resolveSection(source, request?.section));
   const [tab, setTab] = useState<PurchasesTab>(request?.tab ?? 'purchases');
   const [homeTab, setHomeTab] = useState<DiscoverTab>('home');
+  const cart = useSyncExternalStore(shopCartStore.subscribe, shopCartStore.getState);
+  const cartCount = source === 'shop' ? cart.lines.reduce((n, l) => n + l.qty, 0) : 0;
   const [exploreSort, setExploreSort] = useState<SortKey>(DEFAULT_SORT);
+
+  useEffect(() => {
+    if (source === 'shop') {
+      void shopCartStore.load();
+    }
+  }, [source]);
 
   useEffect(() => {
     if (request) {
@@ -116,7 +126,7 @@ export function CommerceHouseScreen({
       />
       {source === 'shop' && onOpenCart ? (
         <View style={{flexDirection: 'row', gap: spacing.sm, paddingHorizontal: spacing.xl}}>
-          {action(t('commerce.cart.title'), 'StoreIcon', onOpenCart, 'shop-open-cart')}
+          {action(cartCount > 0 ? `${t('commerce.cart.title')} (${cartCount})` : t('commerce.cart.title'), 'StoreIcon', onOpenCart, 'shop-open-cart')}
         </View>
       ) : null}
       {section === 'discover' ? (
@@ -144,6 +154,9 @@ export function CommerceHouseScreen({
     return <SellerIntroScreen shellHeader={shellHeader} />;
   }
   if (section === 'purchases') {
+    if (tab === 'codes' && source === 'shop') {
+      return <ShopPromoCodesScreen shellHeader={shellHeader} onOpenCart={onOpenCart} />;
+    }
     if (tab === 'codes') {
       return (
         <ScrollView
