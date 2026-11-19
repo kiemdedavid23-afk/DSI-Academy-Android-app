@@ -2,20 +2,19 @@
  * Bandeau d'une maison (site : ContentHouseLayout.jsx + HouseShell.css).
  * Mesuré sur les captures du site (720 px = 360 dp) :
  *  · carte sombre pleine largeur, bordure or, marge intérieure 13,5 dp ;
- *  · illustration carrée en haut (331 dp), puis sélecteur des quatre maisons,
+ *  · deux éventails de couvertures en haut (CoverFans), puis sélecteur des quatre maisons,
  *    puis icône + « GRANDE MAISON DSI » + titre + accroche ;
  *  · sous la carte : pastilles de sections, collées au bord gauche.
  */
 import React, {useCallback, useRef} from 'react';
-import {Image, Pressable, ScrollView, View} from 'react-native';
+import {Pressable, ScrollView, View} from 'react-native';
 import {Icon, Text, useTheme, withAlpha} from '@shared/designsystem';
 import {useTranslation} from '@shared/i18n';
 import {HOUSE_ORDER, HOUSE_VISUALS, type HouseId} from '@shared/houses/houseVisuals';
+import {CoverFans} from './CoverFans';
 
 const ICON_BOX = 47.5;
 const PAD = 13.5;
-/** Illustration recadrée (16:9) : le site la montre carrée, trop haute sur mobile. */
-const IMAGE_RATIO = 1;
 
 export type HouseSection = 'discover' | 'explore';
 
@@ -56,12 +55,7 @@ export function HouseBanner({houseId, section, onSwitchHouse, onSection}: HouseB
           overflow: 'hidden',
           padding: PAD,
         }}>
-        <Image
-          source={visual.image}
-          style={{aspectRatio: IMAGE_RATIO, width: '100%'}}
-          resizeMode="cover"
-          accessible={false}
-        />
+        <CoverFans houseId={houseId} />
         <ScrollView
           ref={scroller}
           horizontal
