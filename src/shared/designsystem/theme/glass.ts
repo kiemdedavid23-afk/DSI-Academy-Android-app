@@ -12,8 +12,8 @@ export type GlassTokens = {
 };
 
 export const lightGlass: GlassTokens = {
-  bg: 'rgba(255, 255, 255, 0.86)',
-  border: 'rgba(255, 255, 255, 0.55)',
+  bg: 'rgba(255, 255, 255, 0.95)',
+  border: 'rgba(255, 255, 255, 0.7)',
   shadowColor: '#020617',
 };
 

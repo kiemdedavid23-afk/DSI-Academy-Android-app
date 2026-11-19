@@ -94,7 +94,7 @@ export function MemberSpaceStack() {
       />
       <Stack.Screen
         name="MemberNotifications"
-        options={{headerShown: true, title: t('rooms.notifications')}}
+        options={{headerShown: false}}
         children={() => (
           <MemberSpaceShell>
             <MemberNotificationsScreen />
@@ -103,7 +103,7 @@ export function MemberSpaceStack() {
       />
       <Stack.Screen
         name="MemberProfile"
-        options={{headerShown: true, title: t('rooms.profile')}}
+        options={{headerShown: false}}
         children={() => (
           <MemberSpaceShell>
             <MemberProfileScreen />

@@ -269,8 +269,8 @@ export const lightColors: ColorTokens = {
   bgDarkCard: '#1E293B',
 
   textPrimary: '#0F172A',
-  textSecondary: '#475569',
-  textMuted: '#94A3B8',
+  textSecondary: '#334155',
+  textMuted: '#64748B',
   textOnDark: '#F8FAFC',
 
   goldPrestige: '#D4AF37',
