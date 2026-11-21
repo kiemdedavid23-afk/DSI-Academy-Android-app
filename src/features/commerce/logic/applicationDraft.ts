@@ -6,7 +6,7 @@
 import {
   APPLICATION_LIMITS,
   type ApplicationFileKind,
-} from '@core/api/endpoints/marketplace/seller/seller.types';
+} from '../store/sellerTypes';
 import type {CommerceErrorKind} from '../store/commerceTypes';
 
 export const APPLY_STEPS = 6;

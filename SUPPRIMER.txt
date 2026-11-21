@@ -1,2 +1,4 @@
 Supprimer : src/features/commerce/screens/MarketplaceTrendingScreen.tsx
 Supprimer : src/features/commerce/screens/MarketplaceSellersScreen.tsx
+Supprimer : src/features/commerce/logic/visitTracker.ts
+Supprimer : src/features/commerce/logic/pickImage.ts

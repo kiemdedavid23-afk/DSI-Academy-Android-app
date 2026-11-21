@@ -9,7 +9,7 @@ import {Image, View} from 'react-native';
 import {Button, Icon, Text, useTheme} from '@shared/designsystem';
 import {useTranslation} from '@shared/i18n';
 import type {ApplicationSlot} from '../logic/applicationDraft';
-import type {PickSource} from '../logic/pickImage';
+import type {PickSource} from '../store/pickImage';
 
 export type ApplicationPhotoSlotProps = {
   /** Clé du créneau : logo, id_front, id_back, id_selfie. */

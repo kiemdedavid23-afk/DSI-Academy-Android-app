@@ -180,6 +180,63 @@
         "library": "Opening your library in {{count}} s…",
         "purchases": "Opening My purchases in {{count}} s…"
       }
+    },
+    "sellerSpace": {
+      "tabs": {
+        "overview": "Overview",
+        "products": "Products",
+        "sales": "Sales",
+        "analytics": "Analytics",
+        "more": "More"
+      },
+      "top": {
+        "search": "Search",
+        "notifications": "Notifications",
+        "account": "My account",
+        "store": "My store"
+      },
+      "soon": "This section is coming in an upcoming update.",
+      "more": {
+        "withdrawals": "My withdrawals",
+        "quit": "Leave the seller space"
+      },
+      "overview": {
+        "greeting": "Hello, {{name}}",
+        "greetingNoName": "Hello",
+        "yourStore": "Your store:",
+        "copyLink": "Copy link",
+        "copied": "Link copied",
+        "viewStore": "View my store",
+        "createProduct": "Create a product",
+        "balance": "Available balance",
+        "currency": "FCFA",
+        "pending": "Pending: {{amount}} FCFA",
+        "withdraw": "Withdraw",
+        "salesPeriod": "Sales (30 days)",
+        "orders": "Orders",
+        "compare": "vs previous period",
+        "up": "Up {{pct}}%",
+        "down": "Down {{pct}}%",
+        "flat": "Stable",
+        "newLabel": "New",
+        "recentOrders": "Latest orders",
+        "topProducts": "Top products",
+        "noOrders": "No orders yet.",
+        "noProducts": "No sales yet.",
+        "buyerFallback": "Buyer",
+        "productFallback": "Product",
+        "salesCount_one": "{{count}} sale",
+        "salesCount_other": "{{count}} sales",
+        "orderStatus": {
+          "processing": "Processing",
+          "failed": "Failed"
+        },
+        "suspendedTitle": "Your seller space is suspended",
+        "revokedTitle": "Your seller access has been removed",
+        "suspendedReason": "Reason: {{reason}}",
+        "balanceUnavailable": "The balance is temporarily unavailable. Please try again in a moment.",
+        "forbidden": "Your seller access is not active."
+      }
     }
   }
 }

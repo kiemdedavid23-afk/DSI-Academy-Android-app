@@ -19,7 +19,7 @@ import {
   isVisitorKey,
   resetVisitTrackerForTests,
   trackMarketplaceVisit,
-} from '../src/features/commerce/logic/visitTracker';
+} from '../src/features/commerce/store/visitTracker';
 
 const track = trackVisit as jest.Mock;
 const status = connectivityStore.getStatus as jest.Mock;

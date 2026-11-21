@@ -165,7 +165,8 @@ function MemberTabBar({state, navigation}: BottomTabBarProps) {
   // Lecteurs (PDF, texte, audio, vidéo) : pas de barre du bas.
   const active = state.routes[state.index];
   const inner = active ? getFocusedRouteNameFromRoute(active) : undefined;
-  if (inner === 'Reader' || inner === 'Player') {
+  // Espace vendeur : sa propre barre d'onglets remplace celle-ci.
+  if (inner === 'Reader' || inner === 'Player' || inner === 'SellerSpace') {
     return null;
   }
 

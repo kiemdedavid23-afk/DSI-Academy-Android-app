@@ -20,6 +20,7 @@ import {
 import {CommerceLinkScreen} from '@features/commerce/screens/CommerceLinkScreen';
 import {CommerceProductScreen} from '@features/commerce/screens/CommerceProductScreen';
 import {MarketplaceSellerScreen} from '@features/commerce/screens/MarketplaceSellerScreen';
+import {SellerSpaceScreen} from '@features/commerce/seller/screens/SellerSpaceScreen';
 import {ShopCartScreen} from '@features/commerce/screens/ShopCartScreen';
 import {ShopLibraryScreen} from '@features/commerce/screens/ShopLibraryScreen';
 import type {
@@ -37,6 +38,8 @@ export type CommerceStackParamList = {
   Library: undefined;
   Seller: {memberId: string; seller?: MarketplaceSeller};
   Link: {url: string};
+  /** Espace vendeur : plein écran, sa propre navigation (Marketplace seulement). */
+  SellerSpace: undefined;
 };
 
 const Stack = createNativeStackNavigator<CommerceStackParamList>();
@@ -85,6 +88,9 @@ export function CommerceStack({source}: {source: CommerceSource}) {
               source === 'marketplace'
                 ? seller => navigation.navigate('Seller', {memberId: seller.memberId, seller})
                 : undefined
+            }
+            onOpenSellerSpace={
+              source === 'marketplace' ? () => navigation.navigate('SellerSpace') : undefined
             }
             onOpenCart={source === 'shop' ? () => navigation.navigate('Cart') : undefined}
             onOpenLibrary={source === 'shop' ? () => navigation.navigate('Library') : undefined}
@@ -183,6 +189,24 @@ export function CommerceStack({source}: {source: CommerceSource}) {
             onOpenProduct={product =>
               navigation.navigate('Product', {id: product.id, product})
             }
+          />
+        )}
+      </Stack.Screen>
+      <Stack.Screen name="SellerSpace" options={{headerShown: false}}>
+        {({navigation}) => (
+          <SellerSpaceScreen
+            onExit={() => navigation.goBack()}
+            onOpenNotifications={() =>
+              navigation
+                .getParent()
+                ?.navigate('MemberSpace', {screen: 'MemberNotifications'})
+            }
+            onOpenWithdrawals={() =>
+              navigation
+                .getParent()
+                ?.navigate('MemberSpace', {screen: 'MemberWithdrawals'})
+            }
+            onOpenUrl={url => void Linking.openURL(url)}
           />
         )}
       </Stack.Screen>

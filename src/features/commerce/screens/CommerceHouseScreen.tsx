@@ -44,6 +44,8 @@ export type CommerceHouseScreenProps = {
   onOpenAccess: (access: CommerceAccess) => void;
   /** Marketplace seulement. */
   onOpenSeller?: (seller: MarketplaceSeller) => void;
+  /** Marketplace seulement : ouvre l'espace vendeur (candidature approuvée). */
+  onOpenSellerSpace?: () => void;
   /** Boutique seulement (jusqu'au lot 16). */
   onOpenCart?: () => void;
   onOpenLibrary?: () => void;
@@ -55,6 +57,7 @@ export function CommerceHouseScreen({
   onOpenProduct,
   onOpenAccess,
   onOpenSeller,
+  onOpenSellerSpace,
   onOpenCart,
   onOpenLibrary,
 }: CommerceHouseScreenProps) {
@@ -151,7 +154,12 @@ export function CommerceHouseScreen({
   const goDiscover = () => setSection('discover');
 
   if (section === 'seller') {
-    return <SellerGateScreen shellHeader={shellHeader} />;
+    return (
+      <SellerGateScreen
+        shellHeader={shellHeader}
+        onOpenSpace={onOpenSellerSpace}
+      />
+    );
   }
   if (section === 'purchases') {
     if (tab === 'codes' && source === 'shop') {

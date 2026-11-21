@@ -6,7 +6,7 @@
 
 import React from 'react';
 import {ScrollView, View} from 'react-native';
-import type {SellerApplication} from '@core/api/endpoints/marketplace/seller/seller.types';
+import type {SellerApplication} from '../store/sellerTypes';
 import {Button, Text, useTheme} from '@shared/designsystem';
 import {useTranslation} from '@shared/i18n';
 

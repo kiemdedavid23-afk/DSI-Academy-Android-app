@@ -6,7 +6,7 @@ jest.mock('@core/api/endpoints/marketplace/seller/seller.api', () => ({
 jest.mock('@shared/store', () => ({
   storeRegistry: {register: jest.fn()},
 }));
-jest.mock('../src/features/commerce/logic/pickImage', () => ({
+jest.mock('../src/features/commerce/store/pickImage', () => ({
   pickImage: jest.fn(),
   pickErrorKey: (r: string) => `pick.${r}`,
 }));
@@ -24,7 +24,7 @@ import {
   submitErrorKey,
   uploadErrorKey,
 } from '../src/features/commerce/logic/applicationDraft';
-import {pickImage} from '../src/features/commerce/logic/pickImage';
+import {pickImage} from '../src/features/commerce/store/pickImage';
 import {sellerApplicationStore as store} from '../src/features/commerce/store/sellerApplicationStore';
 
 const fetchApp = fetchSellerApplication as jest.Mock;

@@ -180,6 +180,63 @@
         "library": "Ouverture de votre bibliothèque dans {{count}} s…",
         "purchases": "Ouverture de Mes achats dans {{count}} s…"
       }
+    },
+    "sellerSpace": {
+      "tabs": {
+        "overview": "Aperçu",
+        "products": "Produits",
+        "sales": "Ventes",
+        "analytics": "Analyses",
+        "more": "Plus"
+      },
+      "top": {
+        "search": "Rechercher",
+        "notifications": "Notifications",
+        "account": "Mon compte",
+        "store": "Ma boutique"
+      },
+      "soon": "Cette section arrive dans une prochaine mise à jour.",
+      "more": {
+        "withdrawals": "Mes retraits",
+        "quit": "Quitter l’espace vendeur"
+      },
+      "overview": {
+        "greeting": "Bonjour, {{name}}",
+        "greetingNoName": "Bonjour",
+        "yourStore": "Votre boutique :",
+        "copyLink": "Copier le lien",
+        "copied": "Lien copié",
+        "viewStore": "Voir ma boutique",
+        "createProduct": "Créer un produit",
+        "balance": "Solde disponible",
+        "currency": "FCFA",
+        "pending": "En attente : {{amount}} FCFA",
+        "withdraw": "Retirer",
+        "salesPeriod": "Ventes (30 jours)",
+        "orders": "Commandes",
+        "compare": "vs période précédente",
+        "up": "En hausse de {{pct}} %",
+        "down": "En baisse de {{pct}} %",
+        "flat": "Stable",
+        "newLabel": "Nouveau",
+        "recentOrders": "Dernières commandes",
+        "topProducts": "Meilleurs produits",
+        "noOrders": "Aucune commande pour le moment.",
+        "noProducts": "Aucune vente pour le moment.",
+        "buyerFallback": "Acheteur",
+        "productFallback": "Produit",
+        "salesCount_one": "{{count}} vente",
+        "salesCount_other": "{{count}} ventes",
+        "orderStatus": {
+          "processing": "En cours",
+          "failed": "Échouée"
+        },
+        "suspendedTitle": "Votre espace vendeur est suspendu",
+        "revokedTitle": "Votre accès vendeur a été retiré",
+        "suspendedReason": "Raison : {{reason}}",
+        "balanceUnavailable": "Le solde est momentanément indisponible. Réessayez dans un instant.",
+        "forbidden": "Votre accès à l’espace vendeur n’est pas actif."
+      }
     }
   }
 }

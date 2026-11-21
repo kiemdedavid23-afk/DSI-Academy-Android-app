@@ -48,6 +48,7 @@ Pourquoi un plan d'abord : il y a trois chantiers liés (Worker, contrat, app) e
 | D17 | Aucun message technique n'est affiché : ni `error`, ni `financialReason`, ni `financialStatus`, ni `paymentRef`. L'app écrit ses messages selon statut et `code`. | Rapport Workers §1, §6 |
 | D18 | **Le visuel de l'espace vendeur reproduit exactement les captures** (disposition, couleurs, formes, composants), hors logo et nom de la plateforme tierce. Valeurs : `docs/DESIGN-ESPACE-VENDEUR.md`. | Toi, 20/11/2026 |
 | D19 | L'espace vendeur a **sa propre navigation** (barre du haut, barre à cinq onglets) et masque la barre principale de l'app. | Toi, 20/11/2026 |
+| D20 | L'espace vendeur affiche les montants en **FCFA** (conversion entière des DSI du Worker, `dsiToFcfa`), comme les captures. | Mise en œuvre S4, 21/11/2026 |
 
 ## 4. Points tranchés et points ouverts
 
@@ -127,3 +128,4 @@ Ordre conseillé : S0, S1, puis S2 en parallèle de S3 (pour que des visites s'a
 | 21/11/2026 | T3, T4 et T5 tranchés ; décisions D18 (visuel identique aux captures) et D19 (navigation propre) ; lot S4a ajouté ; `DESIGN-ESPACE-VENDEUR.md` rédigé. Restent ouverts : T6, T7. |
 | 21/11/2026 | Lot S2 livré : clé visiteur UUID v4 locale, `POST /track` à l'ouverture d'une fiche Marketplace (sans effet visible, rien hors-ligne, 1 envoi par cible et par 30 min). Suivi de la boutique prêt (`trackStoreView`) mais non branché : l'app n'a pas le `storeSlug` public. Bouton « formation gratuite » et fonction IA exclus du visuel. |
 | 21/11/2026 | T6 tranché. Lot S3 livré : porte d'entrée par statut, assistant de candidature en 6 étapes, envoi des 4 fichiers puis dépôt, suivi, redépôt. Dépendance `react-native-image-picker` 8.2.1 : régénérer le lockfile avant la CI. |
+| 21/11/2026 | Lot S4 livré avec le socle S4a nécessaire à l'Aperçu (thème, barre du haut, barre d'onglets, boutons, cartes) ; les composants des autres onglets viendront avec leurs lots. Entrée par « Ouvrir mon espace vendeur ». Correctif R-LAY-6 : `visitTracker` et `pickImage` déplacés dans `store/`. |

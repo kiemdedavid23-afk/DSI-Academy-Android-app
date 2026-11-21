@@ -24,7 +24,7 @@ import {ProductCover} from '../components/ProductCover';
 import {RatingStars} from '../components/Stars';
 import {artFor} from '../logic/art';
 import {categoryKeys, commerceErrorKey} from '../logic/errorKey';
-import {trackListingView} from '../logic/visitTracker';
+import {trackListingView} from '../store/visitTracker';
 import {COMMERCE_STORES} from '../store/commerceStores';
 import type {CommerceProduct, CommerceSource} from '../store/commerceTypes';
 

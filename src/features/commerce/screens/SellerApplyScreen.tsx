@@ -17,7 +17,7 @@ import {
   isUploading,
 } from '../logic/applicationDraft';
 import {sellerApplicationStore} from '../store/sellerApplicationStore';
-import {APPLICATION_LIMITS} from '@core/api/endpoints/marketplace/seller/seller.types';
+import {APPLICATION_LIMITS} from '../store/sellerTypes';
 
 const A = 'mp.apply';
 

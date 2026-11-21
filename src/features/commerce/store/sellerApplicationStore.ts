@@ -26,7 +26,7 @@ import {
   type ApplicationDraft,
   type ApplicationSlots,
 } from '../logic/applicationDraft';
-import {pickErrorKey, pickImage, type PickSource} from '../logic/pickImage';
+import {pickErrorKey, pickImage, type PickSource} from './pickImage';
 import type {CommerceErrorKind} from './commerceTypes';
 import type {LoadStatus} from './commerceStores';
 import {createSimpleStore} from './simpleStore';

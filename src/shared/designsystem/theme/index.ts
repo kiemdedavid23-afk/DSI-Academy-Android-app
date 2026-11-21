@@ -21,3 +21,5 @@ export {touch} from './touch';
 export {motion} from './motion';
 export {lightElevation, darkElevation} from './elevation';
 export {lightGlass, darkGlass} from './glass';
+export {sellerColors, sellerMetrics} from './sellerTheme';
+export type {SellerColors} from './sellerTheme';
