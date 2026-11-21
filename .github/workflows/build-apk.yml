@@ -17,6 +17,17 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Récupérer les assets (polices et images)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh release download assets-v1 --repo "$GITHUB_REPOSITORY" --pattern assets.zip --dir "$RUNNER_TEMP"
+          unzip -q -o "$RUNNER_TEMP/assets.zip" -d .
+          for f in src/assets/fonts/Manrope-Regular.ttf src/assets/images/app-icon.webp; do
+            [ -f "$f" ] || { echo "::error::Asset manquant après extraction : $f"; exit 1; }
+          done
+
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
