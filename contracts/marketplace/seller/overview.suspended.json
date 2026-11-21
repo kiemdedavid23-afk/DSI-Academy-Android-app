@@ -1,0 +1,93 @@
+{
+  "success": true,
+  "error": null,
+  "code": null,
+  "data": {
+    "seller": {
+      "storeName": "Digital Service International",
+      "slogan": "Modèles et guides pour entrepreneurs",
+      "bio": "Nous vendons des outils numériques.",
+      "logoUrl": "https://cdn.example.invalid/logos/u_77.webp",
+      "status": "SUSPENDED",
+      "rating": 4.5,
+      "ratingCount": 12,
+      "storeSlug": "digital-service-international",
+      "storeUrl": "https://dsiacademy.pages.dev/boutique/digital-service-international",
+      "joinedAt": "2026-08-19T10:00:00Z",
+      "memberId": "DSI-000123"
+    },
+    "suspension": {
+      "type": "TEMPORARY",
+      "reason": "Vérification en cours",
+      "endsAt": "2026-12-01T00:00:00Z",
+      "revokedAt": null
+    },
+    "profileCompletion": {
+      "percent": 71,
+      "missing": [
+        "slogan",
+        "cover",
+        "firstSale"
+      ]
+    },
+    "balance": {
+      "availableDsi": 1237,
+      "pendingDsi": 0,
+      "source": "WORKER_PAIEMENT",
+      "asOf": "2026-11-20T09:18:00Z"
+    },
+    "period": {
+      "key": "30d",
+      "from": "2026-10-22T00:00:00Z",
+      "to": "2026-11-20T09:18:00Z",
+      "salesDsi": {
+        "value": 0,
+        "previous": 0,
+        "deltaPct": 0,
+        "trend": "flat"
+      },
+      "orders": {
+        "value": 0,
+        "previous": 0,
+        "deltaPct": 0,
+        "trend": "flat"
+      }
+    },
+    "counts": {
+      "products": {
+        "all": 15,
+        "published": 15,
+        "draft": 0,
+        "pending_review": 0,
+        "rejected": 0,
+        "suspended": 0,
+        "archived": 0
+      },
+      "ordersTotal": 4,
+      "ordersPaidTotal": 4,
+      "revenueTotalDsi": 1300
+    },
+    "recentOrders": [
+      {
+        "id": "ord_9f2c",
+        "listingId": "lst_a1b2c3d4e5f6",
+        "listingTitle": "Abonnement DSI Academy",
+        "coverUrl": null,
+        "buyerDisplayName": "Awa K.",
+        "priceDsi": 1000,
+        "netSellerDsi": 900,
+        "status": "paid",
+        "createdAt": "2026-11-18T15:02:00Z"
+      }
+    ],
+    "topListings": [
+      {
+        "id": "lst_a1b2c3d4e5f6",
+        "title": "Abonnement DSI Academy",
+        "coverUrl": null,
+        "salesCount": 3,
+        "revenueDsi": 3000
+      }
+    ]
+  }
+}

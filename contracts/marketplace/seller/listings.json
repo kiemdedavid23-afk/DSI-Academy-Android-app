@@ -1,0 +1,36 @@
+{
+  "success": true,
+  "error": null,
+  "code": null,
+  "data": {
+    "counts": {
+      "all": 15,
+      "published": 15,
+      "draft": 0,
+      "pending_review": 0,
+      "rejected": 0,
+      "suspended": 0,
+      "archived": 0
+    },
+    "items": [
+      {
+        "id": "lst_a1b2c3d4e5f6",
+        "title": "Abonnement DSI Academy",
+        "category": "general",
+        "categoryLabel": "Général",
+        "priceDsi": 1000,
+        "free": false,
+        "status": "published",
+        "visibility": "PUBLIC",
+        "coverUrl": null,
+        "salesCount": 3,
+        "revenueDsi": 3000,
+        "viewsCount": 120,
+        "rejectionReason": null,
+        "createdAt": "2026-09-02T08:00:00Z",
+        "updatedAt": "2026-11-01T12:30:00Z"
+      }
+    ],
+    "nextCursor": null
+  }
+}

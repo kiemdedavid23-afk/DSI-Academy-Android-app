@@ -1,0 +1,33 @@
+{
+  "success": true,
+  "error": null,
+  "code": null,
+  "data": {
+    "items": [
+      {
+        "slug": "tools",
+        "label": "Outils"
+      },
+      {
+        "slug": "templates",
+        "label": "Modèles"
+      },
+      {
+        "slug": "courses",
+        "label": "Cours"
+      },
+      {
+        "slug": "assets",
+        "label": "Ressources"
+      },
+      {
+        "slug": "services",
+        "label": "Services"
+      },
+      {
+        "slug": "other",
+        "label": "Autres"
+      }
+    ]
+  }
+}

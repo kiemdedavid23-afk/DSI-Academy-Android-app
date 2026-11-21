@@ -1,0 +1,24 @@
+{
+  "success": true,
+  "error": null,
+  "code": null,
+  "data": {
+    "order": {
+      "id": "ord_9f2c",
+      "listingId": "lst_a1b2c3d4e5f6",
+      "listingTitle": "Abonnement DSI Academy",
+      "coverUrl": null,
+      "buyerDisplayName": "Awa K.",
+      "buyerCountry": "BF",
+      "priceDsi": 1000,
+      "commissionDsi": 100,
+      "feesDsi": 0,
+      "netSellerDsi": 900,
+      "status": "paid",
+      "createdAt": "2026-11-18T15:02:00Z",
+      "paymentRef": "pay_123",
+      "financialStatus": "SUCCEEDED",
+      "paidAt": "2026-11-18T15:02:05Z"
+    }
+  }
+}

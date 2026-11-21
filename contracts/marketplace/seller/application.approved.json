@@ -1,0 +1,17 @@
+{
+  "success": true,
+  "error": null,
+  "code": null,
+  "data": {
+    "id": "app_1",
+    "memberId": "DSI-000123",
+    "storeName": "Digital Service International",
+    "slogan": "Modèles et guides",
+    "description": "Outils numériques.",
+    "logoFileId": "f_1",
+    "status": "APPROVED",
+    "reason": null,
+    "submittedAt": "2026-08-10T09:00:00Z",
+    "reviewedAt": "2026-08-19T10:00:00Z"
+  }
+}

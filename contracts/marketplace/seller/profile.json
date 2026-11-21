@@ -1,0 +1,23 @@
+{
+  "success": true,
+  "error": null,
+  "code": null,
+  "data": {
+    "storeName": "Digital Service International",
+    "slogan": "Modèles et guides pour entrepreneurs",
+    "bio": "Nous vendons des outils numériques.",
+    "logoUrl": "https://cdn.example.invalid/logos/u_77.webp",
+    "status": "APPROVED",
+    "rating": 4.5,
+    "ratingCount": 12,
+    "storeSlug": "digital-service-international",
+    "storeUrl": "https://dsiacademy.pages.dev/boutique/digital-service-international",
+    "joinedAt": "2026-08-19T10:00:00Z",
+    "limits": {
+      "storeNameMax": 80,
+      "sloganMax": 120,
+      "bioMax": 2000,
+      "logoMaxBytes": 8388608
+    }
+  }
+}

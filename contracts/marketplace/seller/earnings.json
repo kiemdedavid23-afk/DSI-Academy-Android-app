@@ -1,0 +1,21 @@
+{
+  "success": true,
+  "error": null,
+  "code": null,
+  "data": {
+    "availableDsi": 1237,
+    "pendingDsi": 0,
+    "source": "WORKER_PAIEMENT",
+    "ledger": [
+      {
+        "id": "led_1",
+        "orderId": "ord_9f2c",
+        "listingTitle": "Abonnement DSI Academy",
+        "amountDsi": 900,
+        "type": "SALE_CREDIT",
+        "createdAt": "2026-11-18T15:02:05Z"
+      }
+    ],
+    "nextCursor": null
+  }
+}

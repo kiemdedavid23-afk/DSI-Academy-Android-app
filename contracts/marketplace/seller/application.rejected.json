@@ -1,0 +1,17 @@
+{
+  "success": true,
+  "error": null,
+  "code": null,
+  "data": {
+    "id": "app_2",
+    "memberId": "DSI-000123",
+    "storeName": "Boutique X",
+    "slogan": "x",
+    "description": "y",
+    "logoFileId": "f_2",
+    "status": "REJECTED",
+    "reason": "Pièce d'identité illisible",
+    "submittedAt": "2026-08-10T09:00:00Z",
+    "reviewedAt": "2026-08-12T10:00:00Z"
+  }
+}

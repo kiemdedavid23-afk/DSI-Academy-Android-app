@@ -1,0 +1,73 @@
+{
+  "success": true,
+  "error": null,
+  "code": null,
+  "data": {
+    "period": {
+      "key": "30d",
+      "from": "2026-10-22T00:00:00Z",
+      "to": "2026-11-20T09:19:00Z",
+      "granularity": "day"
+    },
+    "kpis": {
+      "netRevenueDsi": {
+        "value": 0,
+        "previous": 0,
+        "deltaPct": 0,
+        "trend": "flat"
+      },
+      "uniqueVisitors": {
+        "value": 7,
+        "previous": 6,
+        "deltaPct": 16.7,
+        "trend": "up"
+      },
+      "pageViews": {
+        "value": 11,
+        "previous": 8,
+        "deltaPct": 37.5,
+        "trend": "up"
+      },
+      "successRate": {
+        "percent": 0.0,
+        "attempted": 0,
+        "succeeded": 0,
+        "previousPercent": 0.0,
+        "trend": "flat"
+      }
+    },
+    "series": [
+      {
+        "date": "2026-10-22",
+        "netRevenueDsi": 0,
+        "orders": 0,
+        "uniqueVisitors": 0,
+        "pageViews": 1
+      }
+    ],
+    "funnel": {
+      "storeViews": 11,
+      "listingViews": 8,
+      "ordersCreated": 0,
+      "ordersPaid": 0
+    },
+    "topListings": [
+      {
+        "id": "lst_a1b2c3d4e5f6",
+        "title": "Abonnement DSI Academy",
+        "coverUrl": null,
+        "salesCount": 3,
+        "revenueDsi": 3000,
+        "views": 40,
+        "conversionPct": 7.5
+      }
+    ],
+    "byCountry": [
+      {
+        "country": "BF",
+        "orders": 3,
+        "revenueDsi": 3000
+      }
+    ]
+  }
+}

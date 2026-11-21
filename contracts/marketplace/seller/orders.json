@@ -1,0 +1,51 @@
+{
+  "success": true,
+  "error": null,
+  "code": null,
+  "data": {
+    "period": {
+      "key": "all",
+      "from": "2026-08-19T10:00:00Z",
+      "to": "2026-11-20T09:19:00Z"
+    },
+    "summary": {
+      "revenueDsi": {
+        "value": 1300,
+        "previous": null,
+        "deltaPct": null,
+        "trend": "flat"
+      },
+      "netRevenueDsi": {
+        "value": 1170,
+        "previous": null,
+        "deltaPct": null,
+        "trend": "flat"
+      },
+      "paidOrders": {
+        "value": 4,
+        "previous": null,
+        "deltaPct": null,
+        "trend": "flat"
+      },
+      "processingOrders": 0,
+      "failedOrders": 0
+    },
+    "items": [
+      {
+        "id": "ord_9f2c",
+        "listingId": "lst_a1b2c3d4e5f6",
+        "listingTitle": "Abonnement DSI Academy",
+        "coverUrl": null,
+        "buyerDisplayName": "Awa K.",
+        "buyerCountry": "BF",
+        "priceDsi": 1000,
+        "commissionDsi": 100,
+        "feesDsi": 0,
+        "netSellerDsi": 900,
+        "status": "paid",
+        "createdAt": "2026-11-18T15:02:00Z"
+      }
+    ],
+    "nextCursor": null
+  }
+}
