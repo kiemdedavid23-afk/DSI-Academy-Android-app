@@ -21,6 +21,9 @@ import {
   type SellerAnalytics,
   type SellerAnalyticsListing,
   type SellerApplication,
+  type SellerApplicationReceipt,
+  type ApplicationFileKind,
+  APPLICATION_FILE_KINDS,
   type SellerApplicationStatus,
   type SellerBalance,
   type SellerCategory,
@@ -785,4 +788,36 @@ export function mapSellerReviews(
 export function mapSellerWrite(env: EnvelopeResult): SellerWriteResult {
   const fail = checkEnvelope(env, 'marketplace');
   return fail ?? {kind: 'success'};
+}
+
+// ─── Candidature : envoi d'un fichier et dépôt (lot S3) ──────────────────
+
+export function mapApplicationFileUpload(
+  env: EnvelopeResult,
+): SellerResult<{fileId: string; fileKind: ApplicationFileKind}> {
+  const fail = checkEnvelope(env, 'marketplace');
+  if (fail) {
+    return fail;
+  }
+  const r = asRecord(env.data);
+  const fileId = asString(r?.fileId);
+  const fileKind = APPLICATION_FILE_KINDS.find(k => k === r?.kind);
+  return fileId && fileKind ? {kind: 'success', fileId, fileKind} : invalid(env);
+}
+
+export function mapApplicationSubmit(
+  env: EnvelopeResult,
+): SellerResult<{receipt: SellerApplicationReceipt}> {
+  const fail = checkEnvelope(env, 'marketplace');
+  if (fail) {
+    return fail;
+  }
+  const r = asRecord(env.data);
+  if (!r || r.status !== 'PENDING') {
+    return invalid(env);
+  }
+  return {
+    kind: 'success',
+    receipt: {status: 'PENDING', submittedAt: asEpochMs(r.submittedAt)},
+  };
 }

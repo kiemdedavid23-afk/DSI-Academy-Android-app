@@ -10,10 +10,12 @@ import {
   fetchSellerListings,
   fetchSellerOrders,
   fetchSellerOverview,
+  submitSellerApplication,
   submitSellerListing,
   trackVisit,
   updateSellerListing,
   updateSellerProfile,
+  uploadApplicationFile,
   uploadSellerLogo,
 } from '@core/api/endpoints/marketplace/seller/seller.api';
 import type {SellerPeriod} from '@core/api/endpoints/marketplace/seller/seller.types';
@@ -22,6 +24,8 @@ import listings from '../contracts/marketplace/seller/listings.json';
 import listingDetail from '../contracts/marketplace/seller/listing.detail.json';
 import listingStatus from '../contracts/marketplace/seller/listing.status.json';
 import trackOk from '../contracts/marketplace/seller/track.recorded.json';
+import fileUpload from '../contracts/marketplace/seller/application.file.upload.json';
+import appSubmit from '../contracts/marketplace/seller/application.submit.json';
 import appNone from '../contracts/marketplace/seller/application.none.json';
 
 jest.mock('@core/network', () => ({
@@ -244,5 +248,69 @@ describe('Suivi des visites', () => {
     });
     const r = await trackVisit('store_view', 'ma-boutique', UUID);
     expect(r.kind).toBe('failure');
+  });
+});
+
+describe('Candidature : fichiers et dépôt', () => {
+  const input = {
+    storeName: 'Ma boutique',
+    slogan: 'Un slogan',
+    description: 'Une description',
+    logoFileId: 'f1',
+    idDocumentFrontFileId: 'f2',
+    idDocumentBackFileId: 'f3',
+    idSelfieFileId: 'f4',
+  };
+
+  it('envoie un fichier par postForm avec la preuve', async () => {
+    mockPostForm.mockReturnValue(res(201, fileUpload));
+    const form = new FormData();
+    const r = await uploadApplicationFile(form);
+    expect(mockPostForm).toHaveBeenCalledWith(
+      '/api/marketplace/seller/application/files',
+      form,
+      proof,
+    );
+    expect(r.kind === 'success' && r.fileId).toBe('fil_9a8b7c6d5e4f');
+    expect(r.kind === 'success' && r.fileKind).toBe('id_front');
+  });
+
+  it('refuse sans preuve, sans appel', async () => {
+    (sessionStore.getAccessProof as jest.Mock).mockReturnValue(null);
+    const r = await uploadApplicationFile(new FormData());
+    expect(r.kind === 'failure' && r.errorKind).toBe('noProof');
+    expect(mockPostForm).not.toHaveBeenCalled();
+  });
+
+  it('dépose la candidature', async () => {
+    mockPost.mockReturnValue(res(201, appSubmit));
+    const r = await submitSellerApplication(input);
+    expect(mockPost).toHaveBeenCalledWith(
+      '/api/marketplace/seller/application',
+      input,
+      proof,
+    );
+    expect(r.kind === 'success' && r.receipt.status).toBe('PENDING');
+  });
+
+  it('refuse un champ ou un fichier manquant, sans appel', async () => {
+    const r = await submitSellerApplication({...input, idSelfieFileId: ''});
+    expect(r.kind === 'failure' && r.errorKind).toBe('validation');
+    const r2 = await submitSellerApplication({...input, slogan: '  '});
+    expect(r2.kind === 'failure' && r2.errorKind).toBe('validation');
+    expect(mockPost).not.toHaveBeenCalled();
+  });
+
+  it('409 : conflit ; réponse sans PENDING : invalidResponse', async () => {
+    mockPost.mockReturnValue(
+      res(409, {success: false, error: 'x', code: 'CONFLICT', data: null}),
+    );
+    const r = await submitSellerApplication(input);
+    expect(r.kind === 'failure' && r.errorKind).toBe('conflict');
+    mockPost.mockReturnValue(
+      res(200, {success: true, error: null, code: null, data: {status: 'APPROVED'}}),
+    );
+    const r2 = await submitSellerApplication(input);
+    expect(r2.kind === 'failure' && r2.errorKind).toBe('invalidResponse');
   });
 });

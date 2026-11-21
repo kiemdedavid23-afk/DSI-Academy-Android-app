@@ -31,7 +31,7 @@ import {CommerceExploreScreen} from './CommerceExploreScreen';
 import {CommerceFavoritesScreen} from './CommerceFavoritesScreen';
 import {CommerceHomeScreen, type DiscoverTab} from './CommerceHomeScreen';
 import {CommercePurchasesScreen} from './CommercePurchasesScreen';
-import {SellerIntroScreen} from './SellerIntroScreen';
+import {SellerGateScreen} from './SellerGateScreen';
 import {ShopPromoCodesScreen} from './ShopPromoCodesScreen';
 
 export type CommerceHouseRequest = {section?: CommerceSection; tab?: PurchasesTab};
@@ -151,7 +151,7 @@ export function CommerceHouseScreen({
   const goDiscover = () => setSection('discover');
 
   if (section === 'seller') {
-    return <SellerIntroScreen shellHeader={shellHeader} />;
+    return <SellerGateScreen shellHeader={shellHeader} />;
   }
   if (section === 'purchases') {
     if (tab === 'codes' && source === 'shop') {

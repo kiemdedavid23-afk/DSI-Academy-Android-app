@@ -333,3 +333,37 @@ export type SellerReviewsPage = {
 };
 
 export type TrackKind = 'store_view' | 'listing_view';
+
+// ─── Candidature (lot S3) ────────────────────────────────────────────────
+
+export const APPLICATION_FILE_KINDS = [
+  'logo',
+  'id_front',
+  'id_back',
+  'id_selfie',
+] as const;
+export type ApplicationFileKind = (typeof APPLICATION_FILE_KINDS)[number];
+
+/** Taille maximale d'un fichier de candidature (octets). */
+export const APPLICATION_FILE_MAX_BYTES = 8 * 1024 * 1024;
+export const APPLICATION_LIMITS = {
+  storeName: 80,
+  slogan: 120,
+  description: 2000,
+} as const;
+
+/** Dépôt : les quatre fichiers sont déjà envoyés, on transmet leurs identifiants. */
+export type SellerApplicationInput = {
+  storeName: string;
+  slogan: string;
+  description: string;
+  logoFileId: string;
+  idDocumentFrontFileId: string;
+  idDocumentBackFileId: string;
+  idSelfieFileId: string;
+};
+
+export type SellerApplicationReceipt = {
+  status: 'PENDING';
+  submittedAt: number | null;
+};

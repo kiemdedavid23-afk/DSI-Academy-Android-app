@@ -1,0 +1,10 @@
+{
+  "success": true,
+  "error": null,
+  "code": null,
+  "data": {
+    "status": "PENDING",
+    "submittedAt": "2026-08-10T09:00:00Z",
+    "applicationId": "app_1a2b3c4d5e6f"
+  }
+}

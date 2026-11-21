@@ -2,6 +2,8 @@ import {http, safeEnvelope} from '@core/network';
 import {sessionStore} from '@core/session';
 import {failure} from '../../commerce/commerce.mapper';
 import {
+  mapApplicationFileUpload,
+  mapApplicationSubmit,
   mapSellerAnalytics,
   mapSellerApplication,
   mapSellerCategories,
@@ -20,6 +22,7 @@ import {
 } from './seller.mapper';
 import {
   SELLER_PERIODS,
+  type SellerApplicationInput,
   type SellerFailure,
   type SellerListingInput,
   type SellerListingsQuery,
@@ -96,6 +99,48 @@ export async function fetchSellerOverview(period: SellerPeriod = '30d') {
     await safeEnvelope(
       mp().get(`${base}/overview`, {...proof, query: {period}}),
     ),
+  );
+}
+
+/**
+ * Envoi d'un fichier de candidature (logo, recto, verso, selfie). `form` porte
+ * les champs `file` et `kind` ; 8 Mo maximum, stockage privé côté Worker.
+ */
+export async function uploadApplicationFile(form: FormData) {
+  const missing = noProof();
+  if (missing) {
+    return missing;
+  }
+  return mapApplicationFileUpload(
+    await safeEnvelope(mp().postForm(`${base}/application/files`, form, proof)),
+  );
+}
+
+/**
+ * Dépôt ou redépôt (même route que `/application/resubmit`, contrat identique).
+ * Tous les champs sont obligatoires ; limites 80 / 120 / 2000 caractères.
+ */
+export async function submitSellerApplication(input: SellerApplicationInput) {
+  const missing = noProof();
+  if (missing) {
+    return missing;
+  }
+  const ids = [
+    input.logoFileId,
+    input.idDocumentFrontFileId,
+    input.idDocumentBackFileId,
+    input.idSelfieFileId,
+  ];
+  if (
+    input.storeName.trim() === '' ||
+    input.slogan.trim() === '' ||
+    input.description.trim() === '' ||
+    ids.some(id => !id)
+  ) {
+    return failure('validation', null, 'INVALID_APPLICATION');
+  }
+  return mapApplicationSubmit(
+    await safeEnvelope(mp().post(`${base}/application`, input, proof)),
   );
 }
 

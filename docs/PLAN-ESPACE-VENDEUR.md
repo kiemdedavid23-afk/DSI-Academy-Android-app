@@ -68,9 +68,8 @@ Brut pour « Chiffre d'affaires » ; **net** pour le revenu par produit et les m
 #### T5 — Navigation de l'espace vendeur — **tranché le 21/11/2026**
 L'espace vendeur est un écran plein écran, à part entière, avec sa propre navigation (barre du haut et barre à cinq onglets). La barre principale de l'app n'y est pas affichée. Détails : `DESIGN-ESPACE-VENDEUR.md` §5.
 
-#### T6 — Nouvelle dépendance pour les images
-Logo, pièces de la candidature et image de produit demandent un sélecteur d'images (règle de justification de ARCHITECTURE §12).
-- **Recommandation** : `react-native-image-picker`, ajouté seulement au lot qui en a besoin (S3 pour la candidature), pas avant.
+#### T6 — Nouvelle dépendance pour les images — **tranché le 21/11/2026**
+`react-native-image-picker` validé, ajouté au lot S3 (candidature) ; il servira aussi aux images de produit (S5) et à la Communauté. Justification complète : `docs/fiches/S3.md`.
 
 #### T7 — Export des ventes
 Pas de bibliothèque de fichiers dans l'app.
@@ -127,3 +126,4 @@ Ordre conseillé : S0, S1, puis S2 en parallèle de S3 (pour que des visites s'a
 | 20/11/2026 | **Lot S1 livré** (fondations réseau : 3 fichiers, 21 fixtures, 52 tests, fiche `docs/fiches/S1.md`). Export CSV reporté au lot S6 (le client réseau ne lit que du JSON). |
 | 21/11/2026 | T3, T4 et T5 tranchés ; décisions D18 (visuel identique aux captures) et D19 (navigation propre) ; lot S4a ajouté ; `DESIGN-ESPACE-VENDEUR.md` rédigé. Restent ouverts : T6, T7. |
 | 21/11/2026 | Lot S2 livré : clé visiteur UUID v4 locale, `POST /track` à l'ouverture d'une fiche Marketplace (sans effet visible, rien hors-ligne, 1 envoi par cible et par 30 min). Suivi de la boutique prêt (`trackStoreView`) mais non branché : l'app n'a pas le `storeSlug` public. Bouton « formation gratuite » et fonction IA exclus du visuel. |
+| 21/11/2026 | T6 tranché. Lot S3 livré : porte d'entrée par statut, assistant de candidature en 6 étapes, envoi des 4 fichiers puis dépôt, suivi, redépôt. Dépendance `react-native-image-picker` 8.2.1 : régénérer le lockfile avant la CI. |

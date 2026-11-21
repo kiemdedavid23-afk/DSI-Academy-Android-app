@@ -31,6 +31,8 @@ export type TextFieldProps = {
   autoCapitalize?: TextInputProps['autoCapitalize'];
   autoComplete?: TextInputProps['autoComplete'];
   maxLength?: number;
+  /** Saisie sur plusieurs lignes (description). */
+  multiline?: boolean;
   onBlur?: () => void;
   onSubmitEditing?: () => void;
   testID?: string;
@@ -56,6 +58,7 @@ export function TextField({
   autoCapitalize = 'none',
   autoComplete,
   maxLength,
+  multiline = false,
   onBlur,
   onSubmitEditing,
   testID,
@@ -84,7 +87,8 @@ export function TextField({
         style={[
           styles.row,
           {
-            minHeight: touch.min,
+            minHeight: multiline ? 140 : touch.min,
+            alignItems: multiline ? 'flex-start' : 'center',
             backgroundColor: colors.bgSurface,
             borderColor,
             borderWidth: focused ? 2 : 1,
@@ -97,7 +101,11 @@ export function TextField({
             styles.input,
             textStyle(theme, 'field'),
             {color: colors.textPrimary, paddingHorizontal: spacing.md},
+            multiline
+              ? {paddingVertical: spacing.md, textAlignVertical: 'top'}
+              : null,
           ]}
+          multiline={multiline}
           value={value}
           onChangeText={onChangeText}
           placeholder={placeholder}
