@@ -153,7 +153,7 @@ export function SellerSalesScreen({header}: SellerSalesScreenProps) {
       />
     );
   } else if (s.status !== 'success' && s.items.length === 0) {
-    body = <LoadingState testID="seller-sales-loading" />;
+    body = <LoadingState accessibilityLabel={t('content.loading')} testID="seller-sales-loading" />;
   } else if (s.items.length === 0) {
     body = (
       <Text variant="body" style={{color: sellerColors.inkMuted, padding: sellerMetrics.margin, textAlign: 'center'}} testID="seller-sales-empty">
@@ -195,7 +195,7 @@ export function SellerSalesScreen({header}: SellerSalesScreenProps) {
         initialNumToRender={10}
         maxToRenderPerBatch={10}
         windowSize={7}
-        ListFooterComponent={s.loadingMore ? <LoadingState /> : null}
+        ListFooterComponent={s.loadingMore ? <LoadingState accessibilityLabel={t('content.loading')} /> : undefined}
         renderItem={({item}) => (
           <Pressable
             onPress={() => setOpen(item)}

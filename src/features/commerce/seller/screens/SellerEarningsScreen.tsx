@@ -91,7 +91,7 @@ export function SellerEarningsScreen({header, onBack, onWithdraw}: SellerEarning
       />
     );
   } else if (!ready) {
-    body = <LoadingState testID="seller-earnings-loading" />;
+    body = <LoadingState accessibilityLabel={t('content.loading')} testID="seller-earnings-loading" />;
   } else if (s.ledger.length === 0) {
     body = (
       <Text variant="body" style={{color: sellerColors.inkMuted, padding: sellerMetrics.margin, textAlign: 'center'}} testID="seller-earnings-empty">
@@ -119,7 +119,7 @@ export function SellerEarningsScreen({header, onBack, onWithdraw}: SellerEarning
       initialNumToRender={10}
       maxToRenderPerBatch={10}
       windowSize={7}
-      ListFooterComponent={s.loadingMore ? <LoadingState /> : null}
+      ListFooterComponent={s.loadingMore ? <LoadingState accessibilityLabel={t('content.loading')} /> : undefined}
       renderItem={({item}) => (
         <View
           testID={`seller-ledger-${item.id}`}

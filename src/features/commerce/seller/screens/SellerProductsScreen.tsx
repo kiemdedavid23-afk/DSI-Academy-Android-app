@@ -147,7 +147,7 @@ export function SellerProductsScreen({header, onCreate, onEdit}: SellerProductsS
       />
     );
   } else if (s.status !== 'success' && s.items.length === 0) {
-    body = <LoadingState testID="seller-products-loading" />;
+    body = <LoadingState accessibilityLabel={t('content.loading')} testID="seller-products-loading" />;
   } else if (s.items.length === 0) {
     body = (
       <Text variant="body" style={{color: sellerColors.inkMuted, padding: sellerMetrics.margin, textAlign: 'center'}} testID="seller-products-empty">
@@ -179,7 +179,7 @@ export function SellerProductsScreen({header, onCreate, onEdit}: SellerProductsS
         initialNumToRender={10}
         maxToRenderPerBatch={10}
         windowSize={7}
-        ListFooterComponent={s.loadingMore ? <LoadingState /> : null}
+        ListFooterComponent={s.loadingMore ? <LoadingState accessibilityLabel={t('content.loading')} /> : undefined}
         renderItem={({item, index}) => (
           <SellerProductCard
             testID={`seller-product-${item.id}`}

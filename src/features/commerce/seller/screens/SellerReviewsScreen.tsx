@@ -96,7 +96,7 @@ export function SellerReviewsScreen({header, onBack}: SellerReviewsScreenProps) 
       />
     );
   } else if (s.status !== 'success' && !summary) {
-    body = <LoadingState testID="seller-reviews-loading" />;
+    body = <LoadingState accessibilityLabel={t('content.loading')} testID="seller-reviews-loading" />;
   } else if (s.items.length === 0) {
     body = (
       <Text variant="body" style={{color: sellerColors.inkMuted, padding: sellerMetrics.margin, textAlign: 'center'}} testID="seller-reviews-empty">
@@ -124,7 +124,7 @@ export function SellerReviewsScreen({header, onBack}: SellerReviewsScreenProps) 
       initialNumToRender={10}
       maxToRenderPerBatch={10}
       windowSize={7}
-      ListFooterComponent={s.loadingMore ? <LoadingState /> : null}
+      ListFooterComponent={s.loadingMore ? <LoadingState accessibilityLabel={t('content.loading')} /> : undefined}
       renderItem={({item}) => (
         <View
           testID={`seller-review-${item.id}`}

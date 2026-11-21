@@ -130,7 +130,7 @@ export function SellerProductWizard({header, editId, onClose, registerBack}: Sel
   );
 
   if (loading) {
-    return wrap(<LoadingState testID="seller-product-wizard-loading" />);
+    return wrap(<LoadingState accessibilityLabel={t('content.loading')} testID="seller-product-wizard-loading" />);
   }
   if (loadError) {
     return wrap(
@@ -199,7 +199,7 @@ export function SellerProductWizard({header, editId, onClose, registerBack}: Sel
             label={t(`${P}.wizard.linkLabel`)}
             value={draft.deliveryUrl}
             onChangeText={v => patch({deliveryUrl: v})}
-            placeholder="https://"
+            placeholder={t(`${P}.wizard.linkPlaceholder`)}
             helper={t(`${P}.wizard.linkHelper`)}
             keyboardType="url"
             autoCapitalize="none"

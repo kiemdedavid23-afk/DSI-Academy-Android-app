@@ -130,7 +130,7 @@ export function SellerSpaceScreen({
 
   return (
     <View style={{flex: 1, backgroundColor: sellerColors.bg}} testID="screen-seller-space">
-      <StatusBar barStyle="dark-content" translucent backgroundColor="transparent" />
+      <StatusBar barStyle="dark-content" />
       <View style={{backgroundColor: sellerColors.statusBar, height: insets.top}} />
       <View style={{flex: 1}}>
         {tab === 'overview' ? (

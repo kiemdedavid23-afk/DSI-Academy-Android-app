@@ -95,7 +95,7 @@ export function SellerGateScreen({
     return (
       <View style={{flex: 1, backgroundColor: colors.bgApp}} testID="screen-seller-gate-loading">
         {shellHeader}
-        <LoadingState />
+        <LoadingState accessibilityLabel={t('content.loading')} />
       </View>
     );
   }

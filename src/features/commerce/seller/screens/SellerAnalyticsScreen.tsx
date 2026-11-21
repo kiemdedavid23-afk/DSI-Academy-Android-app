@@ -123,7 +123,7 @@ export function SellerAnalyticsScreen({header}: SellerAnalyticsScreenProps) {
         />,
       );
     }
-    return scroll(<LoadingState testID="seller-analytics-loading" />);
+    return scroll(<LoadingState accessibilityLabel={t('content.loading')} testID="seller-analytics-loading" />);
   }
 
   const {kpis, series, funnel, topListings, byCountry} = data;

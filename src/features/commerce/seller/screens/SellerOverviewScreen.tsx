@@ -99,7 +99,7 @@ export function SellerOverviewScreen({
         />,
       );
     }
-    return scroll(<LoadingState testID="seller-overview-loading" />);
+    return scroll(<LoadingState accessibilityLabel={t('content.loading')} testID="seller-overview-loading" />);
   }
 
   const {seller, suspension, balance, period, recentOrders, topListings} = overview;

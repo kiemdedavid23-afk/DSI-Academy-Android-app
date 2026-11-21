@@ -7,7 +7,11 @@
  * Appareil photo du téléphone.
  */
 
-import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+import {
+  launchCamera,
+  launchImageLibrary,
+  type PhotoQuality,
+} from 'react-native-image-picker';
 import {APPLICATION_FILE_MAX_BYTES} from './sellerTypes';
 
 export type PickSource = 'camera' | 'gallery';
@@ -32,7 +36,7 @@ export type PickResult =
 
 const ACCEPTED = ['image/jpeg', 'image/png', 'image/webp'];
 const MAX_SIDE = 1600;
-const QUALITY = 0.8;
+const QUALITY: PhotoQuality = 0.8;
 
 /** Clé i18n du message pour une erreur de choix de photo. */
 export function pickErrorKey(reason: PickErrorReason): string {

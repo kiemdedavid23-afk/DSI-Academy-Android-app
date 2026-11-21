@@ -102,7 +102,7 @@ export function SellerProfileScreen({header, initial, onBack}: SellerProfileScre
       />
     );
   } else if (!profile || !draft) {
-    body = <LoadingState testID="seller-profile-loading" />;
+    body = <LoadingState accessibilityLabel={t('content.loading')} testID="seller-profile-loading" />;
   } else {
     body = (
       <View style={{gap: 16, paddingHorizontal: sellerMetrics.margin}}>

@@ -325,6 +325,7 @@
           "namePlaceholder": "e.g. Ultimate Freelancing Guide",
           "linkLabel": "External link",
           "linkHelper": "Google Drive, Notion, Canva… An https link your customers receive after purchase.",
+          "linkPlaceholder": "https://",
           "priceLabel": "Price (FCFA)",
           "priceHelper": "Leave empty for a free product.",
           "descLabel": "Detailed presentation",

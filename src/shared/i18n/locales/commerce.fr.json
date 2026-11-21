@@ -325,6 +325,7 @@
           "namePlaceholder": "ex : Guide ultime du freelancing",
           "linkLabel": "Lien externe",
           "linkHelper": "Google Drive, Notion, Canva… Lien https que vos clients recevront après l’achat.",
+          "linkPlaceholder": "https://",
           "priceLabel": "Prix (FCFA)",
           "priceHelper": "Laissez vide pour un produit gratuit.",
           "descLabel": "Présentation détaillée",

@@ -15,21 +15,27 @@ import {
   createBottomTabNavigator,
   type BottomTabBarProps,
 } from '@react-navigation/bottom-tabs';
-import {getFocusedRouteNameFromRoute} from '@react-navigation/native';
+import {
+  getFocusedRouteNameFromRoute,
+  type NavigatorScreenParams,
+} from '@react-navigation/native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import Svg, {Path, Circle} from 'react-native-svg';
 import {Text, useTheme} from '@shared/designsystem';
 import {useTranslation} from '@shared/i18n';
 import {CommunityStack} from './house-stacks/CommunityStack';
 import {AcademyStack} from './house-stacks/AcademyStack';
-import {MemberSpaceStack} from './house-stacks/MemberSpaceStack';
+import {
+  MemberSpaceStack,
+  type MemberSpaceStackParamList,
+} from './house-stacks/MemberSpaceStack';
 import {ShopStack} from './house-stacks/ShopStack';
 import {MarketplaceStack} from './house-stacks/MarketplaceStack';
 
 export type MemberTabParamList = {
   Community: undefined;
   Academy: undefined;
-  MemberSpace: undefined;
+  MemberSpace: NavigatorScreenParams<MemberSpaceStackParamList> | undefined;
   Shop: undefined;
   Marketplace: undefined;
 };
