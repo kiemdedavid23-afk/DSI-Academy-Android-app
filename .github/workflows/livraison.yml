@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
     inputs:
       release:
-        description: "Lien de la page de la Release (ou son tag) qui contient le zip"
+        description: "Lien du fichier .zip dans la Release (recommandé), ou lien de la page / tag d'une Release qui ne contient qu'un seul zip"
         required: true
         type: string
       simulation:
@@ -51,6 +51,7 @@ jobs:
           ref="$(printf '%s' "$RELEASE_REF" | tr -d '[:space:]')"
           repo_lc="$(printf '%s' "$GITHUB_REPOSITORY" | tr 'A-Z' 'a-z')"
           tag="$ref"
+          asset=""
           if [[ "$ref" == http* ]]; then
             ref_lc="$(printf '%s' "$ref" | tr 'A-Z' 'a-z')"
             case "$ref_lc" in
@@ -59,7 +60,13 @@ jobs:
             esac
             case "$ref" in
               */releases/tag/*) tag="${ref#*/releases/tag/}" ;;
-              */releases/download/*) tag="${ref#*/releases/download/}"; tag="${tag%%/*}" ;;
+              */releases/download/*)
+                rest="${ref#*/releases/download/}"
+                tag="${rest%%/*}"
+                asset="${rest#*/}"
+                if [ "$asset" = "$rest" ]; then asset=""; fi
+                asset="${asset%%[?#]*}"
+                ;;
               *) echo "::error::Lien non reconnu. Colle le lien de la page de la Release."; exit 1 ;;
             esac
           fi
@@ -67,15 +74,22 @@ jobs:
           tag="${tag%/}"
           tag="$(python3 -c 'import sys,urllib.parse;print(urllib.parse.unquote(sys.argv[1]))' "$tag")"
           if [ -z "$tag" ]; then echo "::error::Tag de Release introuvable."; exit 1; fi
-          echo "Release : $tag"
+          if [ -n "$asset" ]; then
+            asset="$(python3 -c 'import sys,urllib.parse;print(urllib.parse.unquote(sys.argv[1]))' "$asset")"
+            echo "Release : $tag — fichier : $asset"
+          else
+            echo "Release : $tag"
+          fi
           mkdir -p "$RUNNER_TEMP/dl" "$RUNNER_TEMP/zip"
-          if ! gh release download "$tag" --repo "$GITHUB_REPOSITORY" --pattern '*.zip' --dir "$RUNNER_TEMP/dl"; then
-            echo "::error::Téléchargement impossible. La Release doit être PUBLIÉE (une version brouillon n'est pas accessible) et contenir un fichier .zip."
+          pattern='*.zip'
+          if [ -n "$asset" ]; then pattern="$asset"; fi
+          if ! gh release download "$tag" --repo "$GITHUB_REPOSITORY" --pattern "$pattern" --dir "$RUNNER_TEMP/dl"; then
+            echo "::error::Téléchargement impossible. La Release doit être PUBLIÉE (une version brouillon n'est pas accessible) et contenir le fichier .zip demandé."
             exit 1
           fi
           n="$(find "$RUNNER_TEMP/dl" -maxdepth 1 -name '*.zip' | wc -l)"
           if [ "$n" != "1" ]; then
-            echo "::error::La Release doit contenir exactement 1 fichier .zip (trouvé : $n)."
+            echo "::error::Colle le lien du fichier .zip précis (clic droit sur le zip dans la Release > copier l'adresse du lien), ou laisse un seul .zip dans la Release (trouvé : $n)."
             ls -1 "$RUNNER_TEMP/dl"
             exit 1
           fi
