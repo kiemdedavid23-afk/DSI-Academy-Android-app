@@ -5,7 +5,7 @@
  * Android : revient à l'Aperçu, puis quitte l'espace.
  */
 
-import React, {useCallback, useEffect, useState, useSyncExternalStore} from 'react';
+import React, {useCallback, useEffect, useRef, useState, useSyncExternalStore} from 'react';
 import {BackHandler, StatusBar, View} from 'react-native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {sellerColors} from '@shared/designsystem';
@@ -18,6 +18,8 @@ import {avatarInitial} from '../logic/sellerFormat';
 import {sellerOverviewStore} from '../store/sellerOverviewStore';
 import {SellerMoreScreen} from './SellerMoreScreen';
 import {SellerOverviewScreen} from './SellerOverviewScreen';
+import {SellerProductsScreen} from './SellerProductsScreen';
+import {SellerProductWizard} from './SellerProductWizard';
 import {SellerSoonScreen} from './SellerSoonScreen';
 
 export type SellerSpaceScreenProps = {
@@ -39,6 +41,9 @@ export function SellerSpaceScreen({
   const {t} = useTranslation();
   const insets = useSafeAreaInsets();
   const [tab, setTab] = useState<SellerTabId>('overview');
+  /** Création (`new`) ou modification (identifiant) d'un produit ; null = liste. */
+  const [wizard, setWizard] = useState<{editId: string | null} | null>(null);
+  const wizardBack = useRef<(() => boolean) | null>(null);
   const overview = useSyncExternalStore(
     cb => sellerOverviewStore.subscribe(() => cb()),
     sellerOverviewStore.getState,
@@ -54,13 +59,20 @@ export function SellerSpaceScreen({
   }, []);
 
   const back = useCallback(() => {
+    if (wizard) {
+      if (wizardBack.current) {
+        return wizardBack.current();
+      }
+      setWizard(null);
+      return true;
+    }
     if (tab !== 'overview') {
       setTab('overview');
     } else {
       onExit();
     }
     return true;
-  }, [tab, onExit]);
+  }, [tab, wizard, onExit]);
 
   useEffect(() => {
     const sub = BackHandler.addEventListener('hardwareBackPress', back);
@@ -81,7 +93,10 @@ export function SellerSpaceScreen({
         account: t('commerce.sellerSpace.top.account'),
         store: t('commerce.sellerSpace.top.store'),
       }}
-      onSearch={() => setTab('products')}
+      onSearch={() => {
+        setWizard(null);
+        setTab('products');
+      }}
       onNotifications={onOpenNotifications}
       onStore={() => setTab('more')}
       onAccount={() => setTab('more')}
@@ -101,7 +116,10 @@ export function SellerSpaceScreen({
             error={overview.error}
             firstName={firstName}
             onRetry={() => void sellerOverviewStore.load({force: true})}
-            onCreateProduct={() => setTab('products')}
+            onCreateProduct={() => {
+              setTab('products');
+              setWizard({editId: null});
+            }}
             onWithdraw={onOpenWithdrawals}
             onOpenStore={onOpenUrl}
           />
@@ -113,11 +131,34 @@ export function SellerSpaceScreen({
             onExit={onExit}
           />
         ) : null}
-        {tab === 'products' || tab === 'sales' || tab === 'analytics' ? (
+        {tab === 'products' && wizard ? (
+          <SellerProductWizard
+            header={header}
+            editId={wizard.editId}
+            onClose={() => setWizard(null)}
+            registerBack={fn => {
+              wizardBack.current = fn;
+            }}
+          />
+        ) : null}
+        {tab === 'products' && !wizard ? (
+          <SellerProductsScreen
+            header={header}
+            onCreate={() => setWizard({editId: null})}
+            onEdit={id => setWizard({editId: id})}
+          />
+        ) : null}
+        {tab === 'sales' || tab === 'analytics' ? (
           <SellerSoonScreen header={header} tab={tab} />
         ) : null}
       </View>
-      <SellerTabBar active={tab} onChange={setTab} />
+      <SellerTabBar
+        active={tab}
+        onChange={id => {
+          setWizard(null);
+          setTab(id);
+        }}
+      />
     </View>
   );
 }

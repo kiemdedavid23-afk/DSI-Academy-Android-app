@@ -236,6 +236,83 @@
         "suspendedReason": "Reason: {{reason}}",
         "balanceUnavailable": "The balance is temporarily unavailable. Please try again in a moment.",
         "forbidden": "Your seller access is not active."
+      },
+      "products": {
+        "title": "Products",
+        "summaryAll_one": "{{count}} product",
+        "summaryAll_other": "{{count}} products",
+        "summaryPublished_one": "{{count}} published",
+        "summaryPublished_other": "{{count}} published",
+        "create": "Create a product",
+        "filterAll": "All · {{count}}",
+        "filterPublished": "Published · {{count}}",
+        "filterDraft": "Drafts · {{count}}",
+        "searchPlaceholder": "Search a product",
+        "empty": "No products yet.",
+        "emptySearch": "No product matches your search.",
+        "free": "Free",
+        "price": "{{amount}} FCFA",
+        "menu": "Product actions",
+        "cancel": "Cancel",
+        "archiveTitle": "Archive this product?",
+        "archiveBody": "It will no longer be visible. Orders and earnings stay intact.",
+        "status": {
+          "draft": "Draft",
+          "pending_review": "In review",
+          "published": "Published",
+          "rejected": "Rejected",
+          "suspended": "Suspended",
+          "archived": "Archived"
+        },
+        "actions": {
+          "edit": "Edit",
+          "submit": "Submit for review",
+          "unpublish": "Back to draft",
+          "duplicate": "Duplicate",
+          "archive": "Archive"
+        },
+        "errors": {
+          "forbidden": "This action is not available: your seller account is not active.",
+          "conflict": "This action is not possible for the product in its current state.",
+          "notFound": "Product not found.",
+          "validation": "Check the information you entered."
+        },
+        "wizard": {
+          "stepOf": "Step {{step}} of 3",
+          "editTitle": "Edit product",
+          "step1Title": "What are you selling?",
+          "step1Sub": "Start with the essentials: your content and its price.",
+          "step2Title": "Make it irresistible.",
+          "step2Sub": "Add a description that captivates your customers.",
+          "step3Title": "Almost ready!",
+          "step3Sub": "One last check before launching your product.",
+          "nameLabel": "Product name",
+          "namePlaceholder": "e.g. Ultimate Freelancing Guide",
+          "linkLabel": "External link",
+          "linkHelper": "Google Drive, Notion, Canva… An https link your customers receive after purchase.",
+          "priceLabel": "Price (FCFA)",
+          "priceHelper": "Leave empty for a free product.",
+          "descLabel": "Detailed presentation",
+          "descPlaceholder": "Describe the benefits, the content and the value of your product…",
+          "categoryLabel": "Category",
+          "categoriesUnavailable": "Categories are temporarily unavailable.",
+          "visibilityLabel": "Visibility",
+          "launchPublish": "Published",
+          "launchPublishSub": "Sent for review, then publicly visible",
+          "launchDraft": "Draft",
+          "launchDraftSub": "Visible only to you",
+          "back": "Back",
+          "next": "Continue",
+          "launch": "Launch my product",
+          "save": "Save",
+          "errors": {
+            "title": "Enter a name (120 characters maximum).",
+            "deliveryUrl": "Enter a valid https link.",
+            "price": "The price must be a whole number.",
+            "description": "Write a description (5,000 characters maximum).",
+            "category": "Choose a category."
+          }
+        }
       }
     }
   }

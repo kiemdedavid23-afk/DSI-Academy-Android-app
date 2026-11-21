@@ -236,6 +236,83 @@
         "suspendedReason": "Raison : {{reason}}",
         "balanceUnavailable": "Le solde est momentanément indisponible. Réessayez dans un instant.",
         "forbidden": "Votre accès à l’espace vendeur n’est pas actif."
+      },
+      "products": {
+        "title": "Produits",
+        "summaryAll_one": "{{count}} produit",
+        "summaryAll_other": "{{count}} produits",
+        "summaryPublished_one": "{{count}} publié",
+        "summaryPublished_other": "{{count}} publiés",
+        "create": "Créer un produit",
+        "filterAll": "Tous · {{count}}",
+        "filterPublished": "Publiés · {{count}}",
+        "filterDraft": "Brouillons · {{count}}",
+        "searchPlaceholder": "Rechercher un produit",
+        "empty": "Aucun produit pour le moment.",
+        "emptySearch": "Aucun produit ne correspond à votre recherche.",
+        "free": "Gratuit",
+        "price": "{{amount}} FCFA",
+        "menu": "Actions du produit",
+        "cancel": "Annuler",
+        "archiveTitle": "Archiver ce produit ?",
+        "archiveBody": "Il ne sera plus visible. Les commandes et les gains restent intacts.",
+        "status": {
+          "draft": "Brouillon",
+          "pending_review": "En modération",
+          "published": "Publié",
+          "rejected": "Refusé",
+          "suspended": "Suspendu",
+          "archived": "Archivé"
+        },
+        "actions": {
+          "edit": "Modifier",
+          "submit": "Soumettre à la modération",
+          "unpublish": "Repasser en brouillon",
+          "duplicate": "Dupliquer",
+          "archive": "Archiver"
+        },
+        "errors": {
+          "forbidden": "Cette action n’est pas disponible : votre compte vendeur n’est pas actif.",
+          "conflict": "Action impossible pour ce produit dans son état actuel.",
+          "notFound": "Produit introuvable.",
+          "validation": "Vérifiez les informations saisies."
+        },
+        "wizard": {
+          "stepOf": "Étape {{step}} sur 3",
+          "editTitle": "Modifier le produit",
+          "step1Title": "Que vendez-vous ?",
+          "step1Sub": "Commencez par l’essentiel : votre contenu et son prix.",
+          "step2Title": "Rendez-le irrésistible.",
+          "step2Sub": "Ajoutez une description qui captive vos clients.",
+          "step3Title": "C’est presque prêt !",
+          "step3Sub": "Dernière vérification avant de lancer votre produit.",
+          "nameLabel": "Nom du produit",
+          "namePlaceholder": "ex : Guide ultime du freelancing",
+          "linkLabel": "Lien externe",
+          "linkHelper": "Google Drive, Notion, Canva… Lien https que vos clients recevront après l’achat.",
+          "priceLabel": "Prix (FCFA)",
+          "priceHelper": "Laissez vide pour un produit gratuit.",
+          "descLabel": "Présentation détaillée",
+          "descPlaceholder": "Décrivez les bénéfices, le contenu et la valeur de votre produit…",
+          "categoryLabel": "Catégorie",
+          "categoriesUnavailable": "Catégories indisponibles pour le moment.",
+          "visibilityLabel": "Visibilité",
+          "launchPublish": "Publié",
+          "launchPublishSub": "Envoyé en modération, puis visible publiquement",
+          "launchDraft": "Brouillon",
+          "launchDraftSub": "Visible uniquement par vous",
+          "back": "Retour",
+          "next": "Continuer",
+          "launch": "Lancer mon produit",
+          "save": "Enregistrer",
+          "errors": {
+            "title": "Indiquez un nom (120 caractères maximum).",
+            "deliveryUrl": "Indiquez un lien https valide.",
+            "price": "Le prix doit être un nombre entier.",
+            "description": "Rédigez une description (5 000 caractères maximum).",
+            "category": "Choisissez une catégorie."
+          }
+        }
       }
     }
   }
