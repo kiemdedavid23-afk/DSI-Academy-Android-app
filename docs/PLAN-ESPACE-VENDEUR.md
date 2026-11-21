@@ -46,6 +46,8 @@ Pourquoi un plan d'abord : il y a trois chantiers liés (Worker, contrat, app) e
 | D15 | Acheteur : nom et pays lus dans l'Access Proof ; `null` pour les achats antérieurs à l'enrichissement. L'app affiche « Acheteur » et masque le pays. | Rapport Workers §2, §3.7 |
 | D16 | `POST /track` en « fire-and-forget » : jamais bloquant, rien hors ligne. L'export des ventes passe par un appel authentifié (pas un simple lien). | Rapport Workers §3.9, §3.12 |
 | D17 | Aucun message technique n'est affiché : ni `error`, ni `financialReason`, ni `financialStatus`, ni `paymentRef`. L'app écrit ses messages selon statut et `code`. | Rapport Workers §1, §6 |
+| D18 | **Le visuel de l'espace vendeur reproduit exactement les captures** (disposition, couleurs, formes, composants), hors logo et nom de la plateforme tierce. Valeurs : `docs/DESIGN-ESPACE-VENDEUR.md`. | Toi, 20/11/2026 |
+| D19 | L'espace vendeur a **sa propre navigation** (barre du haut, barre à cinq onglets) et masque la barre principale de l'app. | Toi, 20/11/2026 |
 
 ## 4. Points tranchés et points ouverts
 
@@ -58,16 +60,13 @@ Pourquoi un plan d'abord : il y a trois chantiers liés (Worker, contrat, app) e
 
 ### Ouverts
 
-#### T3 — Revenu par produit : brut ou net
-État actuel du Worker : **brut** (somme de `priceDsi`), y compris pour le top produits ; `netRevenueDsi` (Analyses, résumé des Ventes) est en net. Les exemples du contrat ont été alignés sur le brut (3 000 pour 3 ventes à 1 000).
-- **Recommandation** : garder le brut pour « Chiffre d'affaires », passer au **net** pour le revenu par produit et les meilleurs produits (c'est ce que gagne le vendeur). Une ligne à changer côté Worker (`LISTING_STATS_SQL`) ; aucun nom de champ ne change.
+#### T3 — Revenu par produit : brut ou net — **tranché le 20/11/2026 (recommandation retenue)**
+Brut pour « Chiffre d'affaires » ; **net** pour le revenu par produit et les meilleurs produits. À faire côté Worker : une ligne (`LISTING_STATS_SQL`), aucun nom de champ ne change ; le mapper de l'app lit `revenueDsi` tel quel. Historique : le Worker renvoie le brut au 20/11/2026.
 
-#### T4 — Fond des écrans vendeur
-- **Recommandation** : fond uni (thème clair ou sombre), comme la refonte de Paramètres, avec cartes opaques. Pas de photo de fond.
+#### T4 — Fond des écrans vendeur — **tranché** : fond blanc uni, cartes à contour, comme les captures (voir `DESIGN-ESPACE-VENDEUR.md`).
 
-#### T5 — Navigation de l'espace vendeur
-Les cinq onglets de la capture se superposeraient à la barre principale de l'app (Communauté, Academy, Espace, Boutique, Marketplace).
-- **Recommandation** : un écran plein écran dans la pile Marketplace qui masque la barre principale et porte sa propre barre à cinq onglets. Sortie par le retour Android et par une ligne « Quitter l'espace vendeur » dans Plus.
+#### T5 — Navigation de l'espace vendeur — **tranché le 21/11/2026**
+L'espace vendeur est un écran plein écran, à part entière, avec sa propre navigation (barre du haut et barre à cinq onglets). La barre principale de l'app n'y est pas affichée. Détails : `DESIGN-ESPACE-VENDEUR.md` §5.
 
 #### T6 — Nouvelle dépendance pour les images
 Logo, pièces de la candidature et image de produit demandent un sélecteur d'images (règle de justification de ARCHITECTURE §12).
@@ -87,7 +86,8 @@ Une étape = un lot livré, vérifié par la CI, puis le suivant. Chaque lot sui
 | **S1 — Fondations réseau** | `core/api/endpoints/marketplace/seller/` (peut démarrer sur les exemples du contrat v1.1 ; les fixtures sont remplacées par les réponses réelles de S0) : types, mappers, appels. Fixtures dans `contracts/marketplace/seller/` (issues de S0). Aides communes : période, objet `metric` (valeur, précédent, écart, tendance), conversion DSI vers FCFA. Mapping des erreurs. | S0 | Tests des mappers et des appels verts |
 | **S2 — Suivi des visites** | `POST /track` à l'ouverture d'une boutique et d'une fiche produit ; clé visiteur UUID conservée localement ; rien en hors-ligne. | S1 | Les Analyses commencent à recevoir des données |
 | **S3 — Statut et candidature** | `sellerStatusStore` ; porte d'entrée selon le statut (`none`, `PENDING`, `REJECTED`, `APPROVED`, `SUSPENDED`, `REVOKED`) ; formulaire de candidature avec les 4 fichiers ; suivi, motif de refus, redépôt. Dépendance T6. | S1, T6 | Un membre peut candidater et suivre sa candidature |
-| **S4 — Coque et Aperçu** | Écran plein écran avec barre à 5 onglets (T5) ; `sellerOverviewStore` ; Aperçu : bonjour, lien de boutique (copier, voir), anneau de complétude, solde et bouton « Retirer », ventes et commandes avec variation, bandeau de suspension. | S3, T1, T4, T5 | Aperçu fidèle à la capture, avec les données réelles |
+| **S4a — Thème et composants vendeur** | `sellerTheme.ts` (tokens mesurés sur les captures), barre du haut, barre d'onglets, boutons pastille, cartes d'indicateur, onglets segmentés, champ de recherche, carte produit, badges ; tests de valeurs. Voir `DESIGN-ESPACE-VENDEUR.md`. | S1 | Composants fidèles aux captures, thème clair |
+| **S4 — Coque et Aperçu** | Écran plein écran avec barre à 5 onglets (T5) ; `sellerOverviewStore` ; Aperçu : bonjour, lien de boutique (copier, voir), anneau de complétude, solde et bouton « Retirer », ventes et commandes avec variation, bandeau de suspension. | S3, S4a | Aperçu fidèle à la capture, avec les données réelles |
 | **S5 — Produits** | Liste (compteurs, filtres Tous/Publiés/Brouillons…, recherche, pagination) ; fiche ; création et modification ; soumettre, dépublier, dupliquer, archiver. | S4 | Cycle de vie complet d'un produit |
 | **S6 — Ventes** | Période (7 j, 30 j, 12 mois, toujours), résumé, filtre de statut, liste paginée, détail, export (T7). | S4 | Écran Ventes fidèle à la capture |
 | **S7 — Analyses** | Quatre indicateurs avec variation, courbe des revenus et des visites, entonnoir, meilleurs produits, pays. Graphiques en `react-native-svg` (D9). | S4, S2 | Écran Analyses avec données réelles |
@@ -125,3 +125,5 @@ Ordre conseillé : S0, S1, puis S2 en parallèle de S3 (pour que des visites s'a
 | 20/11/2026 | Rapport des Workers reçu : route interne de solde au Paiement, Access Proof enrichi. T1 et T2 tranchés ; décisions D13 à D17 ajoutées. |
 | 20/11/2026 | **Contrat v1.1 confirmé comme validé** (D12). Reste ouvert : T3 à T7. |
 | 20/11/2026 | **Lot S1 livré** (fondations réseau : 3 fichiers, 21 fixtures, 52 tests, fiche `docs/fiches/S1.md`). Export CSV reporté au lot S6 (le client réseau ne lit que du JSON). |
+| 21/11/2026 | T3, T4 et T5 tranchés ; décisions D18 (visuel identique aux captures) et D19 (navigation propre) ; lot S4a ajouté ; `DESIGN-ESPACE-VENDEUR.md` rédigé. Restent ouverts : T6, T7. |
+| 21/11/2026 | Lot S2 livré : clé visiteur UUID v4 locale, `POST /track` à l'ouverture d'une fiche Marketplace (sans effet visible, rien hors-ligne, 1 envoi par cible et par 30 min). Suivi de la boutique prêt (`trackStoreView`) mais non branché : l'app n'a pas le `storeSlug` public. Bouton « formation gratuite » et fonction IA exclus du visuel. |

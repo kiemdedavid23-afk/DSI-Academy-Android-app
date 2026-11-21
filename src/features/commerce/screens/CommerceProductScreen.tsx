@@ -24,6 +24,7 @@ import {ProductCover} from '../components/ProductCover';
 import {RatingStars} from '../components/Stars';
 import {artFor} from '../logic/art';
 import {categoryKeys, commerceErrorKey} from '../logic/errorKey';
+import {trackListingView} from '../logic/visitTracker';
 import {COMMERCE_STORES} from '../store/commerceStores';
 import type {CommerceProduct, CommerceSource} from '../store/commerceTypes';
 
@@ -63,6 +64,13 @@ export function CommerceProductScreen({
     // `seed` n'est lu qu'à l'ouverture : un changement ne doit pas relancer l'appel.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [stores, id]);
+
+  // Suivi des visites : fiche Marketplace seulement, sans effet visible.
+  useEffect(() => {
+    if (source === 'marketplace') {
+      trackListingView(id);
+    }
+  }, [source, id]);
 
   const product = detail.id === id ? detail.product : null;
 
