@@ -349,6 +349,46 @@
           "net": "Seller net",
           "status": "Status"
         }
+      },
+      "analytics": {
+        "title": "Strategic analytics",
+        "subtitle": "In-depth data to steer the growth of your store.",
+        "periodMenu": "Choose the period",
+        "close": "Close",
+        "period": {
+          "7d": "Last 7 days",
+          "30d": "Last 30 days",
+          "12m": "Last 12 months",
+          "all": "Since the beginning"
+        },
+        "kpi": {
+          "netRevenue": "Net revenue",
+          "visitors": "Unique visitors",
+          "pageViews": "Page views",
+          "successRate": "Success rate"
+        },
+        "vsPrevious": "vs {{value}} prev.",
+        "attempted_one": "{{count}} attempted transaction",
+        "attempted_other": "{{count}} attempted transactions",
+        "charts": {
+          "revenue": "Net revenue",
+          "visits": "Page views"
+        },
+        "noData": "No activity in this period.",
+        "funnel": {
+          "title": "Conversion funnel",
+          "storeViews": "Store visits",
+          "listingViews": "Product visits",
+          "ordersCreated": "Orders created",
+          "ordersPaid": "Orders paid"
+        },
+        "topProducts": "Top products",
+        "noProducts": "No sales in this period.",
+        "productLine": "{{sales}} sales · {{views}} views · conversion {{conversion}}",
+        "countries": "Countries",
+        "noCountries": "No orders in this period.",
+        "ordersCount_one": "{{count}} order",
+        "ordersCount_other": "{{count}} orders"
       }
     }
   }

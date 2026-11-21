@@ -349,6 +349,46 @@
           "net": "Net vendeur",
           "status": "Statut"
         }
+      },
+      "analytics": {
+        "title": "Analyses stratégiques",
+        "subtitle": "Données approfondies pour piloter la croissance de votre boutique.",
+        "periodMenu": "Choisir la période",
+        "close": "Fermer",
+        "period": {
+          "7d": "7 derniers jours",
+          "30d": "Derniers 30 jours",
+          "12m": "12 derniers mois",
+          "all": "Depuis le début"
+        },
+        "kpi": {
+          "netRevenue": "Revenu net",
+          "visitors": "Visiteurs uniques",
+          "pageViews": "Pages vues",
+          "successRate": "Taux de succès"
+        },
+        "vsPrevious": "vs {{value}} préc.",
+        "attempted_one": "{{count}} transaction tentée",
+        "attempted_other": "{{count}} transactions tentées",
+        "charts": {
+          "revenue": "Revenus nets",
+          "visits": "Pages vues"
+        },
+        "noData": "Aucune activité sur cette période.",
+        "funnel": {
+          "title": "Entonnoir de conversion",
+          "storeViews": "Visites de la boutique",
+          "listingViews": "Visites de produits",
+          "ordersCreated": "Commandes créées",
+          "ordersPaid": "Commandes payées"
+        },
+        "topProducts": "Meilleurs produits",
+        "noProducts": "Aucune vente sur cette période.",
+        "productLine": "{{sales}} ventes · {{views}} vues · conversion {{conversion}}",
+        "countries": "Pays",
+        "noCountries": "Aucune commande sur cette période.",
+        "ordersCount_one": "{{count}} commande",
+        "ordersCount_other": "{{count}} commandes"
       }
     }
   }

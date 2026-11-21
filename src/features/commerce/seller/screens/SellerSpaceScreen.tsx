@@ -16,12 +16,12 @@ import type {SellerTabId} from '../components/SellerTabIcon';
 import {SellerTopBar} from '../components/SellerTopBar';
 import {avatarInitial} from '../logic/sellerFormat';
 import {sellerOverviewStore} from '../store/sellerOverviewStore';
+import {SellerAnalyticsScreen} from './SellerAnalyticsScreen';
 import {SellerMoreScreen} from './SellerMoreScreen';
 import {SellerOverviewScreen} from './SellerOverviewScreen';
 import {SellerProductsScreen} from './SellerProductsScreen';
 import {SellerProductWizard} from './SellerProductWizard';
 import {SellerSalesScreen} from './SellerSalesScreen';
-import {SellerSoonScreen} from './SellerSoonScreen';
 
 export type SellerSpaceScreenProps = {
   /** Quitte l'espace vendeur (retour à la Marketplace). */
@@ -150,9 +150,7 @@ export function SellerSpaceScreen({
           />
         ) : null}
         {tab === 'sales' ? <SellerSalesScreen header={header} /> : null}
-        {tab === 'analytics' ? (
-          <SellerSoonScreen header={header} tab={tab} />
-        ) : null}
+        {tab === 'analytics' ? <SellerAnalyticsScreen header={header} /> : null}
       </View>
       <SellerTabBar
         active={tab}

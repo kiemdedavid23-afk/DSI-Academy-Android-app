@@ -11,6 +11,7 @@ export {
 export type {
   ApplicationFileKind,
   SellerApplication,
+  SellerAnalytics,
   SellerApplicationStatus,
   SellerCategory,
   SellerListingCounts,
