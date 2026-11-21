@@ -20,6 +20,7 @@ import {SellerMoreScreen} from './SellerMoreScreen';
 import {SellerOverviewScreen} from './SellerOverviewScreen';
 import {SellerProductsScreen} from './SellerProductsScreen';
 import {SellerProductWizard} from './SellerProductWizard';
+import {SellerSalesScreen} from './SellerSalesScreen';
 import {SellerSoonScreen} from './SellerSoonScreen';
 
 export type SellerSpaceScreenProps = {
@@ -148,7 +149,8 @@ export function SellerSpaceScreen({
             onEdit={id => setWizard({editId: id})}
           />
         ) : null}
-        {tab === 'sales' || tab === 'analytics' ? (
+        {tab === 'sales' ? <SellerSalesScreen header={header} /> : null}
+        {tab === 'analytics' ? (
           <SellerSoonScreen header={header} tab={tab} />
         ) : null}
       </View>

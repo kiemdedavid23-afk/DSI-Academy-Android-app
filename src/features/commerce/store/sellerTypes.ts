@@ -19,6 +19,10 @@ export type {
   SellerListingStatus,
   SellerListingSummary,
   SellerMetric,
+  SellerOrderItem,
+  SellerOrderStatus,
+  SellerOrdersSummary,
   SellerOverview,
+  SellerPeriod,
   TrackKind,
 } from '@core/api/endpoints/marketplace/seller/seller.types';

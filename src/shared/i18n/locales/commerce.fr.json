@@ -313,6 +313,42 @@
             "category": "Choisissez une catégorie."
           }
         }
+      },
+      "sales": {
+        "title": "Ventes",
+        "subtitle": {
+          "7d": "7 derniers jours",
+          "30d": "30 derniers jours",
+          "12m": "12 derniers mois",
+          "all": "Depuis le début"
+        },
+        "period": {
+          "7d": "7 j",
+          "30d": "30 j",
+          "12m": "12 mois",
+          "all": "Toujours"
+        },
+        "export": "Exporter",
+        "exportTitle": "Ventes",
+        "exportError": "L’export n’a pas pu être préparé. Réessayez dans un instant.",
+        "revenue": "Chiffre d’affaires",
+        "paidOrders": "Commandes payées",
+        "filterAll": "Toutes",
+        "filterPaid": "Payées",
+        "filterPending": "En attente",
+        "paid": "Payée",
+        "empty": "Aucune vente pour cette sélection.",
+        "close": "Fermer",
+        "detail": {
+          "buyer": "Acheteur",
+          "country": "Pays",
+          "date": "Date",
+          "price": "Prix",
+          "commission": "Commission",
+          "fees": "Frais",
+          "net": "Net vendeur",
+          "status": "Statut"
+        }
       }
     }
   }
