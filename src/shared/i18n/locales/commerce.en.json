@@ -197,8 +197,44 @@
       },
       "soon": "This section is coming in an upcoming update.",
       "more": {
-        "withdrawals": "My withdrawals",
-        "quit": "Leave the seller space"
+        "sectionShop": "My store",
+        "sectionAccount": "My seller account",
+        "viewStore": "View my store",
+        "quit": "Leave the seller space",
+        "items": {
+          "overview": {
+            "title": "Overview",
+            "subtitle": "Sales, visitors and next steps"
+          },
+          "products": {
+            "title": "Products",
+            "subtitle": "Create, edit and publish your products"
+          },
+          "sales": {
+            "title": "Sales",
+            "subtitle": "Orders, statuses and export"
+          },
+          "analytics": {
+            "title": "Analytics",
+            "subtitle": "Revenue, visitors and top products"
+          },
+          "reviews": {
+            "title": "Reviews",
+            "subtitle": "Reviews left on your products"
+          },
+          "profile": {
+            "title": "My profile",
+            "subtitle": "Your store’s name, tagline, description and logo"
+          },
+          "earnings": {
+            "title": "My earnings",
+            "subtitle": "Balance and credit history"
+          },
+          "withdrawals": {
+            "title": "My withdrawals",
+            "subtitle": "Withdraw your earnings"
+          }
+        }
       },
       "overview": {
         "greeting": "Hello, {{name}}",
@@ -389,6 +425,56 @@
         "noCountries": "No orders in this period.",
         "ordersCount_one": "{{count}} order",
         "ordersCount_other": "{{count}} orders"
+      },
+      "profile": {
+        "title": "My profile",
+        "nameLabel": "Store name",
+        "sloganLabel": "Tagline",
+        "sloganPlaceholder": "One sentence that sums up your store",
+        "bioLabel": "Description",
+        "bioPlaceholder": "Introduce your store and what you sell",
+        "changeLogo": "Change logo",
+        "addLogo": "Add a logo",
+        "logoHint": "png, jpeg or webp image, 8 MB at most.",
+        "save": "Save",
+        "saved": "Changes saved.",
+        "readOnly": "Your seller account is not active: the profile is read-only.",
+        "errors": {
+          "nameEmpty": "The store name is required.",
+          "tooLong": "{{max}} characters at most.",
+          "network": "No connection. Check your network and try again.",
+          "session": "Your session has expired. Sign in again.",
+          "forbidden": "This action is not available: your seller account is not active.",
+          "validation": "Check the information you entered.",
+          "unavailable": "Service temporarily unavailable. Try again in a moment."
+        },
+        "logoErrors": {
+          "network": "No connection. Check your network and try again.",
+          "session": "Your session has expired. Sign in again.",
+          "forbidden": "This action is not available: your seller account is not active.",
+          "tooLarge": "This image is too large (8 MB at most).",
+          "rejected": "This image was not accepted. Choose a png, jpeg or webp file.",
+          "unavailable": "Logo upload is temporarily unavailable. Try again later."
+        }
+      },
+      "reviews": {
+        "title": "Reviews",
+        "noRating": "–",
+        "count_one": "{{count}} review",
+        "count_other": "{{count}} reviews",
+        "empty": "No reviews yet.",
+        "ratingLabel": "Rating: {{rating}} out of 5"
+      },
+      "earnings": {
+        "title": "My earnings",
+        "available": "Available balance",
+        "pending": "Pending: {{amount}}",
+        "history": "Credit history",
+        "empty": "No credits yet.",
+        "type": {
+          "SALE_CREDIT": "Sale",
+          "other": "Credit"
+        }
       }
     }
   }

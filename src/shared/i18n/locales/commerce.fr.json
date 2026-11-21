@@ -197,8 +197,44 @@
       },
       "soon": "Cette section arrive dans une prochaine mise à jour.",
       "more": {
-        "withdrawals": "Mes retraits",
-        "quit": "Quitter l’espace vendeur"
+        "sectionShop": "Ma boutique",
+        "sectionAccount": "Mon compte vendeur",
+        "viewStore": "Voir ma boutique",
+        "quit": "Quitter l’espace vendeur",
+        "items": {
+          "overview": {
+            "title": "Aperçu",
+            "subtitle": "Ventes, visiteurs et prochaines étapes"
+          },
+          "products": {
+            "title": "Produits",
+            "subtitle": "Créer, modifier et publier tes produits"
+          },
+          "sales": {
+            "title": "Ventes",
+            "subtitle": "Commandes, statuts et export"
+          },
+          "analytics": {
+            "title": "Analyses",
+            "subtitle": "Revenus, visiteurs et meilleurs produits"
+          },
+          "reviews": {
+            "title": "Avis",
+            "subtitle": "Les avis laissés sur tes produits"
+          },
+          "profile": {
+            "title": "Mon profil",
+            "subtitle": "Nom, slogan, présentation et logo de ta boutique"
+          },
+          "earnings": {
+            "title": "Mes gains",
+            "subtitle": "Solde et historique des crédits"
+          },
+          "withdrawals": {
+            "title": "Mes retraits",
+            "subtitle": "Retirer tes gains"
+          }
+        }
       },
       "overview": {
         "greeting": "Bonjour, {{name}}",
@@ -389,6 +425,56 @@
         "noCountries": "Aucune commande sur cette période.",
         "ordersCount_one": "{{count}} commande",
         "ordersCount_other": "{{count}} commandes"
+      },
+      "profile": {
+        "title": "Mon profil",
+        "nameLabel": "Nom de la boutique",
+        "sloganLabel": "Slogan",
+        "sloganPlaceholder": "Une phrase qui résume ta boutique",
+        "bioLabel": "Présentation",
+        "bioPlaceholder": "Présente ta boutique et ce que tu vends",
+        "changeLogo": "Changer le logo",
+        "addLogo": "Ajouter un logo",
+        "logoHint": "Image png, jpeg ou webp, 8 Mo au plus.",
+        "save": "Enregistrer",
+        "saved": "Modifications enregistrées.",
+        "readOnly": "Ton compte vendeur n’est pas actif : le profil est en lecture seule.",
+        "errors": {
+          "nameEmpty": "Le nom de la boutique est obligatoire.",
+          "tooLong": "{{max}} caractères au plus.",
+          "network": "Pas de connexion. Vérifie ton réseau puis réessaie.",
+          "session": "Ta session a expiré. Reconnecte-toi.",
+          "forbidden": "Cette action n’est pas disponible : ton compte vendeur n’est pas actif.",
+          "validation": "Vérifie les informations saisies.",
+          "unavailable": "Service momentanément indisponible. Réessaie dans un instant."
+        },
+        "logoErrors": {
+          "network": "Pas de connexion. Vérifie ton réseau puis réessaie.",
+          "session": "Ta session a expiré. Reconnecte-toi.",
+          "forbidden": "Cette action n’est pas disponible : ton compte vendeur n’est pas actif.",
+          "tooLarge": "Cette image est trop lourde (8 Mo au plus).",
+          "rejected": "Cette image n’a pas été acceptée. Choisis un fichier png, jpeg ou webp.",
+          "unavailable": "L’envoi du logo est momentanément indisponible. Réessaie plus tard."
+        }
+      },
+      "reviews": {
+        "title": "Avis",
+        "noRating": "–",
+        "count_one": "{{count}} avis",
+        "count_other": "{{count}} avis",
+        "empty": "Aucun avis pour le moment.",
+        "ratingLabel": "Note : {{rating}} sur 5"
+      },
+      "earnings": {
+        "title": "Mes gains",
+        "available": "Solde disponible",
+        "pending": "En attente : {{amount}}",
+        "history": "Historique des crédits",
+        "empty": "Aucun crédit pour le moment.",
+        "type": {
+          "SALE_CREDIT": "Vente",
+          "other": "Crédit"
+        }
       }
     }
   }
