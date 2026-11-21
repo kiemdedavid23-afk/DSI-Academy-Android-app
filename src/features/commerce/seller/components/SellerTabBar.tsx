@@ -64,7 +64,7 @@ export function SellerTabBar({active, onChange}: SellerTabBarProps) {
             <Text
               variant="micro"
               numberOfLines={1}
-              style={{color, letterSpacing: 0.4, textTransform: 'uppercase'}}>
+              style={{color}}>
               {label}
             </Text>
           </Pressable>

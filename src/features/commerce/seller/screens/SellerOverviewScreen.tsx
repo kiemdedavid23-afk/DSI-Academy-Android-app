@@ -153,7 +153,7 @@ export function SellerOverviewScreen({
             gap: 4,
             padding: sellerMetrics.cardPadding,
           }}>
-          <Text variant="bodyStrong" style={{color: sellerColors.negativeText}}>
+          <Text variant="bodySmallStrong" style={{color: sellerColors.negativeText}}>
             {t(seller.status === 'REVOKED' ? `${O}.revokedTitle` : `${O}.suspendedTitle`)}
           </Text>
           {suspension.reason ? (
@@ -168,19 +168,19 @@ export function SellerOverviewScreen({
         <Text variant="title" accessibilityRole="header" style={{color: sellerColors.ink}}>
           {firstName ? t(`${O}.greeting`, {name: firstName}) : t(`${O}.greetingNoName`)}
         </Text>
-        <Text variant="body" style={{color: sellerColors.inkMuted}}>
+        <Text variant="bodySmall" style={{color: sellerColors.inkMuted}}>
           {t(`${O}.yourStore`)}
         </Text>
         <Text
-          variant="bodyStrong"
+          variant="bodySmallStrong"
           selectable
           numberOfLines={1}
           testID="seller-store-url"
-          style={{color: sellerColors.ink, fontFamily: 'monospace'}}>
+          style={{color: sellerColors.ink}}>
           {seller.storeUrl}
         </Text>
         <Text
-          variant="bodyStrong"
+          variant="bodySmallStrong"
           onPress={copy}
           accessibilityRole="button"
           testID="seller-copy-link"

@@ -169,7 +169,7 @@ export function SellerTopBar({
         accessibilityLabel={labels.account}
         testID="seller-topbar-avatar"
         style={{...round, backgroundColor: sellerColors.coverSky}}>
-        <Text variant="bodyStrong" style={{color: sellerColors.ink}}>
+        <Text variant="bodySmallStrong" style={{color: sellerColors.ink}}>
           {initial}
         </Text>
       </Pressable>

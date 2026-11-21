@@ -160,7 +160,7 @@ export function SellerProductWizard({header, editId, onClose, registerBack}: Sel
               justifyContent: 'center',
               width: 44,
             }}>
-            <Text variant="bodyStrong" style={{color: n === step ? sellerColors.onAccent : sellerColors.inkMuted}}>
+            <Text variant="bodySmallStrong" style={{color: n === step ? sellerColors.onAccent : sellerColors.inkMuted}}>
               {n < step ? '✓' : String(n)}
             </Text>
           </View>
@@ -180,7 +180,7 @@ export function SellerProductWizard({header, editId, onClose, registerBack}: Sel
       <Text variant="display" accessibilityRole="header" style={{color: sellerColors.ink}}>
         {editId && step === 1 ? t(`${P}.wizard.editTitle`) : t(`${P}.wizard.step${step}Title`)}
       </Text>
-      <Text variant="body" style={{color: sellerColors.inkMuted}}>
+      <Text variant="bodySmall" style={{color: sellerColors.inkMuted}}>
         {t(`${P}.wizard.step${step}Sub`)}
       </Text>
 
@@ -234,7 +234,7 @@ export function SellerProductWizard({header, editId, onClose, registerBack}: Sel
 
       {step === 3 ? (
         <>
-          <Text variant="bodyStrong" style={{color: sellerColors.ink}}>
+          <Text variant="bodySmallStrong" style={{color: sellerColors.ink}}>
             {t(`${P}.wizard.categoryLabel`)}
           </Text>
           {categories.length === 0 ? (
@@ -276,7 +276,7 @@ export function SellerProductWizard({header, editId, onClose, registerBack}: Sel
 
           {editId === null ? (
             <>
-              <Text variant="bodyStrong" style={{color: sellerColors.ink}}>
+              <Text variant="bodySmallStrong" style={{color: sellerColors.ink}}>
                 {t(`${P}.wizard.visibilityLabel`)}
               </Text>
               {(['pending_review', 'draft'] as const).map(k => {
@@ -296,7 +296,7 @@ export function SellerProductWizard({header, editId, onClose, registerBack}: Sel
                       minHeight: 56,
                       padding: 12,
                     }}>
-                    <Text variant="bodyStrong" style={{color: sellerColors.ink}}>
+                    <Text variant="bodySmallStrong" style={{color: sellerColors.ink}}>
                       {t(`${P}.wizard.${k === 'draft' ? 'launchDraft' : 'launchPublish'}`)}
                     </Text>
                     <Text variant="caption" style={{color: sellerColors.inkMuted}}>
@@ -321,7 +321,7 @@ export function SellerProductWizard({header, editId, onClose, registerBack}: Sel
           onPress={goBack}
           accessibilityRole="button"
           style={{justifyContent: 'center', minHeight: 44, paddingHorizontal: 8}}>
-          <Text variant="bodyStrong" style={{color: sellerColors.inkMuted}}>
+          <Text variant="bodySmallStrong" style={{color: sellerColors.inkMuted}}>
             {'← '}
             {t(`${P}.wizard.back`)}
           </Text>

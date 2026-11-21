@@ -68,7 +68,7 @@ export function SellerAnalyticsScreen({header}: SellerAnalyticsScreenProps) {
         <Text variant="display" accessibilityRole="header" style={{color: sellerColors.ink}}>
           {t(`${A}.title`)}
         </Text>
-        <Text variant="body" style={{color: sellerColors.inkMuted}}>
+        <Text variant="bodySmall" style={{color: sellerColors.inkMuted}}>
           {t(`${A}.subtitle`)}
         </Text>
         <View style={{alignItems: 'flex-start'}}>
@@ -88,10 +88,10 @@ export function SellerAnalyticsScreen({header}: SellerAnalyticsScreenProps) {
               minHeight: 48,
               paddingHorizontal: 20,
             }}>
-            <Text variant="bodyStrong" style={{color: sellerColors.ink}}>
+            <Text variant="bodySmallStrong" style={{color: sellerColors.ink}}>
               {t(`${A}.period.${s.period}`)}
             </Text>
-            <Text variant="bodyStrong" style={{color: sellerColors.inkMuted}}>
+            <Text variant="bodySmallStrong" style={{color: sellerColors.inkMuted}}>
               ▾
             </Text>
           </Pressable>
@@ -232,10 +232,10 @@ export function SellerAnalyticsScreen({header}: SellerAnalyticsScreenProps) {
           topListings.map(l => (
             <View key={l.id} style={{gap: 2}}>
               <View style={{flexDirection: 'row', gap: 12, justifyContent: 'space-between'}}>
-                <Text variant="bodyStrong" numberOfLines={1} style={{color: sellerColors.ink, flex: 1}}>
+                <Text variant="bodySmallStrong" numberOfLines={1} style={{color: sellerColors.ink, flex: 1}}>
                   {l.title}
                 </Text>
-                <Text variant="bodyStrong" style={{color: sellerColors.ink}}>
+                <Text variant="bodySmallStrong" style={{color: sellerColors.ink}}>
                   {fcfa(l.revenueDsi)}
                 </Text>
               </View>

@@ -94,7 +94,7 @@ export function SellerEarningsScreen({header, onBack, onWithdraw}: SellerEarning
     body = <LoadingState accessibilityLabel={t('content.loading')} testID="seller-earnings-loading" />;
   } else if (s.ledger.length === 0) {
     body = (
-      <Text variant="body" style={{color: sellerColors.inkMuted, padding: sellerMetrics.margin, textAlign: 'center'}} testID="seller-earnings-empty">
+      <Text variant="bodySmall" style={{color: sellerColors.inkMuted, padding: sellerMetrics.margin, textAlign: 'center'}} testID="seller-earnings-empty">
         {t(`${E}.empty`)}
       </Text>
     );
@@ -134,7 +134,7 @@ export function SellerEarningsScreen({header, onBack, onWithdraw}: SellerEarning
             paddingVertical: 12,
           }}>
           <View style={{flex: 1}}>
-            <Text variant="bodyStrong" numberOfLines={1} style={{color: sellerColors.ink}}>
+            <Text variant="bodySmallStrong" numberOfLines={1} style={{color: sellerColors.ink}}>
               {item.listingTitle ?? t(ledgerTypeKey(item.type))}
             </Text>
             <Text variant="caption" numberOfLines={1} style={{color: sellerColors.inkMuted}}>
@@ -143,7 +143,7 @@ export function SellerEarningsScreen({header, onBack, onWithdraw}: SellerEarning
                 .join(' · ')}
             </Text>
           </View>
-          <Text variant="bodyStrong" style={{color: item.amountDsi >= 0 ? sellerColors.positiveText : sellerColors.negativeText}}>
+          <Text variant="bodySmallStrong" style={{color: item.amountDsi >= 0 ? sellerColors.positiveText : sellerColors.negativeText}}>
             {item.amountDsi >= 0 ? '+' : '−'}
             {amount(Math.abs(item.amountDsi))}
           </Text>

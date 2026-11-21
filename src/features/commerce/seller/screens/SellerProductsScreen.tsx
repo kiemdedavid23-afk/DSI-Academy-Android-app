@@ -8,7 +8,8 @@
 
 import React, {useEffect, useRef, useState, useSyncExternalStore} from 'react';
 import {Alert, FlatList, TextInput, View} from 'react-native';
-import {ErrorState, LoadingState, Text, useSellerColors, sellerMetrics} from '@shared/designsystem';
+import {ErrorState, LoadingState, Text, useSellerColors, useTheme, sellerMetrics} from '@shared/designsystem';
+import {textStyle} from '@shared/designsystem/components/textStyle';
 import {useTranslation} from '@shared/i18n';
 import type {SellerListingStatus, SellerListingSummary} from '../../store/sellerTypes';
 import {SellerActionSheet} from '../components/SellerActionSheet';
@@ -44,6 +45,7 @@ export type SellerProductsScreenProps = {
 
 export function SellerProductsScreen({header, onCreate, onEdit}: SellerProductsScreenProps) {
   const sellerColors = useSellerColors();
+  const theme = useTheme();
   const {t} = useTranslation();
   const s = useSyncExternalStore(
     cb => sellerProductsStore.subscribe(() => cb()),
@@ -99,7 +101,7 @@ export function SellerProductsScreen({header, onCreate, onEdit}: SellerProductsS
         {t(`${P}.title`)}
       </Text>
       {counts ? (
-        <Text variant="body" style={{color: sellerColors.inkMuted}}>
+        <Text variant="bodySmall" style={{color: sellerColors.inkMuted}}>
           {t(`${P}.summaryAll`, {count: counts.all})} ·{' '}
           {t(`${P}.summaryPublished`, {count: counts.published})}
         </Text>
@@ -121,6 +123,7 @@ export function SellerProductsScreen({header, onCreate, onEdit}: SellerProductsS
         maxLength={80}
         testID="seller-products-search"
         style={{
+          ...textStyle(theme, 'field'),
           backgroundColor: sellerColors.surfaceMuted,
           borderRadius: 9999,
           color: sellerColors.ink,
@@ -150,7 +153,7 @@ export function SellerProductsScreen({header, onCreate, onEdit}: SellerProductsS
     body = <LoadingState accessibilityLabel={t('content.loading')} testID="seller-products-loading" />;
   } else if (s.items.length === 0) {
     body = (
-      <Text variant="body" style={{color: sellerColors.inkMuted, padding: sellerMetrics.margin, textAlign: 'center'}} testID="seller-products-empty">
+      <Text variant="bodySmall" style={{color: sellerColors.inkMuted, padding: sellerMetrics.margin, textAlign: 'center'}} testID="seller-products-empty">
         {t(s.query ? `${P}.emptySearch` : `${P}.empty`)}
       </Text>
     );

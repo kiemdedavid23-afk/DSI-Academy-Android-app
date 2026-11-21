@@ -59,7 +59,7 @@ export function SellerPillButton({
           leading
         )}
         <Text
-          variant="bodyStrong"
+          variant="bodySmallStrong"
           numberOfLines={1}
           style={{color: orange ? sellerColors.onAccent : sellerColors.ink}}>
           {label}

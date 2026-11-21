@@ -23,7 +23,7 @@ export function SellerSubHeader({title, backLabel, onBack, testID}: SellerSubHea
         hitSlop={8}
         style={{alignItems: 'center', alignSelf: 'flex-start', flexDirection: 'row', gap: 4, minHeight: 44}}>
         <Icon name="ChevronLeftIcon" size={18} color={sellerColors.inkMuted} />
-        <Text variant="bodyStrong" style={{color: sellerColors.inkMuted}}>
+        <Text variant="bodySmallStrong" style={{color: sellerColors.inkMuted}}>
           {backLabel}
         </Text>
       </Pressable>

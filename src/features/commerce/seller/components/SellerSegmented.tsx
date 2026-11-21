@@ -45,7 +45,7 @@ export function SellerSegmented<T extends string>({
               minHeight: 44,
               paddingHorizontal: 8,
             }}>
-            <Text variant="bodySmall" numberOfLines={1} style={{color: sellerColors.ink, fontWeight: active ? '700' : '500'}}>
+            <Text variant={active ? 'bodySmallStrong' : 'bodySmall'} numberOfLines={1} style={{color: sellerColors.ink}}>
               {o.label}
             </Text>
           </Pressable>

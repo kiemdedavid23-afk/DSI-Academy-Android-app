@@ -98,7 +98,7 @@ export function SellerSalesScreen({header}: SellerSalesScreenProps) {
       <Text variant="display" accessibilityRole="header" style={{color: sellerColors.ink}}>
         {t(`${S}.title`)}
       </Text>
-      <Text variant="body" style={{color: sellerColors.inkMuted}}>
+      <Text variant="bodySmall" style={{color: sellerColors.inkMuted}}>
         {t(`${S}.subtitle.${s.period}`)}
       </Text>
       <SellerSegmented options={periodOptions} value={s.period} onChange={p => void sellerOrders.setPeriod(p)} testID="seller-sales-period" />
@@ -156,7 +156,7 @@ export function SellerSalesScreen({header}: SellerSalesScreenProps) {
     body = <LoadingState accessibilityLabel={t('content.loading')} testID="seller-sales-loading" />;
   } else if (s.items.length === 0) {
     body = (
-      <Text variant="body" style={{color: sellerColors.inkMuted, padding: sellerMetrics.margin, textAlign: 'center'}} testID="seller-sales-empty">
+      <Text variant="bodySmall" style={{color: sellerColors.inkMuted, padding: sellerMetrics.margin, textAlign: 'center'}} testID="seller-sales-empty">
         {t(`${S}.empty`)}
       </Text>
     );
@@ -212,7 +212,7 @@ export function SellerSalesScreen({header}: SellerSalesScreenProps) {
               paddingVertical: 12,
             }}>
             <View style={{flex: 1}}>
-              <Text variant="bodyStrong" numberOfLines={1} style={{color: sellerColors.ink}}>
+              <Text variant="bodySmallStrong" numberOfLines={1} style={{color: sellerColors.ink}}>
                 {item.listingTitle ?? t(`${O}.productFallback`)}
               </Text>
               <Text variant="caption" numberOfLines={1} style={{color: sellerColors.inkMuted}}>
@@ -222,7 +222,7 @@ export function SellerSalesScreen({header}: SellerSalesScreenProps) {
               </Text>
             </View>
             <View style={{alignItems: 'flex-end', gap: 4}}>
-              <Text variant="bodyStrong" style={{color: sellerColors.ink}}>
+              <Text variant="bodySmallStrong" style={{color: sellerColors.ink}}>
                 {amount(item.netSellerDsi)}
               </Text>
               <View

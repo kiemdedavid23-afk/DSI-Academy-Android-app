@@ -48,7 +48,7 @@ export function SellerMenuRow({icon, title, subtitle, onPress, danger = false, t
         <SellerMenuIcon id={icon} color={ink} size={20} />
       </View>
       <View style={{flex: 1, gap: 2}}>
-        <Text variant="bodyStrong" style={{color: ink}}>
+        <Text variant="bodySmallStrong" style={{color: ink}}>
           {title}
         </Text>
         {subtitle ? (

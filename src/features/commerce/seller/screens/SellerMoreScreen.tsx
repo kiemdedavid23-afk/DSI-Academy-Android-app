@@ -84,7 +84,7 @@ export function SellerMoreScreen({
               </Text>
             ) : null}
             {memberEmail ? (
-              <Text variant="body" numberOfLines={1} style={{color: sellerColors.inkMuted}} testID="seller-more-email">
+              <Text variant="bodySmall" numberOfLines={1} style={{color: sellerColors.inkMuted}} testID="seller-more-email">
                 {memberEmail}
               </Text>
             ) : null}
@@ -100,12 +100,12 @@ export function SellerMoreScreen({
           />
         ) : null}
 
-        <Text variant="bodyStrong" style={{color: sellerColors.inkMuted}}>
+        <Text variant="bodySmallStrong" style={{color: sellerColors.inkMuted}}>
           {t(`${M}.sectionShop`)}
         </Text>
         <SellerMenuCard testID="seller-more-shop">{rows(SHOP_MENU)}</SellerMenuCard>
 
-        <Text variant="bodyStrong" style={{color: sellerColors.inkMuted}}>
+        <Text variant="bodySmallStrong" style={{color: sellerColors.inkMuted}}>
           {t(`${M}.sectionAccount`)}
         </Text>
         <SellerMenuCard testID="seller-more-account">{rows(ACCOUNT_MENU)}</SellerMenuCard>

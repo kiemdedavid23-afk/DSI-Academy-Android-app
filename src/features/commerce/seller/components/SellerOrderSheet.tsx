@@ -37,7 +37,7 @@ export function SellerOrderSheet({visible, title, rows, closeLabel, onClose}: Se
               <Text variant="bodySmall" style={{color: sellerColors.inkMuted}}>
                 {r.label}
               </Text>
-              <Text variant="bodyStrong" style={{color: sellerColors.ink, flexShrink: 1, textAlign: 'right'}}>
+              <Text variant="bodySmallStrong" style={{color: sellerColors.ink, flexShrink: 1, textAlign: 'right'}}>
                 {r.value}
               </Text>
             </View>

@@ -47,7 +47,7 @@ export function SellerActionSheet({
               accessibilityRole="button"
               style={{justifyContent: 'center', minHeight: 48}}>
               <Text
-                variant="bodyStrong"
+                variant="bodySmallStrong"
                 style={{color: a.danger ? sellerColors.negativeText : sellerColors.ink}}>
                 {a.label}
               </Text>

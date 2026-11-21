@@ -109,7 +109,7 @@ export function SellerProductCard({
           ⋮
         </Text>
       </Pressable>
-      <Text variant="bodyStrong" numberOfLines={2} style={{color: sellerColors.ink}}>
+      <Text variant="bodySmallStrong" numberOfLines={2} style={{color: sellerColors.ink}}>
         {title}
       </Text>
       <View style={{alignItems: 'center', flexDirection: 'row', flexWrap: 'wrap', gap: 8}}>

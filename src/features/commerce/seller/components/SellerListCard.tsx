@@ -46,7 +46,7 @@ export function SellerRow({title, subtitle, trailing, testID}: SellerRowProps) {
       testID={testID}
       style={{alignItems: 'center', flexDirection: 'row', gap: 12}}>
       <View style={{flex: 1}}>
-        <Text variant="bodyStrong" numberOfLines={1} style={{color: sellerColors.ink}}>
+        <Text variant="bodySmallStrong" numberOfLines={1} style={{color: sellerColors.ink}}>
           {title}
         </Text>
         {subtitle ? (
@@ -55,7 +55,7 @@ export function SellerRow({title, subtitle, trailing, testID}: SellerRowProps) {
           </Text>
         ) : null}
       </View>
-      <Text variant="bodyStrong" style={{color: sellerColors.ink}}>
+      <Text variant="bodySmallStrong" style={{color: sellerColors.ink}}>
         {trailing}
       </Text>
     </View>

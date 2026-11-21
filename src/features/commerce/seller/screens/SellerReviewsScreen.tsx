@@ -99,7 +99,7 @@ export function SellerReviewsScreen({header, onBack}: SellerReviewsScreenProps) 
     body = <LoadingState accessibilityLabel={t('content.loading')} testID="seller-reviews-loading" />;
   } else if (s.items.length === 0) {
     body = (
-      <Text variant="body" style={{color: sellerColors.inkMuted, padding: sellerMetrics.margin, textAlign: 'center'}} testID="seller-reviews-empty">
+      <Text variant="bodySmall" style={{color: sellerColors.inkMuted, padding: sellerMetrics.margin, textAlign: 'center'}} testID="seller-reviews-empty">
         {t(`${R}.empty`)}
       </Text>
     );
@@ -142,7 +142,7 @@ export function SellerReviewsScreen({header, onBack}: SellerReviewsScreenProps) 
             </Text>
           </View>
           {item.comment ? (
-            <Text variant="body" style={{color: sellerColors.ink}}>
+            <Text variant="bodySmall" style={{color: sellerColors.ink}}>
               {item.comment}
             </Text>
           ) : null}

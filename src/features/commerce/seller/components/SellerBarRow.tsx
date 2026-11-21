@@ -20,7 +20,7 @@ export function SellerBarRow({label, value, ratio, testID}: SellerBarRowProps) {
         <Text variant="bodySmall" numberOfLines={1} style={{color: sellerColors.ink, flexShrink: 1}}>
           {label}
         </Text>
-        <Text variant="bodyStrong" style={{color: sellerColors.ink}}>
+        <Text variant="bodySmallStrong" style={{color: sellerColors.ink}}>
           {value}
         </Text>
       </View>
