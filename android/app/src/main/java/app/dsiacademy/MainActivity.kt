@@ -1,5 +1,6 @@
 package app.dsiacademy
 
+import android.content.Intent
 import android.os.Bundle
 import app.dsiacademy.player.PlayerHolder
 import com.facebook.react.ReactActivity
@@ -17,6 +18,12 @@ class MainActivity : ReactActivity() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
+    // Un plantage précédent a laissé un rapport : on l'affiche avant tout.
+    if (CrashLogger.pending(this) != null) {
+      startActivity(Intent(this, CrashReportActivity::class.java))
+      finish()
+      return
+    }
     // Préchauffage : on construit le lecteur une fois l'écran affiché, pour que la
     // première ouverture d'un audio ou d'une vidéo ne paie pas ce coût.
     window.decorView.post { PlayerHolder.get(this) }

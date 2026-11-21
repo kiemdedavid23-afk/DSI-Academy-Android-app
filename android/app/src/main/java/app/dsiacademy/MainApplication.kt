@@ -24,6 +24,12 @@ class MainApplication : Application(), ReactApplication {
 
   override fun onCreate() {
     super.onCreate()
-    loadReactNative(this)
+    CrashLogger.install(this)
+    try {
+      loadReactNative(this)
+    } catch (error: Throwable) {
+      // Le démarrage de React Native a échoué : on garde la cause pour l'afficher au lieu de fermer l'app.
+      CrashLogger.record(this, "Échec au démarrage de React Native", error)
+    }
   }
 }
