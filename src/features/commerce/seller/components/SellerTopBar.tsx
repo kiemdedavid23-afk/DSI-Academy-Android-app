@@ -7,7 +7,7 @@
 import React from 'react';
 import {Image, Pressable, View} from 'react-native';
 import Svg, {Circle} from 'react-native-svg';
-import {Icon, Text, sellerColors, sellerMetrics} from '@shared/designsystem';
+import {Icon, Text, useSellerColors, sellerMetrics} from '@shared/designsystem';
 
 const APP_LOGO = require('@assets/images/app-icon.webp');
 const RING = 32;
@@ -27,6 +27,7 @@ export type SellerTopBarProps = {
 };
 
 function Ring({percent}: {percent: number}) {
+  const sellerColors = useSellerColors();
   const r = (RING - STROKE) / 2;
   const c = 2 * Math.PI * r;
   const p = Math.max(0, Math.min(100, percent));
@@ -71,6 +72,7 @@ export function SellerTopBar({
   onStore,
   onAccount,
 }: SellerTopBarProps) {
+  const sellerColors = useSellerColors();
   const size = sellerMetrics.roundButton;
   const round = {
     alignItems: 'center' as const,

@@ -3,7 +3,7 @@
 import React from 'react';
 import {View} from 'react-native';
 import Svg, {Path} from 'react-native-svg';
-import {Text, sellerColors, sellerMetrics} from '@shared/designsystem';
+import {Text, useSellerColors, sellerMetrics} from '@shared/designsystem';
 
 export type SellerKpiKind = 'revenue' | 'visitors' | 'views' | 'success';
 
@@ -33,6 +33,7 @@ export function SellerKpiCard({
   compareText,
   testID,
 }: SellerKpiCardProps) {
+  const sellerColors = useSellerColors();
   const ink = kind === 'revenue' ? sellerColors.positiveText : sellerColors.accent;
   const badgeBg =
     badgeTone === 'positive'

@@ -8,7 +8,7 @@
 
 import React, {useEffect, useState, useSyncExternalStore} from 'react';
 import {FlatList, Pressable, Share, View} from 'react-native';
-import {ErrorState, LoadingState, Text, sellerColors, sellerMetrics} from '@shared/designsystem';
+import {ErrorState, LoadingState, Text, useSellerColors, sellerMetrics} from '@shared/designsystem';
 import {useTranslation} from '@shared/i18n';
 import type {SellerOrderItem} from '../../store/sellerTypes';
 import {formatOrderDate} from '../../logic/purchases';
@@ -28,6 +28,7 @@ export type SellerSalesScreenProps = {
 };
 
 export function SellerSalesScreen({header}: SellerSalesScreenProps) {
+  const sellerColors = useSellerColors();
   const {t, i18n} = useTranslation();
   const s = useSyncExternalStore(
     cb => sellerOrdersStore.subscribe(() => cb()),
@@ -191,6 +192,9 @@ export function SellerSalesScreen({header}: SellerSalesScreenProps) {
         }
         onEndReached={() => void sellerOrders.loadMore()}
         onEndReachedThreshold={0.5}
+        initialNumToRender={10}
+        maxToRenderPerBatch={10}
+        windowSize={7}
         ListFooterComponent={s.loadingMore ? <LoadingState /> : null}
         renderItem={({item}) => (
           <Pressable

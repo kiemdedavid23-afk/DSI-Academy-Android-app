@@ -49,6 +49,7 @@ Pourquoi un plan d'abord : il y a trois chantiers liés (Worker, contrat, app) e
 | D18 | **Le visuel de l'espace vendeur reproduit exactement les captures** (disposition, couleurs, formes, composants), hors logo et nom de la plateforme tierce. Valeurs : `docs/DESIGN-ESPACE-VENDEUR.md`. | Toi, 20/11/2026 |
 | D19 | L'espace vendeur a **sa propre navigation** (barre du haut, barre à cinq onglets) et masque la barre principale de l'app. | Toi, 20/11/2026 |
 | D20 | L'espace vendeur affiche les montants en **FCFA** (conversion entière des DSI du Worker, `dsiToFcfa`), comme les captures. | Mise en œuvre S4, 21/11/2026 |
+| D21 | **Thème sombre** de l'espace vendeur : palette dérivée du clair (aucune capture en sombre), lue par `useSellerColors()`, qui suit le réglage de l'app. Contrastes de texte AA contrôlés par test. Palette dans `docs/fiches/S9.md`. | Mise en œuvre S9, 21/11/2026 |
 
 ## 4. Points tranchés et points ouverts
 
@@ -133,3 +134,4 @@ Ordre conseillé : S0, S1, puis S2 en parallèle de S3 (pour que des visites s'a
 | 21/11/2026 | Lot S6 livré : onglet Ventes (période, résumé, filtre, liste paginée, détail, export CSV construit dans l'app, T7 tranché ainsi en attendant validation). Fiche `docs/fiches/S6.md`. |
 | 21/11/2026 | Lot S7 livré : onglet Analyses (4 indicateurs, 2 courbes, entonnoir, meilleurs produits, pays). `SellerSoonScreen` supprimé (plus d'onglet en attente). Fiche `docs/fiches/S7.md`. |
 | 21/11/2026 | Lot S8 livré : onglet Plus en menu de cartes (Aperçu, Produits, Ventes, Analyses, Avis, Mon profil, Mes gains, Mes retraits, Quitter), profil modifiable avec logo, avis, gains détaillés. Clients, Litiges, Nouvelle boutique et assistant IA non proposés. Fiche `docs/fiches/S8.md`. |
+| 21/11/2026 | Lot S9 livré (hors APK) : thème sombre sur les 27 fichiers vendeur, contrôles de contraste, de rôles d'accessibilité et de parité fr/en en test, fenêtrage des listes, recette `docs/RECETTE-ESPACE-VENDEUR.md`. Reste à trancher : texte blanc sur orange (2,2 à 2,8:1). APK à lancer après CI verte. Fiche `docs/fiches/S9.md`. |

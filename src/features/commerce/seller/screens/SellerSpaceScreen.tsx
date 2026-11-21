@@ -8,7 +8,7 @@
 import React, {useCallback, useEffect, useRef, useState, useSyncExternalStore} from 'react';
 import {BackHandler, StatusBar, View} from 'react-native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import {sellerColors} from '@shared/designsystem';
+import {useSellerColors} from '@shared/designsystem';
 import {useTranslation} from '@shared/i18n';
 import {memberProfileStore} from '@shared/store';
 import {SellerTabBar} from '../components/SellerTabBar';
@@ -43,6 +43,7 @@ export function SellerSpaceScreen({
   onOpenWithdrawals,
   onOpenUrl,
 }: SellerSpaceScreenProps) {
+  const sellerColors = useSellerColors();
   const {t} = useTranslation();
   const insets = useSafeAreaInsets();
   const [tab, setTab] = useState<SellerTabId>('overview');

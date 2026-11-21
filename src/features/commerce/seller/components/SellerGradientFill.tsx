@@ -2,11 +2,12 @@
 
 import React from 'react';
 import Svg, {Defs, LinearGradient, Rect, Stop} from 'react-native-svg';
-import {sellerColors} from '@shared/designsystem';
+import {useSellerColors} from '@shared/designsystem';
 
 let counter = 0;
 
 export function SellerGradientFill() {
+  const sellerColors = useSellerColors();
   // Identifiant unique : plusieurs dégradés peuvent coexister sur un écran.
   const id = React.useRef(`sg${(counter += 1)}`).current;
   return (

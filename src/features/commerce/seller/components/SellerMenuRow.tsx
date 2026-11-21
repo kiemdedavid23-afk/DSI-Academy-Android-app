@@ -5,7 +5,7 @@
 
 import React from 'react';
 import {Pressable, View} from 'react-native';
-import {Icon, Text, sellerColors, sellerMetrics} from '@shared/designsystem';
+import {Icon, Text, useSellerColors, sellerMetrics} from '@shared/designsystem';
 import {SellerMenuIcon, type SellerMenuIconName} from './SellerMenuIcon';
 
 export type SellerMenuRowProps = {
@@ -19,6 +19,7 @@ export type SellerMenuRowProps = {
 };
 
 export function SellerMenuRow({icon, title, subtitle, onPress, danger = false, testID}: SellerMenuRowProps) {
+  const sellerColors = useSellerColors();
   const ink = danger ? sellerColors.negativeText : sellerColors.ink;
   return (
     <Pressable
@@ -63,6 +64,7 @@ export function SellerMenuRow({icon, title, subtitle, onPress, danger = false, t
 
 /** Carte à contour qui range des lignes séparées par un filet. */
 export function SellerMenuCard({children, testID}: {children: React.ReactNode[]; testID?: string}) {
+  const sellerColors = useSellerColors();
   const rows = React.Children.toArray(children);
   return (
     <View

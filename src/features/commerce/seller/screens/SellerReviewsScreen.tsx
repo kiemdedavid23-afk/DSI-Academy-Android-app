@@ -6,7 +6,7 @@
 
 import React, {useEffect, useSyncExternalStore} from 'react';
 import {FlatList, View} from 'react-native';
-import {ErrorState, LoadingState, Text, sellerColors, sellerMetrics} from '@shared/designsystem';
+import {ErrorState, LoadingState, Text, useSellerColors, sellerMetrics} from '@shared/designsystem';
 import {useTranslation} from '@shared/i18n';
 import {formatOrderDate} from '../../logic/purchases';
 import {SellerStars} from '../components/SellerStars';
@@ -23,6 +23,7 @@ export type SellerReviewsScreenProps = {
 };
 
 export function SellerReviewsScreen({header, onBack}: SellerReviewsScreenProps) {
+  const sellerColors = useSellerColors();
   const {t, i18n} = useTranslation();
   const s = useSyncExternalStore(
     cb => sellerReviewsStore.subscribe(() => cb()),
@@ -120,6 +121,9 @@ export function SellerReviewsScreen({header, onBack}: SellerReviewsScreenProps) 
       }
       onEndReached={() => void sellerReviews.loadMore()}
       onEndReachedThreshold={0.5}
+      initialNumToRender={10}
+      maxToRenderPerBatch={10}
+      windowSize={7}
       ListFooterComponent={s.loadingMore ? <LoadingState /> : null}
       renderItem={({item}) => (
         <View

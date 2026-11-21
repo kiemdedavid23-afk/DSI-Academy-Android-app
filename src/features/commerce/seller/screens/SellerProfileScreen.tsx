@@ -7,7 +7,7 @@
 
 import React, {useEffect, useState, useSyncExternalStore} from 'react';
 import {Image, ScrollView, View} from 'react-native';
-import {ErrorState, LoadingState, Text, TextField, sellerColors, sellerMetrics} from '@shared/designsystem';
+import {ErrorState, LoadingState, Text, TextField, useSellerColors, sellerMetrics} from '@shared/designsystem';
 import {useTranslation} from '@shared/i18n';
 import {SellerPillButton} from '../components/SellerPillButton';
 import {SellerSubHeader} from '../components/SellerSubHeader';
@@ -31,6 +31,7 @@ export type SellerProfileScreenProps = {
 };
 
 export function SellerProfileScreen({header, initial, onBack}: SellerProfileScreenProps) {
+  const sellerColors = useSellerColors();
   const {t} = useTranslation();
   const s = useSyncExternalStore(
     cb => sellerProfileStore.subscribe(() => cb()),

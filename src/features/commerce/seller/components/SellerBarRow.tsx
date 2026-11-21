@@ -2,7 +2,7 @@
 
 import React from 'react';
 import {View} from 'react-native';
-import {Text, sellerColors} from '@shared/designsystem';
+import {Text, useSellerColors} from '@shared/designsystem';
 
 export type SellerBarRowProps = {
   label: string;
@@ -13,6 +13,7 @@ export type SellerBarRowProps = {
 };
 
 export function SellerBarRow({label, value, ratio, testID}: SellerBarRowProps) {
+  const sellerColors = useSellerColors();
   return (
     <View testID={testID} style={{gap: 4}}>
       <View style={{flexDirection: 'row', gap: 12, justifyContent: 'space-between'}}>

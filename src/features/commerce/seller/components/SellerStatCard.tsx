@@ -2,7 +2,7 @@
 
 import React from 'react';
 import {View} from 'react-native';
-import {Text, sellerColors, sellerMetrics} from '@shared/designsystem';
+import {Text, useSellerColors, sellerMetrics} from '@shared/designsystem';
 
 export type SellerStatCardProps = {
   label: string;
@@ -23,6 +23,7 @@ export function SellerStatCard({
   compareText,
   testID,
 }: SellerStatCardProps) {
+  const sellerColors = useSellerColors();
   const deltaColor =
     deltaTone === 'positive'
       ? sellerColors.positiveText

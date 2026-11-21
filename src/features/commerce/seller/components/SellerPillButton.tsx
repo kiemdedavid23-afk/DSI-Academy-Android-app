@@ -2,7 +2,7 @@
 
 import React from 'react';
 import {ActivityIndicator, Pressable, View} from 'react-native';
-import {Text, sellerColors, sellerMetrics} from '@shared/designsystem';
+import {Text, useSellerColors, sellerMetrics} from '@shared/designsystem';
 import {SellerGradientFill} from './SellerGradientFill';
 
 export type SellerPillButtonProps = {
@@ -27,6 +27,7 @@ export function SellerPillButton({
   accessibilityLabel,
   testID,
 }: SellerPillButtonProps) {
+  const sellerColors = useSellerColors();
   const orange = tone === 'orange';
   const inactive = disabled || loading;
   return (
@@ -52,7 +53,7 @@ export function SellerPillButton({
         {loading ? (
           <ActivityIndicator
             size="small"
-            color={orange ? sellerColors.onDark : sellerColors.ink}
+            color={orange ? sellerColors.onAccent : sellerColors.ink}
           />
         ) : (
           leading
@@ -60,7 +61,7 @@ export function SellerPillButton({
         <Text
           variant="bodyStrong"
           numberOfLines={1}
-          style={{color: orange ? sellerColors.onDark : sellerColors.ink}}>
+          style={{color: orange ? sellerColors.onAccent : sellerColors.ink}}>
           {label}
         </Text>
       </View>

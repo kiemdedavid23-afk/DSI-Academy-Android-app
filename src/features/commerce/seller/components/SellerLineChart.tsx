@@ -3,7 +3,7 @@
 import React, {useState} from 'react';
 import {View, type LayoutChangeEvent} from 'react-native';
 import Svg, {Polygon, Polyline} from 'react-native-svg';
-import {Text, sellerColors} from '@shared/designsystem';
+import {Text, useSellerColors} from '@shared/designsystem';
 import {areaAttr, chartPoints, pointsAttr} from '../logic/sellerAnalytics';
 
 const HEIGHT = 140;
@@ -23,6 +23,7 @@ export function SellerLineChart({
   accessibilityLabel,
   testID,
 }: SellerLineChartProps) {
+  const sellerColors = useSellerColors();
   const [width, setWidth] = useState(0);
   const onLayout = (e: LayoutChangeEvent) => setWidth(Math.floor(e.nativeEvent.layout.width));
   const points = chartPoints(values, width, HEIGHT);

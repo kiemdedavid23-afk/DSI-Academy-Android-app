@@ -2,7 +2,7 @@
 
 import React from 'react';
 import {View} from 'react-native';
-import {Text, sellerColors, sellerMetrics} from '@shared/designsystem';
+import {Text, useSellerColors, sellerMetrics} from '@shared/designsystem';
 import {SellerPillButton} from './SellerPillButton';
 
 export type SellerBalanceCardProps = {
@@ -23,11 +23,12 @@ export function SellerBalanceCard({
   withdrawLabel,
   onWithdraw,
 }: SellerBalanceCardProps) {
+  const sellerColors = useSellerColors();
   return (
     <View
       testID="seller-balance-card"
       style={{
-        backgroundColor: sellerColors.ink,
+        backgroundColor: sellerColors.balanceBg,
         borderRadius: sellerMetrics.cardRadius,
         gap: 12,
         padding: sellerMetrics.cardPadding,

@@ -9,7 +9,7 @@
 
 import React from 'react';
 import {ScrollView, View} from 'react-native';
-import {Text, sellerColors, sellerMetrics} from '@shared/designsystem';
+import {Text, useSellerColors, sellerMetrics} from '@shared/designsystem';
 import {useTranslation} from '@shared/i18n';
 import {SellerMenuIcon} from '../components/SellerMenuIcon';
 import {SellerMenuCard, SellerMenuRow} from '../components/SellerMenuRow';
@@ -41,6 +41,7 @@ export function SellerMoreScreen({
   onAction,
   onExit,
 }: SellerMoreScreenProps) {
+  const sellerColors = useSellerColors();
   const {t} = useTranslation();
 
   const rows = (items: readonly MoreMenuItem[]) =>

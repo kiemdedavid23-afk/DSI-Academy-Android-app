@@ -2,7 +2,7 @@
 
 import React from 'react';
 import {Pressable, View} from 'react-native';
-import {Text, sellerColors} from '@shared/designsystem';
+import {Text, useSellerColors} from '@shared/designsystem';
 
 export type SellerSegmentedProps<T extends string> = {
   options: Array<{id: T; label: string}>;
@@ -17,6 +17,7 @@ export function SellerSegmented<T extends string>({
   onChange,
   testID,
 }: SellerSegmentedProps<T>) {
+  const sellerColors = useSellerColors();
   return (
     <View
       testID={testID}

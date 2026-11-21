@@ -21,5 +21,12 @@ export {touch} from './touch';
 export {motion} from './motion';
 export {lightElevation, darkElevation} from './elevation';
 export {lightGlass, darkGlass} from './glass';
-export {sellerColors, sellerMetrics} from './sellerTheme';
+export {
+  sellerColors,
+  sellerColorsFor,
+  sellerDarkColors,
+  sellerLightColors,
+  sellerMetrics,
+} from './sellerTheme';
+export {useSellerColors} from './useSellerColors';
 export type {SellerColors} from './sellerTheme';

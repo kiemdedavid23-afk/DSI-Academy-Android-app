@@ -2,7 +2,7 @@
 
 import React from 'react';
 import {Pressable, View} from 'react-native';
-import {Icon, Text, sellerColors, sellerMetrics} from '@shared/designsystem';
+import {Icon, Text, useSellerColors, sellerMetrics} from '@shared/designsystem';
 
 export type SellerSubHeaderProps = {
   title: string;
@@ -12,6 +12,7 @@ export type SellerSubHeaderProps = {
 };
 
 export function SellerSubHeader({title, backLabel, onBack, testID}: SellerSubHeaderProps) {
+  const sellerColors = useSellerColors();
   return (
     <View style={{gap: 8, paddingHorizontal: sellerMetrics.margin, paddingBottom: 8}}>
       <Pressable

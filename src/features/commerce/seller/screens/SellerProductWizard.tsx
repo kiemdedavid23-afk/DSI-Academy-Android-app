@@ -9,7 +9,7 @@
 
 import React, {useEffect, useState, useSyncExternalStore} from 'react';
 import {Pressable, ScrollView, View} from 'react-native';
-import {ErrorState, LoadingState, Text, TextField, sellerColors, sellerMetrics} from '@shared/designsystem';
+import {ErrorState, LoadingState, Text, TextField, useSellerColors, sellerMetrics} from '@shared/designsystem';
 import {useTranslation} from '@shared/i18n';
 import {SellerPillButton} from '../components/SellerPillButton';
 import {
@@ -37,6 +37,7 @@ export type SellerProductWizardProps = {
 };
 
 export function SellerProductWizard({header, editId, onClose, registerBack}: SellerProductWizardProps) {
+  const sellerColors = useSellerColors();
   const {t} = useTranslation();
   const categories = useSyncExternalStore(
     cb => sellerProductsStore.subscribe(() => cb()),
@@ -159,7 +160,7 @@ export function SellerProductWizard({header, editId, onClose, registerBack}: Sel
               justifyContent: 'center',
               width: 44,
             }}>
-            <Text variant="bodyStrong" style={{color: n === step ? sellerColors.onDark : sellerColors.inkMuted}}>
+            <Text variant="bodyStrong" style={{color: n === step ? sellerColors.onAccent : sellerColors.inkMuted}}>
               {n < step ? '✓' : String(n)}
             </Text>
           </View>

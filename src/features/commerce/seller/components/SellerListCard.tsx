@@ -2,7 +2,7 @@
 
 import React from 'react';
 import {View} from 'react-native';
-import {Text, sellerColors, sellerMetrics} from '@shared/designsystem';
+import {Text, useSellerColors, sellerMetrics} from '@shared/designsystem';
 
 export type SellerListCardProps = {
   title: string;
@@ -11,6 +11,7 @@ export type SellerListCardProps = {
 };
 
 export function SellerListCard({title, children, testID}: SellerListCardProps) {
+  const sellerColors = useSellerColors();
   return (
     <View
       testID={testID}
@@ -39,6 +40,7 @@ export type SellerRowProps = {
 
 /** Ligne : titre et sous-titre à gauche, montant à droite. */
 export function SellerRow({title, subtitle, trailing, testID}: SellerRowProps) {
+  const sellerColors = useSellerColors();
   return (
     <View
       testID={testID}

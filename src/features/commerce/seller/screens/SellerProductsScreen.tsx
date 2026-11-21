@@ -8,7 +8,7 @@
 
 import React, {useEffect, useRef, useState, useSyncExternalStore} from 'react';
 import {Alert, FlatList, TextInput, View} from 'react-native';
-import {ErrorState, LoadingState, Text, sellerColors, sellerMetrics} from '@shared/designsystem';
+import {ErrorState, LoadingState, Text, useSellerColors, sellerMetrics} from '@shared/designsystem';
 import {useTranslation} from '@shared/i18n';
 import type {SellerListingStatus, SellerListingSummary} from '../../store/sellerTypes';
 import {SellerActionSheet} from '../components/SellerActionSheet';
@@ -43,6 +43,7 @@ export type SellerProductsScreenProps = {
 };
 
 export function SellerProductsScreen({header, onCreate, onEdit}: SellerProductsScreenProps) {
+  const sellerColors = useSellerColors();
   const {t} = useTranslation();
   const s = useSyncExternalStore(
     cb => sellerProductsStore.subscribe(() => cb()),
@@ -175,6 +176,9 @@ export function SellerProductsScreen({header, onCreate, onEdit}: SellerProductsS
         }
         onEndReached={() => void sellerProducts.loadMore()}
         onEndReachedThreshold={0.5}
+        initialNumToRender={10}
+        maxToRenderPerBatch={10}
+        windowSize={7}
         ListFooterComponent={s.loadingMore ? <LoadingState /> : null}
         renderItem={({item, index}) => (
           <SellerProductCard

@@ -2,7 +2,7 @@
 
 import React from 'react';
 import {Image, Pressable, View} from 'react-native';
-import {Text, sellerColors} from '@shared/designsystem';
+import {Text, useSellerColors} from '@shared/designsystem';
 
 export type SellerProductCardProps = {
   title: string;
@@ -34,6 +34,7 @@ export function SellerProductCard({
   onMenu,
   testID,
 }: SellerProductCardProps) {
+  const sellerColors = useSellerColors();
   const badgeBg =
     statusTone === 'positive'
       ? sellerColors.positiveBadgeBg

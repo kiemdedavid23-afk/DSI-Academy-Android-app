@@ -6,7 +6,7 @@
 import React from 'react';
 import {Pressable, View} from 'react-native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import {Text, sellerColors, sellerMetrics} from '@shared/designsystem';
+import {Text, useSellerColors, sellerMetrics} from '@shared/designsystem';
 import {useTranslation} from '@shared/i18n';
 import {SellerTabIcon, type SellerTabId} from './SellerTabIcon';
 
@@ -24,6 +24,7 @@ export type SellerTabBarProps = {
 };
 
 export function SellerTabBar({active, onChange}: SellerTabBarProps) {
+  const sellerColors = useSellerColors();
   const {t} = useTranslation();
   const insets = useSafeAreaInsets();
   return (

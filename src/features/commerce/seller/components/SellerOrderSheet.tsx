@@ -2,7 +2,7 @@
 
 import React from 'react';
 import {Modal, Pressable, View} from 'react-native';
-import {Text, sellerColors} from '@shared/designsystem';
+import {Text, useSellerColors} from '@shared/designsystem';
 
 export type SellerOrderSheetProps = {
   visible: boolean;
@@ -13,12 +13,14 @@ export type SellerOrderSheetProps = {
 };
 
 export function SellerOrderSheet({visible, title, rows, closeLabel, onClose}: SellerOrderSheetProps) {
+  const sellerColors = useSellerColors();
   return (
     <Modal visible={visible} transparent animationType="fade" onRequestClose={onClose}>
       <Pressable
         onPress={onClose}
+        accessibilityRole="button"
         accessibilityLabel={closeLabel}
-        style={{backgroundColor: sellerColors.ink + '66', flex: 1, justifyContent: 'flex-end'}}>
+        style={{backgroundColor: sellerColors.scrim, flex: 1, justifyContent: 'flex-end'}}>
         <View
           style={{
             backgroundColor: sellerColors.bg,

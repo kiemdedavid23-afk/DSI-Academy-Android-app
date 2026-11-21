@@ -7,7 +7,7 @@
 
 import React, {useEffect, useState, useSyncExternalStore} from 'react';
 import {Pressable, RefreshControl, ScrollView, View} from 'react-native';
-import {ErrorState, LoadingState, Text, sellerColors, sellerMetrics} from '@shared/designsystem';
+import {ErrorState, LoadingState, Text, useSellerColors, sellerMetrics} from '@shared/designsystem';
 import {useTranslation} from '@shared/i18n';
 import type {SellerMetric, SellerPeriod} from '../../store/sellerTypes';
 import {SellerActionSheet} from '../components/SellerActionSheet';
@@ -35,6 +35,7 @@ export type SellerAnalyticsScreenProps = {
 };
 
 export function SellerAnalyticsScreen({header}: SellerAnalyticsScreenProps) {
+  const sellerColors = useSellerColors();
   const {t, i18n} = useTranslation();
   const s = useSyncExternalStore(
     cb => sellerAnalyticsStore.subscribe(() => cb()),

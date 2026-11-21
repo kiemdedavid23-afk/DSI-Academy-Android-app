@@ -16,7 +16,7 @@ import {
   Icon,
   LoadingState,
   Text,
-  sellerColors,
+  useSellerColors,
   sellerMetrics,
 } from '@shared/designsystem';
 import {useTranslation} from '@shared/i18n';
@@ -57,6 +57,7 @@ export function SellerOverviewScreen({
   onWithdraw,
   onOpenStore,
 }: SellerOverviewScreenProps) {
+  const sellerColors = useSellerColors();
   const {t} = useTranslation();
   const [copied, setCopied] = useState(false);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
