@@ -17,7 +17,9 @@ class MainActivity : ReactActivity() {
   override fun getMainComponentName(): String = "DSIAcademy"
 
   override fun onCreate(savedInstanceState: Bundle?) {
-    super.onCreate(savedInstanceState)
+    // react-native-screens interdit la restauration d'état des écrans : on passe null
+    // (sinon plantage « Screen fragments should never be restored » après une fermeture par Android).
+    super.onCreate(null)
     // Un plantage précédent a laissé un rapport : on l'affiche avant tout.
     if (CrashLogger.pending(this) != null) {
       startActivity(Intent(this, CrashReportActivity::class.java))
