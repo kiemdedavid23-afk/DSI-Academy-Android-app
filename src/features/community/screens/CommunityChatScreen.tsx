@@ -22,6 +22,7 @@ import {CommunityGate} from '../components/CommunityGate';
 import {formatClock} from '../format';
 import {useVisiblePolling} from '../hooks/useVisiblePolling';
 import {chatStore} from '../store/chatStore';
+import {markConversationRead} from '../store/communityNotificationsStore';
 
 const POLL_MS = 5000;
 const MAX_LENGTH = 4000;
@@ -57,6 +58,12 @@ export function CommunityChatScreen({
     void chatStore.open(conversationId);
   }, [conversationId]);
   useVisiblePolling(() => void chatStore.poll(conversationId), POLL_MS, chat?.status === 'ready');
+  // Les notifications de cette discussion passent en « lues » à l'ouverture.
+  useEffect(() => {
+    if (chat?.status === 'ready') {
+      void markConversationRead(conversationId);
+    }
+  }, [chat?.status, conversationId]);
 
   // Liste inversée : le plus récent en bas, sans calcul de défilement.
   const data = useMemo(() => [...(chat?.messages ?? [])].reverse(), [chat?.messages]);

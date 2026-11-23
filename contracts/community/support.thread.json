@@ -1,0 +1,2 @@
+{ "success": true, "error": null, "code": null,
+  "data": { "id": "cv_sup", "type": "official", "title": "Support DSI", "officialMemberId": "DSI-0001", "supportId": "DSI_SUPPORT", "created": true, "lastMessageAt": null } }

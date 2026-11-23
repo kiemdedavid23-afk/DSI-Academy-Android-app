@@ -16,7 +16,8 @@
       "newGroup": "New group",
       "calls": "Calls",
       "space": "Space",
-      "activity": "Activity"
+      "activity": "Activity",
+      "settings": "Settings"
     },
     "tabs": {
       "chats": "Chats",
@@ -286,6 +287,20 @@
         "FAILED": "Failed",
         "CANCELLED": "Cancelled"
       }
+    },
+    "settings": {
+      "title": "Settings",
+      "privacy": "Privacy",
+      "prefs": "Notifications",
+      "showLastSeen": "Show my last seen",
+      "allowDirectMessages": "Allow direct messages",
+      "allowCalls": "Allow calls",
+      "notifyMessages": "Message notifications",
+      "notifyCalls": "Call notifications",
+      "notifySpaces": "Space notifications",
+      "save": "Save",
+      "saved": "Settings saved.",
+      "notice": "Your choices are saved but not applied yet: for now they do not prevent you from receiving a message or a call."
     }
   }
 }

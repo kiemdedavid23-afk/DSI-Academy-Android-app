@@ -1,0 +1,6 @@
+{ "success": true, "error": null, "code": null,
+  "data": { "items": [
+    { "id": "n_1", "type": "message.created", "payload": { "conversationId": "cv_ab12", "messageId": "msg_1", "from": "DSI-0002" }, "fromDisplayName": "Moussa", "fromPseudonym": "moussa", "read": false, "createdAt": 1750000300000 },
+    { "id": "n_2", "type": "support.message", "payload": { "conversationId": "cv_sup", "messageId": "msg_2" }, "fromDisplayName": "", "fromPseudonym": "", "read": true, "createdAt": 1750000200000 },
+    { "id": "n_3", "type": "call.incoming", "payload": { "callId": "call_1", "from": "DSI-0003", "mode": "audio" }, "fromDisplayName": "Awa", "fromPseudonym": "awa", "read": false, "createdAt": 1750000100000 },
+    { "id": "n_4", "type": "space.joined", "payload": {}, "fromDisplayName": "", "fromPseudonym": "", "read": false, "createdAt": 1750000000000 } ] } }

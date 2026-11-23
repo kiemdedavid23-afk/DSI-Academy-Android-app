@@ -2,7 +2,8 @@
  * Pile Communauté. Les écrans ne connaissent pas la navigation : elle est
  * branchée ici. Lots livrés : accueil, trouver un membre, fiche membre,
  * contacts (C3), discussions, discussion, nouveau groupe (C4), espaces, espace,
- * nouvel espace et fil d'activité (C5). La création du
+ * nouvel espace et fil d'activité (C5), notifications, Support DSI et
+ * réglages (C6). La création du
  * profil se fait dans l'espace membre.
  */
 
@@ -16,10 +17,13 @@ import {CommunityContactsScreen} from '@features/community/screens/CommunityCont
 import {CommunityCreateSpaceScreen} from '@features/community/screens/CommunityCreateSpaceScreen';
 import {CommunityFindMemberScreen} from '@features/community/screens/CommunityFindMemberScreen';
 import {CommunityHomeScreen} from '@features/community/screens/CommunityHomeScreen';
+import {CommunityNotificationsScreen} from '@features/community/screens/CommunityNotificationsScreen';
 import {CommunityMemberScreen} from '@features/community/screens/CommunityMemberScreen';
 import {CommunityNewGroupScreen} from '@features/community/screens/CommunityNewGroupScreen';
+import {CommunitySettingsScreen} from '@features/community/screens/CommunitySettingsScreen';
 import {CommunitySpaceScreen} from '@features/community/screens/CommunitySpaceScreen';
 import {CommunitySpacesScreen} from '@features/community/screens/CommunitySpacesScreen';
+import {CommunitySupportScreen} from '@features/community/screens/CommunitySupportScreen';
 
 export type CommunityStackParamList = {
   Home: undefined;
@@ -31,6 +35,9 @@ export type CommunityStackParamList = {
   Space: {id: string};
   NewSpace: undefined;
   Activity: undefined;
+  Notifications: undefined;
+  Support: undefined;
+  Settings: undefined;
   Find: undefined;
   Contacts: undefined;
   Member: {ref: string};
@@ -50,6 +57,9 @@ export function CommunityStack() {
               onOpenChats={() => navigation.navigate('Chats')}
               onOpenSpaces={() => navigation.navigate('Spaces')}
               onOpenActivity={() => navigation.navigate('Activity')}
+              onOpenNotifications={() => navigation.navigate('Notifications')}
+              onOpenSupport={() => navigation.navigate('Support')}
+              onOpenSettings={() => navigation.navigate('Settings')}
               onOpenFind={() => navigation.navigate('Find')}
               onOpenContacts={() => navigation.navigate('Contacts')}
               onOpenProfile={() => parent?.navigate('MemberSpace', {screen: 'MemberProfile'})}
@@ -159,6 +169,47 @@ export function CommunityStack() {
           const parent = navigation.getParent();
           return (
             <CommunityActivityScreen
+              onOpenProfile={() => parent?.navigate('MemberSpace', {screen: 'MemberProfile'})}
+              onOpenSubscription={() =>
+                parent?.navigate('MemberSpace', {screen: 'MemberSubscription'})
+              }
+            />
+          );
+        }}
+      </Stack.Screen>
+      <Stack.Screen name="Notifications" options={{title: t('communityApp.titles.notifications')}}>
+        {({navigation}) => {
+          const parent = navigation.getParent();
+          return (
+            <CommunityNotificationsScreen
+              onOpenChat={(id, title, type) => navigation.navigate('Chat', {id, title, type})}
+              onOpenSupport={() => navigation.navigate('Support')}
+              onOpenProfile={() => parent?.navigate('MemberSpace', {screen: 'MemberProfile'})}
+              onOpenSubscription={() =>
+                parent?.navigate('MemberSpace', {screen: 'MemberSubscription'})
+              }
+            />
+          );
+        }}
+      </Stack.Screen>
+      <Stack.Screen name="Support" options={{title: t('communityApp.titles.support')}}>
+        {({navigation}) => {
+          const parent = navigation.getParent();
+          return (
+            <CommunitySupportScreen
+              onOpenProfile={() => parent?.navigate('MemberSpace', {screen: 'MemberProfile'})}
+              onOpenSubscription={() =>
+                parent?.navigate('MemberSpace', {screen: 'MemberSubscription'})
+              }
+            />
+          );
+        }}
+      </Stack.Screen>
+      <Stack.Screen name="Settings" options={{title: t('communityApp.titles.settings')}}>
+        {({navigation}) => {
+          const parent = navigation.getParent();
+          return (
+            <CommunitySettingsScreen
               onOpenProfile={() => parent?.navigate('MemberSpace', {screen: 'MemberProfile'})}
               onOpenSubscription={() =>
                 parent?.navigate('MemberSpace', {screen: 'MemberSubscription'})

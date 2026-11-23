@@ -1,0 +1,5 @@
+{ "success": true, "error": null, "code": null,
+  "data": { "conversationId": "cv_sup", "items": [
+    { "id": "sm_3", "conversationId": "cv_sup", "authorId": "DSI_SUPPORT", "official": true, "displayName": "Support DSI", "type": "text", "body": "Bonjour, comment pouvons-nous vous aider ?", "attachmentFileId": null, "createdAt": 1750000300000, "editedAt": null, "deliveredToAdminAt": null },
+    { "id": "sm_2", "conversationId": "cv_sup", "authorId": "DSI-0001", "official": false, "displayName": null, "type": "text", "body": "J'ai une question", "attachmentFileId": null, "createdAt": 1750000200000, "editedAt": null, "deliveredToAdminAt": 1750000250000 },
+    { "id": "sm_1", "conversationId": "cv_sup", "authorId": "DSI-0001", "official": false, "displayName": null, "type": "text", "body": "Bonjour", "attachmentFileId": null, "createdAt": 1750000100000, "editedAt": null, "deliveredToAdminAt": null } ] } }

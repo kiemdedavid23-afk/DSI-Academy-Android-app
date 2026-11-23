@@ -1,0 +1,2 @@
+{ "success": true, "error": null, "code": null,
+  "data": { "message": { "id": "sm_9", "conversationId": "cv_sup", "authorId": "DSI-0001", "official": false, "displayName": null, "type": "text", "body": "Merci", "attachmentFileId": null, "createdAt": 1750000400000, "editedAt": null, "deliveredToAdminAt": null }, "duplicate": true } }

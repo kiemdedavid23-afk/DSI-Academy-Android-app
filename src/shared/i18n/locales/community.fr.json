@@ -16,7 +16,8 @@
       "newGroup": "Nouveau groupe",
       "calls": "Appels",
       "space": "Espace",
-      "activity": "Activité"
+      "activity": "Activité",
+      "settings": "Réglages"
     },
     "tabs": {
       "chats": "Discussions",
@@ -286,6 +287,20 @@
         "FAILED": "Échec",
         "CANCELLED": "Annulé"
       }
+    },
+    "settings": {
+      "title": "Réglages",
+      "privacy": "Confidentialité",
+      "prefs": "Notifications",
+      "showLastSeen": "Afficher ma dernière connexion",
+      "allowDirectMessages": "Autoriser les messages privés",
+      "allowCalls": "Autoriser les appels",
+      "notifyMessages": "Notifications de messages",
+      "notifyCalls": "Notifications d’appels",
+      "notifySpaces": "Notifications des espaces",
+      "save": "Enregistrer",
+      "saved": "Réglages enregistrés.",
+      "notice": "Vos choix sont enregistrés, mais ne sont pas encore appliqués : ils n’empêchent pas, pour l’instant, de recevoir un message ou un appel."
     }
   }
 }
