@@ -1,0 +1,5 @@
+{ "success": true, "error": null, "code": null,
+  "data": { "items": [
+    { "relationId": "rel_1", "userId": "DSI-0002", "displayName": "Moussa", "pseudonym": "moussa",
+      "avatarFileId": null, "avatarUrl": null, "avatarThumbUrl": null, "avatarUrlExpiresAt": null,
+      "contactSince": 1750000500000 } ] } }

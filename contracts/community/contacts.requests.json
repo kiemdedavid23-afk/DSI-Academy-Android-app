@@ -1,0 +1,9 @@
+{ "success": true, "error": null, "code": null,
+  "data": {
+    "incoming": [ { "id": "rel_2", "peerId": "DSI-0003", "status": "PENDING", "requestedBy": "DSI-0003",
+                    "createdAt": 1750000600000, "updatedAt": 1750000600000, "respondedAt": null, "incoming": true, "outgoing": false,
+                    "peer": { "userId": "DSI-0003", "displayName": "Fatou", "pseudonym": "fatou", "publicPseudonym": "@fatou",
+                              "avatarUrl": null, "avatarThumbUrl": null, "avatarUrlExpiresAt": null } } ],
+    "outgoing": [ { "id": "rel_3", "peerId": "DSI-0004", "status": "PENDING", "requestedBy": "DSI-0001",
+                    "createdAt": 1750000700000, "updatedAt": 1750000700000, "respondedAt": null, "incoming": false, "outgoing": true,
+                    "peer": { "displayName": "Ibrahim", "pseudonym": "ibrahim", "publicPseudonym": "@ibrahim" } } ] } }

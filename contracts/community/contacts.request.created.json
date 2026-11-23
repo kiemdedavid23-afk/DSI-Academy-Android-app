@@ -1,0 +1,1 @@
+{ "success": true, "error": null, "code": null, "data": { "relation": { "id": "rel_1", "peerId": "DSI-0002", "status": "PENDING", "requestedBy": "DSI-0001", "createdAt": 1750000000000, "updatedAt": 1750000000000, "respondedAt": null, "incoming": false, "outgoing": true }, "created": true, "accepted": false, "cross": false, "duplicate": false } }
