@@ -1,6 +1,7 @@
 /**
- * Accueil de la Communauté : les entrées livrées (discussions, trouver un
- * membre, contacts). Espaces, notifications et appels s'ajoutent aux lots suivants.
+ * Accueil de la Communauté : les entrées livrées (discussions, espaces,
+ * activité, trouver un membre, contacts). Notifications, Support et appels
+ * s'ajoutent aux lots suivants.
  */
 
 import React, {useEffect, useSyncExternalStore} from 'react';
@@ -12,6 +13,8 @@ import {contactsStore} from '../store/contactsStore';
 
 type Props = {
   onOpenChats: () => void;
+  onOpenSpaces: () => void;
+  onOpenActivity: () => void;
   onOpenFind: () => void;
   onOpenContacts: () => void;
   onOpenProfile: () => void;
@@ -69,6 +72,8 @@ function Entry({
 
 export function CommunityHomeScreen({
   onOpenChats,
+  onOpenSpaces,
+  onOpenActivity,
   onOpenFind,
   onOpenContacts,
   onOpenProfile,
@@ -94,6 +99,16 @@ export function CommunityHomeScreen({
           label={t('communityApp.titles.chats')}
           onPress={onOpenChats}
           testID="community-entry-chats"
+        />
+        <Entry
+          label={t('communityApp.titles.spaces')}
+          onPress={onOpenSpaces}
+          testID="community-entry-spaces"
+        />
+        <Entry
+          label={t('communityApp.titles.activity')}
+          onPress={onOpenActivity}
+          testID="community-entry-activity"
         />
         <Entry
           label={t('communityApp.titles.find')}
