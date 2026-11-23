@@ -30,23 +30,16 @@ import {
   unblockMemberAction,
   type ContactActionResult,
 } from '../store/contactActions';
-import {startDirectChat} from '../store/conversationActions';
 import {memberDirectory} from '../store/memberDirectoryStore';
 
 type Props = {
   /** Identifiant DSI ou pseudonyme (avec ou sans @). */
   memberRef: string;
-  onOpenChat: (id: string, title: string) => void;
   onOpenProfile: () => void;
   onOpenSubscription: () => void;
 };
 
-export function CommunityMemberScreen({
-  memberRef,
-  onOpenChat,
-  onOpenProfile,
-  onOpenSubscription,
-}: Props) {
+export function CommunityMemberScreen({memberRef, onOpenProfile, onOpenSubscription}: Props) {
   const {t} = useTranslation();
   const {colors, spacing} = useTheme();
   const ref = memberRef.replace(/^@+/, '');
@@ -80,26 +73,6 @@ export function CommunityMemberScreen({
         setInfoKey(res.infoKey);
       }
       await memberDirectory.loadCard(ref, {silent: true});
-    } finally {
-      setBusy(false);
-    }
-  };
-
-  /** Écrire : ouvre (ou crée) la discussion privée, une seule par paire. */
-  const write = async (userId: string, name: string) => {
-    if (busy) {
-      return;
-    }
-    setBusy(true);
-    setFeedbackKey('');
-    setInfoKey('');
-    try {
-      const res = await startDirectChat(userId);
-      if (!res.ok) {
-        setFeedbackKey(res.errorKey);
-        return;
-      }
-      onOpenChat(res.id, name);
     } finally {
       setBusy(false);
     }
@@ -237,14 +210,6 @@ export function CommunityMemberScreen({
                       testID="community-member-reject"
                     />
                   </View>
-                ) : null}
-                {status === 'ACCEPTED' ? (
-                  <Button
-                    label={t('communityApp.member.write')}
-                    onPress={() => void write(member.userId, member.displayName)}
-                    disabled={busy}
-                    testID="community-member-write"
-                  />
                 ) : null}
                 {status === 'ACCEPTED' ? (
                   <Button

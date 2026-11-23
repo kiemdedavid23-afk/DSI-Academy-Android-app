@@ -34,3 +34,16 @@ export type CommunityResult<T extends object> =
   | CommunityFailure;
 
 export type CommunityWriteResult = {kind: 'success'} | CommunityFailure;
+
+/** Membre tel que les autres le voient (liste, recherche, fiche, demande). */
+export type CommunityPeer = {
+  userId: string;
+  displayName: string;
+  pseudonym: string;
+  /** Pseudonyme avec « @ », prêt à afficher. */
+  publicPseudonym: string;
+  /** Adresses signées et temporaires : toujours reprendre celles de la réponse. */
+  avatarUrl: string | null;
+  avatarThumbUrl: string | null;
+  avatarUrlExpiresAt: number | null;
+};
