@@ -1,0 +1,5 @@
+{ "success": true, "error": null, "code": null,
+  "data": { "items": [
+    { "id": "ev_1", "type": "space.created", "actorId": "DSI-0002", "actorDisplayName": "Moussa", "actorPseudonym": "moussa", "text": "Nouvel espace « Cuisine »", "createdAt": 1750000300000 },
+    { "id": "ev_2", "type": "space.joined", "actorId": "DSI-0003", "actorDisplayName": "", "actorPseudonym": "awa", "text": "Awa a rejoint « Entraide »", "createdAt": 1750000200000 },
+    { "id": "ev_3", "type": "space.archived", "actorId": "DSI-0001", "actorDisplayName": "Zoe", "actorPseudonym": "zoe", "text": "autre", "createdAt": 1750000100000 } ] } }

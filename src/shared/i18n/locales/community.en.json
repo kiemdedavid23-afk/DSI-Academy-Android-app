@@ -14,7 +14,9 @@
       "support": "DSI Support",
       "newSpace": "New space",
       "newGroup": "New group",
-      "calls": "Calls"
+      "calls": "Calls",
+      "space": "Space",
+      "activity": "Activity"
     },
     "tabs": {
       "chats": "Chats",
@@ -162,6 +164,13 @@
       "writeContact": "Message a contact",
       "newGroup": "New group",
       "findMember": "Find a member"
+    },
+    "activity": {
+      "emptyTitle": "No activity yet",
+      "emptyText": "New spaces and new members will show up here.",
+      "created": "{{name}} created a space.",
+      "joined": "{{name}} joined a space.",
+      "someone": "A member"
     },
     "spaces": {
       "searchPlaceholder": "Search spaces",

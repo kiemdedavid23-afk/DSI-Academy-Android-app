@@ -14,7 +14,9 @@
       "support": "Support DSI",
       "newSpace": "Nouvel espace",
       "newGroup": "Nouveau groupe",
-      "calls": "Appels"
+      "calls": "Appels",
+      "space": "Espace",
+      "activity": "Activité"
     },
     "tabs": {
       "chats": "Discussions",
@@ -162,6 +164,13 @@
       "writeContact": "Écrire à un contact",
       "newGroup": "Nouveau groupe",
       "findMember": "Trouver un membre"
+    },
+    "activity": {
+      "emptyTitle": "Aucune activité pour l’instant",
+      "emptyText": "Les nouveaux espaces et les arrivées apparaîtront ici.",
+      "created": "{{name}} a créé un espace.",
+      "joined": "{{name}} a rejoint un espace.",
+      "someone": "Un membre"
     },
     "spaces": {
       "searchPlaceholder": "Rechercher un espace",

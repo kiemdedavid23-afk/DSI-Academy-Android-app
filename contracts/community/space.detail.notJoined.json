@@ -1,0 +1,2 @@
+{ "success": true, "error": null, "code": null,
+  "data": { "id": "sp_3", "name": "Photo", "description": "Partage de photos", "ownerId": "DSI-0003", "memberCount": 4, "joined": false, "createdAt": 1750000200000, "visibility": "public", "conversationId": null } }

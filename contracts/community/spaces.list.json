@@ -1,0 +1,5 @@
+{ "success": true, "error": null, "code": null,
+  "data": { "items": [
+    { "id": "sp_1", "name": "Entraide", "description": "Questions et réponses entre membres", "ownerId": "DSI-0002", "memberCount": 12, "joined": true, "createdAt": 1750000000000 },
+    { "id": "sp_2", "name": "Cuisine", "description": "", "ownerId": "DSI-0001", "memberCount": 1, "joined": false, "createdAt": 1750000100000 },
+    { "id": "sp_3", "name": "Photo", "description": "Partage de photos", "ownerId": "DSI-0003", "memberCount": 4, "joined": false, "createdAt": 1750000200000 } ] } }
