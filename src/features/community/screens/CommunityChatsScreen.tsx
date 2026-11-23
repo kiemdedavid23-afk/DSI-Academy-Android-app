@@ -1,8 +1,7 @@
 /**
  * Discussions (reprend site : CommunityChatsPage.jsx) : recherche locale,
  * filtres Toutes / Privées / Groupes, relecture toutes les 15 s tant que
- * l'écran est au premier plan. Les espaces rejoints apparaissent (filtre
- * Espaces) ; le Support s'ajoute au lot C6.
+ * l'écran est au premier plan. Espaces et Support s'ajoutent aux lots C5 et C6.
  */
 
 import React, {useEffect, useMemo, useState, useSyncExternalStore} from 'react';
@@ -17,12 +16,12 @@ import {formatListTime} from '../format';
 import {useVisiblePolling} from '../hooks/useVisiblePolling';
 import {conversationsStore, refreshConversations} from '../store/conversationsStore';
 
-type Filter = 'all' | 'direct' | 'group' | 'space';
-const FILTERS: Filter[] = ['all', 'direct', 'group', 'space'];
+type Filter = 'all' | 'direct' | 'group';
+const FILTERS: Filter[] = ['all', 'direct', 'group'];
 const POLL_MS = 15_000;
 
 type Props = {
-  onOpenChat: (id: string, title: string, type: 'direct' | 'group' | 'space') => void;
+  onOpenChat: (id: string, title: string, type: 'direct' | 'group') => void;
   onOpenFind: () => void;
   onNewGroup: () => void;
   onOpenProfile: () => void;
@@ -50,12 +49,12 @@ export function CommunityChatsScreen({
   }, []);
   useVisiblePolling(refreshConversations, POLL_MS);
 
-  // Le Support (type `official`) arrive avec le lot C6.
+  // Espaces et Support : lots C5 et C6.
   const items = useMemo(
     () =>
       (state.data ?? []).filter(
-        (c): c is ConversationSummary & {type: 'direct' | 'group' | 'space'} =>
-          c.type === 'direct' || c.type === 'group' || c.type === 'space',
+        (c): c is ConversationSummary & {type: 'direct' | 'group'} =>
+          c.type === 'direct' || c.type === 'group',
       ),
     [state.data],
   );
