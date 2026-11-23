@@ -1,0 +1,7 @@
+{ "success": true, "error": null, "code": null,
+  "data": { "items": [
+    { "id": "msg_a", "authorId": "DSI-0002",
+      "author": { "userId": "DSI-0002", "displayName": "Moussa", "pseudonym": "moussa", "avatarThumbUrl": null },
+      "type": "text", "body": "Salut !", "attachmentFileId": null, "createdAt": 1750000100000, "editedAt": null },
+    { "id": "msg_b", "authorId": "DSI-0001", "author": null,
+      "type": "file", "body": "", "attachmentFileId": "fl_1", "createdAt": 1750000200000, "editedAt": null } ] } }

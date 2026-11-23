@@ -18,9 +18,11 @@ import {
   type ContactActionResult,
 } from '../store/contactActions';
 import {contactsStore} from '../store/contactsStore';
+import {startDirectChat} from '../store/conversationActions';
 
 type Props = {
   onOpenMember: (ref: string) => void;
+  onOpenChat: (id: string, title: string) => void;
   onOpenFind: () => void;
   onOpenProfile: () => void;
   onOpenSubscription: () => void;
@@ -28,6 +30,7 @@ type Props = {
 
 export function CommunityContactsScreen({
   onOpenMember,
+  onOpenChat,
   onOpenFind,
   onOpenProfile,
   onOpenSubscription,
@@ -69,6 +72,25 @@ export function CommunityContactsScreen({
     } else if (res.infoKey) {
       setInfoKey(res.infoKey);
     }
+  };
+
+  const write = async (userId: string, name: string) => {
+    if (busyKey) {
+      return;
+    }
+    setBusyKey(`write-${userId}`);
+    setFeedbackKey('');
+    setInfoKey('');
+    const res = await startDirectChat(userId);
+    if (!mounted.current) {
+      return;
+    }
+    setBusyKey(null);
+    if (!res.ok) {
+      setFeedbackKey(res.errorKey);
+      return;
+    }
+    onOpenChat(res.id, name);
   };
 
   const confirmRemove = (userId: string, name: string) => {
@@ -207,12 +229,20 @@ export function CommunityContactsScreen({
                 onPress={() => onOpenMember(c.peer.pseudonym || c.peer.userId)}
                 testID={`community-contact-${c.peer.userId}`}
                 actions={
-                  <Button
-                    variant="secondary"
-                    label={t('communityApp.contacts.remove')}
-                    onPress={() => confirmRemove(c.peer.userId, c.peer.displayName)}
-                    disabled={busy}
-                  />
+                  <>
+                    <Button
+                      label={t('communityApp.contacts.write')}
+                      onPress={() => void write(c.peer.userId, c.peer.displayName)}
+                      disabled={busy}
+                      testID={`community-contact-write-${c.peer.userId}`}
+                    />
+                    <Button
+                      variant="secondary"
+                      label={t('communityApp.contacts.remove')}
+                      onPress={() => confirmRemove(c.peer.userId, c.peer.displayName)}
+                      disabled={busy}
+                    />
+                  </>
                 }
               />
             ))}

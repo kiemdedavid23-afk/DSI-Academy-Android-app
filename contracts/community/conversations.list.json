@@ -1,0 +1,10 @@
+{ "success": true, "error": null, "code": null,
+  "data": { "items": [
+    { "id": "cv_ab12cd34ef56", "type": "direct", "title": "Moussa", "spaceId": null,
+      "peer": { "userId": "DSI-0002", "displayName": "Moussa", "pseudonym": "moussa",
+                "avatarFileId": null, "avatarUrl": null, "avatarThumbUrl": null, "avatarUrlExpiresAt": null },
+      "lastMessage": "Salut !", "lastMessageAt": 1750000100000, "createdAt": 1750000000000 },
+    { "id": "cv_g1", "type": "group", "title": "Les voisins", "spaceId": null, "peer": null,
+      "lastMessage": null, "lastMessageAt": 1750000200000, "createdAt": 1750000150000 },
+    { "id": "cv_s1", "type": "space", "title": "Entraide", "spaceId": "sp_1", "peer": null,
+      "lastMessage": null, "lastMessageAt": null, "createdAt": 1750000300000 } ] } }
