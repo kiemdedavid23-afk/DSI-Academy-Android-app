@@ -32,3 +32,17 @@ export {withdrawalsStore} from './withdrawalsStore';
 
 export {getDisplayPricing} from './pricing';
 export type {DisplayPricing} from './pricing';
+
+export {communityMeStore} from './communityMeStore';
+export {
+  createProfile as createCommunityProfileAction,
+  saveProfile as saveCommunityProfileAction,
+  pickAndUploadAvatar,
+  removeAvatar as removeCommunityAvatarAction,
+  refreshAfterImageError,
+  reconnectMember,
+} from './communityProfileActions';
+export type {
+  CommunityActionResult,
+  PickAndUploadResult,
+} from './communityProfileActions';

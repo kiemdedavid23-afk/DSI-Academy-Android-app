@@ -1,0 +1,1 @@
+{ "success": false, "error": "Pseudonyme déjà pris.", "code": "CONFLICT", "field": "pseudonym", "data": null }

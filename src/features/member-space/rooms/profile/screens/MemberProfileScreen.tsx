@@ -22,6 +22,7 @@ import {
   referralStore,
 } from '@shared/store';
 import {MemberCard} from '../../../components/MemberCard';
+import {CommunityProfileCard} from '../components/CommunityProfileCard';
 import {referralLevel} from '@core/utils/referralLevel';
 import {countryLabel} from '@core/data/countries';
 
@@ -272,6 +273,9 @@ export function MemberProfileScreen() {
         }}
         subscriptionActive={subActive}
       />
+
+      {/* Profil communautaire : création et photo, uniquement ici */}
+      <CommunityProfileCard suggestedDisplayName={p.prenom || ''} />
 
       {/* Chiffre clé — niveau seul : fond glass puis or 12 % par-dessus */}
       <View

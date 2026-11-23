@@ -1,0 +1,1 @@
+{ "success": false, "error": "Photo trop lourde.", "code": "AVATAR_TOO_LARGE", "field": "file", "data": null }

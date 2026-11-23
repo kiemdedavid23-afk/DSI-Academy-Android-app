@@ -1,0 +1,8 @@
+{ "success": true, "error": null, "code": null,
+  "data": { "replaced": false, "previousDeleted": false,
+    "profile": { "userId": "DSI-0001", "displayName": "Awa Diallo", "pseudonym": "awa", "publicPseudonym": "@awa",
+                 "avatarFileId": "av_1", "discoverable": true, "communityStatus": "ACTIVE",
+                 "createdAt": 1750000000000, "updatedAt": 1750000100000,
+                 "avatarUrl": "https://media.example.invalid/api/community/avatars/av_1/full?exp=1750040000000&sig=x",
+                 "avatarThumbUrl": "https://media.example.invalid/api/community/avatars/av_1/thumb?exp=1750040000000&sig=x",
+                 "avatarUrlExpiresAt": 1750040000000 } } }
