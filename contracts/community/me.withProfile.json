@@ -1,0 +1,7 @@
+{ "success": true, "error": null, "code": null,
+  "data": {
+    "profile": { "userId": "DSI-0001", "displayName": "Awa Diallo", "pseudonym": "awa", "publicPseudonym": "@awa",
+                 "avatarFileId": null, "discoverable": true, "communityStatus": "ACTIVE",
+                 "createdAt": 1750000000000, "updatedAt": 1750000000000,
+                 "avatarUrl": null, "avatarThumbUrl": null, "avatarUrlExpiresAt": null },
+    "communityStatus": "ACTIVE", "needsProfile": false, "userId": "DSI-0001" } }

@@ -1,0 +1,1 @@
+{ "success": false, "error": "Trop de requêtes.", "code": "RATE_LIMITED", "retryAfterSeconds": 12, "data": null }

@@ -2,8 +2,6 @@ import type {EnvelopeResult} from '@core/network';
 import type {
   CommunityErrorKind,
   CommunityFailure,
-  CommunityPeer,
-  CommunityWriteResult,
 } from './common.types';
 
 export function failure(
@@ -89,34 +87,4 @@ export function str(value: unknown): string | null {
 
 export function num(value: unknown): number | null {
   return typeof value === 'number' && Number.isFinite(value) ? value : null;
-}
-
-/** Membre vu par les autres. `fallbackUserId` : identifiant de la relation si le profil abrégé n'en porte pas. */
-export function mapPeer(
-  raw: unknown,
-  fallbackUserId: string | null = null,
-): CommunityPeer | null {
-  if (!isRecord(raw)) {
-    return null;
-  }
-  const userId = str(raw.userId) ?? fallbackUserId;
-  const displayName = str(raw.displayName);
-  const pseudonym = str(raw.pseudonym);
-  if (!userId || displayName === null || !pseudonym) {
-    return null;
-  }
-  return {
-    userId,
-    displayName,
-    pseudonym,
-    publicPseudonym: str(raw.publicPseudonym) ?? `@${pseudonym}`,
-    avatarUrl: str(raw.avatarUrl),
-    avatarThumbUrl: str(raw.avatarThumbUrl),
-    avatarUrlExpiresAt: num(raw.avatarUrlExpiresAt),
-  };
-}
-
-/** Écriture sans contenu utile : seul le succès compte. */
-export function mapWriteOk(env: EnvelopeResult): CommunityWriteResult {
-  return env.success ? {kind: 'success'} : failureFromEnvelope(env);
 }

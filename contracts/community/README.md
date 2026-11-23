@@ -1,0 +1,1 @@
+Fixtures du Worker Communauté, reprises des exemples du rapport d'intégration (champs réels, valeurs illustratives). À remplacer par des réponses réelles dès qu'un compte de test est disponible (R-NET-7).
